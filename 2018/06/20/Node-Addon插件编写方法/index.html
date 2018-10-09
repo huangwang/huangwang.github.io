@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近研究在Nodejs中调用DLL，上网搜索发现主要有两种方法：  使用Nodeffi调用C风格接口的DLL，但是无法调用C++风格导出类的DLL。 使用Nodejs C++ Addon 插件，该方法可直接与C++代码交互，理论上可以调用C++风格导出类的DLL。  下面研究Nodejs Addon C++插件的编写方法。 什么是Nodejs C++ AddonNode.js插件（Addons）是">
+<meta name="keywords" content="笔记本,Nodejs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node_C++_Addon插件编写方法">
+<meta property="og:url" content="https://huangwang.github.io/2018/06/20/Node-Addon插件编写方法/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="最近研究在Nodejs中调用DLL，上网搜索发现主要有两种方法：  使用Nodeffi调用C风格接口的DLL，但是无法调用C++风格导出类的DLL。 使用Nodejs C++ Addon 插件，该方法可直接与C++代码交互，理论上可以调用C++风格导出类的DLL。  下面研究Nodejs Addon C++插件的编写方法。 什么是Nodejs C++ AddonNode.js插件（Addons）是">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-06-20T14:47:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Node_C++_Addon插件编写方法">
+<meta name="twitter:description" content="最近研究在Nodejs中调用DLL，上网搜索发现主要有两种方法：  使用Nodeffi调用C风格接口的DLL，但是无法调用C++风格导出类的DLL。 使用Nodejs C++ Addon 插件，该方法可直接与C++代码交互，理论上可以调用C++风格导出类的DLL。  下面研究Nodejs Addon C++插件的编写方法。 什么是Nodejs C++ AddonNode.js插件（Addons）是">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Jack Huang's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://huangwang.github.io/2018/06/20/Node-Addon插件编写方法/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Node_C++_Addon插件编写方法 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jack Huang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/20/Node-Addon插件编写方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Node_C++_Addon插件编写方法
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-20 21:34:38 / 修改时间：22:47:36" itemprop="dateCreated datePublished" datetime="2018-06-20T21:34:38+08:00">2018-06-20</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/20/Node-Addon插件编写方法/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/06/20/Node-Addon插件编写方法/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近研究在Nodejs中调用DLL，上网搜索发现主要有两种方法：</p>
+<ul>
+<li>使用Nodeffi调用C风格接口的DLL，但是无法调用C++风格导出类的DLL。</li>
+<li>使用Nodejs C++ Addon 插件，该方法可直接与C++代码交互，理论上可以调用C++风格导出类的DLL。</li>
+</ul>
+<p>下面研究Nodejs Addon C++插件的编写方法。</p>
+<h1 id="什么是Nodejs-C-Addon"><a href="#什么是Nodejs-C-Addon" class="headerlink" title="什么是Nodejs C++ Addon"></a>什么是Nodejs C++ Addon</h1><p>Node.js插件（Addons）是C/C++编写的动态链接对象，这些对象可以被Node.js的require()函数引用，并可以像普通的Node.js模块一样使用。Addons主要用于提供一个Node.js中运行的JavaScript和C/C++库之间的接口。</p>
+<p>插件（Addons）是动态链接的共享对象，它提供了C/C++类库的调用能力。实现插件的方法比较复杂，涉及到以下元组件及API:</p>
+<ul>
+<li>V8：C++库，Node.js用于提供JavaScript执行环境。V8提供了对象创建、函数调用等执行机制，V8相关API包含在了v8.h头文件中（位于Node.js源码树的deps/v8/include/v8.h），也可以查看在线文档。</li>
+<li>libuv：C库，实现了Node.js中的事件循环、工作线程及在不同平台中异步行为的相关功能。也可以做为是一个跨平台的抽象库，提供了简单的、类POSIX的对主要操作系统的常见系统任务功能，如：与文件系统、套接字、计时器、系统事件的交互等。libuv还提供了一个类pthreads的线程池抽象对象，可用于更复杂的、超越标准事件循环的异步插件的控制功能。</li>
+<li>内部Node.js库：Node.js自身提供了一定义数量的C/C++API的插件可以使用 - 其中最重要的可能是node::ObjectWrap类</li>
+<li>Node.js静态链接库：Node.js自身还包含了一部分静态链接库，如OpenSSL。这些位于Node.js源码树的deps/目录下，只有V8和OpenSSL提供了符号出口，可以供Node.js和基它插件所使用。详见Node.js依赖链接</li>
+</ul>
+<h1 id="Node-Addon插件编写方法"><a href="#Node-Addon插件编写方法" class="headerlink" title="Node Addon插件编写方法"></a>Node Addon插件编写方法</h1><p>Node Addon插件的编写需要解决两个关键问题：</p>
+<ul>
+<li>当数据流向 javaScript -&gt; C++时，如何将javascript类型数据包装成C++类型数据，供C++代码使用。</li>
+<li>当数据流向 C++ -&gt; JavaScript时，如何将C++类型数据包装成JavaScript类型数据，供JavaScript代码使用。</li>
+</ul>
+<p>这两个关键问题的分析请参见淘宝前端团队成员发表的文章“Node.js 和 C++ 之间的类型转换<sup>[3]</sup>”。解决这两个关键问题后，Node Addon插件编写难度就不大了。</p>
+<h1 id="Node-Addon插件调用C-导出类DLL方法测试"><a href="#Node-Addon插件调用C-导出类DLL方法测试" class="headerlink" title="Node Addon插件调用C++导出类DLL方法测试"></a>Node Addon插件调用C++导出类DLL方法测试</h1><p>现有一个采用成熟方法导出类接口的DLL<sup>[4]</sup>，如何在Node Addon插件中调用该DLL呢?下面nodejs官网Node Addon插件例子Factory of wrapped objects为例进行讲解。</p>
+<p>Factory of wrapped objects例子在Addon插件中包装了一个MyObject类，现在就在MyObject类调用DLL导出类的接口方法。修改MyObject.h代码，增加DLL导出类接口方法，增加类接口成员变量IExport和DLL句柄变量hDll，如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">// myobject.h</span><br><span class="line">#ifndef MYOBJECT_H</span><br><span class="line">#define MYOBJECT_H</span><br><span class="line"></span><br><span class="line">#include &lt;node.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;node_object_wrap.h&gt;</span><br><span class="line">#include &quot;MatureApproach.h&quot;</span><br><span class="line"></span><br><span class="line">namespace demo &#123;</span><br><span class="line">typedef IExport*(*TYPE_fnCreateExportObj) (void);//定义函数指针  </span><br><span class="line">typedef void(*TYPE_fnDestroyExportObj) (IExport*);//定义函数指针  </span><br><span class="line"></span><br><span class="line">class MyObject : public node::ObjectWrap &#123;</span><br><span class="line"> public:</span><br><span class="line">  static void Init(v8::Isolate* isolate);</span><br><span class="line">  static void NewInstance(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line"></span><br><span class="line"> private:</span><br><span class="line">  explicit MyObject(double value = 0);</span><br><span class="line">  ~MyObject();</span><br><span class="line"></span><br><span class="line">  static void New(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static void PlusOne(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static void Hi(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static void Test(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static v8::Persistent&lt;v8::Function&gt; constructor;</span><br><span class="line">  HMODULE hDll;</span><br><span class="line">  IExport* pExport;</span><br><span class="line">  double value_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125;  // namespace demo</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure></p>
+<p>接下来将在MyObject类的构造函数中动态加载DLL，创建DLL导出类对象，在析构函数中析构DLL导出类对象，动态卸载DLL,在MyObject成员方法中调用DLL导出类方法，代码如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line">// myobject.cc</span><br><span class="line">#include &lt;node.h&gt;</span><br><span class="line">#include &quot;myobject.h&quot;</span><br><span class="line"></span><br><span class="line">namespace demo &#123;</span><br><span class="line"></span><br><span class="line">using v8::Context;</span><br><span class="line">using v8::Function;</span><br><span class="line">using v8::FunctionCallbackInfo;</span><br><span class="line">using v8::FunctionTemplate;</span><br><span class="line">using v8::Isolate;</span><br><span class="line">using v8::Local;</span><br><span class="line">using v8::Number;</span><br><span class="line">using v8::Object;</span><br><span class="line">using v8::Persistent;</span><br><span class="line">using v8::String;</span><br><span class="line">using v8::Value;</span><br><span class="line"></span><br><span class="line">Persistent&lt;Function&gt; MyObject::constructor;</span><br><span class="line"></span><br><span class="line">MyObject::MyObject(double value) : value_(value)&#123;</span><br><span class="line">	MyObject::hDll = LoadLibrary(&quot;MatureApproach.dll&quot;); //加载动态链接库DllDemo.dll文件；</span><br><span class="line">  TYPE_fnCreateExportObj fnCreateExportObj = (TYPE_fnCreateExportObj)GetProcAddress(MyObject::hDll, &quot;CreateExportObj&quot;);</span><br><span class="line">  MyObject::pExport = fnCreateExportObj();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MyObject::~MyObject() &#123;</span><br><span class="line">  TYPE_fnDestroyExportObj fnDestroyExportObj = (TYPE_fnDestroyExportObj)GetProcAddress(MyObject::hDll, &quot;DestroyExportObj&quot;);</span><br><span class="line">  fnDestroyExportObj(MyObject::pExport);</span><br><span class="line">  FreeLibrary(MyObject::hDll);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::Init(Isolate* isolate) &#123;</span><br><span class="line">  // Prepare constructor template</span><br><span class="line">  Local&lt;FunctionTemplate&gt; tpl = FunctionTemplate::New(isolate, New);</span><br><span class="line">  tpl-&gt;SetClassName(String::NewFromUtf8(isolate, &quot;MyObject&quot;));</span><br><span class="line">  tpl-&gt;InstanceTemplate()-&gt;SetInternalFieldCount(3);</span><br><span class="line"></span><br><span class="line">  // Prototype</span><br><span class="line">  NODE_SET_PROTOTYPE_METHOD(tpl, &quot;plusOne&quot;, PlusOne);</span><br><span class="line">  NODE_SET_PROTOTYPE_METHOD(tpl, &quot;hi&quot;, Hi);</span><br><span class="line">  NODE_SET_PROTOTYPE_METHOD(tpl, &quot;test&quot;, Test);</span><br><span class="line"></span><br><span class="line">  constructor.Reset(isolate, tpl-&gt;GetFunction());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::New(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  if (args.IsConstructCall()) &#123;</span><br><span class="line">    // Invoked as constructor: `new MyObject(...)`</span><br><span class="line">    double value = args[0]-&gt;IsUndefined() ? 0 : args[0]-&gt;NumberValue();</span><br><span class="line">    MyObject* obj = new MyObject(value);</span><br><span class="line">    obj-&gt;Wrap(args.This());</span><br><span class="line">    args.GetReturnValue().Set(args.This());</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // Invoked as plain function `MyObject(...)`, turn into construct call.</span><br><span class="line">    const int argc = 1;</span><br><span class="line">    Local&lt;Value&gt; argv[argc] = &#123; args[0] &#125;;</span><br><span class="line">    Local&lt;Function&gt; cons = Local&lt;Function&gt;::New(isolate, constructor);</span><br><span class="line">    Local&lt;Context&gt; context = isolate-&gt;GetCurrentContext();</span><br><span class="line">    Local&lt;Object&gt; instance =</span><br><span class="line">        cons-&gt;NewInstance(context, argc, argv).ToLocalChecked();</span><br><span class="line">    args.GetReturnValue().Set(instance);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::NewInstance(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  const unsigned argc = 1;</span><br><span class="line">  Local&lt;Value&gt; argv[argc] = &#123; args[0] &#125;;</span><br><span class="line">  Local&lt;Function&gt; cons = Local&lt;Function&gt;::New(isolate, constructor);</span><br><span class="line">  Local&lt;Context&gt; context = isolate-&gt;GetCurrentContext();</span><br><span class="line">  Local&lt;Object&gt; instance =</span><br><span class="line">      cons-&gt;NewInstance(context, argc, argv).ToLocalChecked();</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(instance);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::PlusOne(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  MyObject* obj = ObjectWrap::Unwrap&lt;MyObject&gt;(args.Holder());</span><br><span class="line">  obj-&gt;value_ += 1;</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(Number::New(isolate, obj-&gt;value_));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::Hi(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  MyObject* obj = ObjectWrap::Unwrap&lt;MyObject&gt;(args.Holder());</span><br><span class="line">  Local&lt;String&gt; str=v8::String::NewFromUtf8(isolate, obj-&gt;pExport-&gt;Hi().data());</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::Test(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  MyObject* obj = ObjectWrap::Unwrap&lt;MyObject&gt;(args.Holder());</span><br><span class="line">  Local&lt;String&gt; str=v8::String::NewFromUtf8(isolate, obj-&gt;pExport-&gt;Test().data());</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;  // namespace demo</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://itbilu.com/nodejs/core/4y4-Nrd5G.html，by" target="_blank" rel="noopener">https://itbilu.com/nodejs/core/4y4-Nrd5G.html，by</a> IT笔录</li>
+<li><a href="https://nodejs.org/dist/latest-v8.x/docs/api/addons.html，by" target="_blank" rel="noopener">https://nodejs.org/dist/latest-v8.x/docs/api/addons.html，by</a> nodejs</li>
+<li><a href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/，by" target="_blank" rel="noopener">http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/，by</a> 淘宝前端团队</li>
+<li><a href="https://huangwang.github.io/2018/06/15/DLL导出类和函数/,by">https://huangwang.github.io/2018/06/15/DLL导出类和函数/,by</a> jackhuang</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/笔记本/" rel="tag"># 笔记本</a>
+          
+            <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/18/如何在Vistual-Studio中调试Node-Addon-C-插件/" rel="next" title="如何在Vistual_Studio中调试Node_Addon_C++插件">
+                <i class="fa fa-chevron-left"></i> 如何在Vistual_Studio中调试Node_Addon_C++插件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/21/Visual-Studio-Community-2017离线安装/" rel="prev" title="Visual_Studio_Community_2017离线安装">
+                Visual_Studio_Community_2017离线安装 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Jack Huang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">34</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是Nodejs-C-Addon"><span class="nav-number">1.</span> <span class="nav-text">什么是Nodejs C++ Addon</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Node-Addon插件编写方法"><span class="nav-number">2.</span> <span class="nav-text">Node Addon插件编写方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Node-Addon插件调用C-导出类DLL方法测试"><span class="nav-number">3.</span> <span class="nav-text">Node Addon插件调用C++导出类DLL方法测试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: decodeURI(window.location.pathname),
+            owner: 'huangwang',
+            repo: 'gitment-comments',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'c5aa25b94035c77665be42dbeff0d229f2d66108',
+            
+                client_id: '60cc27182c03877da9a2'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

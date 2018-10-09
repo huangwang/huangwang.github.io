@@ -316,7 +316,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/03/Matplotlib蜡烛图绘制教程/">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/09/19/Blender简易教程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jack Huang">
@@ -335,8 +335,8 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/03/Matplotlib蜡烛图绘制教程/" itemprop="url">
-                  Matplotlib蜡烛图绘制教程
+                <a class="post-title-link" href="/2018/09/19/Blender简易教程/" itemprop="url">
+                  Blender简易教程
                 </a>
               
             
@@ -362,7 +362,7 @@
                 
               
 
-              <time title="创建时间：2018-06-03 09:41:25 / 修改时间：11:30:50" itemprop="dateCreated datePublished" datetime="2018-06-03T09:41:25+08:00">2018-06-03</time>
+              <time title="创建时间：2018-09-19 08:48:48 / 修改时间：09:57:28" itemprop="dateCreated datePublished" datetime="2018-09-19T08:48:48+08:00">2018-09-19</time>
             
 
             
@@ -402,21 +402,51 @@
       
         
           
-            <p>股票分析离不开各种图表的绘制，尤其是最常用的蜡烛图。下面介绍python中使用matplotlib绘制蜡烛图的过程。</p>
-<h1 id="环境及配置"><a href="#环境及配置" class="headerlink" title="环境及配置"></a>环境及配置</h1><p>使用的环境如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ python3 --version</span><br><span class="line">Python 3.6.5rc1</span><br><span class="line">$ ipython3</span><br><span class="line">In [1]: import matplotlib</span><br><span class="line">In [2]: matplotlib.__version__</span><br><span class="line">Out[2]: &apos;2.2.2&apos;</span><br><span class="line">In [3]: import tushare as ts</span><br><span class="line">In [4]: ts.__version__</span><br><span class="line">Out[4]: &apos;1.1.9&apos;</span><br><span class="line">In [5]: import talib</span><br><span class="line">In [6]: talib.__version__</span><br><span class="line">Out[6]: &apos;0.4.17&apos;</span><br></pre></td></tr></table></figure></p>
-<p>绘制蜡烛图通常使用matplotlib.finance库，但这个库在matplotlib 2.0后已经被废弃，并被移到一个名叫mpl_finance的库中。可使用如下命令安装mpl_finance。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install https://github.com/matplotlib/mpl_finance/archive/master.zip</span><br></pre></td></tr></table></figure></p>
-<p>mpl_finance使用雅虎接口获取股票数据，但是不稳定，因此推荐使用tushare库获取股票数据。另外使用talib计算股票各种技术分析指标，例如常用的均线数据。需要注意的是通过pip3按照的talib库是对C/C++版talib的包装，因此需先安装C/C++版talib。</p>
-<h1 id="蜡烛图绘制"><a href="#蜡烛图绘制" class="headerlink" title="蜡烛图绘制"></a>蜡烛图绘制</h1><h2 id="蜡烛图绘制函数简介"><a href="#蜡烛图绘制函数简介" class="headerlink" title="蜡烛图绘制函数简介"></a>蜡烛图绘制函数简介</h2><p>mpl_finance库中蜡烛图的绘制主要有以下四个函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">candlestick2_ochl(ax, opens, closes, highs, lows, width=4, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=0.75)</span><br><span class="line">candlestick2_ohlc(ax, opens, highs, lows, closes, width=4, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=0.75)</span><br><span class="line">candlestick_ochl(ax, quotes, width=0.2, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=1.0)</span><br><span class="line">candlestick_ohlc(ax, quotes, width=0.2, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=1.0)</span><br></pre></td></tr></table></figure></p>
-<p>在这四个函数的使用过程中需要注意的是：</p>
+            <p>最近需要用Blender建3D模型，试用了半天，将经验简单总结一下。</p>
+<h1 id="3D建模流程"><a href="#3D建模流程" class="headerlink" title="3D建模流程"></a>3D建模流程</h1><ul>
+<li>建立3D模型：通常在Blender的3D视图窗口对物体进行建模。</li>
+<li>拆分制作纹理：设置缝合边，再展开。打开U/V图像编辑器窗口即可看到拆分效果。导出图片后制作纹理。</li>
+<li>使用材质贴图：设置材质着色，添加纹理。</li>
+</ul>
+<h1 id="Blender快捷键"><a href="#Blender快捷键" class="headerlink" title="Blender快捷键"></a>Blender快捷键</h1><p>Blender快捷键很多，熟练使用可加速3D模型的建立。</p>
+<h2 id="3D视图窗口"><a href="#3D视图窗口" class="headerlink" title="3D视图窗口"></a>3D视图窗口</h2><h3 id="字母键"><a href="#字母键" class="headerlink" title="字母键"></a>字母键</h3><ul>
+<li>T：打开左侧工具栏</li>
+<li>Tab：编辑模式和物体模式切换</li>
+<li>N：打开物体属性</li>
+<li>A：全选、取消选择</li>
+<li>B：框选，进行多选</li>
+<li>C：刷选，加Shift取消选择，按Esc退出选择</li>
+<li>X：删除</li>
+<li>Shift+A：增加物件，新建的物件会出现在准星的位置</li>
+<li>Ctrl+Alt+Q：切换四视图</li>
+<li>Ctrl+Space：调出三维坐标系操纵物体</li>
+<li>H：隐藏对象（Hide）</li>
+<li>Alt+H：显示对象</li>
+<li>Z：线框模式与实体模式之间切换</li>
+<li>Ctrl+U：用户的内置设置</li>
+<li>Ctrl+Tab：进行点、线、面的编辑模式</li>
+<li>Shift+空格键：放大视图</li>
+<li>F12：计算结果（算图模式），如果是黑色的，需要把摄像机和光源放在同一个图层中，或者选择摄像机和光源的图层。</li>
+<li>G：移动选中对象</li>
+<li>R: 旋转</li>
+<li>S: 缩放</li>
+<li>Alt+S：法向缩放</li>
+<li>E：挤出选中对象</li>
+<li>Ctrl+R: 环切并滑动</li>
+</ul>
+<h3 id="数字键"><a href="#数字键" class="headerlink" title="数字键"></a>数字键</h3><p>数字键主要用于视角切换</p>
 <ul>
-<li>candlestick2_ohlc函数假定opens, highs, lows, closes中任意一个值不存在，则其他值也不存在。</li>
-<li>candlestick_ochl和candlestick_ohlc的输入参数quotes是(time, open, close, high, low, …)元组序列，其中time必须是浮点日期格式，具体参见date2num。</li>
+<li>1：前视图</li>
+<li>3：侧视图</li>
+<li>7：俯视图</li>
 </ul>
-<p>蜡烛图绘制函数存在日线图的时间间隔问题（非交易日无法跳过，导致图像断裂）。常用解决方法是建议重新调整横坐标，被动地过滤掉非交易时间段<sup>[2]</sup>。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ax.set_xticks(range(0, len(data[&apos;date&apos;]), 10))</span><br><span class="line">ax.set_xticklabels(data[&apos;date&apos;][::10])</span><br></pre></td></tr></table></figure></p>
-<h2 id="蜡烛图的简单绘制"><a href="#蜡烛图的简单绘制" class="headerlink" title="蜡烛图的简单绘制"></a>蜡烛图的简单绘制</h2><p>蜡烛图的简单例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import talib</span><br><span class="line">import tushare as ts</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import mpl_finance as mpf</span><br><span class="line"> </span><br><span class="line">data = ts.get_k_data(&apos;002320&apos;)</span><br><span class="line">sma_10 = talib.SMA(np.array(data[&apos;close&apos;]), 10)</span><br><span class="line">sma_30 = talib.SMA(np.array(data[&apos;close&apos;]), 30)</span><br><span class="line">fig = plt.figure(figsize=(24, 8))</span><br><span class="line">ax = fig.add_subplot(1, 1, 1)</span><br><span class="line">ax.set_xticks(range(0, len(data[&apos;date&apos;]), 50))</span><br><span class="line">ax.set_xticklabels(data[&apos;date&apos;][::50])</span><br><span class="line">ax.plot(sma_10, label=&apos;10 日均线&apos;)</span><br><span class="line">ax.plot(sma_30, label=&apos;30 日均线&apos;)</span><br><span class="line">ax.legend(loc=&apos;upper left&apos;)</span><br><span class="line">mpf.candlestick2_ochl(ax, data[&apos;open&apos;], data[&apos;close&apos;], data[&apos;high&apos;], data[&apos;low&apos;],width=0.5, colorup=&apos;r&apos;, colordown=&apos;green&apos;,alpha=0.6)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://matplotlib.org/api/finance_api.html" target="_blank" rel="noopener">https://matplotlib.org/api/finance_api.html</a>, by matplotlib</li>
-<li><a href="https://ipreacher.github.io/2017/candlestick/" target="_blank" rel="noopener">https://ipreacher.github.io/2017/candlestick/</a>, by The North</li>
+<h3 id="鼠标键"><a href="#鼠标键" class="headerlink" title="鼠标键"></a>鼠标键</h3><ul>
+<li>右键：选择物体</li>
+<li>shift+中键：平移</li>
+<li>滚轴/（Ctrl+中键拖拽）：缩放</li>
+</ul>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li>JinunMeng. Blender常用快捷键. <a href="https://blog.csdn.net/u010670734/article/details/64538633" target="_blank" rel="noopener">https://blog.csdn.net/u010670734/article/details/64538633</a>.</li>
 </ol>
 
           
@@ -471,7 +501,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/26/matplotlib用法笔记/">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/09/11/Windows下将cmd命令添加到右键菜单/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jack Huang">
@@ -490,8 +520,8 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/26/matplotlib用法笔记/" itemprop="url">
-                  matplotlib用法笔记
+                <a class="post-title-link" href="/2018/09/11/Windows下将cmd命令添加到右键菜单/" itemprop="url">
+                  Windows下将cmd命令添加到右键菜单
                 </a>
               
             
@@ -517,24 +547,12 @@
                 
               
 
-              <time title="创建时间：2018-05-26 23:42:59" itemprop="dateCreated datePublished" datetime="2018-05-26T23:42:59+08:00">2018-05-26</time>
+              <time title="创建时间：2018-09-11 10:35:30 / 修改时间：11:01:32" itemprop="dateCreated datePublished" datetime="2018-09-11T10:35:30+08:00">2018-09-11</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-06-03 09:37:47" itemprop="dateModified" datetime="2018-06-03T09:37:47+08:00">2018-06-03</time>
               
             
           </span>
@@ -569,557 +587,157 @@
       
         
           
-            <p>matplotlib 是Python编程语言及其数值数学扩展包 NumPy的可视化操作界面。它为利用通用的图形用户界面工具包，如Tkinter, wxPython, Qt或GTK+向应用程序嵌入式绘图提供了应用程序接口（API）。此外，matplotlib还有一个基于图像处理库（如开放图形库OpenGL）的pylab接口，其设计与MATLAB非常类似–尽管并不怎么好用。SciPy就是用matplotlib进行图形绘制。</p>
-<h1 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h1><p>使用plt.figure定义一个图像窗口。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line">x = np.linspace(-1, 1, 50)</span><br><span class="line">y = 2*x + 1</span><br><span class="line">plt.figure() </span><br><span class="line">plt.plot(x, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="设置坐标轴"><a href="#设置坐标轴" class="headerlink" title="设置坐标轴"></a>设置坐标轴</h2><p>使用plt.xlim设置x坐标轴范围：(-1, 2)； 使用plt.ylim设置y坐标轴范围：(-2, 3)；<br>使用plt.xlabel设置x坐标轴名称：’I am x’； 使用plt.ylabel设置y坐标轴名称：’I am y’；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line">plt.xlabel(&apos;I am x&apos;)</span><br><span class="line">plt.ylabel(&apos;I am y&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>使用np.linspace定义范围以及个数：范围是(-1,2);个数是5. 使用print打印出新定义的范围. 使用plt.xticks设置x轴刻度：范围是(-1,2);个数是5.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">new_ticks = np.linspace(-1, 2, 5)</span><br><span class="line">print(new_ticks)</span><br><span class="line">plt.xticks(new_ticks)</span><br></pre></td></tr></table></figure></p>
-<p>使用plt.yticks设置y轴刻度以及名称：刻度为[-2, -1.8, -1, 1.22, 3]；对应刻度的名称为[‘really bad’,’bad’,’normal’,’good’, ‘really good’]. 使用plt.show显示图像.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.yticks([-2, -1.8, -1, 1.22, 3],[r&apos;$really\ bad$&apos;, r&apos;$bad$&apos;, r&apos;$normal$&apos;, r&apos;$good$&apos;, r&apos;$really\ good$&apos;])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<p>使用plt.gca获取当前坐标轴信息. 使用.spines设置边框：右侧边框；使用.set_color设置边框颜色：默认白色； 使用.spines设置边框：上边框；使用.set_color设置边框颜色：默认白色；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax = plt.gca()</span><br><span class="line">ax.spines[&apos;right&apos;].set_color(&apos;none&apos;)</span><br><span class="line">ax.spines[&apos;top&apos;].set_color(&apos;none&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="调整坐标轴"><a href="#调整坐标轴" class="headerlink" title="调整坐标轴"></a>调整坐标轴</h2><p>使用.xaxis.set_ticks_position设置x坐标刻度数字或名称的位置：bottom.（所有位置：top，bottom，both，default，none）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ax.xaxis.set_ticks_position(&apos;bottom&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>使用.spines设置边框：x轴；使用.set_position设置边框位置：y=0的位置；（位置所有属性：outward，axes，data）<br>使用.yaxis.set_ticks_position设置y坐标刻度数字或名称的位置：left.（所有位置：left，right，both，default，none）<br>使用.spines设置边框：y轴；使用.set_position设置边框位置：x=0的位置；（位置所有属性：outward，axes，data） 使用plt.show显示图像.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax.spines[&apos;bottom&apos;].set_position((&apos;data&apos;, 0))</span><br><span class="line">ax.yaxis.set_ticks_position(&apos;left&apos;)</span><br><span class="line">ax.spines[&apos;left&apos;].set_position((&apos;data&apos;,0))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="legend图例"><a href="#legend图例" class="headerlink" title="legend图例"></a>legend图例</h2><h3 id="基本用法-1"><a href="#基本用法-1" class="headerlink" title="基本用法"></a>基本用法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">x = np.linspace(-3, 3, 50)</span><br><span class="line">y1 = 2*x + 1</span><br><span class="line">y2 = x**2</span><br><span class="line"></span><br><span class="line">plt.figure()</span><br><span class="line">#set x limits</span><br><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line"></span><br><span class="line"># set new sticks</span><br><span class="line">new_sticks = np.linspace(-1, 2, 5)</span><br><span class="line">plt.xticks(new_sticks)</span><br><span class="line"># set tick labels</span><br><span class="line">plt.yticks([-2, -1.8, -1, 1.22, 3],</span><br><span class="line">           [r&apos;$really\ bad$&apos;, r&apos;$bad$&apos;, r&apos;$normal$&apos;, r&apos;$good$&apos;, r&apos;$really\ good$&apos;])</span><br><span class="line"></span><br><span class="line"># set line syles</span><br><span class="line">l1, = plt.plot(x, y1, label=&apos;linear line&apos;)</span><br><span class="line">l2, = plt.plot(x, y2, color=&apos;red&apos;, linewidth=1.0, linestyle=&apos;--&apos;, label=&apos;square line&apos;)</span><br><span class="line"></span><br><span class="line">plt.legend(loc=&apos;upper right&apos;)</span><br></pre></td></tr></table></figure>
-<h3 id="调整位置和名称"><a href="#调整位置和名称" class="headerlink" title="调整位置和名称"></a>调整位置和名称</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.legend(handles=[l1, l2], labels=[&apos;up&apos;, &apos;down&apos;],  loc=&apos;best&apos;)</span><br></pre></td></tr></table></figure>
-<p>其中’loc’参数有多种，’best’表示自动分配最佳位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&apos;best&apos; : 0,          </span><br><span class="line">&apos;upper right&apos;  : 1,</span><br><span class="line">&apos;upper left&apos;   : 2,</span><br><span class="line">&apos;lower left&apos;   : 3,</span><br><span class="line">&apos;lower right&apos;  : 4,</span><br><span class="line">&apos;right&apos;        : 5,</span><br><span class="line">&apos;center left&apos;  : 6,</span><br><span class="line">&apos;center right&apos; : 7,</span><br><span class="line">&apos;lower center&apos; : 8,</span><br><span class="line">&apos;upper center&apos; : 9,</span><br><span class="line">&apos;center&apos;       : 10,</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Matplotlib" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Matplotlib</a>, by wikipedia</li>
-<li><a href="https://morvanzhou.github.io" target="_blank" rel="noopener">https://morvanzhou.github.io</a>, by morvanzhou</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/26/python笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/26/python笔记/" itemprop="url">
-                  python笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-26 18:58:07" itemprop="dateCreated datePublished" datetime="2018-05-26T18:58:07+08:00">2018-05-26</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-06-03 09:38:36" itemprop="dateModified" datetime="2018-06-03T09:38:36+08:00">2018-06-03</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python是一种广泛使用的高级编程语言，属于通用型编程语言，由吉多·范罗苏姆创造，第一版发布于1991年。可以视之为一种改良（加入一些其他编程语言的优点，如面向对象）的LISP。作为一种解释型语言，Python的设计哲学强调代码的可读性和简洁的语法（尤其是使用空格缩进划分代码块，而非使用大括号或者关键词）。相比于C++或Java，Python让开发者能够用更少的代码表达想法。不管是小型还是大型程序，该语言都试图让程序的结构清晰明了。</p>
-<p>与Scheme、Ruby、Perl、Tcl等动态类型编程语言一样，Python拥有动态类型系统和垃圾回收功能，能够自动管理内存使用，并且支持多种编程范式，包括面向对象、命令式、函数式和过程式编程。其本身拥有一个巨大而广泛的标准库。</p>
-<p>Python 解释器本身几乎可以在所有的操作系统中运行。Python的正式解释器CPython是用C语言编写的、是一个由社区驱动的自由软件，目前由Python软件基金会管理。</p>
-<h1 id="python3与python2区别"><a href="#python3与python2区别" class="headerlink" title="python3与python2区别"></a>python3与python2区别</h1><h2 id="print函数"><a href="#print函数" class="headerlink" title="print函数"></a>print函数</h2><p>Python 2 的 print 声明在Python 3中已经被 print() 函数取代<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">print &apos;Hello, World!&apos;</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">print(&apos;Hello, World!&apos;)</span><br></pre></td></tr></table></figure></p>
-<h2 id="整除"><a href="#整除" class="headerlink" title="整除"></a>整除</h2><p>/是精确除法，//是向下取整除法，%是求模。</p>
-<p>//和%运算符在2和3版本中一样，但是运算符/不一样。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">&gt;&gt;&gt; 3 / 2</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; 3 // 2</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; 3 / 2.0</span><br><span class="line">1.5</span><br><span class="line">&gt;&gt;&gt; 3 // 2.0</span><br><span class="line">1.0</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; 3 / 2</span><br><span class="line">1.5</span><br><span class="line">&gt;&gt;&gt; 3 // 2</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; 3 / 2.0</span><br><span class="line">1.5</span><br><span class="line">&gt;&gt;&gt; 3 // 2.0</span><br><span class="line">1.0</span><br></pre></td></tr></table></figure></p>
-<h2 id="Unicode"><a href="#Unicode" class="headerlink" title="Unicode"></a>Unicode</h2><p>由于历史遗留问题，Python 2.x版本虽然支持Unicode，但在语法上需要’xxx’和u’xxx’两种字符串表示方式。</p>
-<p>在Python 3.x版本中，把’xxx’和u’xxx’统一成Unicode编码，即写不写前缀u都是一样的，而以字节形式表示的字符串则必须加上b前缀：b’xxx’。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; 中国 = &apos;china&apos; </span><br><span class="line">&gt;&gt;&gt; print(中国)</span><br><span class="line">china</span><br></pre></td></tr></table></figure></p>
-<h2 id="xrange模块"><a href="#xrange模块" class="headerlink" title="xrange模块"></a>xrange模块</h2><p>在 Python 2 中 xrange() 创建迭代对象的用法是非常流行的。比如： for 循环或者是列表/集合/字典推导式。</p>
-<p>在 Python 3 中，range() 是像 xrange() 那样实现以至于一个专门的 xrange() 函数都不再存在（在 Python 3 中 xrange() 会抛出命名异常）。</p>
-<h2 id="不等运算符"><a href="#不等运算符" class="headerlink" title="不等运算符"></a>不等运算符</h2><p>Python 2.x中不等于有两种写法 != 和 &lt;&gt;</p>
-<p>Python 3.x中去掉了&lt;&gt;, 只有!=一种写法</p>
-<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ul>
-<li>Py3.X去除了long类型，现在只有一种整型——int，但它的行为就像2.X版本的long</li>
-<li>新增了bytes类型，对应于2.X版本的八位串</li>
-<li>dict的.keys()、.items 和.values()方法返回迭代器，而之前的iterkeys()等函数都被废弃。同时去掉的还有 dict.has_key()，用 in替代它吧 。</li>
-</ul>
-<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><ul>
-<li>在 Python 3 中处理异常也轻微的改变了，在 Python 3 中我们现在使用 as 作为关键词。</li>
-<li>捕获异常的语法由 except exc, var 改为 except exc as var。<br>使用语法except (exc1, exc2) as var可以同时捕获多种类别的异常。 Python 2.6已经支持这两种语法。</li>
-</ul>
-<h2 id="解析用户的输入"><a href="#解析用户的输入" class="headerlink" title="解析用户的输入"></a>解析用户的输入</h2><ul>
-<li><p>在python2.x中raw_input()和input()，两个函数都存在，其中区别为</p>
-<p>  raw_input()—将所有输入作为字符串看待，返回字符串类型</p>
-<p>  input()—–只能接收“数字”的输入，在对待纯数字输入时具有自己的特性，它返回所输入的数字的类型（int, float）</p>
-</li>
-<li><p>在python3.x中raw_input()和input()进行了整合，去除了raw_input()，仅保留了input()函数，其接收任意任性输入，将所有输入默认为字符串处理，并返回字符串类型。</p>
-</li>
-</ul>
-<h2 id="返回可迭代对象，而不是列表"><a href="#返回可迭代对象，而不是列表" class="headerlink" title="返回可迭代对象，而不是列表"></a>返回可迭代对象，而不是列表</h2><p>如果在 xrange 章节看到的，现在在 Python 3 中一些方法和函数返回迭代对象 — 代替 Python 2 中的列表。</p>
-<p>因为我们通常那些遍历只有一次，我认为这个改变对节约内存很有意义。尽管如此，它也是可能的，相对于生成器 —- 如需要遍历多次。它是不那么高效的。</p>
-<p>而对于那些情况下，我们真正需要的是列表对象，我们可以通过 list() 函数简单的把迭代对象转换成一个列表。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">&gt;&gt;&gt; print range(3) </span><br><span class="line">[0, 1, 2]</span><br><span class="line">&gt;&gt;&gt; print type(range(3))</span><br><span class="line">&lt;type &apos;list&apos;&gt;</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; print(range(3))</span><br><span class="line">range(0, 3)</span><br><span class="line">&gt;&gt;&gt; print(type(range(3)))</span><br><span class="line">&lt;class &apos;range&apos;&gt;</span><br><span class="line">&gt;&gt;&gt; print(list(range(3)))</span><br><span class="line">[0, 1, 2]</span><br></pre></td></tr></table></figure></p>
-<h2 id="For循环变量和全局命名空间泄漏"><a href="#For循环变量和全局命名空间泄漏" class="headerlink" title="For循环变量和全局命名空间泄漏"></a>For循环变量和全局命名空间泄漏</h2><p>在 Python 3.x 中 for 循环变量不会再导致命名空间泄漏。</p>
-<p>在 Python 3.x 中做了一个改变，在 What’s New In Python 3.0 中有如下描述：<br>“列表推导不再支持 [… for var in item1, item2, …] 这样的语法。使用 [… for var in (item1, item2, …)] 代替。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">&gt;&gt;&gt; i = 1</span><br><span class="line">&gt;&gt;&gt; print &apos;before: i =&apos;, i</span><br><span class="line">before: i = 1</span><br><span class="line">&gt;&gt;&gt; print &apos;comprehension: &apos;, [i for i in range(5)]</span><br><span class="line">comprehension:  [0, 1, 2, 3, 4]</span><br><span class="line">&gt;&gt;&gt; print &apos;after: i =&apos;, i</span><br><span class="line">after: i = 4</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; i = 1</span><br><span class="line">&gt;&gt;&gt; print(&apos;before: i =&apos;, i)</span><br><span class="line">before: i = 1</span><br><span class="line">&gt;&gt;&gt; print(&apos;comprehension:&apos;, [i for i in range(5)])</span><br><span class="line">comprehension: [0, 1, 2, 3, 4]</span><br><span class="line">&gt;&gt;&gt; print(&apos;after: i =&apos;, i)</span><br><span class="line">after: i = 1</span><br></pre></td></tr></table></figure></p>
-<h1 id="兼容python3与python2"><a href="#兼容python3与python2" class="headerlink" title="兼容python3与python2"></a>兼容python3与python2</h1><p>当前python3的普及还不尽人意，因此编写的python程序能同时兼容python2与python3是十分必要的。下面介绍同时支持python2与python3的方法。</p>
-<ul>
-<li>放弃python 2.6之前的python版本</li>
-<li>使用 2to3 工具对代码检查</li>
-<li>使用python -3执行python程序</li>
-<li>from <strong>future</strong> import<br>  “from <strong>future</strong> import”后即可使使用python的未来特性了。python的完整future特性可见 <strong>future</strong> 。python3中所有字符都变成了unicode。在python2中unicode字符在定义时需要在字符前面加 u，但在3中则不需要家u，而且在加u后程序会无法编译通过。为了解决该问题可以 “from future import unicode_literals” ，这样python2中字符的行为将和python3中保持一致，python2中定义普通字符将自动识别为unicode。</li>
-<li><p>import问题<br>  python3中“少”了很多python2的包，在大多情况下这些包之是改了个名字而已。我们可以在import的时候对这些问题进行处理。</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">try:#python2</span><br><span class="line">    from UserDict import UserDict</span><br><span class="line">    #建议按照python3的名字进行import</span><br><span class="line">    from UserDict import DictMixin as MutableMapping</span><br><span class="line">except ImportError:#python3</span><br><span class="line">    from collections import UserDict</span><br><span class="line">    from collections import MutableMapping</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用python3的方式写程序</p>
-</li>
-<li><p>检查当前运行的python版本</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">if sys.version &gt; &apos;3&apos;:</span><br><span class="line">    PY3 = True</span><br><span class="line">else:</span><br><span class="line">    PY3 = False</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>six<br>不推荐使用six。</p>
-</li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Python" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Python</a>, by wikipedia</li>
-<li><a href="https://www.jianshu.com/p/85583e032eb8" target="_blank" rel="noopener">https://www.jianshu.com/p/85583e032eb8</a>, by EarthChen</li>
-<li><a href="http://python.jobbole.com/83987/" target="_blank" rel="noopener">http://python.jobbole.com/83987/</a>, by 天地一沙鸥</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/24/git用法总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/24/git用法总结/" itemprop="url">
-                  git用法总结
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-24 08:32:03" itemprop="dateCreated datePublished" datetime="2018-05-24T08:32:03+08:00">2018-05-24</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-06-03 09:37:42" itemprop="dateModified" datetime="2018-06-03T09:37:42+08:00">2018-06-03</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>git是一个分布式版本控制软件，最初由林纳斯·托瓦兹（Linus Torvalds）创作，于2005年以GPL发布。最初目的是为更好地管理Linux内核开发而设计<sup>[1]</sup>。</p>
-<ul>
-<li><p>查看代码仓库中标签</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>检出指定标签代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout tag_name</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://zh.wikipedia.org/zh-hans/Git" target="_blank" rel="noopener">https://zh.wikipedia.org/zh-hans/Git</a>, by wikipedia</li>
-<li><a href="http://yijiebuyi.com/blog/eacf4d053fad77affffae397d9af7172.html" target="_blank" rel="noopener">http://yijiebuyi.com/blog/eacf4d053fad77affffae397d9af7172.html</a>, by 一介布衣</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/13/Vue-js集成three-js/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/13/Vue-js集成three-js/" itemprop="url">
-                  Vue.js集成three.js
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-13 21:03:47" itemprop="dateCreated datePublished" datetime="2018-05-13T21:03:47+08:00">2018-05-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-06-03 09:40:00" itemprop="dateModified" datetime="2018-06-03T09:40:00+08:00">2018-06-03</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Three.js是一个跨浏览器的脚本，使用JavaScript函数库或API来在网页浏览器中创建和展示动画的三维计算机图形。Three.js使用WebGL。源代码托管在GitHub。</p>
-<p>下面介绍在Vue.js中集成three.js的步骤。</p>
+            <p>经常需要使用cmd命令，如果打开cmd窗口后在cd到目标路径，则非常麻烦。可使用如下方法将cmd添加到右键菜单，这样一打开cmd窗口就到了目标路径。设置方法如下：</p>
 <ol>
-<li>安装vue-cli脚手架</li>
-<li><p>安装three.js</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save three</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>编写使用three.js创建3D场景的Vuejs组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id=&quot;container&quot;&gt;&lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">import * as Three from &apos;three&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;Home&apos;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      camera: null,</span><br><span class="line">      scene: null,</span><br><span class="line">      renderer: null,</span><br><span class="line">      mesh: null</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    init: function () &#123;</span><br><span class="line">      var container = document.getElementById(&apos;container&apos;)</span><br><span class="line"></span><br><span class="line">      this.camera = new Three.PerspectiveCamera(70, container.clientWidth / container.clientHeight, 0.01, 10)</span><br><span class="line">      this.camera.position.z = 1</span><br><span class="line"></span><br><span class="line">      this.scene = new Three.Scene()</span><br><span class="line"></span><br><span class="line">      var geometry = new Three.BoxGeometry(0.2, 0.2, 0.2)</span><br><span class="line">      var material = new Three.MeshNormalMaterial()</span><br><span class="line"></span><br><span class="line">      this.mesh = new Three.Mesh(geometry, material)</span><br><span class="line">      this.scene.add(this.mesh)</span><br><span class="line"></span><br><span class="line">      this.renderer = new Three.WebGLRenderer(&#123; antialias: true &#125;)</span><br><span class="line">      this.renderer.setSize(container.clientWidth, container.clientHeight)</span><br><span class="line">      container.appendChild(this.renderer.domElement)</span><br><span class="line">    &#125;,</span><br><span class="line">    animate: function () &#123;</span><br><span class="line">      requestAnimationFrame(this.animate)</span><br><span class="line">      this.mesh.rotation.x += 0.01</span><br><span class="line">      this.mesh.rotation.y += 0.02</span><br><span class="line">      this.renderer.render(this.scene, this.camera)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted () &#123;</span><br><span class="line">    this.init()</span><br><span class="line">    this.animate()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;style  rel=&quot;stylesheet/scss&quot; lang=&quot;scss&quot; scoped&gt;</span><br><span class="line">#container &#123;</span><br><span class="line">  width: 100%;</span><br><span class="line">  height: 100%;</span><br><span class="line">  margin: 0;</span><br><span class="line">  padding: 0;</span><br><span class="line">  overflow: hidden;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<li>打开注册表</li>
+<li>添加注册项<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a) 找到[HKEY_CLASSESS_ROOT\Folder\shell]子键，在其下新建“cmdPrompt”子项，在窗口右侧名称列上点击右键修改，将数值数据改为“CMD快速通道”。</span><br><span class="line"></span><br><span class="line">b) 再在这个项下，新建名为“command”子项，同样修改数值数据修改为c:\windows\system32\cmd.exe /k cd &quot;%1&quot;</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Three.js" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Three.js</a>, by Wikipedia</li>
-<li><a href="https://stackoverflow.com/questions/47849626/import-and-use-three-js-library-in-vue-component" target="_blank" rel="noopener">https://stackoverflow.com/questions/47849626/import-and-use-three-js-library-in-vue-component</a>, by Stackoverlflow</li>
+<p>设置完成后即可在目标路径文件夹上右键单击，选择“CMD快速通道”命令，打开cmd窗口的同时，已跳转到目标路径下。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/09/07/Windows平台Python安装与配置教程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/07/Windows平台Python安装与配置教程/" itemprop="url">
+                  Windows平台Python安装与配置教程
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-09-07 22:37:06 / 修改时间：22:51:16" itemprop="dateCreated datePublished" datetime="2018-09-07T22:37:06+08:00">2018-09-07</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>下面记录在Windows平台安装配置Python的过程。</p>
+<ol>
+<li>去Python官网下载最新的Python3，当前最新版本为3.7。</li>
+<li>双击Python3.7的安装包进行安装，设置安装路径为C:\Python\Python37，同时将Python路径加入系统Path变量中。</li>
+<li>使用如下命令安装ipython。加参数–trusted-host，否则会报错误：SSLError(SSLCertVerificationError(1, ‘[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed。加参数-i，制定国内pip源，显著提高下载速度。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install ipython -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure></li>
 </ol>
 
           
@@ -1174,7 +792,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/13/Windows批处理编程语法解析/">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/09/06/Windows与Linux双系统Grub引导修复/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jack Huang">
@@ -1193,8 +811,8 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/13/Windows批处理编程语法解析/" itemprop="url">
-                  Windows批处理编程语法解析
+                <a class="post-title-link" href="/2018/09/06/Windows与Linux双系统Grub引导修复/" itemprop="url">
+                  Windows与Linux双系统Grub引导修复
                 </a>
               
             
@@ -1220,7 +838,7 @@
                 
               
 
-              <time title="创建时间：2018-05-13 09:26:50" itemprop="dateCreated datePublished" datetime="2018-05-13T09:26:50+08:00">2018-05-13</time>
+              <time title="创建时间：2018-09-06 16:38:26" itemprop="dateCreated datePublished" datetime="2018-09-06T16:38:26+08:00">2018-09-06</time>
             
 
             
@@ -1237,7 +855,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-06-03 09:40:00" itemprop="dateModified" datetime="2018-06-03T09:40:00+08:00">2018-06-03</time>
+                <time title="修改时间：2018-09-09 21:19:42" itemprop="dateModified" datetime="2018-09-09T21:19:42+08:00">2018-09-09</time>
               
             
           </span>
@@ -1272,228 +890,384 @@
       
         
           
-            <p>批处理文件(BAT文件)是DOS，OS/2和Microsoft Windows中的一种脚本文件<sup>[1]</sup>。 它由命令行解释器执行的一系列命令组成，存储在纯文本文件中，通常以BAT为扩展名。批处理文件可以包含解释器交互接受的任何命令，并使用在批处理文件中启用条件分支和循环的构造，如IF，FOR和GOTO标签。在Windows平台自动化部署或处理日常重复性工作时，常使用Windows批处理文件。</p>
-<p>下面简单介绍Windows BAT文件的语法。</p>
+            <p>因为个人爱好，我再笔记本中安装了Windows和Linux的双系统。最近因为Windows系统故障原因，重装Windows系统，导致无法引导Linux启动。</p>
+<p>故障原因是之前安装双系统时，先安装Windows，再安装Linux，这样将由Grub2来引导Linux和Windows的启动。而重装Windows的过程中，将覆盖Grub2引导程序，导致无法Linux的启动。</p>
+<p>故障解决方法是重新在硬盘中写入Grub2引导程序。具体步骤如下：</p>
 <ol>
-<li>@ </li>
+<li>使用Linux安装盘，使用Live CD方式进行Linux系统。</li>
+<li>使用fdisk -l命令查看硬盘信息。</li>
+<li>使用grub-install –root-directory=/media/boot /dev/sda将grub2引导程序写入硬盘。/media/boot为引导分区所在位置，grub-install写入grub2引导程序时需要使用引导分区所在linux映像。</li>
+<li>使用update-grub2更新引导配置。</li>
 </ol>
-<p>让执行窗口中不显示它后面这一行的命令本身。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 使用@将不显示后面的echo off命令</span><br><span class="line">@ echo off</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/08/26/中文文献免费下载方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/26/中文文献免费下载方法/" itemprop="url">
+                  中文文献免费下载方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-08-26 22:45:03" itemprop="dateCreated datePublished" datetime="2018-08-26T22:45:03+08:00">2018-08-26</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-09-09 21:19:42" itemprop="dateModified" datetime="2018-09-09T21:19:42+08:00">2018-09-09</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>下面记录经过验证可用的中文文献下载方法:</p>
+<ol>
+<li><p>idata中国知网 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">idata中国知网网址：https://www.cn-ki.net/</span><br><span class="line">进入系统，注册账号，登陆就可以每天免费下载五篇知网论文。</span><br><span class="line">额度用完之后，第二天可以继续下载。</span><br><span class="line">每天五篇的额度基本能满足需要，这样还不够的话，可以多注册几个账号。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>全国图书馆参考咨询联盟</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">全国图书馆参考咨询联盟网址：http://www.ucdrs.superlib.net/</span><br><span class="line">很全，可以查图书，查期刊，报纸等。还有硕士，博士的毕业论文。不仅有中文，还有外文。</span><br><span class="line">网站无需注册，通过文献传递服务，即通过邮箱接收全文。最快一两分钟，最慢三四个小时即可接收到全文。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>上海研发公共服务平台</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">上海研发公共服务平台网址：http://www.sgst.cn/。</span><br><span class="line">注册后可直接下载，论文、文献数量直接匹配知网和万方数据。</span><br><span class="line">下载速度较快，但有数量限制，可注册多个用户名。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>库问搜索</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">库问搜索网址：http://www.koovin.com/。</span><br><span class="line">库问搜索提供千万级文献免费下载。</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/16/CPP跨平台移植开发思考/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/16/CPP跨平台移植开发思考/" itemprop="url">
+                  C++跨平台移植开发思考
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-16 11:13:31" itemprop="dateCreated datePublished" datetime="2018-07-16T11:13:31+08:00">2018-07-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-09-09 21:17:58" itemprop="dateModified" datetime="2018-09-09T21:17:58+08:00">2018-09-09</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近需要将一份C++代码通过Emscripten编译成asm.js，结果失败，因为这份C++代码使用MFC GUI库，导致Emscripten编译失败。这引起了我对C++跨平台移植的思考。</p>
+<p>C++代码理论上能实现源代码级别的跨平台移植，即同一份代码可以不加修改的在不同的平台上编译运行且表现一致。这要求编写的C++代码符合跨平台移植的规范，如链接[1]所指出的那样，它给出了很多实现C++代码跨平台移植的编码细节，在编写跨平台的底层库方面十分有用。但在编写跨平台的C++应用方面，应使用经过长期实践证明能用的跨平台库来帮助编码，建立在巨人的肩膀上，使跨平台C++代码编写工作变得简单容易。下面给出一些常用的跨平台C++库供参考：</p>
+<ol>
+<li>语言及基础库</li>
+</ol>
+<ul>
+<li>标准 C++：标准 c++ 是98年制定的，现在主流的 c++ 编译器都能够比较好的支持了。这里建议使用VC7.1和GCC4.0及以上版本。在Linux中，glibc是标准C的实现，libstdc++则是标准C++的实现。在Windows中，VS2015之前MSVCRT.DLL是标准C/C++的实现，之后UCRTBASE.DLLz则是标准C/C++的实现。</li>
+<li>boost：boost 则是 C++ 标准委员会的一群人弄起来的一个 C++ 库集合，其中不少库以经进入 C++ TR1，可以说是准标准。使用这里的库我们有着充分的理由。象字符串的操作可以用 boost 的 String algorithms 库，格式化操作可以用 boost::format，正则式可用 boost::regex 等等。</li>
+</ul>
 <ol start="2">
-<li>echo</li>
+<li>网络</li>
 </ol>
-<p>echo即回显或反馈的意思。它由两种状态：打开和关闭。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 将不显示后续的命令</span><br><span class="line">@ echo off</span><br><span class="line">// 将显示后续的命令</span><br><span class="line">@ echo on</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>ACE（Adaptive Communication Environment）：ACE是一个以C++的Template技术所做成的开放源代码的可跨平台的网络应用程序的程式库套件。ACE自适配通信环境（ADAPTIVE Communication Environment）是可以自由使用、开放源码的面向对象（OO）框架（Framework），在其中实现了许多用于并发通信软件的核心模式。ACE提供了一组丰富的可复用C++ Wrapper Facade（包装外观）和框架组件，可跨越多种平台完成通用的通信软件任务，其中包括：事件多路分离和事件处理器分派、信号处理、服务初始化、进程间通信、共享内存管理、消息路由、分布式服务动态（重）配置、并发执行和同步，等等。</li>
+<li>Boost.Asio：用于网络和底层I/O编程的跨平台的C++库</li>
+</ul>
 <ol start="3">
-<li>::</li>
+<li>数据库</li>
 </ol>
-<p>注释命令。在批处理文件中与rem命令等效</p>
+<ul>
+<li>OTL (Oracle, Odbc and DB2-CLI Template Library)：<br>不但支持跨平台，还跨数据库。OTL支持以下面的数据库 : OTL Oracle ,SQL Server, Access, MySQL。还有其它的库如DTL，这个库不但支持ODBC，它还支持数据库的原生接口，可以有更佳的性能。</li>
+</ul>
 <ol start="4">
-<li>call</li>
+<li>GUI</li>
 </ol>
-<p>call命令用来从一个批处理文件调用另一个批处理文件。只有当被调用的批处理文件执行完成时，才返回。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">call pm2-startup install</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>QT：QT是双认证的，当你的程序免费时它就免费，你的程序打算卖钱时，它也要，而且要价很高。所以，如果有版权，成本上的考虑的话，则可以考虑wxWidgets。</li>
+<li>wxWidgets：wxWidgets（/wɪksˈwɪdʒɪts/，原名wxWindows）是一个开放源代码且跨平台的对象工具集（widget toolkit），其库可用来创建基本的图形用户界面（GUI）。wxWidgets由Julian Smart于1992年首先开发。</li>
+</ul>
 <ol start="5">
-<li>pause</li>
-</ol>
-<p>暂停命令。方便用户查看信息，查看完毕后可继续执行。</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://en.wikipedia.org/wiki/Batch_file,by" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Batch_file,by</a> Wikipedia.</li>
-<li><a href="https://www.cnblogs.com/s1ihome/archive/2009/01/15/batTutorial.html" target="_blank" rel="noopener">https://www.cnblogs.com/s1ihome/archive/2009/01/15/batTutorial.html</a>, by s1ihome.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/11/Vue-js集成Cesium/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/11/Vue-js集成Cesium/" itemprop="url">
-                  Vue.js集成Cesium
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-11 13:05:22" itemprop="dateCreated datePublished" datetime="2018-05-11T13:05:22+08:00">2018-05-11</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-06-03 09:40:00" itemprop="dateModified" datetime="2018-06-03T09:40:00+08:00">2018-06-03</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>近期在研究集成封装Cesium为Vue.js组件，记录一下过程，防止忘了。</p>
-<h2 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h2><ul>
-<li>node.js: v8.9.4</li>
-<li>npm: 5.6.0</li>
-<li>vue: 2.5.2</li>
-<li>cesium: 1.45.0</li>
-<li>vue-cli: 2.9.3</li>
-<li>webpack: 3.6.0</li>
-</ul>
-<h2 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h2><ol>
-<li>安装nodejs</li>
-<li><p>安装vue-cli脚手架</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">npm install -g vue-cli</span><br><span class="line">vue init webpack my-project</span><br><span class="line">cd my-project</span><br><span class="line">npm install</span><br><span class="line">npm run dev</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>安装cesium</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save cesium</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>webpack配置</p>
-</li>
+<li>科学计算</li>
 </ol>
 <ul>
-<li><p>在build/webpack.base.conf.js文件中做如下修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">//定义cesium源代码位置</span><br><span class="line">const cesiumSource = &apos;../node_modules/cesium/Source&apos;</span><br><span class="line">...</span><br><span class="line">module.exports = &#123;</span><br><span class="line">...</span><br><span class="line">output: &#123;</span><br><span class="line">    path: config.build.assetsRoot,</span><br><span class="line">    filename: &apos;[name].js&apos;,</span><br><span class="line">    publicPath: process.env.NODE_ENV === &apos;production&apos;</span><br><span class="line">      ? config.build.assetsPublicPath</span><br><span class="line">      : config.dev.assetsPublicPath,</span><br><span class="line">    // Needed to compile multiline strings in Cesium</span><br><span class="line">    sourcePrefix: &apos;&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">amd:&#123;</span><br><span class="line">    // Enable webpack-friendly use of require in Cesium</span><br><span class="line">    toUrlUndefined: true</span><br><span class="line">  &#125;,</span><br><span class="line">resolve: &#123;</span><br><span class="line">    extensions: [&apos;.js&apos;, &apos;.vue&apos;, &apos;.json&apos;],</span><br><span class="line">    alias: &#123;</span><br><span class="line">      &apos;vue$&apos;: &apos;vue/dist/vue.esm.js&apos;,</span><br><span class="line">      &apos;@&apos;: resolve(&apos;src&apos;),</span><br><span class="line">      //设置cesium的别名</span><br><span class="line">      &apos;cesium&apos;: path.resolve(__dirname, cesiumSource)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      ...</span><br><span class="line">    ],</span><br><span class="line">    //不让Webpack打印载入特定库时候的警告</span><br><span class="line">    unknownContextCritical: false</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在build/webpack.dev.conf.js文件中做如下修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">//定义 Cesium 源代码路径，前面没有../</span><br><span class="line">const cesiumSource = &apos;node_modules/cesium/Source&apos;</span><br><span class="line">//定义 Cesium Workers 路径</span><br><span class="line">const cesiumWorkers = &apos;../Build/Cesium/Workers&apos;</span><br><span class="line">...</span><br><span class="line">plugins: [</span><br><span class="line">    ...</span><br><span class="line">    new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, cesiumWorkers), to: &apos;Workers&apos; &#125; ]),</span><br><span class="line">    new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &apos;Assets&apos;), to: &apos;Assets&apos; &#125; ]),</span><br><span class="line">    new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &apos;Widgets&apos;), to: &apos;Widgets&apos; &#125; ]),</span><br><span class="line">    new webpack.DefinePlugin(&#123;</span><br><span class="line">      // Define relative base path in cesium for loading assets</span><br><span class="line">      CESIUM_BASE_URL: JSON.stringify(&apos;&apos;)</span><br><span class="line">    &#125;)</span><br><span class="line">    ...</span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在build/webpack.prod.conf.js文件中做如下修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">//定义 Cesium 源代码路径，前面没有../</span><br><span class="line">const cesiumSource = &apos;node_modules/cesium/Source&apos;</span><br><span class="line">//定义 Cesium Workers 路径</span><br><span class="line">const cesiumWorkers = &apos;../Build/Cesium/Workers&apos;</span><br><span class="line">...</span><br><span class="line">plugins: [</span><br><span class="line">    ...</span><br><span class="line">    new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, cesiumWorkers), to: &apos;Workers&apos; &#125; ]),</span><br><span class="line">    new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &apos;Assets&apos;), to: &apos;Assets&apos; &#125; ]),</span><br><span class="line">    new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &apos;Widgets&apos;), to: &apos;Widgets&apos; &#125; ]),</span><br><span class="line">    new webpack.DefinePlugin(&#123;</span><br><span class="line">      //定义 Cesium 从哪里加载资源，如果使用默认的&apos;&apos;，却变成了绝对路径了，所以这里使用&apos;./&apos;,使用相对路径</span><br><span class="line">      CESIUM_BASE_URL: JSON.stringify(&apos;./&apos;)</span><br><span class="line">    &#125;)</span><br><span class="line">    ...</span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
-</li>
+<li>GSL：GNU科学库。</li>
 </ul>
-<h2 id="Vue-js组件编写"><a href="#Vue-js组件编写" class="headerlink" title="Vue.js组件编写"></a>Vue.js组件编写</h2><ul>
-<li><p>在src/components下新建 CesiumViewer.vue vue组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id=&quot;cesiumContainer&quot;&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">import Cesium from &apos;cesium/Cesium&apos;</span><br><span class="line">import widgets from &apos;cesium/Widgets/widgets.css&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;CesiumViewer&apos;,</span><br><span class="line">  mounted () &#123;</span><br><span class="line">    var viewer = new Cesium.Viewer(&apos;cesiumContainer&apos;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;style  rel=&quot;stylesheet/scss&quot; lang=&quot;scss&quot; scoped&gt;</span><br><span class="line">#cesiumContainer &#123;</span><br><span class="line">  width: 100%;</span><br><span class="line">  height: 100%;</span><br><span class="line">  margin: 0;</span><br><span class="line">  padding: 0;</span><br><span class="line">  overflow: hidden;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>创建全局样式文件src/styles/index.scss，做如下修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">html,</span><br><span class="line">body &#123;</span><br><span class="line">  width: 100%;</span><br><span class="line">  height: 100%;</span><br><span class="line">  margin: 0;</span><br><span class="line">  padding: 0;</span><br><span class="line">  overflow: hidden;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在src/main.js中做如下修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import &apos;@/styles/index.scss&apos; // global css</span><br></pre></td></tr></table></figure>
-</li>
+<ol start="6">
+<li>游戏开发</li>
+</ol>
+<ul>
+<li>Cocos2d-x：一个跨平台框架，用于构建2D游戏，互动图书，演示和其他图形应用程序。</li>
 </ul>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://www.jianshu.com/p/fb237c7eb48c" target="_blank" rel="noopener">https://www.jianshu.com/p/fb237c7eb48c</a>, by QingMings</li>
-<li><a href="https://cesiumjs.org/tutorials/cesium-and-webpack/" target="_blank" rel="noopener">https://cesiumjs.org/tutorials/cesium-and-webpack/</a>, by cesiumjs.org</li>
+<ol start="7">
+<li>视频</li>
+</ol>
+<ul>
+<li>FFmpeg：一个完整的，跨平台的解决方案，用于记录，转换视频和音频流</li>
+</ul>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="http://hongbomin.com/2017/03/08/cpp-cross-platform-guide/" target="_blank" rel="noopener">http://hongbomin.com/2017/03/08/cpp-cross-platform-guide/</a>. by 洪柏敏.</li>
+<li><a href="http://developer.51cto.com/art/201002/181960.htm" target="_blank" rel="noopener">http://developer.51cto.com/art/201002/181960.htm</a>. by 博客园.</li>
+<li><a href="https://zh.wikipedia.org/wiki/ACE自适配通信环境" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/ACE自适配通信环境</a>. by wikipedia.</li>
+<li><a href="https://blog.csdn.net/weiwangchao_/article/details/51130863" target="_blank" rel="noopener">https://blog.csdn.net/weiwangchao_/article/details/51130863</a>. by 工程师WWW.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/25443704" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25443704</a>, by zhihu.</li>
 </ol>
 
           
@@ -1548,7 +1322,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/10/离线环境下Node-js应用部署方法/">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/15/Emscripten教程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jack Huang">
@@ -1567,8 +1341,8 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/10/离线环境下Node-js应用部署方法/" itemprop="url">
-                  离线环境下Node.js应用部署方法
+                <a class="post-title-link" href="/2018/07/15/Emscripten教程/" itemprop="url">
+                  Emscripten教程
                 </a>
               
             
@@ -1594,7 +1368,7 @@
                 
               
 
-              <time title="创建时间：2018-05-10 21:31:22" itemprop="dateCreated datePublished" datetime="2018-05-10T21:31:22+08:00">2018-05-10</time>
+              <time title="创建时间：2018-07-15 17:00:04" itemprop="dateCreated datePublished" datetime="2018-07-15T17:00:04+08:00">2018-07-15</time>
             
 
             
@@ -1611,7 +1385,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-06-03 09:40:00" itemprop="dateModified" datetime="2018-06-03T09:40:00+08:00">2018-06-03</time>
+                <time title="修改时间：2018-09-09 21:21:40" itemprop="dateModified" datetime="2018-09-09T21:21:40+08:00">2018-09-09</time>
               
             
           </span>
@@ -1646,44 +1420,421 @@
       
         
           
-            <p>离线环境下Node.js应用部署时需要解决以下三个基本问题：</p>
+            <p>Emscripten是一种基于LLVM的编译器，理论上能够将任何能够生成LLVM位码的代码编译成javascript的严格子集asm.js，实际上主要用于将C/C++代码编译成asm.js。本文主要介绍Emscripten的安装过程。</p>
+<h1 id="下载和安装"><a href="#下载和安装" class="headerlink" title="下载和安装"></a>下载和安装</h1><p>从源码编译安装十分麻烦，推荐安装核心的Emscripten SDK。以Windows为例，先使用如下命令下载emsdk。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Get the emsdk repo</span><br><span class="line">git clone https://github.com/juj/emsdk.git</span><br><span class="line"></span><br><span class="line"># Enter that directory</span><br><span class="line">cd emsdk</span><br></pre></td></tr></table></figure></p>
+<p>再使用如下命令安装配置Emscripten。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># Fetch the latest registry of available tools.</span><br><span class="line">.\emsdk.bat update</span><br><span class="line"></span><br><span class="line"># Download and install the latest SDK tools. Need install Python first. </span><br><span class="line">.\emsdk.bat install latest</span><br><span class="line"></span><br><span class="line"># Make the &quot;latest&quot; SDK &quot;active&quot; for the current user. (writes ~/.emscripten file)</span><br><span class="line">.\emsdk.bat activate latest</span><br><span class="line"></span><br><span class="line"># Activate PATH and other environment variables in the current terminal</span><br><span class="line">.\emsdk_env.bat</span><br></pre></td></tr></table></figure></p>
+<h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p>使用如下命令验证Emscripten是否安装配置正确。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Enter that directory</span><br><span class="line">cd emsdk</span><br><span class="line"></span><br><span class="line"># Activate PATH and other environment variables in the current terminal</span><br><span class="line">.\emsdk_env.bat</span><br><span class="line"></span><br><span class="line"># Verifying Emscripten</span><br><span class="line">emcc.bat -v</span><br></pre></td></tr></table></figure></p>
+<h1 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h1><p>如果验证通过，即可使用Emscripten编译C/C++代码到asm.js。</p>
+<p>创建名为helloWorld.cpp的文件，其内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">  printf(&quot;hello, world!\n&quot;);</span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用如下命令编译：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">emcc.bat helloWorld.cpp</span><br></pre></td></tr></table></figure></p>
+<p>编译后将生成a.out.js和a.out.wasm两个文件。后者是包含编译后代码的WebAssembly文件，前者是用于加载和执行后者的Javascipt文件。使用如下命令测试编译后生成的代码，将输出“hello,world!”。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node a.out.js</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://kripken.github.io/emscripten-site/docs/introducing_emscripten/about_emscripten.html" target="_blank" rel="noopener">http://kripken.github.io/emscripten-site/docs/introducing_emscripten/about_emscripten.html</a>. by kripken.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/10/浏览器中运行3D游戏的思考/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/10/浏览器中运行3D游戏的思考/" itemprop="url">
+                  浏览器中运行3D游戏的思考
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-10 21:02:56" itemprop="dateCreated datePublished" datetime="2018-07-10T21:02:56+08:00">2018-07-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-07-15 16:57:02" itemprop="dateModified" datetime="2018-07-15T16:57:02+08:00">2018-07-15</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Web技术突飞猛进，几乎无所不能，无所不在。然而在3D游戏领域，web技术乏善可陈，性能瓶颈问题制约其发展。但是开发者们没有放弃这个梦想，不断努力，孜孜不倦地改进和增强浏览器中运行3D游戏性能的方法和技术，目前已能看到一丝曙光。</p>
+<p>对C/S架构的3D游戏而言，渲染和计算通常都在客户端，服务器端负责用户状态的管理和分发。同样对B/S架构的运行在浏览器中的3D游戏，所有的渲染和计算也应该在浏览器端。如果渲染和计算放在服务器端，将导致可怕的延迟，并严重损害3D游戏的可伸缩性。</p>
+<p>当前很多3D游戏使用C/C++语言编写，如果能够将C/C++语言编译成JavaScript语言，可大大促进Web 3D游戏的开发。而编译器项目Emscripten正是一个这样的工具。它能将C/C++代码编译成一种叫做asm.js的Javascript变体。需要指出的是，Emscripten的输入，即C/C++代码最好是开放源代码的，因为Emscripten不支持闭源代码的编译。例如Emscripten不支持mfc程序的转换，因为mfc是闭源的<sup>[4]</sup>。</p>
+<p>asm.js是一个JavaScript的严格子集，它只提供32位带符号整数和64位带符号浮点数两种数据类型，其他Javascript类型如字符串、布尔值等以数值形式存在，保存在内存中，通过TypedArray调用。另外asm.js没有垃圾回收机制，所有内存操作都由程序员自己控制。asm.js是优化后的JavaScript，它在浏览器中的运行速度大约是原生代码的一倍左右<sup>[1]</sup>。</p>
+<p>asm.js虽然比原生javascript运行速度快了一倍左右，但是相比C/C++代码，运行速度还是有差距。幸运的是出现了名为WebAssembly的技术。WebAssembly或称wasm是一个实验性的低级编程语言，应用于浏览器内的客户端<sup>[5]</sup>。WebAssembly是便携式的抽象语法树，被设计来提供比JavaScript更快速的编译及运行。WebAssembly将让开发者能运用自己熟悉的编程语言（最初以C/C++作为实现目标）编译，再藉虚拟机引擎在浏览器内运行。WebAssembly的开发团队分别来自Mozilla、Google、Microsoft、Apple，代表着四大网络浏览器Firefox、Chrome、Microsoft Edge、Safari。2017年11月，所有以上四个浏览器都开始实验性的支持WebAssembly。目前，最新版本的Emscripten已支持将C/C++代码编译成wasm。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html</a>. by 阮一峰.</li>
+<li><a href="https://www.cnblogs.com/slly/p/6639173.html" target="_blank" rel="noopener">https://www.cnblogs.com/slly/p/6639173.html</a>. by 李某龙.</li>
+<li><a href="http://kripken.github.io/emscripten-site/" target="_blank" rel="noopener">http://kripken.github.io/emscripten-site/</a>. by emscripten.</li>
+<li><a href="https://github.com/kripken/emscripten/issues/941" target="_blank" rel="noopener">https://github.com/kripken/emscripten/issues/941</a>. by emscripten.</li>
+<li><a href="https://zh.wikipedia.org/wiki/WebAssembly" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/WebAssembly</a>. by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/08/Cookie-Session和Token会话知识整理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/08/Cookie-Session和Token会话知识整理/" itemprop="url">
+                  Cookie,Session和Token会话知识整理
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-08 10:50:44" itemprop="dateCreated datePublished" datetime="2018-07-08T10:50:44+08:00">2018-07-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-09-09 21:17:40" itemprop="dateModified" datetime="2018-09-09T21:17:40+08:00">2018-09-09</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>HTTP是一种无状态的协议，然而当服务器端需要判断用户能否访问某些资源，记录用户的购物车内容等场景时，就需要一种机制维护会话状态，这时候Cookie、Session和Token就派上了用场。</p>
+<h1 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h1><p>Cookie技术最早用于解决HTTP的会话问题， 它是 http 协议的一部分，它的处理分为如下几步：</p>
+<ul>
+<li>服务器向客户端发送 cookie。<ul>
+<li>通常使用 HTTP 协议规定的 set-cookie 头操作。</li>
+<li>规范规定 cookie 的格式为 name = value 格式，且必须包含这部分。</li>
+</ul>
+</li>
+<li>浏览器将 cookie 保存。</li>
+<li>每次请求浏览器都会将 cookie 发向服务器。</li>
+</ul>
+<h2 id="可选的Cookie参数"><a href="#可选的Cookie参数" class="headerlink" title="可选的Cookie参数"></a>可选的Cookie参数</h2><p>其他可选的 cookie 参数会影响将 cookie 发送给服务器端的过程，主要有以下几种：</p>
+<ul>
+<li>path：表示 cookie 影响到的路径，匹配该路径才发送这个 cookie。</li>
+<li>expires 和 maxAge：告诉浏览器这个 cookie 什么时候过期，expires 是 UTC 格式时间，maxAge 是 cookie 多久后过期的相对时间。当不设置这两个选项时，会产生 session cookie，session cookie 是 transient 的，当用户关闭浏览器时，就被清除。一般用来保存 session 的 session_id。</li>
+<li>secure：当 secure 值为 true 时，cookie 在 HTTP 中是无效，在 HTTPS 中才有效。</li>
+<li>httpOnly：浏览器不允许脚本操作 document.cookie 去更改 cookie。一般情况下都应该设置这个为 true，这样可以避免被 xss 攻击拿到 cookie。</li>
+</ul>
+<h2 id="常用场景"><a href="#常用场景" class="headerlink" title="常用场景"></a>常用场景</h2><p>当给Cookie设置expires和maxAge后，在未到期前，浏览器端的Cookie不会因为浏览器的关闭而消失。该特性常用于自动登录，记录用户浏览信息。例如很多购物网站常用该特性记录用户的喜好和购买的物品。</p>
+<h2 id="Cookie安全隐患"><a href="#Cookie安全隐患" class="headerlink" title="Cookie安全隐患"></a>Cookie安全隐患</h2><p>Cookie提供了一种手段使得HTTP请求可以附加当前状态， 大多数网站就是靠Cookie来标识用户的登录状态的，例如：</p>
 <ol>
-<li>Node.js应用的进程管理，如性能监控、自动重启、负载均衡等</li>
-<li>Node.js应用开机如何自启动</li>
-<li>离线环境下如何部署Node.js应用</li>
+<li>用户提交用户名和密码的表单，这通常是一个POST HTTP请求。</li>
+<li>服务器验证用户名与密码，如果合法则返回200（OK）并设置Set-Cookie为authed=true。</li>
+<li>浏览器存储该Cookie。</li>
+<li>浏览器发送请求时，设置Cookie字段为authed=true。</li>
+<li>服务器收到第二次请求，从Cookie字段得知该用户已经登录。 按照已登录用户的权限来处理此次请求。</li>
 </ol>
-<p>下面以在Windows Server 2012上离线部署Node.js应用为例，记录上述问题的解决方案：</p>
-<h2 id="Node-js应用的进程管理"><a href="#Node-js应用的进程管理" class="headerlink" title="Node.js应用的进程管理"></a>Node.js应用的进程管理</h2><p>在生产环境中运行 Express 应用程序时，使用进程管理器对于完成以下任务很有帮助<sup>[1]</sup>：</p>
+<p>上述认证流程存在安全隐患，因为Cookie是可以被篡改的。如果使用一些HTTP客户端软件，设置Cookie字段为authed=true并发送该HTTP请求，服务器就会被欺骗。</p>
+<h2 id="Cookie防篡改机制"><a href="#Cookie防篡改机制" class="headerlink" title="Cookie防篡改机制"></a>Cookie防篡改机制</h2><p>服务器为每个Cookie项生成签名，可有效地防止Cookie被篡改。因为用户篡改Cookie后无法生成对应的签名， 服务器便可得知用户对Cookie进行了篡改。一个简单的校验过程可能是这样的：</p>
+<ol>
+<li>在服务器中配置一个不为人知的字符串（我们叫它Secret），比如：x$sfz32。</li>
+<li>当服务器需要设置Cookie时（比如authed=false），不仅设置authed的值为false， 在值的后面进一步设置一个签名，最终设置的Cookie是authed=false|6hTiBl7lVpd1P。</li>
+<li>签名6hTiBl7lVpd1P是这样生成的：Hash(‘x$sfz32’+’false’)。 要设置的值与Secret相加再取哈希。</li>
+<li>用户收到HTTP响应并发现头字段Set-Cookie: authed=false|6hTiBl7lVpd1P。</li>
+<li>用户在发送HTTP请求时，篡改了authed值，设置头字段Cookie: authed=true|???。 因为用户不知道Secret，无法生成签名，只能随便填一个。</li>
+<li>服务器收到HTTP请求，发现Cookie: authed=true|???。服务器开始进行校验： Hash(‘true’+’x$sfz32’)，便会发现用户提供的签名不正确。</li>
+</ol>
+<p>通过给Cookie添加签名，使得服务器得以知道Cookie被篡改。然而故事并未结束。</p>
+<p>因为Cookie是明文传输的， 只要服务器设置过一次authed=true|xxxx我不就知道true的签名是xxxx了么， 以后就可以用这个签名来欺骗服务器了。因此Cookie中最好不要放敏感数据。 一般来讲Cookie中只会放一个Session Id，而Session存储在服务器端。</p>
+<h1 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h1><p>为了解决Cookie的安全隐患，Session机制应运而生。session机制是一种服务器端的机制，它存储在服务器端的，避免了在客户端Cookie中存储敏感数据。Session可以存储在HTTP服务器的内存中，也可以存在内存数据库（如redis）中， 对于重量级的应用甚至可以存储在数据库中。 </p>
+<p>客户端对服务端请求时,服务端会检查请求中是否包含一个session标识( 称为session id ).</p>
 <ul>
-<li>在应用程序崩溃后将其重新启动。</li>
-<li>获得对运行时性能和资源消耗的洞察。</li>
-<li>动态修改设置以改善性能。</li>
-<li>控制集群。</li>
+<li>如果没有,那么服务端就生成一个随机的session以及和它匹配的session id,并将session id返回给客户端.</li>
+<li>如果有,那么服务器就在存储中根据session id 查找到对应的session.</li>
 </ul>
-<p>进程管理器有点类似于应用程序服务器：它是应用程序的“容器”，可促进部署，提供高可用性并使您可以在运行时管理应用程序。</p>
-<p>用于 Express 和其他 Node.js 应用程序的最流行的进程管理器包括：</p>
-<ul>
-<li>StrongLoop Process Manager</li>
-<li>PM2</li>
-<li>Forever</li>
+<h2 id="基于Session的登录流程"><a href="#基于Session的登录流程" class="headerlink" title="基于Session的登录流程"></a>基于Session的登录流程</h2><p>一个简单的使用Session机制的登录流程可能是这样的：</p>
+<ol>
+<li>用户提交包含用户名和密码的表单，发送HTTP请求。</li>
+<li>服务器验证用户发来的用户名密码。</li>
+<li>如果正确则把当前用户名（通常是用户对象）存储到redis中，并生成它在redis中的ID。这个ID称为Session ID，通过Session ID可以从Redis中取出对应的用户对象， 敏感数据（比如authed=true）都存储在这个用户对象中。</li>
+<li>设置Cookie为sessionId=xxxxxx|checksum并发送HTTP响应， 仍然为每一项Cookie都设置签名。</li>
+<li>用户收到HTTP响应后，便看不到任何敏感数据了。在此后的请求中发送该Cookie给服务器。</li>
+<li>服务器收到此后的HTTP请求后，发现Cookie中有SessionID，进行放篡改验证。</li>
+<li>如果通过了验证，根据该ID从Redis中取出对应的用户对象， 查看该对象的状态并继续执行业务逻辑。</li>
+</ol>
+<h2 id="Session安全隐患"><a href="#Session安全隐患" class="headerlink" title="Session安全隐患"></a>Session安全隐患</h2><p>Session ID作为Cookie存储在浏览器端，因此存在被劫持的风险，尤其是开发者没有正确的关闭会话。用户关闭会话时，应删除传递 Session ID 的 Cookie，同时撤销服务器端的Session内容。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/* 普通用户登出 */</span><br><span class="line">router.post(&apos;/signout&apos;, function(req, res, next) &#123;</span><br><span class="line">    if (_.isEmpty(req.body) === false) &#123;</span><br><span class="line">        req.session.account = null; // 删除session</span><br><span class="line">        res.json(&#123;</span><br><span class="line">            message: &apos;登出成功！&apos;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        res.send(406, &#123; message: &apos;The params is not correct!&apos; &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h1 id="Token"><a href="#Token" class="headerlink" title="Token"></a>Token</h1><p>Token是用户的验证方式,最简单的token组成:uid(用户唯一的身份标识)、time(当前时间的时间戳)、sign(签名，由token的前几位+盐以哈希算法压缩成一定长的十六进制字符串，可以防止恶意第三方拼接token请求服务器)。</p>
+<h2 id="基于Token的身份验证流程"><a href="#基于Token的身份验证流程" class="headerlink" title="基于Token的身份验证流程"></a>基于Token的身份验证流程</h2><p>使用基于 Token 的身份验证方法，在服务端不需要存储用户的登录记录。大概的流程是这样的：</p>
+<ol>
+<li>客户端使用用户名跟密码请求登录</li>
+<li>服务端收到请求，去验证用户名与密码</li>
+<li>验证成功后，服务端会签发一个 Token，再把这个 Token 发送给客户端</li>
+<li>客户端收到 Token 以后可以把它存储起来，比如放在 Cookie 里或者 Local Storage 里</li>
+<li>客户端每次向服务端请求资源的时候需要带着服务端签发的 Token</li>
+<li>服务端收到请求，然后去验证客户端请求里面带着的 Token，如果验证成功，就向客户端返回请求的数据</li>
+</ol>
+<h2 id="基于Token方法的优势"><a href="#基于Token方法的优势" class="headerlink" title="基于Token方法的优势"></a>基于Token方法的优势</h2><ul>
+<li>JWT 方法允许我们进行AJAX调用任何服务器或域。由于HTTP头是用来传输用户信息的。</li>
+<li>没必要在服务器存储一个单独的session。JWT本身传达全部的信息。</li>
+<li>服务器端减少到只是一个API和可以通过CDN服务的静态资源（HTML，CSS，JS)。</li>
+<li>认证系统是手机兼容的，任何设备上可以生成令牌。</li>
+<li>由于已经消除了cookie的需要，也不再需要保护跨站请求。</li>
+<li>API密钥提供非此即彼的解决方案，然而JWT提供更颗粒度的控制，它可以用于任何调试目的的检查。</li>
+<li>API密钥依赖于中央存储和服务。JWT可以自发行或者外部服务在允许的范围和期限发布它。</li>
 </ul>
-<p>上述三种工具的比较请参阅<a href="http://strong-pm.io/compare/" target="_blank" rel="noopener">http://strong-pm.io/compare/</a>。其中，StrongLoop Process Manager无法在Windows平台工作，再综合比较PM2和Forever，由于Forever没有操作系统自启动的脚本，故选择PM2作为Windows平台Node.js应用的进程管理器。</p>
-<h2 id="Node-js应用开机如何自启动"><a href="#Node-js应用开机如何自启动" class="headerlink" title="Node.js应用开机如何自启动"></a>Node.js应用开机如何自启动</h2><p>选择PM2作为Node.js应用的进程管理器后，Node.js应用开机自启动的问题就变为如何开机自启动PM2。Windows平台存在两个自启动PM2的脚本：</p>
-<ul>
-<li>pm2-windows-service </li>
-<li>pm2-windows-startup</li>
-</ul>
-<p>pm2-windows-service基于 node-windows将PM2注册为Windows服务，从而实现自启动。pm2-windows-startup则基于start-on-windows-boot在注册表中将PM2设为自启动程序，从而实现自启动。两种方案经测试，只有pm2-windows-startup在Windows Server 2012上可行，故选择pm2-windows-startup作为解决Node.js应用开机自启动的方案。</p>
-<h2 id="离线环境下如何部署Node-js应用"><a href="#离线环境下如何部署Node-js应用" class="headerlink" title="离线环境下如何部署Node.js应用"></a>离线环境下如何部署Node.js应用</h2><p>PM2和pm2-windows-startup必须全局安装，如何简单方便地在离线环境下全局安装这两个模块是一个问题。网上搜到的方法有：</p>
-<ul>
-<li>npm link</li>
-<li>npm-bundle</li>
-</ul>
-<p>npm link<sup>[2]</sup>是npm的一个命令，可将本地包链接成全局包，但实际测试过程中，无法解决PM2包的依赖问题，故放弃。而npm-bundle<sup>[3]</sup>则能很好的解决PM2的依赖问题。具体过程为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">\\在线环境下</span><br><span class="line">npm install -g npm-bundle</span><br><span class="line">npm-bundle pm2</span><br><span class="line">\\离线环境下</span><br><span class="line">call npm install .\pm2-2.10.3.tgz -g</span><br></pre></td></tr></table></figure></p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="http://expressjs.com/zh-cn/advanced/pm.html" target="_blank" rel="noopener">http://expressjs.com/zh-cn/advanced/pm.html</a>, by Express</li>
-<li><a href="https://blog.csdn.net/fay462298322/article/details/53432691" target="_blank" rel="noopener">https://blog.csdn.net/fay462298322/article/details/53432691</a>, by 爱死费崇政</li>
-<li><a href="https://stackoverflow.com/questions/41156556/what-exact-command-is-to-install-pm2-on-offline-rhel" target="_blank" rel="noopener">https://stackoverflow.com/questions/41156556/what-exact-command-is-to-install-pm2-on-offline-rhel</a>, by stackoverflow</li>
+<h2 id="JWT结构"><a href="#JWT结构" class="headerlink" title="JWT结构"></a>JWT结构</h2><p>Json web token (JWT), 是为了在网络应用环境间传递声明而执行的一种基于JSON的开放标准（(RFC 7519).该token被设计为紧凑且安全的，特别适用于分布式站点的单点登录（SSO）场景。JWT的声明一般被用来在身份提供者和服务提供者间传递被认证的用户身份信息，以便于从资源服务器获取资源，也可以增加一些额外的其它业务逻辑所必须的声明信息，该token也可直接被用于认证，也可被加密。</p>
+<p>一个JWT实际上就是一个字符串，它由三部分组成，头部、载荷与签名。</p>
+<h1 id="Cookie、Session和Token对比"><a href="#Cookie、Session和Token对比" class="headerlink" title="Cookie、Session和Token对比"></a>Cookie、Session和Token对比</h1><h2 id="cookie与session的区别"><a href="#cookie与session的区别" class="headerlink" title="cookie与session的区别"></a>cookie与session的区别</h2><ol>
+<li>cookie数据存放在客户端上，session数据放在服务器上。</li>
+<li>cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗。考虑到安全应当使用session。</li>
+<li>session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能。考虑到减轻服务器性能方面，应当使用COOKIE。</li>
+</ol>
+<h2 id="session与token的区别"><a href="#session与token的区别" class="headerlink" title="session与token的区别"></a>session与token的区别</h2><p>作为身份认证token安全性比session好，因为每个请求都有签名还能防止监听以及重放攻击。</p>
+<p>Session 是一种HTTP存储机制，目的是为无状态的HTTP提供的持久机制。Session 认证只是简单的把User 信息存储到Session 里，因为SID 的不可预测性，暂且认为是安全的。这是一种认证手段。 但是如果有了某个User的SID,就相当于拥有该User的全部权利.SID不应该共享给其他网站或第三方。</p>
+<p>Token, 如果指的是OAuth Token 或类似的机制的话，提供的是 认证 和 授权，认证是针对用户，授权是针对App。其目的是让某App有权利访问某用户的信息。这里的Token是唯一的。不可以转移到其它App上，也不可以转到其它用户上。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://wiki.jikexueyuan.com/project/node-lessons/cookie-session.html" target="_blank" rel="noopener">http://wiki.jikexueyuan.com/project/node-lessons/cookie-session.html</a>, by 极客学院.</li>
+<li><a href="https://harttle.land/2015/08/10/cookie-session.html" target="_blank" rel="noopener">https://harttle.land/2015/08/10/cookie-session.html</a>. by Harttle Land.</li>
+<li><a href="https://python.freelycode.com/contribution/detail/84" target="_blank" rel="noopener">https://python.freelycode.com/contribution/detail/84</a>. by Python部落.</li>
+<li><a href="https://www.jianshu.com/p/576dbf44b2ae" target="_blank" rel="noopener">https://www.jianshu.com/p/576dbf44b2ae</a>, by Dearmadman</li>
 </ol>
 
           
@@ -1738,7 +1889,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/10/Vue-js集成Highcharts/">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/02/兼容前后端多种JS模块规范的代码/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jack Huang">
@@ -1757,8 +1908,8 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/10/Vue-js集成Highcharts/" itemprop="url">
-                  Vue.js集成Highcharts
+                <a class="post-title-link" href="/2018/07/02/兼容前后端多种JS模块规范的代码/" itemprop="url">
+                  兼容前后端多种JS模块规范的代码
                 </a>
               
             
@@ -1784,7 +1935,7 @@
                 
               
 
-              <time title="创建时间：2018-05-10 15:53:30" itemprop="dateCreated datePublished" datetime="2018-05-10T15:53:30+08:00">2018-05-10</time>
+              <time title="创建时间：2018-07-02 22:11:23" itemprop="dateCreated datePublished" datetime="2018-07-02T22:11:23+08:00">2018-07-02</time>
             
 
             
@@ -1801,7 +1952,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-06-03 09:40:00" itemprop="dateModified" datetime="2018-06-03T09:40:00+08:00">2018-06-03</time>
+                <time title="修改时间：2018-07-05 09:13:00" itemprop="dateModified" datetime="2018-07-05T09:13:00+08:00">2018-07-05</time>
               
             
           </span>
@@ -1836,194 +1987,35 @@
       
         
           
-            <h2 id="Vue-js集成Highcharts方法"><a href="#Vue-js集成Highcharts方法" class="headerlink" title="Vue.js集成Highcharts方法"></a>Vue.js集成Highcharts方法</h2><ol>
-<li><p>安装highcharts</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save highcharts</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>封装hightcharts成Vue.js组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;highcharts-container&quot;&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">import Highcharts from &apos;highcharts/highstock&apos;</span><br><span class="line">import HighchartsMore from &apos;highcharts/highcharts-more&apos;</span><br><span class="line">import HighchartsDrilldown from &apos;highcharts/modules/drilldown&apos;</span><br><span class="line">import Highcharts3D from &apos;highcharts/highcharts-3d&apos;</span><br><span class="line">HighchartsMore(Highcharts)</span><br><span class="line">HighchartsDrilldown(Highcharts)</span><br><span class="line">Highcharts3D(Highcharts)</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  props: [&apos;options&apos;],</span><br><span class="line">  name: &apos;HighCharts&apos;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      chart: null</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  watch: &#123;</span><br><span class="line">    options: function (newVal, oldVal) &#123; // watch it</span><br><span class="line">      this.chart.update(newVal, true)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted () &#123;</span><br><span class="line">    this.initChart()</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    initChart () &#123;</span><br><span class="line">      this.chart = new Highcharts.Chart(this.$el, this.options)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在src/main.js引入组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import HighCharts from &apos;./components/HighCharts.vue&apos;</span><br><span class="line">Vue.component(&apos;HighCharts&apos;, HighCharts)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;radarGraph&quot;&gt;</span><br><span class="line">    &lt;HighCharts :options=&quot;options&quot; class=&quot;radar&quot; &gt;&lt;/HighCharts&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;RadarGraph&apos;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    gameInfo () &#123;</span><br><span class="line">      return this.$store.state.gameInfo</span><br><span class="line">    &#125;,</span><br><span class="line">    options () &#123;</span><br><span class="line">      return &#123;</span><br><span class="line"></span><br><span class="line">        chart: &#123;</span><br><span class="line">          polar: true,</span><br><span class="line">          type: &apos;line&apos;,</span><br><span class="line">          marginTop: 0,</span><br><span class="line">          marginBottom: 0,</span><br><span class="line">          marginLeft: 0,</span><br><span class="line">          marginRight: 0</span><br><span class="line">        &#125;,</span><br><span class="line"></span><br><span class="line">        credits: &#123;</span><br><span class="line">          enabled: false</span><br><span class="line">        &#125;,</span><br><span class="line"></span><br><span class="line">        pane: &#123;</span><br><span class="line">          size: &apos;75%&apos;</span><br><span class="line">        &#125;,</span><br><span class="line"></span><br><span class="line">        title: null,</span><br><span class="line"></span><br><span class="line">        legend: &#123;</span><br><span class="line">          enabled: false</span><br><span class="line">        &#125;,</span><br><span class="line"></span><br><span class="line">        xAxis: &#123;</span><br><span class="line">          categories: [&apos;分类1&apos;, &apos;分类2&apos;, &apos;分类3&apos;, &apos;分类4&apos;,</span><br><span class="line">            &apos;分类5&apos;, &apos;分类6&apos;</span><br><span class="line">          ],</span><br><span class="line">          labels: &#123;</span><br><span class="line">            style: &#123;</span><br><span class="line">              fontSize: &apos;14px&apos;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          tickmarkPlacement: &apos;on&apos;,</span><br><span class="line">          lineWidth: 0</span><br><span class="line">        &#125;,</span><br><span class="line"></span><br><span class="line">        yAxis: &#123;</span><br><span class="line">          gridLineInterpolation: &apos;polygon&apos;,</span><br><span class="line">          lineWidth: 0,</span><br><span class="line">          min: 0</span><br><span class="line">        &#125;,</span><br><span class="line"></span><br><span class="line">        series: [&#123;</span><br><span class="line">          type: &apos;area&apos;,</span><br><span class="line">          name: &apos;得分&apos;,</span><br><span class="line">          data: [this.gameInfo.radar1, this.gameInfo.radar2, this.gameInfo.radar3, this.gameInfo.radar4, this.gameInfo.radar5, this.gameInfo.radar6],</span><br><span class="line">          pointPlacement: &apos;on&apos;</span><br><span class="line">        &#125;]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    ...mapGetters([</span><br><span class="line">      &apos;userId&apos;</span><br><span class="line">    ])</span><br><span class="line">  &#125;,</span><br><span class="line">  created () &#123;</span><br><span class="line">    this.fetchData()</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    fetchData () &#123;</span><br><span class="line">      this.$store.dispatch(&apos;GetGameInfo&apos;, this.userId)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://blog.jianshukeji.com/2017/09/use-highcharts-with-vue/" target="_blank" rel="noopener">https://blog.jianshukeji.com/2017/09/use-highcharts-with-vue/</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/09/Vue-js集成Socket-io/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/09/Vue-js集成Socket-io/" itemprop="url">
-                  Vue.js集成Socket.io
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-09 21:33:43" itemprop="dateCreated datePublished" datetime="2018-05-09T21:33:43+08:00">2018-05-09</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-06-03 09:40:00" itemprop="dateModified" datetime="2018-06-03T09:40:00+08:00">2018-06-03</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Socket-IO简介"><a href="#Socket-IO简介" class="headerlink" title="Socket.IO简介"></a>Socket.IO简介</h2><blockquote>
-<p>Socket.IO 是一个面向实时 web 应用的 JavaScript 库。它使得服务器和客户端之间实时双向的通信成为可能。他有两个部分：在浏览器中运行的客户端库，和一个面向Node.js的服务端库。两者有着几乎一样的API。像Node.js一样，它也是事件驱动的.</p>
-</blockquote>
-<blockquote>
-<p>Socket.IO 主要使用WebSocket协议。但是如果需要的话，Socket.io可以回退到几种其它方法，例如Adobe Flash Sockets，JSONP拉取，或是传统的AJAX拉取，[2]并且在同时提供完全相同的接口。尽管它可以被用作WebSocket的包装库，它还是提供了许多其它功能，比如广播至多个套接字，存储与不同客户有关的数据，和异步IO操作。</p>
-</blockquote>
-<h2 id="Vue-js集成Socket-IO"><a href="#Vue-js集成Socket-IO" class="headerlink" title="Vue.js集成Socket.IO"></a>Vue.js集成Socket.IO</h2><ol>
-<li><p>安装socket.io-client</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save socket.io-client</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在src/main.js中载入socket.io-client</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import io from &apos;socket.io-client&apos;</span><br><span class="line">const socket = io(process.env.BASE_API)</span><br><span class="line">Object.defineProperty(Vue.prototype, &apos;$socket&apos;, &#123; value: socket &#125;)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在Vuejs组件中使用socket.io-client</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">this.$socket.on(&apos;event&apos;,function(e)&#123;&#125;)</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Socket.IO" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Socket.IO</a>, by Wikipedia</li>
-<li><a href="https://socket.io/get-started/chat/" target="_blank" rel="noopener">https://socket.io/get-started/chat/</a>, by socket.io</li>
+            <p>最近研究如何在前后端调用同一份js代码。该问题本质是如何兼容前后端各类JS模块规范。上网一搜，已经有很多详细的解决方案和JS模块规范介绍，在这里简单记录一下。</p>
+<h1 id="JS模块规范"><a href="#JS模块规范" class="headerlink" title="JS模块规范"></a>JS模块规范</h1><p>JS模块规范前端主要有AMD、CMD，后端主要有CommonJS。此外还有最新的ES2015模块规范。</p>
+<h2 id="AMD"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</h2><p>AMD（异步模块定义，Asynchronous Module Definition）格式总体的目标是为现在的开发者提供一个可用的模块化 JavaScript 的解决方案。它诞生于 Dojo 在使用 XHR+eval 时的实践经验，其支持者希望未来的解决方案都可以免受由于过去方案的缺陷所带来的麻烦。</p>
+<p>AMD风格模块定义通常包括：一个用来进行模块定义的 define 方法以及一个用来处理依赖项加载的 require 方法。define 根据如下的方法签名来定义具名或匿名的模块：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define(</span><br><span class="line">    module_id /*可选*/, </span><br><span class="line">    [dependencies] /*可选*/, </span><br><span class="line">    definition function /*用来初始化模块或对象的函数*/</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
+<h2 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h2><p>CMD(Common Module Definition)表示通用模块定义，该规范是国内发展出来的，由阿里的玉伯提出。就像AMD有个requireJS，CMD有个浏览器的实现SeaJS，SeaJS和requireJS一样，都是javascript的前端模块化解决方案。<br>CMD规范简单到只有一个API，即define函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define(function(require, exports, module) &#123;</span><br><span class="line"></span><br><span class="line">  // The module code goes here</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>CMD 与 AMD 挺相近，二者区别如下： </p>
+<ul>
+<li>对于依赖的模块 CMD 是延迟执行，而 AMD 是提前执行（不过 RequireJS 从 2.0 开始，也改成可以延迟执行。 ）</li>
+<li>CMD 推崇依赖就近，AMD 推崇依赖前置。</li>
+<li>AMD 的 api 默认是一个当多个用，CMD 严格的区分推崇职责单一，其每个 API 都简单纯粹。例如：AMD 里 require 分全局的和局部的。CMD 里面没有全局的 require，提供 seajs.use() 来实现模块系统的加载启动。</li>
+</ul>
+<h2 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h2><p>CommonJS是一个志愿性质的工作组，它致力于设计、规划并标准化 JavaScript API。至今为止他们已经尝试着认可了模块标准以及程序包标准。CommonJS 的模块提案为在服务器端声明模块指定了一个简单的 API。不像 AMD，它试图覆盖更宽泛的方面比如 IO、文件系统、promise 模式等等。CommonJS风格模块在nodejs中得到广泛的应用。</p>
+<p>CommonJS风格模块是一段可重用的 JavaScript，它导出一系列特定的对象给依赖它的代码调用——通常来说这样的模块外围没有函数包裹（所以你在这里的例子中不会看到 define）。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// package/lib 是我们须要的一个依赖项</span><br><span class="line">var lib = require(&apos;package/lib&apos;);</span><br><span class="line"> </span><br><span class="line">// 我们的模块的一些行为</span><br><span class="line">function foo()&#123;</span><br><span class="line">    lib.log(&apos;hello world!&apos;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">// 把 foo 导出（暴露）给其它模块</span><br><span class="line">exports.foo = foo;</span><br></pre></td></tr></table></figure></p>
+<h2 id="ES2015模块规范"><a href="#ES2015模块规范" class="headerlink" title="ES2015模块规范"></a>ES2015模块规范</h2><p>2015 年 6 月， ES2015（即 ECMAScript 6、ES6） 正式发布。ES2015 是该语言的一个显著更新，也是自 2009 年 ES5 标准确定后的第一个重大更新。</p>
+<p>ES2015的模块规范如下：</p>
+<ul>
+<li>一个模块就是一个独立的文件。该文件内部的所有变量，外部无法获取。</li>
+<li>export 命令用于规定模块的对外接口。</li>
+<li>import 命令用于输入其他模块提供的功能。</li>
+<li>ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量。</li>
+</ul>
+<p>ES2015模块示例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//circle.js</span><br><span class="line">//圆面积计算</span><br><span class="line">export function area(radius) &#123;</span><br><span class="line">  return Math.PI * radius * radius;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//main.js</span><br><span class="line">import &#123;area&#125; from &apos;./hangge&apos;;</span><br><span class="line">console.log(&apos;圆面积：&apos; + area(10));</span><br></pre></td></tr></table></figure></p>
+<h1 id="兼容多种模块规范"><a href="#兼容多种模块规范" class="headerlink" title="兼容多种模块规范"></a>兼容多种模块规范</h1><p>需要指出的是下面兼容多种JS模块规范的代码并不支持最新的ES2015模块规范。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">;(function (name, definition) &#123;</span><br><span class="line">  // 检测上下文环境是否为AMD或CMD</span><br><span class="line">  var hasDefine = typeof define === &apos;function&apos;,</span><br><span class="line">    // 检查上下文环境是否为Node</span><br><span class="line">    hasExports = typeof module !== &apos;undefined&apos; &amp;&amp; module.exports;</span><br><span class="line"></span><br><span class="line">  if (hasDefine) &#123;</span><br><span class="line">    // AMD环境或CMD环境</span><br><span class="line">    define(definition);</span><br><span class="line">  &#125; else if (hasExports) &#123;</span><br><span class="line">    // 定义为普通Node模块</span><br><span class="line">    module.exports = definition();</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // 将模块的执行结果挂在window变量中，在浏览器中this指向window对象</span><br><span class="line">    this[name] = definition();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)(&apos;hello&apos;, function () &#123;</span><br><span class="line">  var hello = function () &#123;&#125;;</span><br><span class="line">  return hello;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://i.jakeyu.top/2017/09/14/兼容前后端共用模块代码/" target="_blank" rel="noopener">https://i.jakeyu.top/2017/09/14/兼容前后端共用模块代码/</a>. by Jake.</li>
+<li><a href="https://segmentfault.com/a/1190000011633813" target="_blank" rel="noopener">https://segmentfault.com/a/1190000011633813</a>. by CodeMan.</li>
+<li><a href="http://justineo.github.io/singles/writing-modular-js/" target="_blank" rel="noopener">http://justineo.github.io/singles/writing-modular-js/</a>. by ADDY OSMANI.</li>
+<li><a href="http://www.hangge.com/blog/cache/detail_1686.html" target="_blank" rel="noopener">http://www.hangge.com/blog/cache/detail_1686.html</a>. by hangge.</li>
 </ol>
 
           
@@ -2067,7 +2059,7 @@
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -2110,7 +2102,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-count">34</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2147,7 +2139,23 @@
                     
                       
                     
-                    <span class="site-state-item-count">11</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

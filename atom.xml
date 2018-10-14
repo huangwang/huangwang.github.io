@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2018-10-14T04:00:40.486Z</updated>
+  <updated>2018-10-14T06:07:26.317Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>tensorflow学习笔记</title>
+    <link href="https://huangwang.github.io/2018/10/14/tensorflow%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <id>https://huangwang.github.io/2018/10/14/tensorflow学习笔记/</id>
+    <published>2018-10-14T05:10:24.000Z</published>
+    <updated>2018-10-14T06:07:26.317Z</updated>
+    
+    <content type="html"><![CDATA[<p>TensorFlow™ 是一个开放源代码软件库，用于进行高性能数值计算。借助其灵活的架构，用户可以轻松地将计算工作部署到多种平台（CPU、GPU、TPU）和设备（桌面设备、服务器集群、移动设备、边缘设备等）。TensorFlow™ 最初是由 Google Brain 团队（隶属于 Google 的 AI 部门）中的研究人员和工程师开发的，可为机器学习和深度学习提供强力支持，并且其灵活的数值计算核心广泛应用于许多其他科学领域。</p><h1 id="tensorflow入门"><a href="#tensorflow入门" class="headerlink" title="tensorflow入门"></a>tensorflow入门</h1><p>tensorflow实现机器学习的基本步骤如下：</p><ol><li>定义模型，建立数据流图</li><li>定义loss，并指定优化器 </li><li>传入数据并进行训练 </li><li>使用测试集进行评测</li></ol><h2 id="通用代码框架"><a href="#通用代码框架" class="headerlink" title="通用代码框架"></a>通用代码框架</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line"></span><br><span class="line"># 初始化变量和模型参数，定义训练闭环中的运算</span><br><span class="line"></span><br><span class="line">def inference(X):</span><br><span class="line">    # 计算推断模型在数据X上的输出，并将结果返回</span><br><span class="line"></span><br><span class="line">def loss(X,Y):</span><br><span class="line">    # 依据训练数据X及其期望输出Y计算损失</span><br><span class="line"></span><br><span class="line">def inputs():</span><br><span class="line">    # 读取或生成训练数据X及其期望输出Y</span><br><span class="line"></span><br><span class="line">def train(total_loss):</span><br><span class="line">    # 依据计算的总损失训练或调整模型参数</span><br><span class="line"></span><br><span class="line">def evaluate(sess,X,Y):</span><br><span class="line">    # 对训练得到的模型进行评估</span><br><span class="line"></span><br><span class="line"># 在一个会话对象中启动数据流图，搭建流程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    tf.initialize_all_variables().run()</span><br><span class="line">    </span><br><span class="line">    X,Y=inputs()</span><br><span class="line">    </span><br><span class="line">    total_loss=loss(X,Y)</span><br><span class="line">    train_op=train(total_loss)</span><br><span class="line">    </span><br><span class="line">    coord=tf.train.Coordinator()</span><br><span class="line">    threads=tf.train.start_queue_runners(sess=sess,coord=coord)</span><br><span class="line"></span><br><span class="line">    # 实际的训练迭代次数</span><br><span class="line">    training_steps=1000</span><br><span class="line">    for step in range(training_steps):</span><br><span class="line">        sess.run([train_op])</span><br><span class="line">        # 出于调试和学习的目的，查看损失在训练过程中递减的情况</span><br><span class="line">        if step % 10 =0:</span><br><span class="line">            print &quot;loss: &quot;,sess,run([total_loss])</span><br><span class="line"></span><br><span class="line">    evalute(sess,X,Y)</span><br><span class="line"></span><br><span class="line">    coord.request_stop()</span><br><span class="line">    coord.join(threads)</span><br><span class="line">    sess.close()</span><br></pre></td></tr></table></figure><h2 id="保存训练检查点"><a href="#保存训练检查点" class="headerlink" title="保存训练检查点"></a>保存训练检查点</h2><p>借助tf.train.Saver类可创建检查点文件，将数据流图中变量保存至其中。修改后框架如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 模型定义代码</span><br><span class="line"># 创建一个Saver对象</span><br><span class="line">saver=tf.train.Saver()</span><br><span class="line"></span><br><span class="line"># 在会话对象中启动数据流图，搭建流程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    # 模型设置</span><br><span class="line"></span><br><span class="line">    # 实际的训练闭环</span><br><span class="line">    for step in range(training_steps):</span><br><span class="line">        sess.run([train_op])</span><br><span class="line"></span><br><span class="line">        if step % 1000 ==0</span><br><span class="line">            # 将创建遵循命名模板为my-model-&#123;step&#125;的检查点文件，默认保存最近的5个文件</span><br><span class="line">            saver.save(sess,&apos;my-model&apos;,global_step=step)</span><br><span class="line">    </span><br><span class="line">    # 模型评估</span><br><span class="line"></span><br><span class="line">    saver.save(sess,&apos;my-model&apos;,global_step=training_steps)</span><br><span class="line">    sess.close()</span><br></pre></td></tr></table></figure></p><p>如果希望从检查点恢复，则使用tf.train.get_checkpoint_state方法验证检查点文件的存在，并使用tf.train.Saver.restore方法恢复变量值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">with tf.Session() as sess:</span><br><span class="line">    # 模型设置</span><br><span class="line"></span><br><span class="line">    initial_step=0</span><br><span class="line"></span><br><span class="line">    # 验证之前是否已经保存了检查点文件</span><br><span class="line">    ckpt=tf.train.get_checkpoint_state(os.path.dirname(__file__))</span><br><span class="line">    if ckpt and ckpt.model_checkpoint_path:</span><br><span class="line">        # 从检查点恢复模型参数</span><br><span class="line">        saver.restore(sess,ckpt.model_checkpoint_path)</span><br><span class="line">        initial_step=int(ckpt.model_checkpoint_path.rsplite(&apos;_&apos;,1)[1])</span><br><span class="line"></span><br><span class="line">    # 实际的训练闭环</span><br><span class="line">    for step in range(initial_step, training_steps):</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure></p><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol><li><a href="https://www.tensorflow.org/?hl=zh-cn" target="_blank" rel="noopener">https://www.tensorflow.org/?hl=zh-cn</a> .</li><li>面向机器智能的TensorFlow实践, by Sam Abrahams, Danijar Hafner,etc.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;TensorFlow™ 是一个开放源代码软件库，用于进行高性能数值计算。借助其灵活的架构，用户可以轻松地将计算工作部署到多种平台（CPU、GPU、TPU）和设备（桌面设备、服务器集群、移动设备、边缘设备等）。TensorFlow™ 最初是由 Google Brain 团队（
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="机器学习" scheme="https://huangwang.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>Python常用库简介</title>
@@ -508,31 +533,6 @@
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
       <category term="Cesium" scheme="https://huangwang.github.io/tags/Cesium/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>春江花月夜</title>
-    <link href="https://huangwang.github.io/2018/06/09/%E6%98%A5%E6%B1%9F%E8%8A%B1%E6%9C%88%E5%A4%9C/"/>
-    <id>https://huangwang.github.io/2018/06/09/春江花月夜/</id>
-    <published>2018-06-09T15:30:32.000Z</published>
-    <updated>2018-06-09T15:32:38.000Z</updated>
-    
-    <content type="html"><![CDATA[<center><br>作者：张若虚<br>春江潮水连海平，海上明月共潮生。<br>滟滟随波千万里，何处春江无月明？<br>江流宛转绕芳甸，月照花林皆似霰。<br>空里流霜不觉飞，汀上白沙看不见。<br>江天一色无纤尘，皎皎空中孤月轮。<br>江畔何人初见月，江月何年初照人？<br>人生代代无穷已，江月年年祇相似。<br>不知江月待何人？但见长江送流水。<br>白云一片去悠悠，青枫浦上不胜愁。<br>谁家今夜扁舟子，何处相思明月楼？<br>可怜楼上月徘徊，应照离人妆镜台。<br>玉户帘中卷不去，捣衣砧上拂还来。<br>此时相望不相闻，愿逐月华流照君。<br>鸿雁长飞光不度，鱼龙潜跃水成文。<br>昨夜闲潭梦落花，可怜春半不还家。<br>江水流春去欲尽，江潭落月复西斜。<br>斜月沉沉藏海雾，碣石潇湘无限路。<br>不知乘月几人归，落月摇情满江树。<br></center>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;center&gt;&lt;br&gt;作者：张若虚&lt;br&gt;春江潮水连海平，海上明月共潮生。&lt;br&gt;滟滟随波千万里，何处春江无月明？&lt;br&gt;江流宛转绕芳甸，月照花林皆似霰。&lt;br&gt;空里流霜不觉飞，汀上白沙看不见。&lt;br&gt;江天一色无纤尘，皎皎空中孤月轮。&lt;br&gt;江畔何人初见月，江月何年初照人？&lt;b
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="唐诗" scheme="https://huangwang.github.io/tags/%E5%94%90%E8%AF%97/"/>
     
   </entry>
   

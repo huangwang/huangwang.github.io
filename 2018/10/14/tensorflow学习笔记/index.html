@@ -102,18 +102,18 @@
 
 
 
-  <meta name="description" content="最近研究在Nodejs中调用DLL，上网搜索发现主要有两种方法：  使用Nodeffi调用C风格接口的DLL，但是无法调用C++风格导出类的DLL。 使用Nodejs C++ Addon 插件，该方法可直接与C++代码交互，理论上可以调用C++风格导出类的DLL。  下面研究Nodejs Addon C++插件的编写方法。 什么是Nodejs C++ AddonNode.js插件（Addons）是">
-<meta name="keywords" content="笔记本,Nodejs">
+  <meta name="description" content="TensorFlow™ 是一个开放源代码软件库，用于进行高性能数值计算。借助其灵活的架构，用户可以轻松地将计算工作部署到多种平台（CPU、GPU、TPU）和设备（桌面设备、服务器集群、移动设备、边缘设备等）。TensorFlow™ 最初是由 Google Brain 团队（隶属于 Google 的 AI 部门）中的研究人员和工程师开发的，可为机器学习和深度学习提供强力支持，并且其灵活的数值计算核心">
+<meta name="keywords" content="笔记本,机器学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Node_C++_Addon插件编写方法">
-<meta property="og:url" content="https://huangwang.github.io/2018/06/20/Node-Addon插件编写方法/index.html">
+<meta property="og:title" content="tensorflow学习笔记">
+<meta property="og:url" content="https://huangwang.github.io/2018/10/14/tensorflow学习笔记/index.html">
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
-<meta property="og:description" content="最近研究在Nodejs中调用DLL，上网搜索发现主要有两种方法：  使用Nodeffi调用C风格接口的DLL，但是无法调用C++风格导出类的DLL。 使用Nodejs C++ Addon 插件，该方法可直接与C++代码交互，理论上可以调用C++风格导出类的DLL。  下面研究Nodejs Addon C++插件的编写方法。 什么是Nodejs C++ AddonNode.js插件（Addons）是">
+<meta property="og:description" content="TensorFlow™ 是一个开放源代码软件库，用于进行高性能数值计算。借助其灵活的架构，用户可以轻松地将计算工作部署到多种平台（CPU、GPU、TPU）和设备（桌面设备、服务器集群、移动设备、边缘设备等）。TensorFlow™ 最初是由 Google Brain 团队（隶属于 Google 的 AI 部门）中的研究人员和工程师开发的，可为机器学习和深度学习提供强力支持，并且其灵活的数值计算核心">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-06-20T14:47:36.000Z">
+<meta property="og:updated_time" content="2018-10-14T06:07:26.317Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Node_C++_Addon插件编写方法">
-<meta name="twitter:description" content="最近研究在Nodejs中调用DLL，上网搜索发现主要有两种方法：  使用Nodeffi调用C风格接口的DLL，但是无法调用C++风格导出类的DLL。 使用Nodejs C++ Addon 插件，该方法可直接与C++代码交互，理论上可以调用C++风格导出类的DLL。  下面研究Nodejs Addon C++插件的编写方法。 什么是Nodejs C++ AddonNode.js插件（Addons）是">
+<meta name="twitter:title" content="tensorflow学习笔记">
+<meta name="twitter:description" content="TensorFlow™ 是一个开放源代码软件库，用于进行高性能数值计算。借助其灵活的架构，用户可以轻松地将计算工作部署到多种平台（CPU、GPU、TPU）和设备（桌面设备、服务器集群、移动设备、边缘设备等）。TensorFlow™ 最初是由 Google Brain 团队（隶属于 Google 的 AI 部门）中的研究人员和工程师开发的，可为机器学习和深度学习提供强力支持，并且其灵活的数值计算核心">
 
 
 
@@ -122,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="https://huangwang.github.io/2018/06/20/Node-Addon插件编写方法/"/>
+  <link rel="canonical" href="https://huangwang.github.io/2018/10/14/tensorflow学习笔记/"/>
 
 
 
@@ -132,7 +132,7 @@
   };
 </script>
 
-  <title>Node_C++_Addon插件编写方法 | Jack Huang's Blog</title>
+  <title>tensorflow学习笔记 | Jack Huang's Blog</title>
   
 
 
@@ -319,7 +319,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/20/Node-Addon插件编写方法/">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/14/tensorflow学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jack Huang">
@@ -336,7 +336,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Node_C++_Addon插件编写方法
+          <h2 class="post-title" itemprop="name headline">tensorflow学习笔记
               
             
           </h2>
@@ -361,7 +361,7 @@
                 
               
 
-              <time title="创建时间：2018-06-20 21:34:38 / 修改时间：22:47:36" itemprop="dateCreated datePublished" datetime="2018-06-20T21:34:38+08:00">2018-06-20</time>
+              <time title="创建时间：2018-10-14 13:10:24 / 修改时间：14:07:26" itemprop="dateCreated datePublished" datetime="2018-10-14T13:10:24+08:00">2018-10-14</time>
             
 
             
@@ -380,8 +380,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/06/20/Node-Addon插件编写方法/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/06/20/Node-Addon插件编写方法/" itemprop="commentsCount"></span>
+                <a href="/2018/10/14/tensorflow学习笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/10/14/tensorflow学习笔记/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -409,34 +409,20 @@
       
 
       
-        <p>最近研究在Nodejs中调用DLL，上网搜索发现主要有两种方法：</p>
-<ul>
-<li>使用Nodeffi调用C风格接口的DLL，但是无法调用C++风格导出类的DLL。</li>
-<li>使用Nodejs C++ Addon 插件，该方法可直接与C++代码交互，理论上可以调用C++风格导出类的DLL。</li>
-</ul>
-<p>下面研究Nodejs Addon C++插件的编写方法。</p>
-<h1 id="什么是Nodejs-C-Addon"><a href="#什么是Nodejs-C-Addon" class="headerlink" title="什么是Nodejs C++ Addon"></a>什么是Nodejs C++ Addon</h1><p>Node.js插件（Addons）是C/C++编写的动态链接对象，这些对象可以被Node.js的require()函数引用，并可以像普通的Node.js模块一样使用。Addons主要用于提供一个Node.js中运行的JavaScript和C/C++库之间的接口。</p>
-<p>插件（Addons）是动态链接的共享对象，它提供了C/C++类库的调用能力。实现插件的方法比较复杂，涉及到以下元组件及API:</p>
-<ul>
-<li>V8：C++库，Node.js用于提供JavaScript执行环境。V8提供了对象创建、函数调用等执行机制，V8相关API包含在了v8.h头文件中（位于Node.js源码树的deps/v8/include/v8.h），也可以查看在线文档。</li>
-<li>libuv：C库，实现了Node.js中的事件循环、工作线程及在不同平台中异步行为的相关功能。也可以做为是一个跨平台的抽象库，提供了简单的、类POSIX的对主要操作系统的常见系统任务功能，如：与文件系统、套接字、计时器、系统事件的交互等。libuv还提供了一个类pthreads的线程池抽象对象，可用于更复杂的、超越标准事件循环的异步插件的控制功能。</li>
-<li>内部Node.js库：Node.js自身提供了一定义数量的C/C++API的插件可以使用 - 其中最重要的可能是node::ObjectWrap类</li>
-<li>Node.js静态链接库：Node.js自身还包含了一部分静态链接库，如OpenSSL。这些位于Node.js源码树的deps/目录下，只有V8和OpenSSL提供了符号出口，可以供Node.js和基它插件所使用。详见Node.js依赖链接</li>
-</ul>
-<h1 id="Node-Addon插件编写方法"><a href="#Node-Addon插件编写方法" class="headerlink" title="Node Addon插件编写方法"></a>Node Addon插件编写方法</h1><p>Node Addon插件的编写需要解决两个关键问题：</p>
-<ul>
-<li>当数据流向 javaScript -&gt; C++时，如何将javascript类型数据包装成C++类型数据，供C++代码使用。</li>
-<li>当数据流向 C++ -&gt; JavaScript时，如何将C++类型数据包装成JavaScript类型数据，供JavaScript代码使用。</li>
-</ul>
-<p>这两个关键问题的分析请参见淘宝前端团队成员发表的文章“Node.js 和 C++ 之间的类型转换<sup>[3]</sup>”。解决这两个关键问题后，Node Addon插件编写难度就不大了。</p>
-<h1 id="Node-Addon插件调用C-导出类DLL方法测试"><a href="#Node-Addon插件调用C-导出类DLL方法测试" class="headerlink" title="Node Addon插件调用C++导出类DLL方法测试"></a>Node Addon插件调用C++导出类DLL方法测试</h1><p>现有一个采用成熟方法导出类接口的DLL<sup>[4]</sup>，如何在Node Addon插件中调用该DLL呢?下面nodejs官网Node Addon插件例子Factory of wrapped objects为例进行讲解。</p>
-<p>Factory of wrapped objects例子在Addon插件中包装了一个MyObject类，现在就在MyObject类调用DLL导出类的接口方法。修改MyObject.h代码，增加DLL导出类接口方法，增加类接口成员变量IExport和DLL句柄变量hDll，如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">// myobject.h</span><br><span class="line">#ifndef MYOBJECT_H</span><br><span class="line">#define MYOBJECT_H</span><br><span class="line"></span><br><span class="line">#include &lt;node.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;node_object_wrap.h&gt;</span><br><span class="line">#include &quot;MatureApproach.h&quot;</span><br><span class="line"></span><br><span class="line">namespace demo &#123;</span><br><span class="line">typedef IExport*(*TYPE_fnCreateExportObj) (void);//定义函数指针  </span><br><span class="line">typedef void(*TYPE_fnDestroyExportObj) (IExport*);//定义函数指针  </span><br><span class="line"></span><br><span class="line">class MyObject : public node::ObjectWrap &#123;</span><br><span class="line"> public:</span><br><span class="line">  static void Init(v8::Isolate* isolate);</span><br><span class="line">  static void NewInstance(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line"></span><br><span class="line"> private:</span><br><span class="line">  explicit MyObject(double value = 0);</span><br><span class="line">  ~MyObject();</span><br><span class="line"></span><br><span class="line">  static void New(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static void PlusOne(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static void Hi(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static void Test(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static v8::Persistent&lt;v8::Function&gt; constructor;</span><br><span class="line">  HMODULE hDll;</span><br><span class="line">  IExport* pExport;</span><br><span class="line">  double value_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125;  // namespace demo</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure></p>
-<p>接下来将在MyObject类的构造函数中动态加载DLL，创建DLL导出类对象，在析构函数中析构DLL导出类对象，动态卸载DLL,在MyObject成员方法中调用DLL导出类方法，代码如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line">// myobject.cc</span><br><span class="line">#include &lt;node.h&gt;</span><br><span class="line">#include &quot;myobject.h&quot;</span><br><span class="line"></span><br><span class="line">namespace demo &#123;</span><br><span class="line"></span><br><span class="line">using v8::Context;</span><br><span class="line">using v8::Function;</span><br><span class="line">using v8::FunctionCallbackInfo;</span><br><span class="line">using v8::FunctionTemplate;</span><br><span class="line">using v8::Isolate;</span><br><span class="line">using v8::Local;</span><br><span class="line">using v8::Number;</span><br><span class="line">using v8::Object;</span><br><span class="line">using v8::Persistent;</span><br><span class="line">using v8::String;</span><br><span class="line">using v8::Value;</span><br><span class="line"></span><br><span class="line">Persistent&lt;Function&gt; MyObject::constructor;</span><br><span class="line"></span><br><span class="line">MyObject::MyObject(double value) : value_(value)&#123;</span><br><span class="line">	MyObject::hDll = LoadLibrary(&quot;MatureApproach.dll&quot;); //加载动态链接库DllDemo.dll文件；</span><br><span class="line">  TYPE_fnCreateExportObj fnCreateExportObj = (TYPE_fnCreateExportObj)GetProcAddress(MyObject::hDll, &quot;CreateExportObj&quot;);</span><br><span class="line">  MyObject::pExport = fnCreateExportObj();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MyObject::~MyObject() &#123;</span><br><span class="line">  TYPE_fnDestroyExportObj fnDestroyExportObj = (TYPE_fnDestroyExportObj)GetProcAddress(MyObject::hDll, &quot;DestroyExportObj&quot;);</span><br><span class="line">  fnDestroyExportObj(MyObject::pExport);</span><br><span class="line">  FreeLibrary(MyObject::hDll);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::Init(Isolate* isolate) &#123;</span><br><span class="line">  // Prepare constructor template</span><br><span class="line">  Local&lt;FunctionTemplate&gt; tpl = FunctionTemplate::New(isolate, New);</span><br><span class="line">  tpl-&gt;SetClassName(String::NewFromUtf8(isolate, &quot;MyObject&quot;));</span><br><span class="line">  tpl-&gt;InstanceTemplate()-&gt;SetInternalFieldCount(3);</span><br><span class="line"></span><br><span class="line">  // Prototype</span><br><span class="line">  NODE_SET_PROTOTYPE_METHOD(tpl, &quot;plusOne&quot;, PlusOne);</span><br><span class="line">  NODE_SET_PROTOTYPE_METHOD(tpl, &quot;hi&quot;, Hi);</span><br><span class="line">  NODE_SET_PROTOTYPE_METHOD(tpl, &quot;test&quot;, Test);</span><br><span class="line"></span><br><span class="line">  constructor.Reset(isolate, tpl-&gt;GetFunction());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::New(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  if (args.IsConstructCall()) &#123;</span><br><span class="line">    // Invoked as constructor: `new MyObject(...)`</span><br><span class="line">    double value = args[0]-&gt;IsUndefined() ? 0 : args[0]-&gt;NumberValue();</span><br><span class="line">    MyObject* obj = new MyObject(value);</span><br><span class="line">    obj-&gt;Wrap(args.This());</span><br><span class="line">    args.GetReturnValue().Set(args.This());</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // Invoked as plain function `MyObject(...)`, turn into construct call.</span><br><span class="line">    const int argc = 1;</span><br><span class="line">    Local&lt;Value&gt; argv[argc] = &#123; args[0] &#125;;</span><br><span class="line">    Local&lt;Function&gt; cons = Local&lt;Function&gt;::New(isolate, constructor);</span><br><span class="line">    Local&lt;Context&gt; context = isolate-&gt;GetCurrentContext();</span><br><span class="line">    Local&lt;Object&gt; instance =</span><br><span class="line">        cons-&gt;NewInstance(context, argc, argv).ToLocalChecked();</span><br><span class="line">    args.GetReturnValue().Set(instance);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::NewInstance(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  const unsigned argc = 1;</span><br><span class="line">  Local&lt;Value&gt; argv[argc] = &#123; args[0] &#125;;</span><br><span class="line">  Local&lt;Function&gt; cons = Local&lt;Function&gt;::New(isolate, constructor);</span><br><span class="line">  Local&lt;Context&gt; context = isolate-&gt;GetCurrentContext();</span><br><span class="line">  Local&lt;Object&gt; instance =</span><br><span class="line">      cons-&gt;NewInstance(context, argc, argv).ToLocalChecked();</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(instance);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::PlusOne(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  MyObject* obj = ObjectWrap::Unwrap&lt;MyObject&gt;(args.Holder());</span><br><span class="line">  obj-&gt;value_ += 1;</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(Number::New(isolate, obj-&gt;value_));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::Hi(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  MyObject* obj = ObjectWrap::Unwrap&lt;MyObject&gt;(args.Holder());</span><br><span class="line">  Local&lt;String&gt; str=v8::String::NewFromUtf8(isolate, obj-&gt;pExport-&gt;Hi().data());</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::Test(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  MyObject* obj = ObjectWrap::Unwrap&lt;MyObject&gt;(args.Holder());</span><br><span class="line">  Local&lt;String&gt; str=v8::String::NewFromUtf8(isolate, obj-&gt;pExport-&gt;Test().data());</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;  // namespace demo</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://itbilu.com/nodejs/core/4y4-Nrd5G.html，by" target="_blank" rel="noopener">https://itbilu.com/nodejs/core/4y4-Nrd5G.html，by</a> IT笔录</li>
-<li><a href="https://nodejs.org/dist/latest-v8.x/docs/api/addons.html，by" target="_blank" rel="noopener">https://nodejs.org/dist/latest-v8.x/docs/api/addons.html，by</a> nodejs</li>
-<li><a href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/，by" target="_blank" rel="noopener">http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/，by</a> 淘宝前端团队</li>
-<li><a href="https://huangwang.github.io/2018/06/15/DLL导出类和函数/,by">https://huangwang.github.io/2018/06/15/DLL导出类和函数/,by</a> jackhuang</li>
+        <p>TensorFlow™ 是一个开放源代码软件库，用于进行高性能数值计算。借助其灵活的架构，用户可以轻松地将计算工作部署到多种平台（CPU、GPU、TPU）和设备（桌面设备、服务器集群、移动设备、边缘设备等）。TensorFlow™ 最初是由 Google Brain 团队（隶属于 Google 的 AI 部门）中的研究人员和工程师开发的，可为机器学习和深度学习提供强力支持，并且其灵活的数值计算核心广泛应用于许多其他科学领域。</p>
+<h1 id="tensorflow入门"><a href="#tensorflow入门" class="headerlink" title="tensorflow入门"></a>tensorflow入门</h1><p>tensorflow实现机器学习的基本步骤如下：</p>
+<ol>
+<li>定义模型，建立数据流图</li>
+<li>定义loss，并指定优化器 </li>
+<li>传入数据并进行训练 </li>
+<li>使用测试集进行评测</li>
+</ol>
+<h2 id="通用代码框架"><a href="#通用代码框架" class="headerlink" title="通用代码框架"></a>通用代码框架</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line"></span><br><span class="line"># 初始化变量和模型参数，定义训练闭环中的运算</span><br><span class="line"></span><br><span class="line">def inference(X):</span><br><span class="line">    # 计算推断模型在数据X上的输出，并将结果返回</span><br><span class="line"></span><br><span class="line">def loss(X,Y):</span><br><span class="line">    # 依据训练数据X及其期望输出Y计算损失</span><br><span class="line"></span><br><span class="line">def inputs():</span><br><span class="line">    # 读取或生成训练数据X及其期望输出Y</span><br><span class="line"></span><br><span class="line">def train(total_loss):</span><br><span class="line">    # 依据计算的总损失训练或调整模型参数</span><br><span class="line"></span><br><span class="line">def evaluate(sess,X,Y):</span><br><span class="line">    # 对训练得到的模型进行评估</span><br><span class="line"></span><br><span class="line"># 在一个会话对象中启动数据流图，搭建流程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    tf.initialize_all_variables().run()</span><br><span class="line">    </span><br><span class="line">    X,Y=inputs()</span><br><span class="line">    </span><br><span class="line">    total_loss=loss(X,Y)</span><br><span class="line">    train_op=train(total_loss)</span><br><span class="line">    </span><br><span class="line">    coord=tf.train.Coordinator()</span><br><span class="line">    threads=tf.train.start_queue_runners(sess=sess,coord=coord)</span><br><span class="line"></span><br><span class="line">    # 实际的训练迭代次数</span><br><span class="line">    training_steps=1000</span><br><span class="line">    for step in range(training_steps):</span><br><span class="line">        sess.run([train_op])</span><br><span class="line">        # 出于调试和学习的目的，查看损失在训练过程中递减的情况</span><br><span class="line">        if step % 10 =0:</span><br><span class="line">            print &quot;loss: &quot;,sess,run([total_loss])</span><br><span class="line"></span><br><span class="line">    evalute(sess,X,Y)</span><br><span class="line"></span><br><span class="line">    coord.request_stop()</span><br><span class="line">    coord.join(threads)</span><br><span class="line">    sess.close()</span><br></pre></td></tr></table></figure>
+<h2 id="保存训练检查点"><a href="#保存训练检查点" class="headerlink" title="保存训练检查点"></a>保存训练检查点</h2><p>借助tf.train.Saver类可创建检查点文件，将数据流图中变量保存至其中。修改后框架如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 模型定义代码</span><br><span class="line"># 创建一个Saver对象</span><br><span class="line">saver=tf.train.Saver()</span><br><span class="line"></span><br><span class="line"># 在会话对象中启动数据流图，搭建流程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    # 模型设置</span><br><span class="line"></span><br><span class="line">    # 实际的训练闭环</span><br><span class="line">    for step in range(training_steps):</span><br><span class="line">        sess.run([train_op])</span><br><span class="line"></span><br><span class="line">        if step % 1000 ==0</span><br><span class="line">            # 将创建遵循命名模板为my-model-&#123;step&#125;的检查点文件，默认保存最近的5个文件</span><br><span class="line">            saver.save(sess,&apos;my-model&apos;,global_step=step)</span><br><span class="line">    </span><br><span class="line">    # 模型评估</span><br><span class="line"></span><br><span class="line">    saver.save(sess,&apos;my-model&apos;,global_step=training_steps)</span><br><span class="line">    sess.close()</span><br></pre></td></tr></table></figure></p>
+<p>如果希望从检查点恢复，则使用tf.train.get_checkpoint_state方法验证检查点文件的存在，并使用tf.train.Saver.restore方法恢复变量值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">with tf.Session() as sess:</span><br><span class="line">    # 模型设置</span><br><span class="line"></span><br><span class="line">    initial_step=0</span><br><span class="line"></span><br><span class="line">    # 验证之前是否已经保存了检查点文件</span><br><span class="line">    ckpt=tf.train.get_checkpoint_state(os.path.dirname(__file__))</span><br><span class="line">    if ckpt and ckpt.model_checkpoint_path:</span><br><span class="line">        # 从检查点恢复模型参数</span><br><span class="line">        saver.restore(sess,ckpt.model_checkpoint_path)</span><br><span class="line">        initial_step=int(ckpt.model_checkpoint_path.rsplite(&apos;_&apos;,1)[1])</span><br><span class="line"></span><br><span class="line">    # 实际的训练闭环</span><br><span class="line">    for step in range(initial_step, training_steps):</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://www.tensorflow.org/?hl=zh-cn" target="_blank" rel="noopener">https://www.tensorflow.org/?hl=zh-cn</a> .</li>
+<li>面向机器智能的TensorFlow实践, by Sam Abrahams, Danijar Hafner,etc.</li>
 </ol>
 
       
@@ -460,7 +446,7 @@
           
             <a href="/tags/笔记本/" rel="tag"># 笔记本</a>
           
-            <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
           
         </div>
       
@@ -473,8 +459,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/06/18/如何在Vistual-Studio中调试Node-Addon-C-插件/" rel="next" title="如何在Vistual_Studio中调试Node_Addon_C++插件">
-                <i class="fa fa-chevron-left"></i> 如何在Vistual_Studio中调试Node_Addon_C++插件
+              <a href="/2018/10/14/Python常用库简介/" rel="next" title="Python常用库简介">
+                <i class="fa fa-chevron-left"></i> Python常用库简介
               </a>
             
           </div>
@@ -482,10 +468,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/06/21/Visual-Studio-Community-2017离线安装/" rel="prev" title="Visual_Studio_Community_2017离线安装">
-                Visual_Studio_Community_2017离线安装 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -664,7 +646,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是Nodejs-C-Addon"><span class="nav-number">1.</span> <span class="nav-text">什么是Nodejs C++ Addon</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Node-Addon插件编写方法"><span class="nav-number">2.</span> <span class="nav-text">Node Addon插件编写方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Node-Addon插件调用C-导出类DLL方法测试"><span class="nav-number">3.</span> <span class="nav-text">Node Addon插件调用C++导出类DLL方法测试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#tensorflow入门"><span class="nav-number">1.</span> <span class="nav-text">tensorflow入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通用代码框架"><span class="nav-number">1.1.</span> <span class="nav-text">通用代码框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保存训练检查点"><span class="nav-number">1.2.</span> <span class="nav-text">保存训练检查点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">2.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>

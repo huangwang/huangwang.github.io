@@ -316,6 +316,162 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/01/Debian下编译QGroundControl源码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/01/Debian下编译QGroundControl源码/" itemprop="url">
+                  Debian下编译QGroundControl源码
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-01 22:41:44 / 修改时间：23:01:05" itemprop="dateCreated datePublished" datetime="2018-11-01T22:41:44+08:00">2018-11-01</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MAVLink（Micro Air Vehicle Link，微型空中飞行器链路通讯协议）是无人飞行器与地面站之间通讯，以及无人飞行器之间通讯最常用的协议。它已经在PX4、APM、PIXHAWK和Parrot AR.Drone飞控平台上进行了大量测试。</p>
+<p>QGroundControl则是一种操纵基于MAVLink通信协议的无人机的跨平台地面站开源软件。下面记录在Debian Linux下从源码编译QGroundControl的过程。</p>
+<h1 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 下载QGroundControl源码</span><br><span class="line">git clone --recursive https://github.com/mavlink/qgroundcontrol.git</span><br><span class="line"># 更新子模块</span><br><span class="line">git submodule update</span><br></pre></td></tr></table></figure>
+<h1 id="安装编译环境"><a href="#安装编译环境" class="headerlink" title="安装编译环境"></a>安装编译环境</h1><ol>
+<li>下载Qt社区版在线安装器，安装5.11.0版本的Qt，安装路径可在/opt下。</li>
+<li><p>安装必要的包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install speech-dispatcher libudev-dev libsdl2-dev</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解决编译时libQt5PositioningQuick.so.5不存在的bug</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libqt5positioningquick5</span><br><span class="line">sudo find /usr/ -name libQt5PositioningQuick.so.5</span><br><span class="line">cp /usr/lib/x86_64-linux-gnu/libQt5PositioningQuick.so.5 /opt/Qt/5.10.0/gcc_64/lib/libQt5PositioningQuick.so.5</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="编译运行"><a href="#编译运行" class="headerlink" title="编译运行"></a>编译运行</h1><p>打开Qt Creater，打开qgroundcontrol.pro工程，构建后运行，即可打开QGroundControl地面站软件。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/hebbely/article/details/79022799" target="_blank" rel="noopener">https://blog.csdn.net/hebbely/article/details/79022799</a>,  by hebbely</li>
+<li><a href="https://dev.qgroundcontrol.com/en/getting_started/" target="_blank" rel="noopener">https://dev.qgroundcontrol.com/en/getting_started/</a>, by Dronecode</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/01/Linux常用命令用法总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1872,151 +2028,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/09/07/Windows平台Python安装与配置教程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/07/Windows平台Python安装与配置教程/" itemprop="url">
-                  Windows平台Python安装与配置教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-07 22:37:06 / 修改时间：22:51:16" itemprop="dateCreated datePublished" datetime="2018-09-07T22:37:06+08:00">2018-09-07</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>下面记录在Windows平台安装配置Python的过程。</p>
-<ol>
-<li>去Python官网下载最新的Python3，当前最新版本为3.7。</li>
-<li>双击Python3.7的安装包进行安装，设置安装路径为C:\Python\Python37，同时将Python路径加入系统Path变量中。</li>
-<li>使用如下命令安装ipython。加参数–trusted-host，否则会报错误：SSLError(SSLCertVerificationError(1, ‘[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed。加参数-i，制定国内pip源，显著提高下载速度。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install ipython -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2064,7 +2075,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">41</span>
+                    <span class="site-state-item-count">42</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2125,7 +2136,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">23</span>
+                      
+                    
+                    <span class="site-state-item-count">24</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

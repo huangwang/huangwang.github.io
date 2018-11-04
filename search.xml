@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[树莓派操作系统镜像烧录方法指南]]></title>
+    <url>%2F2018%2F11%2F03%2F%E6%A0%91%E8%8E%93%E6%B4%BE%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95%E6%96%B9%E6%B3%95%E6%8C%87%E5%8D%97%2F</url>
+    <content type="text"><![CDATA[树莓派是一个微型计算机硬件平台，为使其正常工作还需要安装操作系统。通常将树莓派操作系统烧录到SD卡上，再将SD卡插到树莓派上。加电启动后，树莓派就会从SD卡引导启动操作系统，开始工作。这里SD卡就相当于普通计算机的硬盘。下面记录在Debian Linux下烧录树莓派操作系统到SD卡的方法。 镜像烧录工具EtcherEtcher是树莓派官方推荐的镜像烧录工具。它采用图形界面，支持Windows、Linux、Mac，使用简单方便，推荐普通用户使用。 ddLinux的dd命令用于复制文件并对原文件的内容进行转换和格式化处理。dd命令功能很强大的，对于一些比较底层的问题，使用dd命令往往可以得到出人意料的效果。用的比较多的还是用dd来备份裸设备。同样也可用dd命令烧录系统镜像。 使用dd命令必须非常小心，如果输出指定了错误分区，将摧毁该分区的所有数据。 Linux下镜像烧录过程使用Etcher烧录镜像比较简单，重点介绍使用dd命令烧录镜像的方法。 查找sd卡设备可使用lsblk或者fdisk命令查找sd卡存储设备。需要注意的是： 块设备以/dev/sdX命名，其中X是小写字母，例如/dev/sda。 测试时发现当计算机只有usb3.0接口时，将不识别usb2.0的sd读卡器。 烧录镜像到sd卡将镜像烧录到sd卡使用如下dd命令将树莓派镜像少量到sd卡：1dd bs=4M if=2018-10-09-raspbian-stretch.img of=/dev/sdX conv=fsync 其中： if=文件名：输入文件名，缺省为标准输入。即指定源文件。 of=文件名：输出文件名，缺省为标准输出。即指定目的文件。 bs=bytes：同时设置读入/输出的块大小为bytes个字节。 conv=conversion：用指定的参数转换文件。 将压缩镜像烧录到sd卡当文件系统不支持大于4GB的文件时，可使用利用管道技术烧录镜像，命令如下：1unzip -p 2018-10-09-raspbian-stretch.zip | sudo dd of=/dev/sdX bs=4M conv=fsync 检查烧录进度默认情况下dd命令不给出烧录进度信息，最新的dd提供status=progress选项给出进度信息，命令如下：1dd bs=4M if=2018-10-09-raspbian-stretch.img of=/dev/sdX status=progress conv=fsync 或者可使用dcfldd命令替换dd进行烧录操作。 检查镜像是否正确的烧录到sd卡先使用dd命令将sd卡中内容复制到硬盘，在使用diff或者md5sum检查镜像文件与sd卡内容镜像之间的一致性。 之前dd命令烧录镜像到sd卡完成后会在shell中输出如下结果：123xxx+0 records inyyy+0 records outyyyyyyyyyy bytes (yyy kB, yyy KiB) copied, 0.00144744 s, 283 MB/s xxx是我们需要的，表示读取xxx块记录烧录到sd卡，xxx乘以bs=4M应该等于原始镜像的大小。 使用如下命令复制sd卡内容到硬盘上：12# 经测试count命令没有其作用，该命令将整个sd内容复制到了硬盘，但我们期望只复制之前烧录到sd卡内容dd bs=4M if=/dev/sdX of=from-sd-card.img count=xxx 如果from-sd-card.img文件大于原始镜像文件，那么先使用truncate命令将from-sd-card.img缩小到原始镜像文件的大小，命令如下：1truncate --reference 2018-10-09-raspbian-stretch.img from-sd-card.img 使用diff命令比较两者直接的一致性，如果不一致，可能烧录过程中有错误。1diff -s from-sd-card.img 2018-10-09-raspbian-stretch.img 使用sync命令强制将缓存写入硬盘，然后umount sd卡文件系统，最后移除sd卡。 参考文献 https://www.raspberrypi.org/documentation/installation/installing-images/linux.md, by raspberrypi. https://blog.csdn.net/liumang_D/article/details/3899462, by liumang_d. https://linux.cn/article-8024-1.html, by linux中国 https://www.jianshu.com/p/ff09ceffa816, by 二石兄.]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>硬件</tag>
+        <tag>树莓派</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[树莓派学习笔记]]></title>
+    <url>%2F2018%2F11%2F03%2F%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%2F</url>
+    <content type="text"><![CDATA[WiringPi简介WiringPi是应用于树莓派平台的GPIO控制库函数，WiringPi遵守GUN Lv3。wiringPi使用C或者C++开发并且可以被其他语言包转，例如python、ruby或者PHP等。WiringPi中的函数类似于Arduino的wiring系统，这使得熟悉arduino的用户使用wringPi更为方便。 树莓派具有26个普通输入和输出引脚。在这26个引脚中具有8个普通输入和输出管脚，这8个引脚既可以作为输入管脚也可以作为输出管脚。除此之外，树莓派还有一个2线形式的I2C、一个4线形式的SPI和一个UART接口。树莓派上的I2C和SPI接口也可以作为普通端口使用。如果串口控制台被关闭便可以使用树莓派上的UART功能。如果不使用I2C，SPI和UART等复用接口，那么树莓派总共具有8+2+5+2 =17个普通IO。 wiringPi包括一套gpio控制命令，使用gpio命令可以控制树莓派GPIO管脚。用户可以利用gpio命令通过shell脚本控制或查询GPIO管脚。wiringPi是可以扩展的，可以利用wiringPi的内部模块扩展模拟量输入芯片，可以使用MCP23x17/MCP23x08（I2C 或者SPI）扩展GPIO接口。另外可通过树莓派上的串口和Atmega（例如arduino等）扩展更多的GPIO功能。另外，用户可以自己编写扩展模块并把自定义的扩展模块集成到wiringPi中。WiringPi支持模拟量的读取和设置功能，不过在树莓派上并没有模拟量设备。但是使用WiringPi中的软件模块却可以轻松地应用AD或DA芯片。 参考文献1.https://blog.csdn.net/xukai871105/article/details/17737005, by xukai871105.]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>硬件</tag>
+        <tag>树莓派</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Debian下编译QGroundControl源码]]></title>
     <url>%2F2018%2F11%2F01%2FDebian%E4%B8%8B%E7%BC%96%E8%AF%91QGroundControl%E6%BA%90%E7%A0%81%2F</url>
     <content type="text"><![CDATA[MAVLink（Micro Air Vehicle Link，微型空中飞行器链路通讯协议）是无人飞行器与地面站之间通讯，以及无人飞行器之间通讯最常用的协议。它已经在PX4、APM、PIXHAWK和Parrot AR.Drone飞控平台上进行了大量测试。 QGroundControl则是一种操纵基于MAVLink通信协议的无人机的跨平台地面站开源软件。下面记录在Debian Linux下从源码编译QGroundControl的过程。 下载源码1234# 下载QGroundControl源码git clone --recursive https://github.com/mavlink/qgroundcontrol.git# 更新子模块git submodule update 安装编译环境 下载Qt社区版在线安装器，安装5.11.0版本的Qt，安装路径可在/opt下。 安装必要的包 1sudo apt-get install speech-dispatcher libudev-dev libsdl2-dev 解决编译时libQt5PositioningQuick.so.5不存在的bug 123sudo apt-get install libqt5positioningquick5sudo find /usr/ -name libQt5PositioningQuick.so.5cp /usr/lib/x86_64-linux-gnu/libQt5PositioningQuick.so.5 /opt/Qt/5.10.0/gcc_64/lib/libQt5PositioningQuick.so.5 将当前用户添加到dialout组，获取串口访问权限 12# 运行QGroundControl需要当前用户拥有串口访问权限sudo usermod -a -G dialout $USER 编译运行打开Qt Creater，打开qgroundcontrol.pro工程，构建后运行，即可打开QGroundControl地面站软件。 参考链接 https://blog.csdn.net/hebbely/article/details/79022799, by hebbely https://dev.qgroundcontrol.com/en/getting_started/, by Dronecode]]></content>
@@ -12,7 +32,7 @@
   <entry>
     <title><![CDATA[Linux常用命令用法总结]]></title>
     <url>%2F2018%2F11%2F01%2FLinux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E7%94%A8%E6%B3%95%E6%80%BB%E7%BB%93%2F</url>
-    <content type="text"><![CDATA[记录一些常用的linux命令用法，以备查询。 查找文件 123# find基本语法：find [PATH] [option] [action]find /usr/lib -name libQt5Xml.so 批量转换文件格式 1234567# 将png格式图像转换为jpg# -1 – 告诉 ls 每行列出一个图像名称的选项标识# -n – 指定最多参数个数，例子中为 1# -c – 指示 bash 运行给定的命令# $&#123;0%.png&#125;.jpg – 设置新转换的图像文件的名字，% 符号用来删除源文件的扩展名ls -1 *.png | xargs -n 1 bash -c &apos;convert &quot;$0&quot; &quot;$&#123;0%.png&#125;.jpg&quot;&apos; 修改用户 12# 将用户$USER添加到dialout用户组，以获取串口访问权限sudo usermod -a -G dialout $USER]]></content>
+    <content type="text"><![CDATA[记录一些常用的linux命令用法，以备查询。 查找文件 123# find基本语法：find [PATH] [option] [action]find /usr/lib -name libQt5Xml.so 批量转换文件格式 1234567# 将png格式图像转换为jpg# -1 – 告诉 ls 每行列出一个图像名称的选项标识# -n – 指定最多参数个数，例子中为 1# -c – 指示 bash 运行给定的命令# $&#123;0%.png&#125;.jpg – 设置新转换的图像文件的名字，% 符号用来删除源文件的扩展名ls -1 *.png | xargs -n 1 bash -c &apos;convert &quot;$0&quot; &quot;$&#123;0%.png&#125;.jpg&quot;&apos; 修改用户 12# 将用户$USER添加到dialout用户组，以获取串口访问权限sudo usermod -a -G dialout $USER 校验文件 下载的文件最好校验完整性，防止被人篡改。以sha256sum为例：1234#以下命令将生成树莓派映像的sha256哈希码，从树莓派官网复制该映像sha256哈希码，以便校验。当然通常应该会提供映像的哈希码校验文件。sha256sum 2018-10-09-raspbian-stretch.zip &gt;2018-10-09-raspbian-stretch.zip.sha256sum#使用下面校验文件的完整性，如果成功则映像与官方一致，未被篡改。注意被校验文件与校验文件应放在同一个目录。sha256sum -c 2018-10-09-raspbian-stretch.zip.sha256sum]]></content>
       <tags>
         <tag>linux</tag>
         <tag>shell</tag>

@@ -316,6 +316,334 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/03/树莓派操作系统镜像烧录方法指南/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/03/树莓派操作系统镜像烧录方法指南/" itemprop="url">
+                  树莓派操作系统镜像烧录方法指南
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-03 18:10:16" itemprop="dateCreated datePublished" datetime="2018-11-03T18:10:16+08:00">2018-11-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-04 18:05:54" itemprop="dateModified" datetime="2018-11-04T18:05:54+08:00">2018-11-04</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>树莓派是一个微型计算机硬件平台，为使其正常工作还需要安装操作系统。通常将树莓派操作系统烧录到SD卡上，再将SD卡插到树莓派上。加电启动后，树莓派就会从SD卡引导启动操作系统，开始工作。这里SD卡就相当于普通计算机的硬盘。下面记录在Debian Linux下烧录树莓派操作系统到SD卡的方法。</p>
+<h1 id="镜像烧录工具"><a href="#镜像烧录工具" class="headerlink" title="镜像烧录工具"></a>镜像烧录工具</h1><h2 id="Etcher"><a href="#Etcher" class="headerlink" title="Etcher"></a>Etcher</h2><p>Etcher是树莓派官方推荐的镜像烧录工具。它采用图形界面，支持Windows、Linux、Mac，使用简单方便，推荐普通用户使用。</p>
+<h2 id="dd"><a href="#dd" class="headerlink" title="dd"></a>dd</h2><p>Linux的dd命令用于复制文件并对原文件的内容进行转换和格式化处理。dd命令功能很强大的，对于一些比较底层的问题，使用dd命令往往可以得到出人意料的效果。用的比较多的还是用dd来备份裸设备。同样也可用dd命令烧录系统镜像。</p>
+<p>使用dd命令必须非常小心，如果输出指定了错误分区，将摧毁该分区的所有数据。</p>
+<h1 id="Linux下镜像烧录过程"><a href="#Linux下镜像烧录过程" class="headerlink" title="Linux下镜像烧录过程"></a>Linux下镜像烧录过程</h1><p>使用Etcher烧录镜像比较简单，重点介绍使用dd命令烧录镜像的方法。</p>
+<h2 id="查找sd卡设备"><a href="#查找sd卡设备" class="headerlink" title="查找sd卡设备"></a>查找sd卡设备</h2><p>可使用lsblk或者fdisk命令查找sd卡存储设备。需要注意的是：</p>
+<ul>
+<li>块设备以/dev/sdX命名，其中X是小写字母，例如/dev/sda。</li>
+<li>测试时发现当计算机只有usb3.0接口时，将不识别usb2.0的sd读卡器。</li>
+</ul>
+<h2 id="烧录镜像到sd卡"><a href="#烧录镜像到sd卡" class="headerlink" title="烧录镜像到sd卡"></a>烧录镜像到sd卡</h2><h3 id="将镜像烧录到sd卡"><a href="#将镜像烧录到sd卡" class="headerlink" title="将镜像烧录到sd卡"></a>将镜像烧录到sd卡</h3><p>使用如下dd命令将树莓派镜像少量到sd卡：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd bs=4M if=2018-10-09-raspbian-stretch.img of=/dev/sdX conv=fsync</span><br></pre></td></tr></table></figure></p>
+<p>其中：</p>
+<ul>
+<li>if=文件名：输入文件名，缺省为标准输入。即指定源文件。</li>
+<li>of=文件名：输出文件名，缺省为标准输出。即指定目的文件。</li>
+<li>bs=bytes：同时设置读入/输出的块大小为bytes个字节。</li>
+<li>conv=conversion：用指定的参数转换文件。</li>
+</ul>
+<h3 id="将压缩镜像烧录到sd卡"><a href="#将压缩镜像烧录到sd卡" class="headerlink" title="将压缩镜像烧录到sd卡"></a>将压缩镜像烧录到sd卡</h3><p>当文件系统不支持大于4GB的文件时，可使用利用管道技术烧录镜像，命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unzip -p 2018-10-09-raspbian-stretch.zip | sudo dd of=/dev/sdX bs=4M conv=fsync</span><br></pre></td></tr></table></figure></p>
+<h3 id="检查烧录进度"><a href="#检查烧录进度" class="headerlink" title="检查烧录进度"></a>检查烧录进度</h3><p>默认情况下dd命令不给出烧录进度信息，最新的dd提供status=progress选项给出进度信息，命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd bs=4M if=2018-10-09-raspbian-stretch.img of=/dev/sdX status=progress conv=fsync</span><br></pre></td></tr></table></figure></p>
+<p>或者可使用dcfldd命令替换dd进行烧录操作。</p>
+<h2 id="检查镜像是否正确的烧录到sd卡"><a href="#检查镜像是否正确的烧录到sd卡" class="headerlink" title="检查镜像是否正确的烧录到sd卡"></a>检查镜像是否正确的烧录到sd卡</h2><p>先使用dd命令将sd卡中内容复制到硬盘，在使用diff或者md5sum检查镜像文件与sd卡内容镜像之间的一致性。</p>
+<p>之前dd命令烧录镜像到sd卡完成后会在shell中输出如下结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">xxx+0 records in</span><br><span class="line">yyy+0 records out</span><br><span class="line">yyyyyyyyyy bytes (yyy kB, yyy KiB) copied, 0.00144744 s, 283 MB/s</span><br></pre></td></tr></table></figure></p>
+<p>xxx是我们需要的，表示读取xxx块记录烧录到sd卡，xxx乘以bs=4M应该等于原始镜像的大小。</p>
+<p>使用如下命令复制sd卡内容到硬盘上：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 经测试count命令没有其作用，该命令将整个sd内容复制到了硬盘，但我们期望只复制之前烧录到sd卡内容</span><br><span class="line">dd bs=4M if=/dev/sdX of=from-sd-card.img count=xxx</span><br></pre></td></tr></table></figure></p>
+<p>如果from-sd-card.img文件大于原始镜像文件，那么先使用truncate命令将from-sd-card.img缩小到原始镜像文件的大小，命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">truncate --reference 2018-10-09-raspbian-stretch.img from-sd-card.img</span><br></pre></td></tr></table></figure></p>
+<p>使用diff命令比较两者直接的一致性，如果不一致，可能烧录过程中有错误。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">diff -s from-sd-card.img 2018-10-09-raspbian-stretch.img</span><br></pre></td></tr></table></figure></p>
+<p>使用sync命令强制将缓存写入硬盘，然后umount sd卡文件系统，最后移除sd卡。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://www.raspberrypi.org/documentation/installation/installing-images/linux.md" target="_blank" rel="noopener">https://www.raspberrypi.org/documentation/installation/installing-images/linux.md</a>, by raspberrypi.</li>
+<li><a href="https://blog.csdn.net/liumang_D/article/details/3899462" target="_blank" rel="noopener">https://blog.csdn.net/liumang_D/article/details/3899462</a>, by liumang_d.</li>
+<li><a href="https://linux.cn/article-8024-1.html" target="_blank" rel="noopener">https://linux.cn/article-8024-1.html</a>, by linux中国</li>
+<li><a href="https://www.jianshu.com/p/ff09ceffa816" target="_blank" rel="noopener">https://www.jianshu.com/p/ff09ceffa816</a>, by 二石兄.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/03/树莓派学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/03/树莓派学习笔记/" itemprop="url">
+                  树莓派学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-03 12:41:24 / 修改时间：18:10:46" itemprop="dateCreated datePublished" datetime="2018-11-03T12:41:24+08:00">2018-11-03</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="WiringPi简介"><a href="#WiringPi简介" class="headerlink" title="WiringPi简介"></a>WiringPi简介</h1><p>WiringPi是应用于树莓派平台的GPIO控制库函数，WiringPi遵守GUN Lv3。wiringPi使用C或者C++开发并且可以被其他语言包转，例如python、ruby或者PHP等。WiringPi中的函数类似于Arduino的wiring系统，这使得熟悉arduino的用户使用wringPi更为方便。</p>
+<p>树莓派具有26个普通输入和输出引脚。在这26个引脚中具有8个普通输入和输出管脚，这8个引脚既可以作为输入管脚也可以作为输出管脚。除此之外，树莓派还有一个2线形式的I2C、一个4线形式的SPI和一个UART接口。树莓派上的I2C和SPI接口也可以作为普通端口使用。如果串口控制台被关闭便可以使用树莓派上的UART功能。如果不使用I2C，SPI和UART等复用接口，那么树莓派总共具有8+2+5+2 =17个普通IO。</p>
+<p>wiringPi包括一套gpio控制命令，使用gpio命令可以控制树莓派GPIO管脚。用户可以利用gpio命令通过shell脚本控制或查询GPIO管脚。wiringPi是可以扩展的，可以利用wiringPi的内部模块扩展模拟量输入芯片，可以使用MCP23x17/MCP23x08（I2C 或者SPI）扩展GPIO接口。另外可通过树莓派上的串口和Atmega（例如arduino等）扩展更多的GPIO功能。另外，用户可以自己编写扩展模块并把自定义的扩展模块集成到wiringPi中。WiringPi支持模拟量的读取和设置功能，不过在树莓派上并没有模拟量设备。但是使用WiringPi中的软件模块却可以轻松地应用AD或DA芯片。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>1.<a href="https://blog.csdn.net/xukai871105/article/details/17737005" target="_blank" rel="noopener">https://blog.csdn.net/xukai871105/article/details/17737005</a>, by xukai871105.</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/01/Debian下编译QGroundControl源码/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -521,12 +849,24 @@
                 
               
 
-              <time title="创建时间：2018-11-01 21:44:27 / 修改时间：22:27:18" itemprop="dateCreated datePublished" datetime="2018-11-01T21:44:27+08:00">2018-11-01</time>
+              <time title="创建时间：2018-11-01 21:44:27" itemprop="dateCreated datePublished" datetime="2018-11-01T21:44:27+08:00">2018-11-01</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-03 18:05:09" itemprop="dateModified" datetime="2018-11-03T18:05:09+08:00">2018-11-03</time>
               
             
           </span>
@@ -570,8 +910,12 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 将png格式图像转换为jpg</span><br><span class="line"># -1 – 告诉 ls 每行列出一个图像名称的选项标识</span><br><span class="line"># -n – 指定最多参数个数，例子中为 1</span><br><span class="line"># -c – 指示 bash 运行给定的命令</span><br><span class="line"># $&#123;0%.png&#125;.jpg – 设置新转换的图像文件的名字，% 符号用来删除源文件的扩展名</span><br><span class="line"></span><br><span class="line">ls -1 *.png | xargs -n 1 bash -c &apos;convert &quot;$0&quot; &quot;$&#123;0%.png&#125;.jpg&quot;&apos;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>修改用户</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 将用户$USER添加到dialout用户组，以获取串口访问权限</span><br><span class="line">sudo usermod -a -G dialout $USER</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 将用户$USER添加到dialout用户组，以获取串口访问权限</span><br><span class="line">sudo usermod -a -G dialout $USER</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>校验文件</p>
+</li>
 </ol>
+<p>下载的文件最好校验完整性，防止被人篡改。以sha256sum为例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#以下命令将生成树莓派映像的sha256哈希码，从树莓派官网复制该映像sha256哈希码，以便校验。当然通常应该会提供映像的哈希码校验文件。</span><br><span class="line">sha256sum 2018-10-09-raspbian-stretch.zip &gt;2018-10-09-raspbian-stretch.zip.sha256sum</span><br><span class="line">#使用下面校验文件的完整性，如果成功则映像与官方一致，未被篡改。注意被校验文件与校验文件应放在同一个目录。</span><br><span class="line">sha256sum -c 2018-10-09-raspbian-stretch.zip.sha256sum</span><br></pre></td></tr></table></figure></p>
 
           
         
@@ -1700,337 +2044,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/09/19/Blender简易教程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/19/Blender简易教程/" itemprop="url">
-                  Blender简易教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-19 08:48:48 / 修改时间：09:57:28" itemprop="dateCreated datePublished" datetime="2018-09-19T08:48:48+08:00">2018-09-19</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近需要用Blender建3D模型，试用了半天，将经验简单总结一下。</p>
-<h1 id="3D建模流程"><a href="#3D建模流程" class="headerlink" title="3D建模流程"></a>3D建模流程</h1><ul>
-<li>建立3D模型：通常在Blender的3D视图窗口对物体进行建模。</li>
-<li>拆分制作纹理：设置缝合边，再展开。打开U/V图像编辑器窗口即可看到拆分效果。导出图片后制作纹理。</li>
-<li>使用材质贴图：设置材质着色，添加纹理。</li>
-</ul>
-<h1 id="Blender快捷键"><a href="#Blender快捷键" class="headerlink" title="Blender快捷键"></a>Blender快捷键</h1><p>Blender快捷键很多，熟练使用可加速3D模型的建立。</p>
-<h2 id="3D视图窗口"><a href="#3D视图窗口" class="headerlink" title="3D视图窗口"></a>3D视图窗口</h2><h3 id="字母键"><a href="#字母键" class="headerlink" title="字母键"></a>字母键</h3><ul>
-<li>T：打开左侧工具栏</li>
-<li>Tab：编辑模式和物体模式切换</li>
-<li>N：打开物体属性</li>
-<li>A：全选、取消选择</li>
-<li>B：框选，进行多选</li>
-<li>C：刷选，加Shift取消选择，按Esc退出选择</li>
-<li>X：删除</li>
-<li>Shift+A：增加物件，新建的物件会出现在准星的位置</li>
-<li>Ctrl+Alt+Q：切换四视图</li>
-<li>Ctrl+Space：调出三维坐标系操纵物体</li>
-<li>H：隐藏对象（Hide）</li>
-<li>Alt+H：显示对象</li>
-<li>Z：线框模式与实体模式之间切换</li>
-<li>Ctrl+U：用户的内置设置</li>
-<li>Ctrl+Tab：进行点、线、面的编辑模式</li>
-<li>Shift+空格键：放大视图</li>
-<li>F12：计算结果（算图模式），如果是黑色的，需要把摄像机和光源放在同一个图层中，或者选择摄像机和光源的图层。</li>
-<li>G：移动选中对象</li>
-<li>R: 旋转</li>
-<li>S: 缩放</li>
-<li>Alt+S：法向缩放</li>
-<li>E：挤出选中对象</li>
-<li>Ctrl+R: 环切并滑动</li>
-</ul>
-<h3 id="数字键"><a href="#数字键" class="headerlink" title="数字键"></a>数字键</h3><p>数字键主要用于视角切换</p>
-<ul>
-<li>1：前视图</li>
-<li>3：侧视图</li>
-<li>7：俯视图</li>
-</ul>
-<h3 id="鼠标键"><a href="#鼠标键" class="headerlink" title="鼠标键"></a>鼠标键</h3><ul>
-<li>右键：选择物体</li>
-<li>shift+中键：平移</li>
-<li>滚轴/（Ctrl+中键拖拽）：缩放</li>
-</ul>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li>JinunMeng. Blender常用快捷键. <a href="https://blog.csdn.net/u010670734/article/details/64538633" target="_blank" rel="noopener">https://blog.csdn.net/u010670734/article/details/64538633</a>.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/09/11/Windows下将cmd命令添加到右键菜单/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/11/Windows下将cmd命令添加到右键菜单/" itemprop="url">
-                  Windows下将cmd命令添加到右键菜单
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-11 10:35:30 / 修改时间：11:01:32" itemprop="dateCreated datePublished" datetime="2018-09-11T10:35:30+08:00">2018-09-11</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>经常需要使用cmd命令，如果打开cmd窗口后在cd到目标路径，则非常麻烦。可使用如下方法将cmd添加到右键菜单，这样一打开cmd窗口就到了目标路径。设置方法如下：</p>
-<ol>
-<li>打开注册表</li>
-<li>添加注册项<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a) 找到[HKEY_CLASSESS_ROOT\Folder\shell]子键，在其下新建“cmdPrompt”子项，在窗口右侧名称列上点击右键修改，将数值数据改为“CMD快速通道”。</span><br><span class="line"></span><br><span class="line">b) 再在这个项下，新建名为“command”子项，同样修改数值数据修改为c:\windows\system32\cmd.exe /k cd &quot;%1&quot;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>设置完成后即可在目标路径文件夹上右键单击，选择“CMD快速通道”命令，打开cmd窗口的同时，已跳转到目标路径下。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2078,7 +2091,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-count">44</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2141,7 +2154,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">24</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

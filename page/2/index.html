@@ -316,6 +316,502 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/18/Debian-Linux下安装Docker的方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/18/Debian-Linux下安装Docker的方法/" itemprop="url">
+                  Debian_Linux下安装Docker的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-18 21:42:00 / 修改时间：22:53:35" itemprop="dateCreated datePublished" datetime="2018-10-18T21:42:00+08:00">2018-10-18</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Docker是一个开放源代码软件项目，让应用程序布署在软件容器下的工作可以自动化进行，借此在Linux操作系统上，提供一个额外的软件抽象层，以及操作系统层虚拟化的自动管理机制。</p>
+<p>Docker利用Linux核心中的资源分离机制，例如cgroups，以及Linux核心名字空间（name space），来创建独立的软件容器（containers）。这可以在单一Linux实体下运作，避免启动一个虚拟机造成的额外负担。Linux核心对名字空间的支持完全隔离了工作环境中应用程序的视野，包括进程树、网上、用户ID与挂载文件系统，而核心的cgroup提供资源隔离，包括CPU、存储器、block I/O与网上。</p>
+<p>下面即记录在Debian Linux下按照Docker社区版的方法。</p>
+<h1 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h1><p>添加Docker的pgp key。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -</span><br></pre></td></tr></table></figure></p>
+<p>配置Docker的Apt仓库。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &apos;deb https://download.docker.com/linux/debian stretch stable&apos; | sudo tee /etc/apt/sources.list.d/docker.list</span><br></pre></td></tr></table></figure></p>
+<p>更新Apt仓库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure></p>
+<h1 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 清除之前安装的Docker版本</span><br><span class="line">apt-get remove docker docker-engine docker.io</span><br><span class="line">// 在安装最新的Docker社区版</span><br><span class="line">apt-get install docker-ce</span><br><span class="line">// 测试docker</span><br><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
+<h1 id="以非root用户管理docker"><a href="#以非root用户管理docker" class="headerlink" title="以非root用户管理docker"></a>以非root用户管理docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo groupadd docker</span><br><span class="line">sudo usermod -aG docker $USER</span><br></pre></td></tr></table></figure>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/Docker" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Docker</a> ,by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/14/tensorflow学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/14/tensorflow学习笔记/" itemprop="url">
+                  tensorflow学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-14 13:10:24 / 修改时间：14:07:26" itemprop="dateCreated datePublished" datetime="2018-10-14T13:10:24+08:00">2018-10-14</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>TensorFlow™ 是一个开放源代码软件库，用于进行高性能数值计算。借助其灵活的架构，用户可以轻松地将计算工作部署到多种平台（CPU、GPU、TPU）和设备（桌面设备、服务器集群、移动设备、边缘设备等）。TensorFlow™ 最初是由 Google Brain 团队（隶属于 Google 的 AI 部门）中的研究人员和工程师开发的，可为机器学习和深度学习提供强力支持，并且其灵活的数值计算核心广泛应用于许多其他科学领域。</p>
+<h1 id="tensorflow入门"><a href="#tensorflow入门" class="headerlink" title="tensorflow入门"></a>tensorflow入门</h1><p>tensorflow实现机器学习的基本步骤如下：</p>
+<ol>
+<li>定义模型，建立数据流图</li>
+<li>定义loss，并指定优化器 </li>
+<li>传入数据并进行训练 </li>
+<li>使用测试集进行评测</li>
+</ol>
+<h2 id="通用代码框架"><a href="#通用代码框架" class="headerlink" title="通用代码框架"></a>通用代码框架</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line"></span><br><span class="line"># 初始化变量和模型参数，定义训练闭环中的运算</span><br><span class="line"></span><br><span class="line">def inference(X):</span><br><span class="line">    # 计算推断模型在数据X上的输出，并将结果返回</span><br><span class="line"></span><br><span class="line">def loss(X,Y):</span><br><span class="line">    # 依据训练数据X及其期望输出Y计算损失</span><br><span class="line"></span><br><span class="line">def inputs():</span><br><span class="line">    # 读取或生成训练数据X及其期望输出Y</span><br><span class="line"></span><br><span class="line">def train(total_loss):</span><br><span class="line">    # 依据计算的总损失训练或调整模型参数</span><br><span class="line"></span><br><span class="line">def evaluate(sess,X,Y):</span><br><span class="line">    # 对训练得到的模型进行评估</span><br><span class="line"></span><br><span class="line"># 在一个会话对象中启动数据流图，搭建流程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    tf.initialize_all_variables().run()</span><br><span class="line">    </span><br><span class="line">    X,Y=inputs()</span><br><span class="line">    </span><br><span class="line">    total_loss=loss(X,Y)</span><br><span class="line">    train_op=train(total_loss)</span><br><span class="line">    </span><br><span class="line">    coord=tf.train.Coordinator()</span><br><span class="line">    threads=tf.train.start_queue_runners(sess=sess,coord=coord)</span><br><span class="line"></span><br><span class="line">    # 实际的训练迭代次数</span><br><span class="line">    training_steps=1000</span><br><span class="line">    for step in range(training_steps):</span><br><span class="line">        sess.run([train_op])</span><br><span class="line">        # 出于调试和学习的目的，查看损失在训练过程中递减的情况</span><br><span class="line">        if step % 10 =0:</span><br><span class="line">            print &quot;loss: &quot;,sess,run([total_loss])</span><br><span class="line"></span><br><span class="line">    evalute(sess,X,Y)</span><br><span class="line"></span><br><span class="line">    coord.request_stop()</span><br><span class="line">    coord.join(threads)</span><br><span class="line">    sess.close()</span><br></pre></td></tr></table></figure>
+<h2 id="保存训练检查点"><a href="#保存训练检查点" class="headerlink" title="保存训练检查点"></a>保存训练检查点</h2><p>借助tf.train.Saver类可创建检查点文件，将数据流图中变量保存至其中。修改后框架如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 模型定义代码</span><br><span class="line"># 创建一个Saver对象</span><br><span class="line">saver=tf.train.Saver()</span><br><span class="line"></span><br><span class="line"># 在会话对象中启动数据流图，搭建流程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    # 模型设置</span><br><span class="line"></span><br><span class="line">    # 实际的训练闭环</span><br><span class="line">    for step in range(training_steps):</span><br><span class="line">        sess.run([train_op])</span><br><span class="line"></span><br><span class="line">        if step % 1000 ==0</span><br><span class="line">            # 将创建遵循命名模板为my-model-&#123;step&#125;的检查点文件，默认保存最近的5个文件</span><br><span class="line">            saver.save(sess,&apos;my-model&apos;,global_step=step)</span><br><span class="line">    </span><br><span class="line">    # 模型评估</span><br><span class="line"></span><br><span class="line">    saver.save(sess,&apos;my-model&apos;,global_step=training_steps)</span><br><span class="line">    sess.close()</span><br></pre></td></tr></table></figure></p>
+<p>如果希望从检查点恢复，则使用tf.train.get_checkpoint_state方法验证检查点文件的存在，并使用tf.train.Saver.restore方法恢复变量值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">with tf.Session() as sess:</span><br><span class="line">    # 模型设置</span><br><span class="line"></span><br><span class="line">    initial_step=0</span><br><span class="line"></span><br><span class="line">    # 验证之前是否已经保存了检查点文件</span><br><span class="line">    ckpt=tf.train.get_checkpoint_state(os.path.dirname(__file__))</span><br><span class="line">    if ckpt and ckpt.model_checkpoint_path:</span><br><span class="line">        # 从检查点恢复模型参数</span><br><span class="line">        saver.restore(sess,ckpt.model_checkpoint_path)</span><br><span class="line">        initial_step=int(ckpt.model_checkpoint_path.rsplite(&apos;_&apos;,1)[1])</span><br><span class="line"></span><br><span class="line">    # 实际的训练闭环</span><br><span class="line">    for step in range(initial_step, training_steps):</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://www.tensorflow.org/?hl=zh-cn" target="_blank" rel="noopener">https://www.tensorflow.org/?hl=zh-cn</a> .</li>
+<li>面向机器智能的TensorFlow实践, by Sam Abrahams, Danijar Hafner,etc.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/14/Python常用库简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/14/Python常用库简介/" itemprop="url">
+                  Python常用库简介
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-14 11:22:09 / 修改时间：12:00:40" itemprop="dateCreated datePublished" datetime="2018-10-14T11:22:09+08:00">2018-10-14</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Python的高效开发建立在大量常用库基础上，因此掌握常用的Python库十分必要。下面简单介绍Python的各类常用库。</p>
+<h1 id="常用标准库"><a href="#常用标准库" class="headerlink" title="常用标准库"></a>常用标准库</h1><ul>
+<li>os： 访问操作系统功能模块</li>
+<li>sys： 访问一些环境变量和与 Python 解释器交互</li>
+<li>datetime： 日期时间处理</li>
+<li>collections： 高级数据结构，有序字典，队列等等</li>
+<li>uuid： 生成 UUID 模块</li>
+<li>random： 随机数生成模块</li>
+<li>re： 正则表达式模块</li>
+<li>json： JSON 处理模块</li>
+<li>pdb： 单步调试模块</li>
+</ul>
+<h1 id="科学计算"><a href="#科学计算" class="headerlink" title="科学计算"></a>科学计算</h1><ul>
+<li>scipy：基于Python的matlab实现，旨在实现matlab的所有功能。包含Numpy、Ipython、Pandas、Matplotlib、Sympy等常用库</li>
+<li>numpy： 基于Python的科学计算第三方库，提供了矩阵，线性代数，傅立叶变换等等的解决方案</li>
+<li>pandas： 支持表格等多维数据</li>
+<li>matplotlib： 用Python实现的类matlab的第三方库，用以绘制一些高质量的数学二维图形</li>
+</ul>
+<h1 id="命令交互"><a href="#命令交互" class="headerlink" title="命令交互"></a>命令交互</h1><ul>
+<li>ipython： 交互命令行，适合科学计算</li>
+<li>jupyter： ipython notebook 的延伸，可以直接放在github上</li>
+<li>argparse：(Python 标准库)用于命令项选项与参数解析的模块</li>
+</ul>
+<h1 id="爬虫相关"><a href="#爬虫相关" class="headerlink" title="爬虫相关"></a>爬虫相关</h1><ul>
+<li>requests:人性化的HTTP请求库</li>
+</ul>
+<h1 id="环境管理"><a href="#环境管理" class="headerlink" title="环境管理"></a>环境管理</h1><ul>
+<li>virtualenv：创建独立 Python 环境的工具</li>
+<li>virtualenvwrapper：virtualenv 的一组扩展</li>
+</ul>
+<h1 id="包管理"><a href="#包管理" class="headerlink" title="包管理"></a>包管理</h1><ul>
+<li>pip：Python 包和依赖关系管理工具</li>
+<li>conda：跨平台，Python 二进制包管理工具</li>
+</ul>
+<h1 id="并发和并行"><a href="#并发和并行" class="headerlink" title="并发和并行"></a>并发和并行</h1><ul>
+<li>threading：(Python 标准库)更高层的线程接口</li>
+<li>multiprocessing：(Python 标准库) 基于进程的“线程”接口</li>
+</ul>
+<h1 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h1><ul>
+<li>logging：(Python 标准库) 为 Python 提供日志功能。</li>
+</ul>
+<h1 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h1><ul>
+<li>six：Python 2 和 3 的兼容性工具</li>
+</ul>
+<h1 id="计算机视觉"><a href="#计算机视觉" class="headerlink" title="计算机视觉"></a>计算机视觉</h1><ul>
+<li>opencv</li>
+</ul>
+<h1 id="机器学习"><a href="#机器学习" class="headerlink" title="机器学习"></a>机器学习</h1><ul>
+<li>tensorflow</li>
+</ul>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://www.jianshu.com/p/886cbabbfe9e" target="_blank" rel="noopener">https://www.jianshu.com/p/886cbabbfe9e</a> ,by brandonxiang</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/09/Virtualenv简易教程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1480,573 +1976,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/15/Emscripten教程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/15/Emscripten教程/" itemprop="url">
-                  Emscripten教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-07-15 17:00:04" itemprop="dateCreated datePublished" datetime="2018-07-15T17:00:04+08:00">2018-07-15</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-09-09 21:21:40" itemprop="dateModified" datetime="2018-09-09T21:21:40+08:00">2018-09-09</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Emscripten是一种基于LLVM的编译器，理论上能够将任何能够生成LLVM位码的代码编译成javascript的严格子集asm.js，实际上主要用于将C/C++代码编译成asm.js。本文主要介绍Emscripten的安装过程。</p>
-<h1 id="下载和安装"><a href="#下载和安装" class="headerlink" title="下载和安装"></a>下载和安装</h1><p>从源码编译安装十分麻烦，推荐安装核心的Emscripten SDK。以Windows为例，先使用如下命令下载emsdk。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Get the emsdk repo</span><br><span class="line">git clone https://github.com/juj/emsdk.git</span><br><span class="line"></span><br><span class="line"># Enter that directory</span><br><span class="line">cd emsdk</span><br></pre></td></tr></table></figure></p>
-<p>再使用如下命令安装配置Emscripten。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># Fetch the latest registry of available tools.</span><br><span class="line">.\emsdk.bat update</span><br><span class="line"></span><br><span class="line"># Download and install the latest SDK tools. Need install Python first. </span><br><span class="line">.\emsdk.bat install latest</span><br><span class="line"></span><br><span class="line"># Make the &quot;latest&quot; SDK &quot;active&quot; for the current user. (writes ~/.emscripten file)</span><br><span class="line">.\emsdk.bat activate latest</span><br><span class="line"></span><br><span class="line"># Activate PATH and other environment variables in the current terminal</span><br><span class="line">.\emsdk_env.bat</span><br></pre></td></tr></table></figure></p>
-<h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p>使用如下命令验证Emscripten是否安装配置正确。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Enter that directory</span><br><span class="line">cd emsdk</span><br><span class="line"></span><br><span class="line"># Activate PATH and other environment variables in the current terminal</span><br><span class="line">.\emsdk_env.bat</span><br><span class="line"></span><br><span class="line"># Verifying Emscripten</span><br><span class="line">emcc.bat -v</span><br></pre></td></tr></table></figure></p>
-<h1 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h1><p>如果验证通过，即可使用Emscripten编译C/C++代码到asm.js。</p>
-<p>创建名为helloWorld.cpp的文件，其内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">  printf(&quot;hello, world!\n&quot;);</span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>使用如下命令编译：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">emcc.bat helloWorld.cpp</span><br></pre></td></tr></table></figure></p>
-<p>编译后将生成a.out.js和a.out.wasm两个文件。后者是包含编译后代码的WebAssembly文件，前者是用于加载和执行后者的Javascipt文件。使用如下命令测试编译后生成的代码，将输出“hello,world!”。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node a.out.js</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://kripken.github.io/emscripten-site/docs/introducing_emscripten/about_emscripten.html" target="_blank" rel="noopener">http://kripken.github.io/emscripten-site/docs/introducing_emscripten/about_emscripten.html</a>. by kripken.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/10/浏览器中运行3D游戏的思考/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/10/浏览器中运行3D游戏的思考/" itemprop="url">
-                  浏览器中运行3D游戏的思考
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-07-10 21:02:56" itemprop="dateCreated datePublished" datetime="2018-07-10T21:02:56+08:00">2018-07-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-07-15 16:57:02" itemprop="dateModified" datetime="2018-07-15T16:57:02+08:00">2018-07-15</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Web技术突飞猛进，几乎无所不能，无所不在。然而在3D游戏领域，web技术乏善可陈，性能瓶颈问题制约其发展。但是开发者们没有放弃这个梦想，不断努力，孜孜不倦地改进和增强浏览器中运行3D游戏性能的方法和技术，目前已能看到一丝曙光。</p>
-<p>对C/S架构的3D游戏而言，渲染和计算通常都在客户端，服务器端负责用户状态的管理和分发。同样对B/S架构的运行在浏览器中的3D游戏，所有的渲染和计算也应该在浏览器端。如果渲染和计算放在服务器端，将导致可怕的延迟，并严重损害3D游戏的可伸缩性。</p>
-<p>当前很多3D游戏使用C/C++语言编写，如果能够将C/C++语言编译成JavaScript语言，可大大促进Web 3D游戏的开发。而编译器项目Emscripten正是一个这样的工具。它能将C/C++代码编译成一种叫做asm.js的Javascript变体。需要指出的是，Emscripten的输入，即C/C++代码最好是开放源代码的，因为Emscripten不支持闭源代码的编译。例如Emscripten不支持mfc程序的转换，因为mfc是闭源的<sup>[4]</sup>。</p>
-<p>asm.js是一个JavaScript的严格子集，它只提供32位带符号整数和64位带符号浮点数两种数据类型，其他Javascript类型如字符串、布尔值等以数值形式存在，保存在内存中，通过TypedArray调用。另外asm.js没有垃圾回收机制，所有内存操作都由程序员自己控制。asm.js是优化后的JavaScript，它在浏览器中的运行速度大约是原生代码的一倍左右<sup>[1]</sup>。</p>
-<p>asm.js虽然比原生javascript运行速度快了一倍左右，但是相比C/C++代码，运行速度还是有差距。幸运的是出现了名为WebAssembly的技术。WebAssembly或称wasm是一个实验性的低级编程语言，应用于浏览器内的客户端<sup>[5]</sup>。WebAssembly是便携式的抽象语法树，被设计来提供比JavaScript更快速的编译及运行。WebAssembly将让开发者能运用自己熟悉的编程语言（最初以C/C++作为实现目标）编译，再藉虚拟机引擎在浏览器内运行。WebAssembly的开发团队分别来自Mozilla、Google、Microsoft、Apple，代表着四大网络浏览器Firefox、Chrome、Microsoft Edge、Safari。2017年11月，所有以上四个浏览器都开始实验性的支持WebAssembly。目前，最新版本的Emscripten已支持将C/C++代码编译成wasm。</p>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html</a>. by 阮一峰.</li>
-<li><a href="https://www.cnblogs.com/slly/p/6639173.html" target="_blank" rel="noopener">https://www.cnblogs.com/slly/p/6639173.html</a>. by 李某龙.</li>
-<li><a href="http://kripken.github.io/emscripten-site/" target="_blank" rel="noopener">http://kripken.github.io/emscripten-site/</a>. by emscripten.</li>
-<li><a href="https://github.com/kripken/emscripten/issues/941" target="_blank" rel="noopener">https://github.com/kripken/emscripten/issues/941</a>. by emscripten.</li>
-<li><a href="https://zh.wikipedia.org/wiki/WebAssembly" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/WebAssembly</a>. by wikipedia.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/08/Cookie-Session和Token会话知识整理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/08/Cookie-Session和Token会话知识整理/" itemprop="url">
-                  Cookie,Session和Token会话知识整理
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-07-08 10:50:44" itemprop="dateCreated datePublished" datetime="2018-07-08T10:50:44+08:00">2018-07-08</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-09-09 21:17:40" itemprop="dateModified" datetime="2018-09-09T21:17:40+08:00">2018-09-09</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>HTTP是一种无状态的协议，然而当服务器端需要判断用户能否访问某些资源，记录用户的购物车内容等场景时，就需要一种机制维护会话状态，这时候Cookie、Session和Token就派上了用场。</p>
-<h1 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h1><p>Cookie技术最早用于解决HTTP的会话问题， 它是 http 协议的一部分，它的处理分为如下几步：</p>
-<ul>
-<li>服务器向客户端发送 cookie。<ul>
-<li>通常使用 HTTP 协议规定的 set-cookie 头操作。</li>
-<li>规范规定 cookie 的格式为 name = value 格式，且必须包含这部分。</li>
-</ul>
-</li>
-<li>浏览器将 cookie 保存。</li>
-<li>每次请求浏览器都会将 cookie 发向服务器。</li>
-</ul>
-<h2 id="可选的Cookie参数"><a href="#可选的Cookie参数" class="headerlink" title="可选的Cookie参数"></a>可选的Cookie参数</h2><p>其他可选的 cookie 参数会影响将 cookie 发送给服务器端的过程，主要有以下几种：</p>
-<ul>
-<li>path：表示 cookie 影响到的路径，匹配该路径才发送这个 cookie。</li>
-<li>expires 和 maxAge：告诉浏览器这个 cookie 什么时候过期，expires 是 UTC 格式时间，maxAge 是 cookie 多久后过期的相对时间。当不设置这两个选项时，会产生 session cookie，session cookie 是 transient 的，当用户关闭浏览器时，就被清除。一般用来保存 session 的 session_id。</li>
-<li>secure：当 secure 值为 true 时，cookie 在 HTTP 中是无效，在 HTTPS 中才有效。</li>
-<li>httpOnly：浏览器不允许脚本操作 document.cookie 去更改 cookie。一般情况下都应该设置这个为 true，这样可以避免被 xss 攻击拿到 cookie。</li>
-</ul>
-<h2 id="常用场景"><a href="#常用场景" class="headerlink" title="常用场景"></a>常用场景</h2><p>当给Cookie设置expires和maxAge后，在未到期前，浏览器端的Cookie不会因为浏览器的关闭而消失。该特性常用于自动登录，记录用户浏览信息。例如很多购物网站常用该特性记录用户的喜好和购买的物品。</p>
-<h2 id="Cookie安全隐患"><a href="#Cookie安全隐患" class="headerlink" title="Cookie安全隐患"></a>Cookie安全隐患</h2><p>Cookie提供了一种手段使得HTTP请求可以附加当前状态， 大多数网站就是靠Cookie来标识用户的登录状态的，例如：</p>
-<ol>
-<li>用户提交用户名和密码的表单，这通常是一个POST HTTP请求。</li>
-<li>服务器验证用户名与密码，如果合法则返回200（OK）并设置Set-Cookie为authed=true。</li>
-<li>浏览器存储该Cookie。</li>
-<li>浏览器发送请求时，设置Cookie字段为authed=true。</li>
-<li>服务器收到第二次请求，从Cookie字段得知该用户已经登录。 按照已登录用户的权限来处理此次请求。</li>
-</ol>
-<p>上述认证流程存在安全隐患，因为Cookie是可以被篡改的。如果使用一些HTTP客户端软件，设置Cookie字段为authed=true并发送该HTTP请求，服务器就会被欺骗。</p>
-<h2 id="Cookie防篡改机制"><a href="#Cookie防篡改机制" class="headerlink" title="Cookie防篡改机制"></a>Cookie防篡改机制</h2><p>服务器为每个Cookie项生成签名，可有效地防止Cookie被篡改。因为用户篡改Cookie后无法生成对应的签名， 服务器便可得知用户对Cookie进行了篡改。一个简单的校验过程可能是这样的：</p>
-<ol>
-<li>在服务器中配置一个不为人知的字符串（我们叫它Secret），比如：x$sfz32。</li>
-<li>当服务器需要设置Cookie时（比如authed=false），不仅设置authed的值为false， 在值的后面进一步设置一个签名，最终设置的Cookie是authed=false|6hTiBl7lVpd1P。</li>
-<li>签名6hTiBl7lVpd1P是这样生成的：Hash(‘x$sfz32’+’false’)。 要设置的值与Secret相加再取哈希。</li>
-<li>用户收到HTTP响应并发现头字段Set-Cookie: authed=false|6hTiBl7lVpd1P。</li>
-<li>用户在发送HTTP请求时，篡改了authed值，设置头字段Cookie: authed=true|???。 因为用户不知道Secret，无法生成签名，只能随便填一个。</li>
-<li>服务器收到HTTP请求，发现Cookie: authed=true|???。服务器开始进行校验： Hash(‘true’+’x$sfz32’)，便会发现用户提供的签名不正确。</li>
-</ol>
-<p>通过给Cookie添加签名，使得服务器得以知道Cookie被篡改。然而故事并未结束。</p>
-<p>因为Cookie是明文传输的， 只要服务器设置过一次authed=true|xxxx我不就知道true的签名是xxxx了么， 以后就可以用这个签名来欺骗服务器了。因此Cookie中最好不要放敏感数据。 一般来讲Cookie中只会放一个Session Id，而Session存储在服务器端。</p>
-<h1 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h1><p>为了解决Cookie的安全隐患，Session机制应运而生。session机制是一种服务器端的机制，它存储在服务器端的，避免了在客户端Cookie中存储敏感数据。Session可以存储在HTTP服务器的内存中，也可以存在内存数据库（如redis）中， 对于重量级的应用甚至可以存储在数据库中。 </p>
-<p>客户端对服务端请求时,服务端会检查请求中是否包含一个session标识( 称为session id ).</p>
-<ul>
-<li>如果没有,那么服务端就生成一个随机的session以及和它匹配的session id,并将session id返回给客户端.</li>
-<li>如果有,那么服务器就在存储中根据session id 查找到对应的session.</li>
-</ul>
-<h2 id="基于Session的登录流程"><a href="#基于Session的登录流程" class="headerlink" title="基于Session的登录流程"></a>基于Session的登录流程</h2><p>一个简单的使用Session机制的登录流程可能是这样的：</p>
-<ol>
-<li>用户提交包含用户名和密码的表单，发送HTTP请求。</li>
-<li>服务器验证用户发来的用户名密码。</li>
-<li>如果正确则把当前用户名（通常是用户对象）存储到redis中，并生成它在redis中的ID。这个ID称为Session ID，通过Session ID可以从Redis中取出对应的用户对象， 敏感数据（比如authed=true）都存储在这个用户对象中。</li>
-<li>设置Cookie为sessionId=xxxxxx|checksum并发送HTTP响应， 仍然为每一项Cookie都设置签名。</li>
-<li>用户收到HTTP响应后，便看不到任何敏感数据了。在此后的请求中发送该Cookie给服务器。</li>
-<li>服务器收到此后的HTTP请求后，发现Cookie中有SessionID，进行放篡改验证。</li>
-<li>如果通过了验证，根据该ID从Redis中取出对应的用户对象， 查看该对象的状态并继续执行业务逻辑。</li>
-</ol>
-<h2 id="Session安全隐患"><a href="#Session安全隐患" class="headerlink" title="Session安全隐患"></a>Session安全隐患</h2><p>Session ID作为Cookie存储在浏览器端，因此存在被劫持的风险，尤其是开发者没有正确的关闭会话。用户关闭会话时，应删除传递 Session ID 的 Cookie，同时撤销服务器端的Session内容。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/* 普通用户登出 */</span><br><span class="line">router.post(&apos;/signout&apos;, function(req, res, next) &#123;</span><br><span class="line">    if (_.isEmpty(req.body) === false) &#123;</span><br><span class="line">        req.session.account = null; // 删除session</span><br><span class="line">        res.json(&#123;</span><br><span class="line">            message: &apos;登出成功！&apos;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        res.send(406, &#123; message: &apos;The params is not correct!&apos; &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<h1 id="Token"><a href="#Token" class="headerlink" title="Token"></a>Token</h1><p>Token是用户的验证方式,最简单的token组成:uid(用户唯一的身份标识)、time(当前时间的时间戳)、sign(签名，由token的前几位+盐以哈希算法压缩成一定长的十六进制字符串，可以防止恶意第三方拼接token请求服务器)。</p>
-<h2 id="基于Token的身份验证流程"><a href="#基于Token的身份验证流程" class="headerlink" title="基于Token的身份验证流程"></a>基于Token的身份验证流程</h2><p>使用基于 Token 的身份验证方法，在服务端不需要存储用户的登录记录。大概的流程是这样的：</p>
-<ol>
-<li>客户端使用用户名跟密码请求登录</li>
-<li>服务端收到请求，去验证用户名与密码</li>
-<li>验证成功后，服务端会签发一个 Token，再把这个 Token 发送给客户端</li>
-<li>客户端收到 Token 以后可以把它存储起来，比如放在 Cookie 里或者 Local Storage 里</li>
-<li>客户端每次向服务端请求资源的时候需要带着服务端签发的 Token</li>
-<li>服务端收到请求，然后去验证客户端请求里面带着的 Token，如果验证成功，就向客户端返回请求的数据</li>
-</ol>
-<h2 id="基于Token方法的优势"><a href="#基于Token方法的优势" class="headerlink" title="基于Token方法的优势"></a>基于Token方法的优势</h2><ul>
-<li>JWT 方法允许我们进行AJAX调用任何服务器或域。由于HTTP头是用来传输用户信息的。</li>
-<li>没必要在服务器存储一个单独的session。JWT本身传达全部的信息。</li>
-<li>服务器端减少到只是一个API和可以通过CDN服务的静态资源（HTML，CSS，JS)。</li>
-<li>认证系统是手机兼容的，任何设备上可以生成令牌。</li>
-<li>由于已经消除了cookie的需要，也不再需要保护跨站请求。</li>
-<li>API密钥提供非此即彼的解决方案，然而JWT提供更颗粒度的控制，它可以用于任何调试目的的检查。</li>
-<li>API密钥依赖于中央存储和服务。JWT可以自发行或者外部服务在允许的范围和期限发布它。</li>
-</ul>
-<h2 id="JWT结构"><a href="#JWT结构" class="headerlink" title="JWT结构"></a>JWT结构</h2><p>Json web token (JWT), 是为了在网络应用环境间传递声明而执行的一种基于JSON的开放标准（(RFC 7519).该token被设计为紧凑且安全的，特别适用于分布式站点的单点登录（SSO）场景。JWT的声明一般被用来在身份提供者和服务提供者间传递被认证的用户身份信息，以便于从资源服务器获取资源，也可以增加一些额外的其它业务逻辑所必须的声明信息，该token也可直接被用于认证，也可被加密。</p>
-<p>一个JWT实际上就是一个字符串，它由三部分组成，头部、载荷与签名。</p>
-<h1 id="Cookie、Session和Token对比"><a href="#Cookie、Session和Token对比" class="headerlink" title="Cookie、Session和Token对比"></a>Cookie、Session和Token对比</h1><h2 id="cookie与session的区别"><a href="#cookie与session的区别" class="headerlink" title="cookie与session的区别"></a>cookie与session的区别</h2><ol>
-<li>cookie数据存放在客户端上，session数据放在服务器上。</li>
-<li>cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗。考虑到安全应当使用session。</li>
-<li>session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能。考虑到减轻服务器性能方面，应当使用COOKIE。</li>
-</ol>
-<h2 id="session与token的区别"><a href="#session与token的区别" class="headerlink" title="session与token的区别"></a>session与token的区别</h2><p>作为身份认证token安全性比session好，因为每个请求都有签名还能防止监听以及重放攻击。</p>
-<p>Session 是一种HTTP存储机制，目的是为无状态的HTTP提供的持久机制。Session 认证只是简单的把User 信息存储到Session 里，因为SID 的不可预测性，暂且认为是安全的。这是一种认证手段。 但是如果有了某个User的SID,就相当于拥有该User的全部权利.SID不应该共享给其他网站或第三方。</p>
-<p>Token, 如果指的是OAuth Token 或类似的机制的话，提供的是 认证 和 授权，认证是针对用户，授权是针对App。其目的是让某App有权利访问某用户的信息。这里的Token是唯一的。不可以转移到其它App上，也不可以转到其它用户上。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://wiki.jikexueyuan.com/project/node-lessons/cookie-session.html" target="_blank" rel="noopener">http://wiki.jikexueyuan.com/project/node-lessons/cookie-session.html</a>, by 极客学院.</li>
-<li><a href="https://harttle.land/2015/08/10/cookie-session.html" target="_blank" rel="noopener">https://harttle.land/2015/08/10/cookie-session.html</a>. by Harttle Land.</li>
-<li><a href="https://python.freelycode.com/contribution/detail/84" target="_blank" rel="noopener">https://python.freelycode.com/contribution/detail/84</a>. by Python部落.</li>
-<li><a href="https://www.jianshu.com/p/576dbf44b2ae" target="_blank" rel="noopener">https://www.jianshu.com/p/576dbf44b2ae</a>, by Dearmadman</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2094,7 +2023,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">45</span>
+                    <span class="site-state-item-count">48</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

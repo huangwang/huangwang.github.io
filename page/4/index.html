@@ -613,10 +613,20 @@
 <h3 id="经纬度与瓦片像素互换"><a href="#经纬度与瓦片像素互换" class="headerlink" title="经纬度与瓦片像素互换"></a>经纬度与瓦片像素互换</h3><p>转换方式与地图商采用的大地坐标系有关。国际标准的经纬度坐标是WGS84。Open Street Map、外国版的Google Map都是采用WGS84；高德地图使用的坐标系是GCJ-02；百度地图使用的坐标系是BD-09。</p>
 <h2 id="地图投影"><a href="#地图投影" class="headerlink" title="地图投影"></a>地图投影</h2><p>地图投影，是指按照一定的数学法则将地球椭球面上的经纬网转换到平面上，使地面的地理坐标与平面直角坐标建立起函数关系。这是绘制地图的数学基础之一。由于地球是一个不可展的球体，使用物理方法将其展平会引起褶皱、拉伸和断裂，因此要使用地图投影实现由曲面向平面的转化。</p>
 <h3 id="麦卡托投影法"><a href="#麦卡托投影法" class="headerlink" title="麦卡托投影法"></a>麦卡托投影法</h3><p>麦卡托投影法 (Mercator projection)，又称麦卡托投影法、正轴等角圆柱投影，是一种等角的圆柱形地图投影法。本投影法得名于法兰德斯出身的地理学家杰拉杜斯·麦卡托，他于1569年发表长202公分、宽124公分以此方式绘制的世界地图。在以此投影法绘制的地图上，经纬线于任何位置皆垂直相交，使世界地图可以绘制在一个长方形上。由于可显示任两点间的正确方位，航海用途的海图、航路图大都以此方式绘制。在该投影中线型比例尺在图中任意一点周围都保持不变，从而可以保持大陆轮廓投影后的角度和形状不变（即等角）；但麦卡托投影会使面积产生变形，极点的比例甚至达到了无穷大。</p>
-<p align="center"><br>    <img src="images/墨卡托投影示意图.jpg" width="50%" alt="墨卡托投影示意图"><br></p><br>各大地图服务商大都采用了Web Mercator进行投影，瓦片坐标系的不同主要是投影截取的地球范围不同、瓦片坐标起点不同<sup>[3]</sup>。<br><br>## 瓦片切割和瓦片坐标<br>对于经过墨卡托投影为平面的世界地图，在不同的地图分辨率(整个世界地图的像素大小)下，通过切割的方式将世界地图划分为像素为256px/256px的地图单元，划分成的每一块地图单元称为地图瓦片。其特定如下：<br><em> 具有唯一的瓦片等级（Level）和瓦片坐标编号（tileX, tileY）。
-</em> 瓦片分辨率为256<em>256。
-</em> 最小的地图等级是0，此时世界地图只由一张瓦片组成。<br><em> 瓦片等级越高，组成世界地图的瓦片数越多，可以展示的地图越详细。
-</em> 某一瓦片等级地图的瓦片是由低一级的各瓦片切割成的4个瓦片组成，形成了瓦片金字塔。<p align="center"><br>    <img src="images/瓦片金字塔.jpg" width="50%" alt="瓦片金字塔"><br></p>
+<p align="center">
+    <img src="images/墨卡托投影示意图.jpg" width="50%" alt="墨卡托投影示意图">
+</p>
+各大地图服务商大都采用了Web Mercator进行投影，瓦片坐标系的不同主要是投影截取的地球范围不同、瓦片坐标起点不同<sup>[3]</sup>。
+
+## 瓦片切割和瓦片坐标
+对于经过墨卡托投影为平面的世界地图，在不同的地图分辨率(整个世界地图的像素大小)下，通过切割的方式将世界地图划分为像素为256px/256px的地图单元，划分成的每一块地图单元称为地图瓦片。其特定如下：
+* 具有唯一的瓦片等级（Level）和瓦片坐标编号（tileX, tileY）。
+* 瓦片分辨率为256*256。
+* 最小的地图等级是0，此时世界地图只由一张瓦片组成。
+* 瓦片等级越高，组成世界地图的瓦片数越多，可以展示的地图越详细。
+* 某一瓦片等级地图的瓦片是由低一级的各瓦片切割成的4个瓦片组成，形成了瓦片金字塔。<p align="center">
+    <img src="images/瓦片金字塔.jpg" width="50%" alt="瓦片金字塔">
+</p>
 
 <h1 id="过程总结"><a href="#过程总结" class="headerlink" title="过程总结"></a>过程总结</h1><p>将自定义图像和地形以Web形式发布后，在cesium中调用自定义图像和地形很简单，代码如下，关键是图像和地形的获取和处理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var tmsImageryProvider=Cesium.createTileMapServiceImageryProvider(&#123;</span><br><span class="line">    url:&apos;http://localhost:8080/test_tms_tiles&apos;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">var terrainProvider=new Cesium.CesiumTerrainProvider(&#123;</span><br><span class="line">    url:&apos;http://localhost:8080/terrain_tiles&apos;</span><br><span class="line">&#125;);</span><br><span class="line">var viewer = new Cesium.Viewer(&apos;cesiumContainer&apos;, &#123;</span><br><span class="line">    imageryProvider : tmsImageryProvider,</span><br><span class="line">    terrainProvider: terrainProvider,</span><br><span class="line">    baseLayerPicker: false,</span><br><span class="line">    geocoder: false,</span><br><span class="line">    shadows: false,</span><br><span class="line">    shouldAnimate: true</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
 <h2 id="卫星图像的获取和处理"><a href="#卫星图像的获取和处理" class="headerlink" title="卫星图像的获取和处理"></a>卫星图像的获取和处理</h2><p>卫星图像获取可以使用一些相关软件，如水经注等。其原理通常是从一些地图服务商下载地图瓦片后重新拼接，再分割成对应格式的瓦片。拼接的图像最好输出为tif格式，因为tif格式可以在头部包含一些信息，例如地理坐标等信息，以方便后续的瓦片切割，以及被GIS系统直接识别导入。为使切割后的瓦片能够被Cesium直接调用，应采用标准TMS方式。<br>通常卫星图像下载软件提供多种瓦片分割方式，如果能直接进行标准TMS瓦片分割最好不过，如果不可以进行标准TMS分割，则可使用GDAL。<br>GDAL是地理空间数据抽象库的简称，是一个地理空间数据的格式转换及处理工具。文章最后将详细介绍其安装使用方法。使用GDAL进行卫星图像瓦片分割主要使用gdal2tiles.py工具。具体步骤如下：</p>
@@ -971,7 +981,27 @@
       
         
           
-            <center><br>作者：张若虚<br>春江潮水连海平，海上明月共潮生。<br>滟滟随波千万里，何处春江无月明？<br>江流宛转绕芳甸，月照花林皆似霰。<br>空里流霜不觉飞，汀上白沙看不见。<br>江天一色无纤尘，皎皎空中孤月轮。<br>江畔何人初见月，江月何年初照人？<br>人生代代无穷已，江月年年祇相似。<br>不知江月待何人？但见长江送流水。<br>白云一片去悠悠，青枫浦上不胜愁。<br>谁家今夜扁舟子，何处相思明月楼？<br>可怜楼上月徘徊，应照离人妆镜台。<br>玉户帘中卷不去，捣衣砧上拂还来。<br>此时相望不相闻，愿逐月华流照君。<br>鸿雁长飞光不度，鱼龙潜跃水成文。<br>昨夜闲潭梦落花，可怜春半不还家。<br>江水流春去欲尽，江潭落月复西斜。<br>斜月沉沉藏海雾，碣石潇湘无限路。<br>不知乘月几人归，落月摇情满江树。<br></center>
+            <center>
+作者：张若虚
+春江潮水连海平，海上明月共潮生。
+滟滟随波千万里，何处春江无月明？
+江流宛转绕芳甸，月照花林皆似霰。
+空里流霜不觉飞，汀上白沙看不见。
+江天一色无纤尘，皎皎空中孤月轮。
+江畔何人初见月，江月何年初照人？
+人生代代无穷已，江月年年祇相似。
+不知江月待何人？但见长江送流水。
+白云一片去悠悠，青枫浦上不胜愁。
+谁家今夜扁舟子，何处相思明月楼？
+可怜楼上月徘徊，应照离人妆镜台。
+玉户帘中卷不去，捣衣砧上拂还来。
+此时相望不相闻，愿逐月华流照君。
+鸿雁长飞光不度，鱼龙潜跃水成文。
+昨夜闲潭梦落花，可怜春半不还家。
+江水流春去欲尽，江潭落月复西斜。
+斜月沉沉藏海雾，碣石潇湘无限路。
+不知乘月几人归，落月摇情满江树。
+</center>
           
         
       
@@ -1422,7 +1452,7 @@
       
         
           
-            <p>matplotlib 是Python编程语言及其数值数学扩展包 NumPy的可视化操作界面。它为利用通用的图形用户界面工具包，如Tkinter, wxPython, Qt或GTK+向应用程序嵌入式绘图提供了应用程序接口（API）。此外，matplotlib还有一个基于图像处理库（如开放图形库OpenGL）的pylab接口，其设计与MATLAB非常类似–尽管并不怎么好用。SciPy就是用matplotlib进行图形绘制。</p>
+            <p>matplotlib 是Python编程语言及其数值数学扩展包 NumPy的可视化操作界面。它为利用通用的图形用户界面工具包，如Tkinter, wxPython, Qt或GTK+向应用程序嵌入式绘图提供了应用程序接口（API）。此外，matplotlib还有一个基于图像处理库（如开放图形库OpenGL）的pylab接口，其设计与MATLAB非常类似—尽管并不怎么好用。SciPy就是用matplotlib进行图形绘制。</p>
 <h1 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h1><p>使用plt.figure定义一个图像窗口。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line">x = np.linspace(-1, 1, 50)</span><br><span class="line">y = 2*x + 1</span><br><span class="line">plt.figure() </span><br><span class="line">plt.plot(x, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
 <h2 id="设置坐标轴"><a href="#设置坐标轴" class="headerlink" title="设置坐标轴"></a>设置坐标轴</h2><p>使用plt.xlim设置x坐标轴范围：(-1, 2)； 使用plt.ylim设置y坐标轴范围：(-2, 3)；<br>使用plt.xlabel设置x坐标轴名称：’I am x’； 使用plt.ylabel设置y坐标轴名称：’I am y’；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line">plt.xlabel(&apos;I am x&apos;)</span><br><span class="line">plt.ylabel(&apos;I am y&apos;)</span><br></pre></td></tr></table></figure></p>
 <p>使用np.linspace定义范围以及个数：范围是(-1,2);个数是5. 使用print打印出新定义的范围. 使用plt.xticks设置x轴刻度：范围是(-1,2);个数是5.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">new_ticks = np.linspace(-1, 2, 5)</span><br><span class="line">print(new_ticks)</span><br><span class="line">plt.xticks(new_ticks)</span><br></pre></td></tr></table></figure></p>
@@ -1611,8 +1641,8 @@
 </ul>
 <h2 id="解析用户的输入"><a href="#解析用户的输入" class="headerlink" title="解析用户的输入"></a>解析用户的输入</h2><ul>
 <li><p>在python2.x中raw_input()和input()，两个函数都存在，其中区别为</p>
-<p>  raw_input()—将所有输入作为字符串看待，返回字符串类型</p>
-<p>  input()—–只能接收“数字”的输入，在对待纯数字输入时具有自己的特性，它返回所输入的数字的类型（int, float）</p>
+<p>  raw_input()—-将所有输入作为字符串看待，返回字符串类型</p>
+<p>  input()——-只能接收“数字”的输入，在对待纯数字输入时具有自己的特性，它返回所输入的数字的类型（int, float）</p>
 </li>
 <li><p>在python3.x中raw_input()和input()进行了整合，去除了raw_input()，仅保留了input()函数，其接收任意任性输入，将所有输入默认为字符串处理，并返回字符串类型。</p>
 </li>

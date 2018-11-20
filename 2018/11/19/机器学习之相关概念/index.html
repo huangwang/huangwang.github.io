@@ -116,7 +116,7 @@
 <meta property="og:image" content="https://huangwang.github.io/2018/11/19/机器学习之相关概念/images/WorkflowWithValidationSet.svg">
 <meta property="og:image" content="https://huangwang.github.io/2018/11/19/机器学习之相关概念/images/OneHotEncoding.svg">
 <meta property="og:image" content="https://huangwang.github.io/2018/11/19/机器学习之相关概念/images/RegularizationTwoLossFunctions.svg">
-<meta property="og:updated_time" content="2018-11-20T10:12:23.242Z">
+<meta property="og:updated_time" content="2018-11-20T10:14:31.228Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习之相关概念">
 <meta name="twitter:description" content="机器学习是人工智能的一个分支。人工智能的研究历史有着一条从以“推理”为重点，到以“知识”为重点，再到以“学习”为重点的自然、清晰的脉络。显然，机器学习是实现人工智能的一个途径，即以机器学习为手段解决人工智能中的问题。 定义机器学习有下面几种定义：  机器学习是一门人工智能的科学，该领域的主要研究对象是人工智能，特别是如何在经验学习中改善具体算法的性能。 机器学习是对能通过经验自动改进的计算机算法的">
@@ -383,7 +383,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-11-20 18:12:23" itemprop="dateModified" datetime="2018-11-20T18:12:23+08:00">2018-11-20</time>
+                <time title="修改时间：2018-11-20 18:14:31" itemprop="dateModified" datetime="2018-11-20T18:14:31+08:00">2018-11-20</time>
               
             
           </span>
@@ -522,54 +522,40 @@ MSE = \frac{1}{N} \sum_{(x,y)\in D} (y - prediction(x))^2</script><p>其中：</
     <img src="images/GradientDescentGradientStep.svg" width="90%" alt="一个梯度步长将我们移动到损失曲线上的下一个点">
 </p><p></p>
 <center>图3 一个梯度步长将我们移动到损失曲线上的下一个点</center>
-然后，梯度下降法会重复此过程，逐渐接近最低点。
 
-### 学习速率
-梯度下降法算法用梯度乘以一个称为<strong>学习速率</strong>（有时也称为步长）的标量，以确定下一个点的位置。例如，如果梯度大小为 2.5，学习速率为 0.01，则梯度下降法算法会选择距离前一个点 0.025 的位置作为下一个点。
-
-<strong>超参数</strong>是编程人员在机器学习算法中用于调整的旋钮。大多数机器学习编程人员会花费相当多的时间来调整学习速率。如果您选择的学习速率过小，就会花费太长的学习时间。如果您指定的学习速率过大，下一个点将永远在 U 形曲线的底部随意弹跳。
-
-### 随机梯度下降法
-
-在梯度下降法中，<strong>批量</strong>指的是用于在单次迭代中计算梯度的样本总数。到目前为止，我们一直假定批量是指整个数据集。就 Google 的规模而言，数据集通常包含数十亿甚至数千亿个样本。此外，Google 数据集通常包含海量特征。因此，一个批量可能相当巨大。如果是超大批量，则单次迭代就可能要花费很长时间进行计算。
-
-通过从我们的数据集中随机选择样本，我们可以通过小得多的数据集估算（尽管过程非常杂乱）出较大的平均值。 随机梯度下降法 (SGD) 将这种想法运用到极致，它每次迭代只使用一个样本（批量大小为 1）。如果进行足够的迭代，SGD 也可以发挥作用，但过程会非常杂乱。“随机”这一术语表示构成各个批量的一个样本都是随机选择的。
-
-小批量随机梯度下降法（小批量 SGD）是介于全批量迭代与 SGD 之间的折衷方案。小批量通常包含 10-1000 个随机选择的样本。小批量 SGD 可以减少 SGD 中的杂乱样本数量，但仍然比全批量更高效。
-
-## 泛化(Generalization)
-
-泛化是指机器学习对从真实概率分布（已隐藏）中抽取的新数据做出良好预测的能力。要取得良好的泛化能力，机器学习必须满足以下基本假设，同时防止过拟合。
-
-* 机器学习的基本假设：
-
-    * 从分布中随机抽取独立同分布 (i.i.d) 的样本。换言之，样本之间不会互相影响。（另一种解释：i.i.d. 是表示变量随机性的一种方式）。
-    * 分布是平稳的；即分布在数据集内不会发生变化。
-    * 从同一分布的数据划分中抽取样本。
-
-* <strong>过拟合</strong>模型在训练过程中产生的损失很低，但在预测新数据方面的表现却非常糟糕。
-
-## 训练集与测试集
-
-机器学习模型旨在根据以前未见过的新数据做出良好预测。但是，如果您要根据数据集构建模型，如何获得以前未见过的数据呢？一种方法是将您的数据集分成两个子集：
-
-* 训练集 - 用于训练模型的子集。
-* 测试集 - 用于测试模型的子集。
-
-测试集应满足以下两个条件：
-
-* 规模足够大，可产生具有统计意义的结果。
-* 能代表整个数据集。换言之，挑选的测试集的特征应该与训练集的特征相同。
-
-## 验证集
-
-将数据集划分为训练集和测试集两个子集是个不错的想法，但不是万能良方。通过将数据集划分为训练集、验证集、测试集三个子集，可以大幅降低过拟合的发生几率。
-
-使用验证集评估训练集的效果。然后，在模型“通过”验证集之后，使用测试集再次检查评估结果。图4展示了这一新工作流程：
-
-<p align="center">
+<p>然后，梯度下降法会重复此过程，逐渐接近最低点。</p>
+<h3 id="学习速率"><a href="#学习速率" class="headerlink" title="学习速率"></a>学习速率</h3><p>梯度下降法算法用梯度乘以一个称为<strong>学习速率</strong>（有时也称为步长）的标量，以确定下一个点的位置。例如，如果梯度大小为 2.5，学习速率为 0.01，则梯度下降法算法会选择距离前一个点 0.025 的位置作为下一个点。</p>
+<p><strong>超参数</strong>是编程人员在机器学习算法中用于调整的旋钮。大多数机器学习编程人员会花费相当多的时间来调整学习速率。如果您选择的学习速率过小，就会花费太长的学习时间。如果您指定的学习速率过大，下一个点将永远在 U 形曲线的底部随意弹跳。</p>
+<h3 id="随机梯度下降法"><a href="#随机梯度下降法" class="headerlink" title="随机梯度下降法"></a>随机梯度下降法</h3><p>在梯度下降法中，<strong>批量</strong>指的是用于在单次迭代中计算梯度的样本总数。到目前为止，我们一直假定批量是指整个数据集。就 Google 的规模而言，数据集通常包含数十亿甚至数千亿个样本。此外，Google 数据集通常包含海量特征。因此，一个批量可能相当巨大。如果是超大批量，则单次迭代就可能要花费很长时间进行计算。</p>
+<p>通过从我们的数据集中随机选择样本，我们可以通过小得多的数据集估算（尽管过程非常杂乱）出较大的平均值。 随机梯度下降法 (SGD) 将这种想法运用到极致，它每次迭代只使用一个样本（批量大小为 1）。如果进行足够的迭代，SGD 也可以发挥作用，但过程会非常杂乱。“随机”这一术语表示构成各个批量的一个样本都是随机选择的。</p>
+<p>小批量随机梯度下降法（小批量 SGD）是介于全批量迭代与 SGD 之间的折衷方案。小批量通常包含 10-1000 个随机选择的样本。小批量 SGD 可以减少 SGD 中的杂乱样本数量，但仍然比全批量更高效。</p>
+<h2 id="泛化-Generalization"><a href="#泛化-Generalization" class="headerlink" title="泛化(Generalization)"></a>泛化(Generalization)</h2><p>泛化是指机器学习对从真实概率分布（已隐藏）中抽取的新数据做出良好预测的能力。要取得良好的泛化能力，机器学习必须满足以下基本假设，同时防止过拟合。</p>
+<ul>
+<li><p>机器学习的基本假设：</p>
+<ul>
+<li>从分布中随机抽取独立同分布 (i.i.d) 的样本。换言之，样本之间不会互相影响。（另一种解释：i.i.d. 是表示变量随机性的一种方式）。</li>
+<li>分布是平稳的；即分布在数据集内不会发生变化。</li>
+<li>从同一分布的数据划分中抽取样本。</li>
+</ul>
+</li>
+<li><p><strong>过拟合</strong>模型在训练过程中产生的损失很低，但在预测新数据方面的表现却非常糟糕。</p>
+</li>
+</ul>
+<h2 id="训练集与测试集"><a href="#训练集与测试集" class="headerlink" title="训练集与测试集"></a>训练集与测试集</h2><p>机器学习模型旨在根据以前未见过的新数据做出良好预测。但是，如果您要根据数据集构建模型，如何获得以前未见过的数据呢？一种方法是将您的数据集分成两个子集：</p>
+<ul>
+<li>训练集 - 用于训练模型的子集。</li>
+<li>测试集 - 用于测试模型的子集。</li>
+</ul>
+<p>测试集应满足以下两个条件：</p>
+<ul>
+<li>规模足够大，可产生具有统计意义的结果。</li>
+<li>能代表整个数据集。换言之，挑选的测试集的特征应该与训练集的特征相同。</li>
+</ul>
+<h2 id="验证集"><a href="#验证集" class="headerlink" title="验证集"></a>验证集</h2><p>将数据集划分为训练集和测试集两个子集是个不错的想法，但不是万能良方。通过将数据集划分为训练集、验证集、测试集三个子集，可以大幅降低过拟合的发生几率。</p>
+<p>使用验证集评估训练集的效果。然后，在模型“通过”验证集之后，使用测试集再次检查评估结果。图4展示了这一新工作流程：</p>
+<p></p><p align="center">
     <img src="images/WorkflowWithValidationSet.svg" width="90%" alt="使用验证集的工作流程">
-</p>
+</p><p></p>
 <center>图4 使用验证集的工作流程</center>
 
 <h2 id="特征表示"><a href="#特征表示" class="headerlink" title="特征表示"></a>特征表示</h2><p>特征工程指的是将原始数据转换为特征矢量。进行特征工程预计需要大量时间。</p>
@@ -888,7 +874,7 @@ MSE = \frac{1}{N} \sum_{(x,y)\in D} (y - prediction(x))^2</script><p>其中：</
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#定义"><span class="nav-number">1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分类"><span class="nav-number">2.</span> <span class="nav-text">分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#机器学习术语"><span class="nav-number">3.</span> <span class="nav-text">机器学习术语</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#标签"><span class="nav-number">3.1.</span> <span class="nav-text">标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征"><span class="nav-number">3.2.</span> <span class="nav-text">特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#样本"><span class="nav-number">3.3.</span> <span class="nav-text">样本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型"><span class="nav-number">3.4.</span> <span class="nav-text">模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回归与分类"><span class="nav-number">3.5.</span> <span class="nav-text">回归与分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失"><span class="nav-number">3.6.</span> <span class="nav-text">损失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代方法"><span class="nav-number">3.7.</span> <span class="nav-text">迭代方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度下降法"><span class="nav-number">3.7.1.</span> <span class="nav-text">梯度下降法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征表示"><span class="nav-number">3.8.</span> <span class="nav-text">特征表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#良好特征的特点"><span class="nav-number">3.8.1.</span> <span class="nav-text">良好特征的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#清理数据"><span class="nav-number">3.8.2.</span> <span class="nav-text">清理数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则化"><span class="nav-number">3.9.</span> <span class="nav-text">正则化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#定义"><span class="nav-number">1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分类"><span class="nav-number">2.</span> <span class="nav-text">分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#机器学习术语"><span class="nav-number">3.</span> <span class="nav-text">机器学习术语</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#标签"><span class="nav-number">3.1.</span> <span class="nav-text">标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征"><span class="nav-number">3.2.</span> <span class="nav-text">特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#样本"><span class="nav-number">3.3.</span> <span class="nav-text">样本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型"><span class="nav-number">3.4.</span> <span class="nav-text">模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回归与分类"><span class="nav-number">3.5.</span> <span class="nav-text">回归与分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失"><span class="nav-number">3.6.</span> <span class="nav-text">损失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代方法"><span class="nav-number">3.7.</span> <span class="nav-text">迭代方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度下降法"><span class="nav-number">3.7.1.</span> <span class="nav-text">梯度下降法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#学习速率"><span class="nav-number">3.7.2.</span> <span class="nav-text">学习速率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#随机梯度下降法"><span class="nav-number">3.7.3.</span> <span class="nav-text">随机梯度下降法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#泛化-Generalization"><span class="nav-number">3.8.</span> <span class="nav-text">泛化(Generalization)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练集与测试集"><span class="nav-number">3.9.</span> <span class="nav-text">训练集与测试集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证集"><span class="nav-number">3.10.</span> <span class="nav-text">验证集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征表示"><span class="nav-number">3.11.</span> <span class="nav-text">特征表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#良好特征的特点"><span class="nav-number">3.11.1.</span> <span class="nav-text">良好特征的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#清理数据"><span class="nav-number">3.11.2.</span> <span class="nav-text">清理数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则化"><span class="nav-number">3.12.</span> <span class="nav-text">正则化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

@@ -377,7 +377,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-11-20 23:18:49" itemprop="dateModified" datetime="2018-11-20T23:18:49+08:00">2018-11-20</time>
+                <time title="修改时间：2018-11-20 23:29:03" itemprop="dateModified" datetime="2018-11-20T23:29:03+08:00">2018-11-20</time>
               
             
           </span>
@@ -424,13 +424,13 @@
 <ul>
 <li>监督学习：从给定的训练数据集中学习出一个函数，当新的数据到来时，可以根据这个函数预测结果。监督学习的训练集要求是包括输入和输出，也可以说是特征和目标。训练集中的目标是由人标注的。常见的监督学习算法包括回归分析和统计分类。</li>
 </ul>
-<p>监督学习和非监督学习的差别就是训练集目标是否人标注。他们都有训练集 且都有输入和输出</p>
+<p>监督学习和非监督学习的差别就是训练集目标是否人标注。他们都有训练集且都有输入和输出。</p>
 <ul>
 <li>无监督学习：与监督学习相比，训练集没有人为标注的结果。常见的无监督学习算法有生成对抗网络（GAN）、聚类。</li>
 <li>半监督学习：介于监督学习与无监督学习之间。</li>
 <li>强化学习：通过观察来学习做成如何的动作。每个动作都会对环境有所影响，学习对象根据观察到的周围环境的反馈来做出判断。</li>
 </ul>
-<h1 id="机器学习术语"><a href="#机器学习术语" class="headerlink" title="机器学习术语"></a>机器学习术语</h1><h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><p>标签是我们要预测的事物，即简单线性回归中的 y 变量。标签可以是小麦未来的价格、图片中显示的动物品种、音频剪辑的含义或任何事物。</p>
+<h1 id="机器学习基础"><a href="#机器学习基础" class="headerlink" title="机器学习基础"></a>机器学习基础</h1><h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><p>标签是我们要预测的事物，即简单线性回归中的 y 变量。标签可以是小麦未来的价格、图片中显示的动物品种、音频剪辑的含义或任何事物。</p>
 <h2 id="特征"><a href="#特征" class="headerlink" title="特征"></a>特征</h2><p>特征是输入变量，即简单线性回归中的 x 变量。简单的机器学习项目可能会使用单个特征，而比较复杂的机器学习项目可能会使用数百万个特征，按如下方式指定：</p>
 <script type="math/tex; mode=display">\{ x_1,x_2,...x_N \}</script><p>在垃圾邮件检测器示例中，特征可能包括：</p>
 <ul>
@@ -555,41 +555,36 @@ MSE = \frac{1}{N} \sum_{(x,y)\in D} (y - prediction(x))^2</script><p>其中：</
 </p><p></p>
 <center>图5 通过独热编码映射字符串值</center>
 
-<h3 id="良好特征的特点"><a href="#良好特征的特点" class="headerlink" title="良好特征的特点"></a>良好特征的特点</h3><ol>
+<h3 id="良好特征的特点"><a href="#良好特征的特点" class="headerlink" title="良好特征的特点"></a>良好特征的特点</h3><ul>
 <li>避免很少使用的离散特征值。</li>
-</ol>
+</ul>
 <p>良好的特征值应该在数据集中出现大约 5 次以上。这样一来，模型就可以学习该特征值与标签是如何关联的。</p>
-<ol>
+<ul>
 <li>最好具有清晰明确的含义。</li>
-</ol>
+</ul>
 <p>每个特征对于项目中的任何人来说都应该具有清晰明确的含义。例如，下面的房龄适合作为特征，可立即识别为年龄：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">house_age: 27</span><br></pre></td></tr></table></figure></p>
-<ol>
+<ul>
 <li>不要将“神奇”的值与实际数据混为一谈</li>
-</ol>
+</ul>
 <p>良好的浮点特征不包含超出范围的异常断点或“神奇”的值。例如，假设一个特征具有 0 到 1 之间的浮点值。那么，如下值是可以接受的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">quality_rating: 0.82</span><br><span class="line">quality_rating: 0.37</span><br></pre></td></tr></table></figure></p>
 <p>不过，如果用户没有输入 quality_rating，则数据集可能使用如下神奇值来表示不存在该值：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">quality_rating: -1</span><br></pre></td></tr></table></figure></p>
-<p>为解决神奇值的问题，需将该特征转换为两个特征：</p>
+<p>为解决神奇值的问题，需将该特征转换为两个特征：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">一个特征只存储质量评分，不含神奇值。</span><br><span class="line"></span><br><span class="line">一个特征存储布尔值，表示是否提供了 quality_rating。为该布尔值特征指定一个名称，例如 is_quality_rating_defined。</span><br></pre></td></tr></table></figure></p>
 <ul>
-<li>一个特征只存储质量评分，不含神奇值。</li>
-<li>一个特征存储布尔值，表示是否提供了 quality_rating。为该布尔值特征指定一个名称，例如 is_quality_rating_defined。</li>
-</ul>
-<ol>
 <li>考虑上游不稳定性</li>
-</ol>
+</ul>
 <p>特征的定义不应随时间发生变化。例如，下列值是有用的，因为城市名称一般不会改变。（注意，我们仍然需要将“br/sao_paulo”这样的字符串转换为独热矢量。）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">city_id: &quot;br/sao_paulo&quot;</span><br></pre></td></tr></table></figure></p>
 <p>但收集由其他模型推理的值会产生额外成本。可能值“219”目前代表圣保罗，但这种表示在未来运行其他模型时可能轻易发生变化：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inferred_city_cluster: &quot;219&quot;</span><br></pre></td></tr></table></figure></p>
 <h3 id="清理数据"><a href="#清理数据" class="headerlink" title="清理数据"></a>清理数据</h3><p>即使是非常少量的坏样本会破坏掉一个大规模数据集，因此需花费大量的时间挑出坏样本并加工可以挽救的样本。</p>
 <ol>
-<li>缩放特征值</li>
-</ol>
-<p>缩放是指将浮点特征值从自然范围（例如 100 到 900）转换为标准范围（例如 0 到 1 或 -1 到 +1）。如果特征集包含多个特征，则缩放特征可以带来以下优势：</p>
+<li><p>缩放特征值: 缩放是指将浮点特征值从自然范围（例如 100 到 900）转换为标准范围（例如 0 到 1 或 -1 到 +1）。如果特征集包含多个特征，则缩放特征可以带来以下优势：</p>
 <ul>
 <li>帮助梯度下降法更快速地收敛。</li>
 <li>帮助避免“NaN 陷阱”。</li>
 <li>帮助模型为每个特征确定合适的权重。</li>
 </ul>
-<ol>
-<li>处理极端离群值<ul>
+</li>
+<li><p>处理极端离群值</p>
+<ul>
 <li>对每个值取对数</li>
 <li>将最大值“限制”为某个任意值</li>
 </ul>
@@ -640,10 +635,11 @@ MSE = \frac{1}{N} \sum_{(x,y)\in D} (y - prediction(x))^2</script><p>其中：</
 <p>L2 和 L1 采用不同的方式降低权重：</p>
 <ul>
 <li>L2 会降低权重<sup>2</sup>。</li>
-<li><p>L1 会降低 |权重|。<br>因此，L2 和 L1 具有不同的导数：</p>
-</li>
-<li><p>L2 的导数为 2 * 权重。</p>
-</li>
+<li>L1 会降低 |权重|。</li>
+</ul>
+<p>因此，L2 和 L1 具有不同的导数：</p>
+<ul>
+<li>L2 的导数为 2 * 权重。</li>
 <li>L1 的导数为 k（一个常数，其值与权重无关）。</li>
 </ul>
 <h2 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h2><p>许多问题需要将概率估算值作为输出。逻辑回归是一种极其高效的概率计算机制。实际上，您可以通过下两种方式之一使用返回的概率：</p>

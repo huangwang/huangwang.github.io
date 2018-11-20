@@ -377,7 +377,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-11-20 18:14:31" itemprop="dateModified" datetime="2018-11-20T18:14:31+08:00">2018-11-20</time>
+                <time title="修改时间：2018-11-20 23:18:49" itemprop="dateModified" datetime="2018-11-20T23:18:49+08:00">2018-11-20</time>
               
             
           </span>
@@ -589,14 +589,12 @@ MSE = \frac{1}{N} \sum_{(x,y)\in D} (y - prediction(x))^2</script><p>其中：</
 <li>帮助模型为每个特征确定合适的权重。</li>
 </ul>
 <ol>
-<li><p>处理极端离群值</p>
-<ul>
+<li>处理极端离群值<ul>
 <li>对每个值取对数</li>
 <li>将最大值“限制”为某个任意值</li>
 </ul>
 </li>
-<li><p>分箱</p>
-</li>
+<li>分箱</li>
 <li>清查</li>
 </ol>
 <p>数据集中的很多样本是不可靠的，原因有以下一种或多种：</p>
@@ -613,6 +611,135 @@ MSE = \frac{1}{N} \sum_{(x,y)\in D} (y - prediction(x))^2</script><p>其中：</
 <center>图6 训练集和验证集损失</center>
 
 <p>图6显示的是某个模型的训练损失逐渐减少，但验证损失最终增加。换言之，该泛化曲线显示该模型与训练集中的数据过拟合。根据奥卡姆剃刀定律，或许我们可以通过降低复杂模型的复杂度来防止过拟合，这种原则称为正则化。</p>
+<p>正则化以最小化损失和复杂度为目标，这称为结构风险最小化：</p>
+<script type="math/tex; mode=display">\text{minimize(Loss(Data|Model) + complexity(Model))}</script><p>现在，训练优化算法是一个由两项内容组成的函数：一个是损失项，用于衡量模型与数据的拟合度，另一个是正则化项，用于衡量模型复杂度。</p>
+<p>有两种常用衡量模型复杂度的方法：</p>
+<ul>
+<li>将模型复杂度作为模型中所有特征的权重的函数。</li>
+<li>将模型复杂度作为具有非零权重的特征总数的函数。</li>
+</ul>
+<p>如果模型复杂度是权重的函数，则特征权重的绝对值越高，对模型复杂度的贡献就越大。</p>
+<h3 id="L2正则化"><a href="#L2正则化" class="headerlink" title="L2正则化"></a>L2正则化</h3><p>可以使用 L2 正则化公式来量化复杂度，该公式将正则化项定义为所有特征权重的平方和：</p>
+<script type="math/tex; mode=display">L_2\text{ regularization term} = ||\boldsymbol w||_2^2 = {w_1^2 + w_2^2 + ... + w_n^2}</script><p>在这个公式中，接近于 0 的权重对模型复杂度几乎没有影响，而离群值权重则可能会产生巨大的影响。</p>
+<p>模型开发者通过以下方式来调整正则化项的整体影响：用正则化项的值乘以名为 lambda（又称为正则化率）的标量。也就是说，模型开发者会执行以下运算：</p>
+<script type="math/tex; mode=display">\text{minimize(Loss(Data|Model)} + \lambda \text{ complexity(Model))}</script><p>执行 L2 正则化对模型具有以下影响:</p>
+<ul>
+<li>使权重值接近于 0（但并非正好为 0）</li>
+<li>使权重的平均值接近于 0，且呈正态（钟形曲线或高斯曲线）分布。</li>
+</ul>
+<p>在选择 lambda 值时，目标是在简单化和训练数据拟合之间达到适当的平衡：</p>
+<ul>
+<li><p>如果您的 lambda 值过高，则模型会非常简单，但是您将面临数据欠拟合的风险。您的模型将无法从训练数据中获得足够的信息来做出有用的预测。</p>
+</li>
+<li><p>如果您的 lambda 值过低，则模型会比较复杂，并且您将面临数据过拟合的风险。您的模型将因获得过多训练数据特点方面的信息而无法泛化到新数据。</p>
+</li>
+</ul>
+<h3 id="L1正则化"><a href="#L1正则化" class="headerlink" title="L1正则化"></a>L1正则化</h3><p>稀疏矢量通常包含许多维度。创建特征组合会导致包含更多维度。由于使用此类高维度特征矢量，因此模型可能会非常庞大，并且需要大量的 RAM。</p>
+<p>在高维度稀疏矢量中，最好尽可能使权重正好降至 0。正好为 0 的权重基本上会使相应特征从模型中移除。 将特征设为 0 可节省 RAM 空间，且可以减少模型中的噪点。</p>
+<p>L1 正则化使模型中很多信息缺乏的系数正好为 0，从而在推理时节省 RAM，同时具有凸优化的优势，可有效进行计算。</p>
+<p>L2 和 L1 采用不同的方式降低权重：</p>
+<ul>
+<li>L2 会降低权重<sup>2</sup>。</li>
+<li><p>L1 会降低 |权重|。<br>因此，L2 和 L1 具有不同的导数：</p>
+</li>
+<li><p>L2 的导数为 2 * 权重。</p>
+</li>
+<li>L1 的导数为 k（一个常数，其值与权重无关）。</li>
+</ul>
+<h2 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h2><p>许多问题需要将概率估算值作为输出。逻辑回归是一种极其高效的概率计算机制。实际上，您可以通过下两种方式之一使用返回的概率：</p>
+<ul>
+<li>“按原样”</li>
+<li>转换成二元类别。</li>
+</ul>
+<p>在很多情况下，您会将逻辑回归输出映射到二元分类问题的解决方案，该二元分类问题的目标是正确预测两个可能的标签（例如，“垃圾邮件”或“非垃圾邮件”）中的一个。</p>
+<p>您可能想知道逻辑回归模型如何确保输出值始终落在 0 和 1 之间。巧合的是，S 型函数生成的输出值正好具有这些特性，其定义如下：</p>
+<script type="math/tex; mode=display">y = \frac{1}{1 + e^{-z}}</script><p>S 型函数会产生以下曲线图：</p>
+<p></p><p align="center">
+    <img src="images/SigmoidFunction.png" width="90%" alt="S 型函数">
+</p><p></p>
+<center>图7 S 型函数</center>
+
+<p>如果 z 表示使用逻辑回归训练的模型的线性层的输出，则 S 型(z) 函数会生成一个介于 0 和 1 之间的值（概率）。用数学方法表示为：</p>
+<script type="math/tex; mode=display">y' = \frac{1}{1 + e^{-(z)}}</script><p>其中：</p>
+<ul>
+<li>y’ 是逻辑回归模型针对特定样本的输出。</li>
+<li>z 是 b + w<sub>1</sub>x<sub>1</sub> + w<sub>2</sub>x<sub>2</sub> + … w<sub>N</sub>x<sub>N</sub><ul>
+<li>“w”值是该模型学习的权重和偏差。</li>
+<li>“x”值是特定样本的特征值。</li>
+</ul>
+</li>
+</ul>
+<p>请注意，z 也称为对数几率，因为 S 型函数的反函数表明，z 可定义为标签“1”（例如“狗叫”）的概率除以标签“0”（例如“狗不叫”）的概率得出的值的对数：</p>
+<script type="math/tex; mode=display">z = log(\frac{y}{1-y})</script><h3 id="逻辑回归模型训练"><a href="#逻辑回归模型训练" class="headerlink" title="逻辑回归模型训练"></a>逻辑回归模型训练</h3><p>线性回归的损失函数是平方损失。逻辑回归的损失函数是对数损失函数，定义如下：</p>
+<script type="math/tex; mode=display">Log Loss = \sum_{(x,y)\in D} -ylog(y') - (1 - y)log(1 - y')</script><p>其中：</p>
+<ul>
+<li>(xy)ϵD 是包含很多有标签样本 (x,y) 的数据集。</li>
+<li>“y”是有标签样本中的标签。由于这是逻辑回归，因此“y”的每个值必须是 0 或 1。</li>
+<li>“y’”是对于特征集“x”的预测值（介于 0 和 1 之间）。</li>
+</ul>
+<p>对数损失函数的方程式与 Shannon 信息论中的熵测量密切相关。它也是似然函数的负对数（假设“y”属于伯努利分布）。实际上，最大限度地降低损失函数的值会生成最大的似然估计值。</p>
+<p>正则化在逻辑回归建模中极其重要。如果没有正则化，逻辑回归的渐近性会不断促使损失在高维度空间内达到 0。因此，大多数逻辑回归模型会使用以下两个策略之一来降低模型复杂性：</p>
+<ul>
+<li>L2 正则化。</li>
+<li>早停法，即，限制训练步数或学习速率。</li>
+</ul>
+<h2 id="分类-1"><a href="#分类-1" class="headerlink" title="分类"></a>分类</h2><h3 id="指定阈值"><a href="#指定阈值" class="headerlink" title="指定阈值"></a>指定阈值</h3><p>为了将逻辑回归值映射到二元类别，您必须指定分类阈值（也称为判定阈值）。如果值高于该阈值，则表示“垃圾邮件”；如果值低于该阈值，则表示“非垃圾邮件”。人们往往会认为分类阈值应始终为 0.5，但阈值取决于具体问题，因此您必须对其进行调整。</p>
+<h3 id="真与假以及正类别与负类别"><a href="#真与假以及正类别与负类别" class="headerlink" title="真与假以及正类别与负类别"></a>真与假以及正类别与负类别</h3><ul>
+<li>真正例是指模型将正类别样本正确地预测为正类别。</li>
+<li>真负例是指模型将负类别样本正确地预测为负类别。</li>
+<li>假正例是指模型将负类别样本错误地预测为正类别</li>
+<li>假负例是指模型将正类别样本错误地预测为负类别。</li>
+</ul>
+<h3 id="准确率"><a href="#准确率" class="headerlink" title="准确率"></a>准确率</h3><p>准确率是一个用于评估分类模型的指标。通俗来说，准确率是指我们的模型预测正确的结果所占的比例。正式点说，准确率的定义如下：</p>
+<script type="math/tex; mode=display">\text{Accuracy} = \frac{\text{Number of correct predictions}}{\text{Total number of predictions}}</script><p>对于二元分类，也可以根据正类别和负类别按如下方式计算准确率：</p>
+<script type="math/tex; mode=display">\text{Accuracy} = \frac{TP+TN}{TP+TN+FP+FN}</script><p>其中，TP = 真正例，TN = 真负例，FP = 假正例，FN = 假负例。</p>
+<h3 id="精确率和召回率"><a href="#精确率和召回率" class="headerlink" title="精确率和召回率"></a>精确率和召回率</h3><p>当使用分类不平衡的数据集（比如正类别标签和负类别标签的数量之间存在明显差异）时，单单准确率一项并不能反映全面情况。这时需要能够更好地评估分类不平衡问题的指标：精确率和召回率。</p>
+<p>精确率的定义如下：</p>
+<script type="math/tex; mode=display">\text{Precision} = \frac{TP}{TP+FP}</script><p>从数学上讲，召回率的定义如下：</p>
+<script type="math/tex; mode=display">\text{Recall} = \frac{TP}{TP+FN}</script><p>要全面评估模型的有效性，必须同时检查精确率和召回率。遗憾的是，精确率和召回率往往是此消彼长的情况。</p>
+<h3 id="ROC-和曲线下面积"><a href="#ROC-和曲线下面积" class="headerlink" title="ROC 和曲线下面积"></a>ROC 和曲线下面积</h3><p>ROC 曲线（接收者操作特征曲线）是一种显示分类模型在所有分类阈值下的效果的图表。该曲线绘制了以下两个参数：</p>
+<ul>
+<li>真正例率</li>
+<li>假正例率</li>
+</ul>
+<p>真正例率 (TPR) 是召回率的同义词，因此定义如下：</p>
+<script type="math/tex; mode=display">TPR = \frac{TP} {TP + FN}</script><p>假正例率 (FPR) 的定义如下：</p>
+<script type="math/tex; mode=display">FPR = \frac{FP} {FP + TN}</script><p>ROC 曲线用于绘制采用不同分类阈值时的 TPR 与 FPR。降低分类阈值会导致将更多样本归为正类别，从而增加假正例和真正例的个数。下图显示了一个典型的 ROC 曲线。</p>
+<p></p><p align="center">
+    <img src="images/ROCCurve.svg" width="90%" alt="不同分类阈值下的 TP 率与 FP 率">
+</p><p></p>
+<center>图8 不同分类阈值下的 TP 率与 FP 率</center>
+
+<p>曲线下面积表示“ROC 曲线下面积”。也就是说，曲线下面积测量的是从 (0,0) 到 (1,1) 之间整个 ROC 曲线以下的整个二维面积（参考积分学）。</p>
+<p></p><p align="center">
+    <img src="images/AUC.svg" width="90%" alt="曲线下面积（ROC 曲线下面积）">
+</p><p></p>
+<center>图9 曲线下面积（ROC 曲线下面积）</center>
+
+<p>曲线下面积对所有可能的分类阈值的效果进行综合衡量。曲线下面积的一种解读方式是看作模型将某个随机正类别样本排列在某个随机负类别样本之上的概率。</p>
+<p>曲线下面积的取值范围为 0-1。预测结果 100% 错误的模型的曲线下面积为 0.0；而预测结果 100% 正确的模型的曲线下面积为 1.0。</p>
+<p>曲线下面积因以下两个原因而比较实用：</p>
+<ul>
+<li>曲线下面积的尺度不变。它测量预测的排名情况，而不是测量其绝对值。</li>
+<li>曲线下面积的分类阈值不变。它测量模型预测的质量，而不考虑所选的分类阈值。</li>
+</ul>
+<p>不过，这两个原因都有各自的局限性，这可能会导致曲线下面积在某些用例中不太实用：</p>
+<ul>
+<li><p>并非总是希望尺度不变。 例如，有时我们非常需要被良好校准的概率输出，而曲线下面积无法告诉我们这一结果。</p>
+</li>
+<li><p>并非总是希望分类阈值不变。 在假负例与假正例的代价存在较大差异的情况下，尽量减少一种类型的分类错误可能至关重要。例如，在进行垃圾邮件检测时，您可能希望优先考虑尽量减少假正例（即使这会导致假负例大幅增加）。对于此类优化，曲线下面积并非一个实用的指标。</p>
+</li>
+</ul>
+<h2 id="预测偏差"><a href="#预测偏差" class="headerlink" title="预测偏差"></a>预测偏差</h2><p>逻辑回归预测应当无偏差。即:</p>
+<script type="math/tex; mode=display">\text{预测平均值}\approx\text{观察平均值}</script><p>预测偏差指的是这两个平均值之间的差值。即：</p>
+<script type="math/tex; mode=display">\text{预测偏差} = \text{预测平均值} - \text{数据集中相应标签的平均值}</script><p>造成预测偏差的可能原因包括：</p>
+<ul>
+<li>特征集不完整</li>
+<li>数据集混乱</li>
+<li>模型实现流水线中有错误？</li>
+<li>训练样本有偏差</li>
+<li>正则化过强</li>
+</ul>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://zh.wikipedia.org/wiki/机器学习" target="_blank" rel="noopener">机器学习</a>，by wikipedia.</li>
 <li><a href="https://developers.google.com/machine-learning/crash-course/ml-intro?hl=zh-cn" target="_blank" rel="noopener">机器学习速成课程</a>，by google.</li>

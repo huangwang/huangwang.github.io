@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2018-12-08T14:44:12.743Z</updated>
+  <updated>2018-12-10T13:05:32.201Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,56 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Debian系统安装NVIDIA驱动支持双显卡切换</title>
+    <link href="https://huangwang.github.io/2018/12/10/Debian%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85NVIDIA%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81%E5%8F%8C%E6%98%BE%E5%8D%A1%E5%88%87%E6%8D%A2/"/>
+    <id>https://huangwang.github.io/2018/12/10/Debian系统安装NVIDIA驱动支持双显卡切换/</id>
+    <published>2018-12-10T12:27:27.000Z</published>
+    <updated>2018-12-10T13:05:32.201Z</updated>
+    
+    <content type="html"><![CDATA[<p>购买笔记本拥有Intel集成显卡和NVIDIA显卡，如何在Debian Linux下启用NVIDIA显卡是一个难题。幸运的是，通过bumblebee软件可在Linux下支持NVIDIA Optimus技术，实现Intel集成显卡和NVIDIA显卡之间的切换使用。</p><h1 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h1><h2 id="NVIDIA-Optimus"><a href="#NVIDIA-Optimus" class="headerlink" title="NVIDIA Optimus"></a>NVIDIA Optimus</h2><p>Optimus是NVIDIA针对笔记本电脑的显示切换技术。它可以实现笔记本电脑中独立显卡与主板内置显卡之间无缝、自动、实时的切换（用户无需重启或手动调整），从而实现能源的节约。</p><p>利用Optimus技术后，计算机的显示输出永远都只会通过集成式芯片组的显示核心。独立显卡的显示输出将会被废掉，有关的输出亦会发送到前者。由于显示输出的设备是固定的，所以黑屏现象将会被解决。额外的切换线路亦变得不需要，因为在不需要独立显示核心的时候，系统会索性断绝其电源供应。当系统的显示负载轻的时候，就会完全利用内置的显示核心。当负载增加后，系统就会打开独立显示核心作计算之用。协议分工方面由驱动程序负责，NVIDIA声称可以兼容所有的API。</p><h2 id="Bumblebee"><a href="#Bumblebee" class="headerlink" title="Bumblebee"></a>Bumblebee</h2><p>Bumblebee 致力于使 NVIDIA Optimus 在 GNU/Linux 系统上可用，实现两块不同的供电配置的显卡同时插入使用，共享同一个 framebuffer。</p><h1 id="安装配置过程"><a href="#安装配置过程" class="headerlink" title="安装配置过程"></a>安装配置过程</h1><h2 id="禁止加载开源驱动nouveau"><a href="#禁止加载开源驱动nouveau" class="headerlink" title="禁止加载开源驱动nouveau"></a>禁止加载开源驱动nouveau</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/modprobe.d/nvidia-installer-disable-nouveau.conf</span><br><span class="line"></span><br><span class="line">#上述文件不存在则新建，在文件中添加下面两行文字</span><br><span class="line">blacklist nouveau</span><br><span class="line">options nouveau modeset = 0</span><br><span class="line"></span><br><span class="line">#系统重启后使用以下命令查看nouveau驱动是否被禁止</span><br><span class="line">lsmod |grep -i nouveau</span><br></pre></td></tr></table></figure><h2 id="安装内核头文件"><a href="#安装内核头文件" class="headerlink" title="安装内核头文件"></a>安装内核头文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install -y linux-headers-$(uname -r)</span><br></pre></td></tr></table></figure><h2 id="安装NVIDIA驱动"><a href="#安装NVIDIA驱动" class="headerlink" title="安装NVIDIA驱动"></a>安装NVIDIA驱动</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 关于是否生存xorg.conf文件，选no</span><br><span class="line">$ sudo apt-get install  nvidia-driver nvidia-xconfig nvidia-kernel-dkms</span><br></pre></td></tr></table></figure><h2 id="安装双显卡切换解决方案包"><a href="#安装双显卡切换解决方案包" class="headerlink" title="安装双显卡切换解决方案包"></a>安装双显卡切换解决方案包</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get install bumblebee-nvidia primus</span><br></pre></td></tr></table></figure><h2 id="添加当前用户到bumblebee用户组"><a href="#添加当前用户到bumblebee用户组" class="headerlink" title="添加当前用户到bumblebee用户组"></a>添加当前用户到bumblebee用户组</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ adduser $USER bumblebee</span><br></pre></td></tr></table></figure><h2 id="修改bumblebee配置"><a href="#修改bumblebee配置" class="headerlink" title="修改bumblebee配置"></a>修改bumblebee配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/bumeblebee/bumblebee.conf</span><br><span class="line">: Driver=nvidia</span><br><span class="line"></span><br><span class="line">#将/etc/bumeblebee/bumblebee.conf文件中的Driver=* 改成 =nvidia</span><br><span class="line"></span><br><span class="line">$ vi /etc/bumblebee/xorg.conf.nvidia</span><br><span class="line">:BusID &quot;PCI:01:00:0&quot; </span><br><span class="line"></span><br><span class="line">#在/etc/bumblebee/xorg.conf.nvidia文件中，将Section“Device”部分添加PCI ID</span><br><span class="line"></span><br><span class="line"># 可使用如下命令查看NVIDIA显卡的BUS ID</span><br><span class="line">nvidia-xconfig --query-gpu-info | grep &apos;BusID : &apos; | cut -d &apos; &apos; -f6</span><br></pre></td></tr></table></figure><h2 id="重启进入桌面"><a href="#重启进入桌面" class="headerlink" title="重启进入桌面"></a>重启进入桌面</h2><p>如果无法进入桌面环境，则安装失败，进入高级修复使用如下命令进行清理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get purge nvidia* bumblebee* prime*</span><br></pre></td></tr></table></figure></p><p>bumblebee服务开机不会启动，设置开机启动即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ update-rc.d -f bumblebee defaults</span><br></pre></td></tr></table></figure></p><h1 id="使用独显运行程序"><a href="#使用独显运行程序" class="headerlink" title="使用独显运行程序"></a>使用独显运行程序</h1><p>bumblebee不能做到集显和独显之间自动切换，系统运行时默认使用集显，当你需要使用独显运行某个程序或者游戏的时候，终端执行如下命令即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ optirum command #使用独显运行command程序</span><br><span class="line">$ optirum -b primus command #使用独显运行command程序，提升性能</span><br></pre></td></tr></table></figure></p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://zhuanlan.zhihu.com/p/37252268" target="_blank" rel="noopener">kali 在支持双显卡切换机器宏碁（Acer）V3下安装NVIDIA驱动</a>, by 不梦君.</li><li><a href="https://github.com/europa502/Installing-Nvidia-drivers-on-Kali-Linux" target="_blank" rel="noopener">Installing-Nvidia-drivers-on-Kali-Linux</a>, by europa502.</li><li><a href="https://zh.wikipedia.org/wiki/NVIDIA_Optimus" target="_blank" rel="noopener">NVIDIA Optimus</a>, by wikipedia.</li><li><a href="https://linux.cn/article-3946-1.html" target="_blank" rel="noopener">在Ubuntu上安装和配置Nvidia Optimus驱动</a>, by Linux中国.</li><li><a href="https://wiki.archlinux.org/index.php/Bumblebee(简体中文" target="_blank" rel="noopener">Bumblebee</a>),by archlinux.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;购买笔记本拥有Intel集成显卡和NVIDIA显卡，如何在Debian Linux下启用NVIDIA显卡是一个难题。幸运的是，通过bumblebee软件可在Linux下支持NVIDIA Optimus技术，实现Intel集成显卡和NVIDIA显卡之间的切换使用。&lt;/p&gt;
+&lt;
+      
+    
+    </summary>
+    
+    
+      <category term="Linux" scheme="https://huangwang.github.io/tags/Linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux图形界面基础知识</title>
+    <link href="https://huangwang.github.io/2018/12/09/Linux%E5%9B%BE%E5%BD%A2%E7%95%8C%E9%9D%A2%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    <id>https://huangwang.github.io/2018/12/09/Linux图形界面基础知识/</id>
+    <published>2018-12-09T11:55:24.000Z</published>
+    <updated>2018-12-09T11:56:25.281Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://blog.csdn.net/huang_xw/article/details/9224683" target="_blank" rel="noopener">linux图形界面基本知识(X、X11、Xfree86、Xorg、GNOME、KDE)</a>, by  huang_xw.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;参考链接&quot;&gt;&lt;a href=&quot;#参考链接&quot; class=&quot;headerlink&quot; title=&quot;参考链接&quot;&gt;&lt;/a&gt;参考链接&lt;/h1&gt;&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https://blog.csdn.net/huang_xw/article/details/
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="linux" scheme="https://huangwang.github.io/tags/linux/"/>
+    
+  </entry>
   
   <entry>
     <title>家用电器安全使用年限与折旧</title>
@@ -486,60 +536,6 @@
       <category term="树莓派" scheme="https://huangwang.github.io/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
     
       <category term="硬件" scheme="https://huangwang.github.io/tags/%E7%A1%AC%E4%BB%B6/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Debian下编译QGroundControl源码</title>
-    <link href="https://huangwang.github.io/2018/11/01/Debian%E4%B8%8B%E7%BC%96%E8%AF%91QGroundControl%E6%BA%90%E7%A0%81/"/>
-    <id>https://huangwang.github.io/2018/11/01/Debian下编译QGroundControl源码/</id>
-    <published>2018-11-01T14:41:44.000Z</published>
-    <updated>2018-11-01T15:04:10.755Z</updated>
-    
-    <content type="html"><![CDATA[<p>MAVLink（Micro Air Vehicle Link，微型空中飞行器链路通讯协议）是无人飞行器与地面站之间通讯，以及无人飞行器之间通讯最常用的协议。它已经在PX4、APM、PIXHAWK和Parrot AR.Drone飞控平台上进行了大量测试。</p><p>QGroundControl则是一种操纵基于MAVLink通信协议的无人机的跨平台地面站开源软件。下面记录在Debian Linux下从源码编译QGroundControl的过程。</p><h1 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 下载QGroundControl源码</span><br><span class="line">git clone --recursive https://github.com/mavlink/qgroundcontrol.git</span><br><span class="line"># 更新子模块</span><br><span class="line">git submodule update</span><br></pre></td></tr></table></figure><h1 id="安装编译环境"><a href="#安装编译环境" class="headerlink" title="安装编译环境"></a>安装编译环境</h1><ol><li>下载Qt社区版在线安装器，安装5.11.0版本的Qt，安装路径可在/opt下。</li><li><p>安装必要的包</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install speech-dispatcher libudev-dev libsdl2-dev</span><br></pre></td></tr></table></figure></li><li><p>解决编译时libQt5PositioningQuick.so.5不存在的bug</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libqt5positioningquick5</span><br><span class="line">sudo find /usr/ -name libQt5PositioningQuick.so.5</span><br><span class="line">cp /usr/lib/x86_64-linux-gnu/libQt5PositioningQuick.so.5 /opt/Qt/5.10.0/gcc_64/lib/libQt5PositioningQuick.so.5</span><br></pre></td></tr></table></figure></li><li><p>将当前用户添加到dialout组，获取串口访问权限</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 运行QGroundControl需要当前用户拥有串口访问权限</span><br><span class="line">sudo usermod -a -G dialout $USER</span><br></pre></td></tr></table></figure></li></ol><h1 id="编译运行"><a href="#编译运行" class="headerlink" title="编译运行"></a>编译运行</h1><p>打开Qt Creater，打开qgroundcontrol.pro工程，构建后运行，即可打开QGroundControl地面站软件。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://blog.csdn.net/hebbely/article/details/79022799" target="_blank" rel="noopener">https://blog.csdn.net/hebbely/article/details/79022799</a>,  by hebbely</li><li><a href="https://dev.qgroundcontrol.com/en/getting_started/" target="_blank" rel="noopener">https://dev.qgroundcontrol.com/en/getting_started/</a>, by Dronecode</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;MAVLink（Micro Air Vehicle Link，微型空中飞行器链路通讯协议）是无人飞行器与地面站之间通讯，以及无人飞行器之间通讯最常用的协议。它已经在PX4、APM、PIXHAWK和Parrot AR.Drone飞控平台上进行了大量测试。&lt;/p&gt;
-&lt;p&gt;QGr
-      
-    
-    </summary>
-    
-    
-      <category term="linux" scheme="https://huangwang.github.io/tags/linux/"/>
-    
-      <category term="无人机" scheme="https://huangwang.github.io/tags/%E6%97%A0%E4%BA%BA%E6%9C%BA/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux常用命令用法总结</title>
-    <link href="https://huangwang.github.io/2018/11/01/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E7%94%A8%E6%B3%95%E6%80%BB%E7%BB%93/"/>
-    <id>https://huangwang.github.io/2018/11/01/Linux常用命令用法总结/</id>
-    <published>2018-11-01T13:44:27.000Z</published>
-    <updated>2018-12-02T01:30:20.117Z</updated>
-    
-    <content type="html"><![CDATA[<p>记录一些常用的linux命令用法，以备查询。</p><ol><li><p>查找文件</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># find基本语法：find [PATH] [option] [action]</span><br><span class="line"></span><br><span class="line">find /usr/lib -name libQt5Xml.so</span><br><span class="line"># 使用通配符</span><br><span class="line">find /usr/lib -name &quot;*ssl*&quot;</span><br></pre></td></tr></table></figure></li><li><p>批量转换文件格式</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 将png格式图像转换为jpg</span><br><span class="line"># -1 – 告诉 ls 每行列出一个图像名称的选项标识</span><br><span class="line"># -n – 指定最多参数个数，例子中为 1</span><br><span class="line"># -c – 指示 bash 运行给定的命令</span><br><span class="line"># $&#123;0%.png&#125;.jpg – 设置新转换的图像文件的名字，% 符号用来删除源文件的扩展名</span><br><span class="line"></span><br><span class="line">ls -1 *.png | xargs -n 1 bash -c &apos;convert &quot;$0&quot; &quot;$&#123;0%.png&#125;.jpg&quot;&apos;</span><br></pre></td></tr></table></figure></li><li><p>修改用户</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 将用户$USER添加到dialout用户组，以获取串口访问权限</span><br><span class="line">sudo usermod -a -G dialout $USER</span><br></pre></td></tr></table></figure></li><li><p>校验文件</p></li></ol><p>下载的文件最好校验完整性，防止被人篡改。以sha256sum为例：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#以下命令将生成树莓派映像的sha256哈希码，从树莓派官网复制该映像sha256哈希码，以便校验。当然通常应该会提供映像的哈希码校验文件。</span><br><span class="line">sha256sum 2018-10-09-raspbian-stretch.zip &gt;2018-10-09-raspbian-stretch.zip.sha256sum</span><br><span class="line">#使用下面校验文件的完整性，如果成功则映像与官方一致，未被篡改。注意被校验文件与校验文件应放在同一个目录。</span><br><span class="line">sha256sum -c 2018-10-09-raspbian-stretch.zip.sha256sum</span><br></pre></td></tr></table></figure><ol><li><p>特殊符号用法</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#| 管道 (pipeline)，是 UNIX 系统，基础且重要的观念。连结上个指令的标准输出，做为下个指令的标准输入。</span><br><span class="line">who | wc -l</span><br><span class="line"></span><br><span class="line">#! 惊叹号(negate or reverse)，通常它代表反逻辑的作用，譬如条件侦测中，用 != 来代表&quot;不等于&quot;</span><br><span class="line">#下例代表显示除了a0, a1 .... a9 这几个文件的其他文件。</span><br><span class="line">ls a[!0-9]</span><br><span class="line"></span><br><span class="line">#&amp; 后台工作，单一个&amp; 符号，且放在完整指令列的最后端，即表示将该指令列放入后台中工作。</span><br><span class="line">tar cvfz data.tar.gz data &gt; /dev/null &amp;</span><br></pre></td></tr></table></figure></li><li><p>转换和复制文件命令</p></li></ol><p>Linux的dd命令用于复制文件并对原文件的内容进行转换和格式化处理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">读指定物理扇区：</span><br><span class="line">dd  if=&lt;源设备&gt;  of=&lt;输出设备或文件&gt;   skip=&lt;指定扇区值&gt;  bs=512 count=1</span><br><span class="line"></span><br><span class="line">写指定物理扇区：</span><br><span class="line">dd   if=&lt;输入设备或文件&gt;   of=&lt;输出设备&gt;   seek=&lt;指定扇区值&gt;  bs=512 count=1</span><br><span class="line"></span><br><span class="line">读取sd启动扇区示例：</span><br><span class="line">dd if=/dev/mmcblk0 of=mbrsd.data bs=512 count=1</span><br></pre></td></tr></table></figure></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;记录一些常用的linux命令用法，以备查询。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;查找文件&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/
-      
-    
-    </summary>
-    
-    
-      <category term="linux" scheme="https://huangwang.github.io/tags/linux/"/>
-    
-      <category term="shell" scheme="https://huangwang.github.io/tags/shell/"/>
     
   </entry>
   

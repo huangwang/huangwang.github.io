@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[飞行力学中坐标系定义]]></title>
+    <url>%2F2018%2F12%2F10%2F%E9%A3%9E%E8%A1%8C%E5%8A%9B%E5%AD%A6%E4%B8%AD%E5%9D%90%E6%A0%87%E7%B3%BB%E5%AE%9A%E4%B9%89%2F</url>
+    <content type="text"><![CDATA[参考链接 无人机飞控通俗演义之 纷繁复杂的飞行力学, by 量子黑洞. 一起写飞行仿真之 六自由度动力学方程, by 量子黑洞. 飞行器飞行动力学（二）坐标系与夹角们, by 萝卜.]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>飞行力学</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Debian系统安装NVIDIA驱动支持双显卡切换]]></title>
     <url>%2F2018%2F12%2F10%2FDebian%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85NVIDIA%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81%E5%8F%8C%E6%98%BE%E5%8D%A1%E5%88%87%E6%8D%A2%2F</url>
     <content type="text"><![CDATA[购买笔记本拥有Intel集成显卡和NVIDIA显卡，如何在Debian Linux下启用NVIDIA显卡是一个难题。幸运的是，通过bumblebee软件可在Linux下支持NVIDIA Optimus技术，实现Intel集成显卡和NVIDIA显卡之间的切换使用。 背景知识NVIDIA OptimusOptimus是NVIDIA针对笔记本电脑的显示切换技术。它可以实现笔记本电脑中独立显卡与主板内置显卡之间无缝、自动、实时的切换（用户无需重启或手动调整），从而实现能源的节约。 利用Optimus技术后，计算机的显示输出永远都只会通过集成式芯片组的显示核心。独立显卡的显示输出将会被废掉，有关的输出亦会发送到前者。由于显示输出的设备是固定的，所以黑屏现象将会被解决。额外的切换线路亦变得不需要，因为在不需要独立显示核心的时候，系统会索性断绝其电源供应。当系统的显示负载轻的时候，就会完全利用内置的显示核心。当负载增加后，系统就会打开独立显示核心作计算之用。协议分工方面由驱动程序负责，NVIDIA声称可以兼容所有的API。 BumblebeeBumblebee 致力于使 NVIDIA Optimus 在 GNU/Linux 系统上可用，实现两块不同的供电配置的显卡同时插入使用，共享同一个 framebuffer。 安装配置过程禁止加载开源驱动nouveau12345678$ vi /etc/modprobe.d/nvidia-installer-disable-nouveau.conf#上述文件不存在则新建，在文件中添加下面两行文字blacklist nouveauoptions nouveau modeset = 0#系统重启后使用以下命令查看nouveau驱动是否被禁止lsmod |grep -i nouveau 安装内核头文件1$ sudo apt-get install -y linux-headers-$(uname -r) 安装NVIDIA驱动12# 关于是否生存xorg.conf文件，选no$ sudo apt-get install nvidia-driver nvidia-xconfig nvidia-kernel-dkms 安装双显卡切换解决方案包1$ apt-get install bumblebee-nvidia primus 添加当前用户到bumblebee用户组1$ adduser $USER bumblebee 修改bumblebee配置123456789101112$ vi /etc/bumeblebee/bumblebee.conf: Driver=nvidia#将/etc/bumeblebee/bumblebee.conf文件中的Driver=* 改成 =nvidia$ vi /etc/bumblebee/xorg.conf.nvidia:BusID &quot;PCI:01:00:0&quot; #在/etc/bumblebee/xorg.conf.nvidia文件中，将Section“Device”部分添加PCI ID# 可使用如下命令查看NVIDIA显卡的BUS IDnvidia-xconfig --query-gpu-info | grep &apos;BusID : &apos; | cut -d &apos; &apos; -f6 重启进入桌面如果无法进入桌面环境，则安装失败，进入高级修复使用如下命令进行清理。1$ sudo apt-get purge nvidia* bumblebee* prime* bumblebee服务开机不会启动，设置开机启动即可。1$ update-rc.d -f bumblebee defaults 使用独显运行程序bumblebee不能做到集显和独显之间自动切换，系统运行时默认使用集显，当你需要使用独显运行某个程序或者游戏的时候，终端执行如下命令即可：12$ optirum command #使用独显运行command程序$ optirum -b primus command #使用独显运行command程序，提升性能 参考链接 kali 在支持双显卡切换机器宏碁（Acer）V3下安装NVIDIA驱动, by 不梦君. Installing-Nvidia-drivers-on-Kali-Linux, by europa502. NVIDIA Optimus, by wikipedia. 在Ubuntu上安装和配置Nvidia Optimus驱动, by Linux中国. Bumblebee),by archlinux.]]></content>

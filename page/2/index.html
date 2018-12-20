@@ -852,7 +852,7 @@ v_{k+1}(s) &\overset{.}{=} \max_{a} \mathbb E_{\pi}[R_{t+1}+\gamma v _{k}(S_{t+1
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-11-27 21:42:35" itemprop="dateModified" datetime="2018-11-27T21:42:35+08:00">2018-11-27</time>
+                <time title="修改时间：2018-12-20 22:17:02" itemprop="dateModified" datetime="2018-12-20T22:17:02+08:00">2018-12-20</time>
               
             
           </span>
@@ -931,6 +931,15 @@ v_{k+1}(s) &\overset{.}{=} \max_{a} \mathbb E_{\pi}[R_{t+1}+\gamma v _{k}(S_{t+1
 <p>wiringPi 将任何的非 0 值作为 HIGH (高)来对待,因此, 0 是唯一能够代表 LOW (低)的数值。</p>
 <h3 id="digitalRead-函数"><a href="#digitalRead-函数" class="headerlink" title="digitalRead 函数"></a>digitalRead 函数</h3><p>该函数原型： digitalRead(int pin);</p>
 <p>使用该函数可以读取指定管脚的值，读取到的值为HIGH（1）或者LOW（0），该值取决于该管脚的逻辑电平的高低。</p>
+<h2 id="时间函数"><a href="#时间函数" class="headerlink" title="时间函数"></a>时间函数</h2><h3 id="delay-函数"><a href="#delay-函数" class="headerlink" title="delay 函数"></a>delay 函数</h3><p>该函数的原型为：void delay(unsigned int howLong);</p>
+<p>该函数将会中断程序执行至少 howLong 毫秒。因为 Linux 是多任务的原因，中断时间可能会更长。需要注意的是，最长的延迟值是一个无符号 32 位整数，其大约为 49 天。</p>
+<h3 id="delayMicroseconds-函数"><a href="#delayMicroseconds-函数" class="headerlink" title="delayMicroseconds 函数"></a>delayMicroseconds 函数</h3><p>该函数的原型为：void delayMicroseconds(unsigned int howLong);</p>
+<p>该函数将会中断程序执行至少 howLong 微秒。因为 Linux 是一个多任务的系统，因此中断时间可能会更长。需要注意的是，最长的延迟值是一个无符号 32 位整数，其大约为 71分钟。</p>
+<p>延迟低于100 微秒，将会使用硬件循环来实现；超过 100 微秒，将会使用系统的nanosleep()函数来实现。</p>
+<h2 id="优先级-时间-线程"><a href="#优先级-时间-线程" class="headerlink" title="优先级/时间/线程"></a>优先级/时间/线程</h2><h3 id="wiringPiISR-函数"><a href="#wiringPiISR-函数" class="headerlink" title="wiringPiISR 函数"></a>wiringPiISR 函数</h3><p>该函数的原型为：int wiringPiISR(int pin, int edgeType, void (*function)(void));</p>
+<p>该函数会在指定管脚注册一个中断事件的函数，当指定管脚发生中断事件时，会自动调用该函数。</p>
+<p>edgeType 参数可以为 INT_EDGE_FALLING（下降沿）、INT_EDGE_RISING（上升沿）、INT_EDGE_BOTH（上升沿或者下降沿）或者 INT_EDGE_SETUP。如果是INT_EDGE_SETUP，将不会初始化该管脚，因为它假定已经在别处设置过该管脚（比如使用 gpio 命令），但是，如果指定另外的类型，指定管脚将会被导出并初始化。完成此操作使用的是 gpio 命令，所以，必须保证 gpio 命令是可用的。</p>
+<p>注册函数在中断触发时，将会被调用。在调用注册函数前，中断事件将会从分配器中清除，所以，即使有后续的触发发生，在处理完成前，也不会错过此次触发。（当然，如果在正在处理触发时，有不止一个的中断发生，已经发生的中断将会被忽略）。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="http://blog.lxx1.com/树莓派-wiringpi-用户手册" target="_blank" rel="noopener">树莓派 wiringPi 用户手册
 </a>, by 科技爱好者博客</li>

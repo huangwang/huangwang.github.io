@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2018-12-26T14:13:15.630Z</updated>
+  <updated>2018-12-30T13:26:56.906Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Debian安装配置使用TFTP</title>
+    <link href="https://huangwang.github.io/2018/12/30/Debian%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8TFTP/"/>
+    <id>https://huangwang.github.io/2018/12/30/Debian安装配置使用TFTP/</id>
+    <published>2018-12-30T12:50:23.000Z</published>
+    <updated>2018-12-30T13:26:56.906Z</updated>
+    
+    <content type="html"><![CDATA[<p>简单文件传输协议也称小型文件传输协议（Trivial File Transfer Protocol, TFTP），是一种简化的文件传输协议（FTP），通过少量存储器就能轻松实现。</p><h1 id="TFTP技术信息"><a href="#TFTP技术信息" class="headerlink" title="TFTP技术信息"></a>TFTP技术信息</h1><p>小型文件传输协议的一些详细资料：</p><ul><li>使用UDP（端口69）作为其传输协议（不像FTP使用TCP端口21）。</li><li>不能列出目录内容。</li><li>无验证或加密机制。</li><li>被用于在远程服务器上读取或写入文件。</li><li>支持三种不同的传输模式：”netascii”,”octet”和”mail”，前两种匹配FTP协议中的”ASCII”和”image（binary）”模式；第三种从来很少使用，当前已经废弃。</li></ul><h1 id="TFTP安装"><a href="#TFTP安装" class="headerlink" title="TFTP安装"></a>TFTP安装</h1><p>安装TFTP的客户端和服务器端：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install atftp atftpd</span><br></pre></td></tr></table></figure></p><h1 id="TFTP配置"><a href="#TFTP配置" class="headerlink" title="TFTP配置"></a>TFTP配置</h1><ol><li>创建TFTP服务器目录</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /tftpboot</span><br></pre></td></tr></table></figure><ol><li>编辑TFTP配置文件</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit /etc/default/atftpd</span><br><span class="line"></span><br><span class="line"># 修改内容如下，主要是修改目录</span><br><span class="line">USE_INETD=false</span><br><span class="line">OPTIONS=&quot;--daemon --port 69 --retry-timeout 5 --mcast-port 1758 --mcast-addr 239.239.239.0-255 --mcast-ttl 1 --maxthread 100 --verbose=5 /tftpboot&quot;</span><br></pre></td></tr></table></figure><ol><li>重启TFTP守护程序</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /etc/init.d/atftpd restart</span><br></pre></td></tr></table></figure><h1 id="TFTP测试"><a href="#TFTP测试" class="headerlink" title="TFTP测试"></a>TFTP测试</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">~$ sudo tftp 192.168.43.116</span><br><span class="line">tftp&gt; status</span><br><span class="line">Connected to 192.168.43.116.</span><br><span class="line">Mode: netascii Verbose: off Tracing: off</span><br><span class="line">Rexmt-interval: 5 seconds, Max-timeout: 25 seconds</span><br><span class="line">tftp&gt; get iproad.txt</span><br><span class="line">Received 959 bytes in 0.0 seconds</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://zh.wikipedia.org/wiki/小型文件传输协议" target="_blank" rel="noopener">TFTP</a>,by wikipedia.</li><li><a href="https://null-byte.wonderhowto.com/how-to/hack-like-pro-using-tftp-install-malicious-software-target-0157547/" target="_blank" rel="noopener">Using TFTP to Install Malicious Software on the Target</a>,by kail forum.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;简单文件传输协议也称小型文件传输协议（Trivial File Transfer Protocol, TFTP），是一种简化的文件传输协议（FTP），通过少量存储器就能轻松实现。&lt;/p&gt;
+&lt;h1 id=&quot;TFTP技术信息&quot;&gt;&lt;a href=&quot;#TFTP技术信息&quot; class
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="Linux" scheme="https://huangwang.github.io/tags/Linux/"/>
+    
+      <category term="计算机安全" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AE%89%E5%85%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>Cesium中3D模型的驱动方法</title>
@@ -516,34 +544,6 @@
       <category term="机器学习" scheme="https://huangwang.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
       <category term="人工智能" scheme="https://huangwang.github.io/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>计算机视觉之相机成像原理与坐标系转换</title>
-    <link href="https://huangwang.github.io/2018/11/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E4%B9%8B%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2/"/>
-    <id>https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/</id>
-    <published>2018-11-19T08:02:41.000Z</published>
-    <updated>2018-11-19T15:44:42.918Z</updated>
-    
-    <content type="html"><![CDATA[<p>计算机视觉是一门研究用摄影机和计算机代替人眼对目标进行识别、跟踪和测量的学科。为了解该门学科，首先应掌握投影原理和世界坐标系、相机坐标系、图像坐标系、像素坐标系之间的转换关系。</p><h1 id="三维投影"><a href="#三维投影" class="headerlink" title="三维投影"></a>三维投影</h1><p>计算机3D图形学中，三维投影是将三维空间中的点映射到二维平面上的方法。常用三维投影有正交投影和透视投影。正交投影通常用于对现实物品的三维建模，而透视投影与人的视觉系统类似，常用于在二维平面呈现三维世界。</p><h2 id="正交投影原理"><a href="#正交投影原理" class="headerlink" title="正交投影原理"></a>正交投影原理</h2><p>正交投影是一系列用于显示三维物体的轮廓、细节或精确测量结果的变换方法。通常又称作截面图、鸟瞰图或立面图。</p><p>当视平面的法向（即摄像机的朝向）平行于笛卡尔坐标系三根坐标轴中的一根，数学变换定义如下： 若使用一个平行于y轴（侧视图）的正交投影将三维点 $a<em>{x}$, $a</em>{y}$,$a<em>{z}$投影到二维平面上得到二维点 $b</em>{x}$,$b_{y}$，可以使用如下公式</p><script type="math/tex; mode=display">b_x=s_xa_x+c_x</script><script type="math/tex; mode=display">b_y=s_za_z+c_z</script><p>其中向量s是一个任意的缩放因子，而c是一个任意的偏移量。这些常量可自由选择，通常用于将视口调整到一个合适的位置。该投影变换同样可以使用矩阵表示（为清晰起见引入临时向量d）</p><script type="math/tex; mode=display">\begin{bmatrix}    d_x  \\    d_y  \\\end{bmatrix}=\begin{bmatrix}    1 & 0 & 0 \\    0 & 0 & 1 \\\end{bmatrix}\begin{bmatrix}    a_x \\    a_y \\    a_z \\\end{bmatrix}</script><script type="math/tex; mode=display">\begin{bmatrix}    b_x\\    b_y\\\end{bmatrix}=\begin{bmatrix}    s_x & 0 \\    0     & s_z \\\end{bmatrix}\begin{bmatrix}    d_x\\    d_y\\\end{bmatrix}+\begin{bmatrix}    c_x\\    c_z\\\end{bmatrix}</script><p>虽然正交投影产生的图像在一定程度上反映了物体的三维特性，但此类投影图像和实际观测到的并不相同。特别是对于相同长度的平行线段，无论离虚拟观察者（摄像机）远近与否，它们都会在正交投影中显示为相同长度。这会导致较近的线段看起来被缩短了。</p><h2 id="透视投影原理"><a href="#透视投影原理" class="headerlink" title="透视投影原理"></a>透视投影原理</h2><p>透视投影是为了获得接近真实三维物体的视觉效果而在二维的纸或者画布平面上绘图或者渲染的一种方法，它也称为透视图。透视投影的绘制必须根据已有的几何规则进行。</p><p>常用的透视投影视椎体模型如图1所示。设视点E位于原点，视平面P垂直于Z轴，且四边分别平行于x轴和y轴，视椎体的近截面离视点的距离为n，远截面离视点的距离为f，且一般取近截面为视平面。</p><p></p><p align="center">    <img src="images/perspective_model.jpg" width="90%" alt="透视投影的标准视椎体模型"></p><p></p><center>图1 透视投影的标准视椎体模型</center><h1 id="坐标系之间的转换"><a href="#坐标系之间的转换" class="headerlink" title="坐标系之间的转换"></a>坐标系之间的转换</h1><p>计算机视觉通常涉及到四个坐标系：像素平面坐标系（u,v）、像平面坐标系（图像物理坐标第（x,y）、相机坐标系（Xc,Yc,Zc）和世界坐标系（Xw,Yw,Zw），如图2所示。</p><p></p><p align="center">    <img src="images/four_axis.png" width="90%" alt="四个坐标系"></p><p></p><center>图2 四个坐标系</center><p>1 : 世界坐标系：根据情况而定，可以表示任何物体。单位m。</p><p>2：相机坐标系：以摄像机光心为原点（在针孔模型中也就是针孔为光心），z轴与光轴重合也就是z轴指向相机的前方（也就是与成像平面垂直），x轴与y轴的正方向与物体坐标系平行，其中上图中的f为摄像机的焦距。单位m</p><p>3：图像物理坐标系（也叫平面坐标系）：用物理单位表示像素的位置，坐标原点为摄像机光轴与图像物理坐标系的交点位置。坐标系为图上o-xy。单位是mm。单位毫米的原因是此时由于相机内部的CCD传感器是很小的，比如8mm x 6mm。但是最后图像照片是也像素为单位比如640x480.这就涉及到了图像物理坐标系与像素坐标系的变换了。下面的像素坐标系将会讲到。</p><p>4：像素坐标系：以像素为单位，坐标原点在左上角。这也是一些opencv，OpenGL等库的坐标原点选在左上角的原因。当然明显看出CCD传感器以mm单位到像素中间有转换的。举个例子，CCD传感上上面的8mm x 6mm，转换到像素大小是640x480. 假如dx表示像素坐标系中每个像素的物理大小就是1/80. 也就是说毫米与像素点的之间关系是piexl/mm.</p><h2 id="世界坐标系到相机坐标系的转换"><a href="#世界坐标系到相机坐标系的转换" class="headerlink" title="世界坐标系到相机坐标系的转换"></a>世界坐标系到相机坐标系的转换</h2><p>物体之间的坐标系变换都可以表示坐标系的旋转变换加上平移变换，则世界坐标系到相机坐标系的转换关系也是如此，他们之间的变换如图3所示。</p><p></p><p align="center">    <img src="images/worldtocamera.jpg" width="90%" alt="世界坐标系到相机坐标系的转换"></p><p></p><center>图3 世界坐标系到相机坐标系的转换</center><p>可以得到P点在相机坐标系下的坐标:</p><script type="math/tex; mode=display">\begin{bmatrix}    X_c\\    Y_c\\    Z_c\\\end{bmatrix}=R\begin{bmatrix}    X_w\\    Y_w\\    Z_w\\\end{bmatrix}+T\Rightarrow \begin{bmatrix}    X_c\\    Y_c\\    Z_c\\    1\\\end{bmatrix}=\begin{bmatrix}    R & T\\    \vec{0} & 1\\\end{bmatrix}\begin{bmatrix}    X_w\\    Y_w\\    Z_w\\    1\\\end{bmatrix},R:3*3,T:3*1</script><h2 id="相机坐标系到图像物理坐标系的转换"><a href="#相机坐标系到图像物理坐标系的转换" class="headerlink" title="相机坐标系到图像物理坐标系的转换"></a>相机坐标系到图像物理坐标系的转换</h2><p>从相机坐标系到图像坐标系，属于透视投影关系，从3D转换到2D。 也可以看成是针孔模型的变种。该转换满足三角形的相似定理，如图4所示。</p><p></p><p align="center">    <img src="images/3dto2d.jpg" width="90%" alt="相机坐标系到图像物理坐标系的转换"></p><p></p><center>图4 相机坐标系到图像物理坐标系的转换</center><h2 id="图像物理坐标系到像素坐标系的转换"><a href="#图像物理坐标系到像素坐标系的转换" class="headerlink" title="图像物理坐标系到像素坐标系的转换"></a>图像物理坐标系到像素坐标系的转换</h2><p>图像物理坐标系到像素坐标系的转换不涉及旋转变换，但是坐标原点位置不一致，大小不一致，涉及伸缩变换及平移变换，如图5所示。</p><p></p><p align="center">    <img src="images/image2uv.jpg" width="90%" alt="图像物理坐标系到像素坐标系的转换"></p><p></p><center>图5 图像物理坐标系到像素坐标系的转换</center><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>四个坐标系之间存在着下述关系 ( 矩阵依次左乘 )，如图6所示:</p><p></p><p align="center">    <img src="images/summary1.jpg" width="90%" alt="世界坐标系到像素坐标系的转换"></p><p></p><p></p><p align="center">    <img src="images/summary2.jpg" width="90%"></p><p></p><center>图6 世界坐标系到像素坐标系的转换</center><p>其中相机的内参和外参可以通过张正友标定获取。通过最终的转换关系来看，一个三维中的坐标点，的确可以在图像中找到一个对应的像素点，但是反过来，通过图像中的一个点找到它在三维中对应的点就很成了一个问题，因为我们并不知道等式左边的Z<sub>c</sub>的值。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://zh.wikipedia.org/wiki三维投影" target="_blank" rel="noopener">三维投影</a>,by wikipedia.</li><li><a href="https://blog.csdn.net/Goncely/article/details/5397729" target="_blank" rel="noopener">透视投影的原理和实现</a>,by Goncely.</li><li><a href="https://blog.csdn.net/chentravelling/article/details/53558096" target="_blank" rel="noopener">计算机视觉：相机成像原理：世界坐标系、相机坐标系、图像坐标系、像素坐标系之间的转换</a>,by 生活没有if-else</li><li><a href="https://blog.csdn.net/lyl771857509/article/details/79633412" target="_blank" rel="noopener">【相机标定】四个坐标系之间的变换关系</a></li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;计算机视觉是一门研究用摄影机和计算机代替人眼对目标进行识别、跟踪和测量的学科。为了解该门学科，首先应掌握投影原理和世界坐标系、相机坐标系、图像坐标系、像素坐标系之间的转换关系。&lt;/p&gt;
-&lt;h1 id=&quot;三维投影&quot;&gt;&lt;a href=&quot;#三维投影&quot; class=&quot;headerl
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="计算机视觉" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/"/>
-    
-      <category term="透视投影" scheme="https://huangwang.github.io/tags/%E9%80%8F%E8%A7%86%E6%8A%95%E5%BD%B1/"/>
     
   </entry>
   

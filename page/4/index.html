@@ -314,6 +314,618 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/07/树莓派学习之远程登录/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/07/树莓派学习之远程登录/" itemprop="url">
+                  树莓派学习之远程登录
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-07 22:41:31" itemprop="dateCreated datePublished" datetime="2018-11-07T22:41:31+08:00">2018-11-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-24 21:36:27" itemprop="dateModified" datetime="2018-11-24T21:36:27+08:00">2018-11-24</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>每次通过USB转串口登录树莓派比较麻烦，可以设置树莓派开启ssh和vnc服务，以便通过ssh或vnc远程登录树莓派。下面介绍在Debian中通过ssh或vnc远程登录树莓派的过程。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="SSH"><a href="#SSH" class="headerlink" title="SSH"></a>SSH</h2><p>Secure Shell（安全外壳协议，简称SSH）是一种加密的网络传输协议，可在不安全的网络中为网络服务提供安全的传输环境。SSH通过在网络中创建安全隧道来实现SSH客户端与服务器之间的连接。SSH最常见的用途是远程登录系统，人们通常利用SSH来传输命令行界面和远程执行命令。</p>
+<h3 id="SSH基本用法"><a href="#SSH基本用法" class="headerlink" title="SSH基本用法"></a>SSH基本用法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 以用户名user，登录远程主机host</span><br><span class="line">$ ssh user@host</span><br><span class="line"># SSH的默认端口是22。使用p参数，可以修改这个端口。</span><br><span class="line">$ ssh -p 2222 user@host</span><br></pre></td></tr></table></figure>
+<h3 id="SSH通信过程及风险"><a href="#SSH通信过程及风险" class="headerlink" title="SSH通信过程及风险"></a>SSH通信过程及风险</h3><p>SSH采用了公钥加密保证安全。</p>
+<p>整个过程是这样的：（1）远程主机收到用户的登录请求，把自己的公钥发给用户。（2）用户使用这个公钥，将登录密码加密后，发送回来。（3）远程主机用自己的私钥，解密登录密码，如果密码正确，就同意用户登录。</p>
+<p>这个过程本身是安全的，但是实施的时候存在”中间人攻击”风险：如果有人截获了登录请求，然后冒充远程主机，将伪造的公钥发给用户，那么用户很难辨别真伪。因为不像https协议，SSH协议的公钥是没有证书中心（CA）公证的，也就是说，都是自己签发的。</p>
+<h2 id="VNC"><a href="#VNC" class="headerlink" title="VNC"></a>VNC</h2><p>VNC（Virtual Network Computing），为一种使用RFB协议的显示屏画面分享及远程操作软件。此软件借由网上，可发送键盘与鼠标的动作及即时的显示屏画面。</p>
+<p>VNC与操作系统无关，因此可跨平台使用，例如可用Windows连线到某Linux的计算机，反之亦同。甚至在没有安装客户端程序的计算机中，只要有支持JAVA的浏览器，也可使用。</p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>VNC系统由客户端，服务端和一个协议组成</p>
+<p>VNC的服务端目的是分享其所运行机器的屏幕，服务端被动的允许客户端控制它。VNC客户端（或Viewer）观察控制服务端，与服务端交互。VNC协议Protocol（RFB）是一个简单的协议，传送服务端的原始图像到客户端（一个X,Y位置上的正方形的点阵数据），客户端传送事件消息到服务端。</p>
+<p>服务器发送小方块的帧缓存给客户端，在最简单的情况，VNC协议使用大量的带宽，因此各种各样的方法被发明出来减少通讯的开支，举例来说，有各种各样的编码方法来决定最有效率的方法来传送这些点阵方块。</p>
+<p>VNC默认使用TCP端口5900至5906，而JAVA的VNC客户端使用5800至5806。一个服务端可以在5900端口用“监听模式”连接一个客户端，使用监听模式的一个好处是服务端不需要设置防火墙。</p>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>VNC并非是安全的协议，虽然VNC伺服程序需设置密码才可接受外来连线，且VNC客户端与VNC伺服程序之间的密码传输经过加密，但仍可被轻易的拦截到并使用暴力破解法破解。不过VNC可设计以SSH或VPN传输，以增加安全性。</p>
+<h3 id="VNC软件"><a href="#VNC软件" class="headerlink" title="VNC软件"></a>VNC软件</h3><p>由于VNC以GPL授权，派生出了几个VNC软件：</p>
+<ul>
+<li>RealVNC：由VNC团队部分成员开发，分为全功能商业版及免费版。</li>
+<li>TightVNC：强调节省带宽使用。</li>
+<li>UltraVNC：加入了TightVNC的部分程序及加强性能的图型映射驱动程序，并结合Active Directory及NTLM的账号密码认证，但仅有Windows版本。</li>
+<li>Vine Viewer：MacOSX的VNC客户端。</li>
+</ul>
+<h1 id="配置树莓派支持SSH和VNC"><a href="#配置树莓派支持SSH和VNC" class="headerlink" title="配置树莓派支持SSH和VNC"></a>配置树莓派支持SSH和VNC</h1><p>通过USB转串口登录树莓派后，按如下步骤开启SSH和VNC：</p>
+<ol>
+<li><p>运行命令raspi-config</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo raspi-config</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>选择第五项Interfacing Options</p>
+</li>
+<li>选择enable SSH</li>
+<li>启用SSH，重复步骤一和二，再选择enable VNC。  </li>
+</ol>
+<h1 id="通过SSH或VNC连接树莓派"><a href="#通过SSH或VNC连接树莓派" class="headerlink" title="通过SSH或VNC连接树莓派"></a>通过SSH或VNC连接树莓派</h1><p>debian主机与树莓派在同一个局域网内，则按如下步骤通过SSH或VNC连接树莓派。</p>
+<h2 id="通过nmap命令获取树莓派ip地址"><a href="#通过nmap命令获取树莓派ip地址" class="headerlink" title="通过nmap命令获取树莓派ip地址"></a>通过nmap命令获取树莓派ip地址</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ nmap 192.168.0.1/24</span><br><span class="line">Starting Nmap 7.70 ( https://nmap.org ) at 2018-11-08 13:08 CST</span><br><span class="line"></span><br><span class="line">Nmap scan report for 192.168.0.103</span><br><span class="line">Host is up (0.041s latency).</span><br><span class="line">Not shown: 998 closed ports</span><br><span class="line">PORT     STATE SERVICE</span><br><span class="line">22/tcp   open  ssh</span><br><span class="line">5900/tcp open  vnc</span><br><span class="line"></span><br><span class="line">Nmap done: 256 IP addresses (6 hosts up) scanned in 35.77 seconds</span><br></pre></td></tr></table></figure>
+<p>开启22和5900端口的主机即是树莓派。</p>
+<h2 id="通过ssh远程登录树莓派"><a href="#通过ssh远程登录树莓派" class="headerlink" title="通过ssh远程登录树莓派"></a>通过ssh远程登录树莓派</h2> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 首次登录会给出主机认证不能建立的提示，输入yes可继续，再输入用户密码即可远程登录树莓派</span><br><span class="line">$ ssh pi@192.168.0.103</span><br></pre></td></tr></table></figure>
+<h2 id="通过vnc远程登录树莓派"><a href="#通过vnc远程登录树莓派" class="headerlink" title="通过vnc远程登录树莓派"></a>通过vnc远程登录树莓派</h2><ol>
+<li><p>通过ssh登录树莓派后查看其使用的vnc程序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ apt list --installed | grep vnc</span><br><span class="line">realvnc-vnc-server/now 6.3.1.36657 armhf [已安装，可升级至：6.3.2.39069]</span><br><span class="line"># 可知，树莓派上使用realvnc程序</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在Debian上安装realvnc客户端程序realvnc-vnc-viewer</p>
+</li>
+<li><p>在终端输入vncviewer，输入树莓派ip、用户名、密码即可登录树莓派</p>
+</li>
+</ol>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="http://www.ruanyifeng.com/blog/2011/12/ssh_remote_login.html，" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2011/12/ssh_remote_login.html，</a> by 阮一峰</li>
+<li><a href="https://zh.wikipedia.org/zh-hans/Secure_Shell，" target="_blank" rel="noopener">https://zh.wikipedia.org/zh-hans/Secure_Shell，</a> by wikipedia</li>
+<li><a href="https://zh.wikipedia.org/zh-hans/VNC，" target="_blank" rel="noopener">https://zh.wikipedia.org/zh-hans/VNC，</a> by wikipedia</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/05/树莓派学习之USB转串口/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/05/树莓派学习之USB转串口/" itemprop="url">
+                  树莓派学习之USB转串口
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-05 22:46:43" itemprop="dateCreated datePublished" datetime="2018-11-05T22:46:43+08:00">2018-11-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-27 20:22:53" itemprop="dateModified" datetime="2018-11-27T20:22:53+08:00">2018-11-27</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近研究树莓派，需要通过usb转串口去连接树莓派，然后设置其wifi连接。于是将用到计算机硬件知识整理一下，并记录通过usb转串口设置树莓派wifi连接的过程。</p>
+<h1 id="硬件知识"><a href="#硬件知识" class="headerlink" title="硬件知识"></a>硬件知识</h1><p>计算机硬件常用接口有并口和串口，对应串行通信和并行通信。串行通信（英语：Serial communication）是指在计算机总线或其他数据信道上，每次传输一个比特数据，并连续进行以上单次过程的通信方式。与之对应的是并行通信，它在串行端口上通过一次同时传输若干比特数据的方式进行通信。</p>
+<p>串行通信被用于长距离通信以及大多数计算机网络，在这些应用场合里，电缆和同步化使并行通信实际应用面临困难。凭借着其改善的信号完整性和传播速度，串行通信总线正在变得越来越普遍，甚至在短程距离的应用中，其优越性已经开始超越并行总线不需要串行化组件(serializer)，并解决了诸如时钟偏移（Clock skew）、互联密度（interconnect density）等缺点。PCI到PCI Express的升级就一个例子。</p>
+<h2 id="并口"><a href="#并口" class="headerlink" title="并口"></a>并口</h2><p>并行接口，简称并口。并口采用的是25针D形接头。所谓“并行”，是指8位数据同时通过并行线进行传送，这样数据传送速度大大提高，但并行传送的线路长度受到限制，因为长度增加，干扰就会增加，数据也就容易出错，目前，并行接口主要作为打印机端口等。</p>
+<h2 id="串口"><a href="#串口" class="headerlink" title="串口"></a>串口</h2><p>串口叫做串行接口，也称串行通信接口，即COM口。按电气标准及协议来分包括RS-232-C、RS-422、RS485、USB等。 RS-232-C、RS-422与RS-485标准只对接口的电气特性做出规定，不涉及接插件、电缆或协议。</p>
+<p>串行端口可以用于连接外置调制解调器、绘图仪或串行打印机。它也可以控制台连接的方式连接网络设备，例如路由器和交换机，主要用来配置它们。</p>
+<ul>
+<li>RS-232-C</li>
+</ul>
+<p>也称标准接口，是目前最常用的一种串行通讯接口。它是在1970年由美国电子工业协会（EIA）联合贝尔系统、 调制解调器厂家及计算机终端生产厂家共同制定的用于串行通讯的标准。</p>
+<p>传统的RS-232-C接口标准有22根线，采用标准25芯D型插头座。自IBM PC/AT开始使用简化了的9芯D型插座。计算机一般有两个串行口：COM1和COM2，9针D形接口通常在计算机后面能看到。现在有很多手机数据线或者物流接收器都采用COM口与计算机相连。</p>
+<ul>
+<li>RS-422</li>
+</ul>
+<p>为改进RS-232通信距离短、速率低的缺点，RS-422定义了一种平衡通信接口，将传输速率提高到10Mb/s，传输距离延长到4000英尺（速率低于100kb/s时），并允许在一条平衡总线上连接最多10个接收器。</p>
+<ul>
+<li>RS-485</li>
+</ul>
+<p>为扩展应用范围，EIA又于1983年在RS-422基础上制定了RS-485 标准，增加了多点、双向通信能力，即允许多个发送器连接到同一条总线上，同时增加了发送器的驱动能力和冲突保护特性，扩展了总线共模范围，后命名为 TIA/EIA-485-A标准。</p>
+<ul>
+<li>Universal Serial Bus（通用串行总线）</li>
+</ul>
+<p>简称USB，是目前计算机上应用较广泛的接口规范，由Intel、Microsoft、Compaq、IBM、NEC、Northern Telcom等几家大厂商发起的新型外设接口标准。USB接口是计算机主板上的一种四针接口，其中中间两个针传输数据，两边两个针给外设供电。USB接口速度快、连接简单、不需要外接电源，传输速度12Mbps，新的USB 2.0可达480Mbps；电缆最大长度5米，USB电缆有4条线：2条信号线，2条电源线，可提供5伏特电源，USB电缆还分屏蔽和非屏蔽两种，屏蔽电缆传输速度可达12Mbps，价格较贵，非屏蔽电缆速度为1.5Mbps，但价格便宜；USB通过串联方式最多可串接127个设备；支持热插拔。最新的规格是USB 3.1。</p>
+<ul>
+<li>RJ-45接口</li>
+</ul>
+<p>是以太网最为常用的接口，RJ45是一个常用名称，指的是由IEC(60)603-7标准化，使用由国际性的接插件标准定义的8个位置（8针）的模块化插孔或者插头。</p>
+<h1 id="USB转串口原理"><a href="#USB转串口原理" class="headerlink" title="USB转串口原理"></a>USB转串口原理</h1><h2 id="硬件接口电气特性"><a href="#硬件接口电气特性" class="headerlink" title="硬件接口电气特性"></a>硬件接口电气特性</h2><ul>
+<li><p>TTL电平：一般用作数字芯片的电平，例如芯片的供电电压是5V，那么高电平就是5V，低电平就是0V，这里所说的电平，就是TTL电平。</p>
+</li>
+<li><p>232电平：232电平特制电脑串口的电平，-12V左右为正电平，+12V左右为低电平。我们刚才所见到的“USB转串口线”和电脑原生的串口，就是232电平。</p>
+</li>
+</ul>
+<h2 id="USB转串口方法"><a href="#USB转串口方法" class="headerlink" title="USB转串口方法"></a>USB转串口方法</h2><p>PC的串口电气特性是232电平，单片机的串口电气特性是TTL电平，这两个就不一样，肯定需要某个芯片或者电路来进行转换匹配才可以通信。这个时候我们就需要TTL转232芯片了，常见的是MAX232,MAX3232等。连接方式如下:</p>
+<p align="center">
+    <img src="images/convert1.jpg" width="100%" alt="232转TTL">
+</p>
+
+<p>但是随着USB接口的普及，当前计算机已经取消了串口。为实现232到TTL的转换，又需要USB转232。连接方式如下：</p>
+<p align="center">
+    <img src="images/convert2.jpg" width="100%" alt="USB转232">
+</p>
+
+<p>为简化，可将USB转232和232转TTL集成到一个芯片上。这样的芯片常见的有CH340、PL2303。连接方式如下：</p>
+<p align="center">
+    <img src="images/convert3.jpg" width="100%" alt="USB转TTL">
+</p>
+
+<p>常见的CH340芯片如下图所示：</p>
+<p align="center">
+    <img src="images/usb2ttl.jpg" width="90%" alt="USB转TTL">
+</p>
+
+<h1 id="通过USB转串口连接树莓派"><a href="#通过USB转串口连接树莓派" class="headerlink" title="通过USB转串口连接树莓派"></a>通过USB转串口连接树莓派</h1><p>下面介绍在Debian Linux主机通过USB转串口连接树莓派的过程。</p>
+<h2 id="配置树莓派开启串口通信"><a href="#配置树莓派开启串口通信" class="headerlink" title="配置树莓派开启串口通信"></a>配置树莓派开启串口通信</h2><p>将树莓派操作系统镜像烧录到SD卡后，打开boot分区，编辑其config.txt，在其末尾添加如下代码，以开启串口通信权限。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enable_uart=1</span><br></pre></td></tr></table></figure></p>
+<h2 id="通过USB转串口物理连接树莓派"><a href="#通过USB转串口物理连接树莓派" class="headerlink" title="通过USB转串口物理连接树莓派"></a>通过USB转串口物理连接树莓派</h2><p>通过将USB转串口将Debian主机和树莓派物理连接好之后，给树莓派加电启动。</p>
+<h2 id="查看Debian系统能否识别ch340芯片"><a href="#查看Debian系统能否识别ch340芯片" class="headerlink" title="查看Debian系统能否识别ch340芯片"></a>查看Debian系统能否识别ch340芯片</h2><p>在官方Linux内核版本中自Kernel2.6以后就默认包含了对CH340/CH341芯片的驱动支持。在系统的默认驱动目录/lib/modules/$(uname -r)/kernel/drivers内可找到ch340芯片的驱动文件ch341.ko。</p>
+<p>使用命令lsusb或dmesg查看linux系统是否识别USB转串口硬件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">~$ lsusb</span><br><span class="line">Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub</span><br><span class="line">Bus 001 Device 005: ID 0bda:0129 Realtek Semiconductor Corp. RTS5129 Card Reader Controller</span><br><span class="line">Bus 001 Device 004: ID 8087:0a2a Intel Corp. </span><br><span class="line">Bus 001 Device 003: ID 1bcf:2b8a Sunplus Innovation Technology Inc. </span><br><span class="line">Bus 001 Device 006: ID 1a86:7523 QinHeng Electronics HL-340 USB-Serial adapter</span><br><span class="line">Bus 001 Device 002: ID 046d:c062 Logitech, Inc. M-UAS144 [LS1 Laser Mouse]</span><br><span class="line">Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</span><br></pre></td></tr></table></figure></p>
+<p>Bus 001 Device 006: ID 1a86:7523 QinHeng Electronics HL-340 USB-Serial adapter表明Linux系统识别了usb转串口线缆，芯片类型为HL-340。</p>
+<p>‘dmesg’命令显示linux内核的环形缓冲区信息，我们可以从中获得诸如系统架构、cpu、挂载的硬件，RAM等多个运行级别的大量的系统信息。当计算机启动时，系统内核（操作系统的核心部分）将会被加载到内存中。在加载的过程中会显示很多的信息，在这些信息中我们可以看到内核检测硬件设备。运行dmesg，输出如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">~$ sudo dmesg | tail</span><br><span class="line">[ 4248.441104] usbcore: registered new interface driver usbserial_generic</span><br><span class="line">[ 4248.441112] usbserial: USB Serial support registered for generic</span><br><span class="line">[ 4248.456079] usbcore: registered new interface driver ch341</span><br><span class="line">[ 4248.456088] usbserial: USB Serial support registered for ch341-uart</span><br><span class="line">[ 4248.456097] ch341 1-3:1.0: ch341-uart converter detected</span><br><span class="line">[ 4248.456464] usb 1-3: ch341-uart converter now attached to ttyUSB0</span><br><span class="line">[ 4284.405593] i2c_hid i2c-ELAN1010:00: i2c_hid_get_input: incomplete report (14/65535)</span><br><span class="line">[ 4284.407844] i2c_hid i2c-ELAN1010:00: i2c_hid_get_input: incomplete report (14/65535)</span><br><span class="line">[ 4657.772761] i2c_hid i2c-ELAN1010:00: i2c_hid_get_input: incomplete report (14/65535)</span><br><span class="line">[ 4657.774969] i2c_hid i2c-ELAN1010:00: i2c_hid_get_input: incomplete report (14/65535)</span><br></pre></td></tr></table></figure></p>
+<p>[ 4248.456097] ch341 1-3:1.0: ch341-uart converter detected;<br>[ 4248.456464] usb 1-3: ch341-uart converter now attached to ttyUSB0说明linux系统识别了usb转串口适配器，并附加到ttyUSB0文件上。</p>
+<h2 id="使用minicom连接树莓派"><a href="#使用minicom连接树莓派" class="headerlink" title="使用minicom连接树莓派"></a>使用minicom连接树莓派</h2><p>minicom是linux平台的串行通信程序，类似于windows的超级终端程序。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">$ usermod -a -G dialout $USER</span><br><span class="line">#首次运行minicom使用-s选项，用于设置串行通信参数</span><br><span class="line">$ minicom -s</span><br><span class="line">+-----[configuration]------+</span><br><span class="line">| Filenames and paths      |</span><br><span class="line">| File transfer protocols  |</span><br><span class="line">| Serial port setup        |</span><br><span class="line">| Modem and dialing        |</span><br><span class="line">| Screen and keyboard      |</span><br><span class="line">| Save setup as dfl        |</span><br><span class="line">| Save setup as..          |</span><br><span class="line">| Exit                     |</span><br><span class="line">| Exit from Minicom        |</span><br><span class="line">+--------------------------+</span><br><span class="line">#通过上下键选择Serial port setup</span><br><span class="line">+----------------------------------- +</span><br><span class="line">| A -    Serial Device      : /dev/ttyUSB0   |</span><br><span class="line">| B - Lockfile Location     : /var/lock     |</span><br><span class="line">| C -   Callin Program      :             |</span><br><span class="line">| D -  Callout Program      :             |</span><br><span class="line">| E -    Bps/Par/Bits       : 115200 8N1  |</span><br><span class="line">| F - Hardware Flow Control : Yes         |</span><br><span class="line">| G - Software Flow Control : No          |</span><br><span class="line">|                                         |</span><br><span class="line">|    Change which setting?                |</span><br><span class="line">+----------------------------------+</span><br><span class="line"># 设置Serial Device为/dev/ttyUSB0，然后推出到上一界面，使用enter键Save setup as dfl，保存配置。下次即可直接运行minicom使用之前保存的配置进行串口通信 </span><br><span class="line"># 这时候要选择单独Exit（退出），不要选择Exit from Minicom（退出Minicom），不然你就把minicom关了。</span><br><span class="line"># 这时即可连接树莓派。</span><br></pre></td></tr></table></figure></p>
+<p>连接上树莓派后，输入用户名pi和密码raspberry，即可进入系统。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Raspbian GNU/Linux 9 raspberrypi ttyS0                                       </span><br><span class="line">raspberrypi login: pi                                                        </span><br><span class="line">Password:                                                                    </span><br><span class="line">Last login: Tue Oct  9 13:12:40 UTC 2018 on tty1                             </span><br><span class="line">Linux raspberrypi 4.14.71-v7+ #1145 SMP Fri Sep 21 15:38:35 BST 2018 armv7l</span><br><span class="line">                                        </span><br><span class="line">The programs included with the Debian GNU/Linux system are free software;</span><br><span class="line">the exact distribution terms for each program are described in the</span><br><span class="line">individual files in /usr/share/doc/*/copyright.</span><br><span class="line">                                        </span><br><span class="line">Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent</span><br><span class="line">permitted by applicable law.</span><br><span class="line"></span><br><span class="line">Wi-Fi is disabled because the country is not set.                               </span><br><span class="line">Use raspi-config to set the country before use.                                 </span><br><span class="line">                                                                                </span><br><span class="line">pi@raspberrypi:~$</span><br></pre></td></tr></table></figure></p>
+<p>退出minicom，按Ctrl＋A，再按下X键，会提示你是否退出，yes就可以了。</p>
+<h2 id="配置树莓派wifi连接"><a href="#配置树莓派wifi连接" class="headerlink" title="配置树莓派wifi连接"></a>配置树莓派wifi连接</h2><h3 id="查看周围wifi热点信息"><a href="#查看周围wifi热点信息" class="headerlink" title="查看周围wifi热点信息"></a>查看周围wifi热点信息</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~$ iwlist scan</span><br></pre></td></tr></table></figure>
+<h3 id="配置连接到wifi热点"><a href="#配置连接到wifi热点" class="headerlink" title="配置连接到wifi热点"></a>配置连接到wifi热点</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 编辑wifi文件</span><br><span class="line">pi@raspberrypi:~$ sudo vi /etc/wpa_supplicant/wpa_supplicant.conf</span><br><span class="line"># 在该文件最后添加下面的话</span><br><span class="line">network=&#123;</span><br><span class="line">  ssid=&quot;WIFINAME&quot;</span><br><span class="line">  psk=&quot;password&quot;</span><br><span class="line">&#125;</span><br><span class="line"># 引号部分分别为wifi的名字和密码</span><br><span class="line"># 重启系统</span><br><span class="line">pi@raspberrypi:~$ sudo init 6</span><br><span class="line"># 登录后查看是否连接成功</span><br><span class="line">pi@raspberrypi:~$  ip addr</span><br></pre></td></tr></table></figure>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://www.cnblogs.com/zcshan/archive/2010/12/03/com.html" target="_blank" rel="noopener">https://www.cnblogs.com/zcshan/archive/2010/12/03/com.html</a> ,by 水寒</li>
+<li><a href="https://zh.wikipedia.org/wiki串行端口" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki串行端口</a> , by wikipedia</li>
+<li><a href="https://blog.csdn.net/he_wen_jie/article/details/50983076" target="_blank" rel="noopener">https://blog.csdn.net/he_wen_jie/article/details/50983076</a>. by hwj666</li>
+<li><a href="https://linux.cn/article-3587-1.html" target="_blank" rel="noopener">https://linux.cn/article-3587-1.html</a> , by linux中国</li>
+<li><a href="https://blog.csdn.net/JAZZSOLDIER/article/details/70170466" target="_blank" rel="noopener">https://blog.csdn.net/JAZZSOLDIER/article/details/70170466</a> ， by SoldierJazz2018</li>
+<li><a href="http://blog.51cto.com/irinilu/289622" target="_blank" rel="noopener">http://blog.51cto.com/irinilu/289622</a>, by feng9422</li>
+<li>Pipci. Linux 串口终端调试工具minicom[EB/OL].<a href="https://blog.csdn.net/Pipcie/article/details/79379451" target="_blank" rel="noopener">https://blog.csdn.net/Pipcie/article/details/79379451</a>, 2018-02-26.</li>
+<li><a href="https://blog.csdn.net/huayucong/article/details/51376279，" target="_blank" rel="noopener">https://blog.csdn.net/huayucong/article/details/51376279，</a> by huayucong</li>
+<li><a href="https://blog.csdn.net/wangjiaweiwei/article/details/49612207" target="_blank" rel="noopener">USB转串口CH340接线方法</a>,2015-11-03.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/03/树莓派操作系统镜像烧录方法指南/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/03/树莓派操作系统镜像烧录方法指南/" itemprop="url">
+                  树莓派操作系统镜像烧录方法指南
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-03 18:10:16" itemprop="dateCreated datePublished" datetime="2018-11-03T18:10:16+08:00">2018-11-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-04 18:05:54" itemprop="dateModified" datetime="2018-11-04T18:05:54+08:00">2018-11-04</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>树莓派是一个微型计算机硬件平台，为使其正常工作还需要安装操作系统。通常将树莓派操作系统烧录到SD卡上，再将SD卡插到树莓派上。加电启动后，树莓派就会从SD卡引导启动操作系统，开始工作。这里SD卡就相当于普通计算机的硬盘。下面记录在Debian Linux下烧录树莓派操作系统到SD卡的方法。</p>
+<h1 id="镜像烧录工具"><a href="#镜像烧录工具" class="headerlink" title="镜像烧录工具"></a>镜像烧录工具</h1><h2 id="Etcher"><a href="#Etcher" class="headerlink" title="Etcher"></a>Etcher</h2><p>Etcher是树莓派官方推荐的镜像烧录工具。它采用图形界面，支持Windows、Linux、Mac，使用简单方便，推荐普通用户使用。</p>
+<h2 id="dd"><a href="#dd" class="headerlink" title="dd"></a>dd</h2><p>Linux的dd命令用于复制文件并对原文件的内容进行转换和格式化处理。dd命令功能很强大的，对于一些比较底层的问题，使用dd命令往往可以得到出人意料的效果。用的比较多的还是用dd来备份裸设备。同样也可用dd命令烧录系统镜像。</p>
+<p>使用dd命令必须非常小心，如果输出指定了错误分区，将摧毁该分区的所有数据。</p>
+<h1 id="Linux下镜像烧录过程"><a href="#Linux下镜像烧录过程" class="headerlink" title="Linux下镜像烧录过程"></a>Linux下镜像烧录过程</h1><p>使用Etcher烧录镜像比较简单，重点介绍使用dd命令烧录镜像的方法。</p>
+<h2 id="查找sd卡设备"><a href="#查找sd卡设备" class="headerlink" title="查找sd卡设备"></a>查找sd卡设备</h2><p>可使用lsblk或者fdisk命令查找sd卡存储设备。需要注意的是：</p>
+<ul>
+<li>块设备以/dev/sdX命名，其中X是小写字母，例如/dev/sda。</li>
+<li>测试时发现当计算机只有usb3.0接口时，将不识别usb2.0的sd读卡器。</li>
+</ul>
+<h2 id="烧录镜像到sd卡"><a href="#烧录镜像到sd卡" class="headerlink" title="烧录镜像到sd卡"></a>烧录镜像到sd卡</h2><h3 id="将镜像烧录到sd卡"><a href="#将镜像烧录到sd卡" class="headerlink" title="将镜像烧录到sd卡"></a>将镜像烧录到sd卡</h3><p>使用如下dd命令将树莓派镜像少量到sd卡：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd bs=4M if=2018-10-09-raspbian-stretch.img of=/dev/sdX conv=fsync</span><br></pre></td></tr></table></figure></p>
+<p>其中：</p>
+<ul>
+<li>if=文件名：输入文件名，缺省为标准输入。即指定源文件。</li>
+<li>of=文件名：输出文件名，缺省为标准输出。即指定目的文件。</li>
+<li>bs=bytes：同时设置读入/输出的块大小为bytes个字节。</li>
+<li>conv=conversion：用指定的参数转换文件。</li>
+</ul>
+<h3 id="将压缩镜像烧录到sd卡"><a href="#将压缩镜像烧录到sd卡" class="headerlink" title="将压缩镜像烧录到sd卡"></a>将压缩镜像烧录到sd卡</h3><p>当文件系统不支持大于4GB的文件时，可使用利用管道技术烧录镜像，命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unzip -p 2018-10-09-raspbian-stretch.zip | sudo dd of=/dev/sdX bs=4M conv=fsync</span><br></pre></td></tr></table></figure></p>
+<h3 id="检查烧录进度"><a href="#检查烧录进度" class="headerlink" title="检查烧录进度"></a>检查烧录进度</h3><p>默认情况下dd命令不给出烧录进度信息，最新的dd提供status=progress选项给出进度信息，命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd bs=4M if=2018-10-09-raspbian-stretch.img of=/dev/sdX status=progress conv=fsync</span><br></pre></td></tr></table></figure></p>
+<p>或者可使用dcfldd命令替换dd进行烧录操作。</p>
+<h2 id="检查镜像是否正确的烧录到sd卡"><a href="#检查镜像是否正确的烧录到sd卡" class="headerlink" title="检查镜像是否正确的烧录到sd卡"></a>检查镜像是否正确的烧录到sd卡</h2><p>先使用dd命令将sd卡中内容复制到硬盘，在使用diff或者md5sum检查镜像文件与sd卡内容镜像之间的一致性。</p>
+<p>之前dd命令烧录镜像到sd卡完成后会在shell中输出如下结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">xxx+0 records in</span><br><span class="line">yyy+0 records out</span><br><span class="line">yyyyyyyyyy bytes (yyy kB, yyy KiB) copied, 0.00144744 s, 283 MB/s</span><br></pre></td></tr></table></figure></p>
+<p>xxx是我们需要的，表示读取xxx块记录烧录到sd卡，xxx乘以bs=4M应该等于原始镜像的大小。</p>
+<p>使用如下命令复制sd卡内容到硬盘上：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 经测试count命令没有其作用，该命令将整个sd内容复制到了硬盘，但我们期望只复制之前烧录到sd卡内容</span><br><span class="line">dd bs=4M if=/dev/sdX of=from-sd-card.img count=xxx</span><br></pre></td></tr></table></figure></p>
+<p>如果from-sd-card.img文件大于原始镜像文件，那么先使用truncate命令将from-sd-card.img缩小到原始镜像文件的大小，命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">truncate --reference 2018-10-09-raspbian-stretch.img from-sd-card.img</span><br></pre></td></tr></table></figure></p>
+<p>使用diff命令比较两者直接的一致性，如果不一致，可能烧录过程中有错误。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">diff -s from-sd-card.img 2018-10-09-raspbian-stretch.img</span><br></pre></td></tr></table></figure></p>
+<p>使用sync命令强制将缓存写入硬盘，然后umount sd卡文件系统，最后移除sd卡。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://www.raspberrypi.org/documentation/installation/installing-images/linux.md" target="_blank" rel="noopener">https://www.raspberrypi.org/documentation/installation/installing-images/linux.md</a>, by raspberrypi.</li>
+<li><a href="https://blog.csdn.net/liumang_D/article/details/3899462" target="_blank" rel="noopener">https://blog.csdn.net/liumang_D/article/details/3899462</a>, by liumang_d.</li>
+<li><a href="https://linux.cn/article-8024-1.html" target="_blank" rel="noopener">https://linux.cn/article-8024-1.html</a>, by linux中国</li>
+<li><a href="https://www.jianshu.com/p/ff09ceffa816" target="_blank" rel="noopener">https://www.jianshu.com/p/ff09ceffa816</a>, by 二石兄.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/03/树莓派学习笔记/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1590,593 +2202,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/14/Python常用库简介/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/14/Python常用库简介/" itemprop="url">
-                  Python常用库简介
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-10-14 11:22:09" itemprop="dateCreated datePublished" datetime="2018-10-14T11:22:09+08:00">2018-10-14</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-12-05 23:47:16" itemprop="dateModified" datetime="2018-12-05T23:47:16+08:00">2018-12-05</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python的高效开发建立在大量常用库基础上，因此掌握常用的Python库十分必要。下面简单介绍Python的各类常用库。</p>
-<h1 id="常用标准库"><a href="#常用标准库" class="headerlink" title="常用标准库"></a>常用标准库</h1><ul>
-<li>os： 访问操作系统功能模块</li>
-<li>sys： 访问一些环境变量和与 Python 解释器交互</li>
-<li>datetime： 日期时间处理</li>
-<li>collections： 高级数据结构，有序字典，队列等等</li>
-<li>uuid： 生成 UUID 模块</li>
-<li>random： 随机数生成模块</li>
-<li>re： 正则表达式模块</li>
-<li>json： JSON 处理模块</li>
-<li>pdb： 单步调试模块</li>
-</ul>
-<h1 id="科学计算"><a href="#科学计算" class="headerlink" title="科学计算"></a>科学计算</h1><ul>
-<li>scipy：基于Python的matlab实现，旨在实现matlab的所有功能。包含Numpy、Ipython、Pandas、Matplotlib、Sympy等常用库</li>
-<li>numpy： 基于Python的科学计算第三方库，提供了矩阵，线性代数，傅立叶变换等等的解决方案</li>
-<li>pandas： 支持表格等多维数据</li>
-<li>matplotlib： 用Python实现的类matlab的第三方库，用以绘制一些高质量的数学二维图形</li>
-</ul>
-<h1 id="命令交互"><a href="#命令交互" class="headerlink" title="命令交互"></a>命令交互</h1><ul>
-<li>ipython： 交互命令行，适合科学计算</li>
-<li>jupyter： ipython notebook 的延伸，可以直接放在github上</li>
-<li>argparse：(Python 标准库)用于命令项选项与参数解析的模块</li>
-</ul>
-<h1 id="爬虫相关"><a href="#爬虫相关" class="headerlink" title="爬虫相关"></a>爬虫相关</h1><ul>
-<li>urllib: (Python 标准库)，接受URL请求的相关模块</li>
-<li>http: (Python 标准库)，处理所有客户端—服务器http请求的具体细节</li>
-<li>requests: 第三方库，人性化的HTTP请求库，比urllib更好用</li>
-<li>pillow: 处理验证码</li>
-<li>rsa: 处理加密问题</li>
-<li>BeautifulSoup：解析html文档为用户提供需要抓取的数据</li>
-<li>lxml: 是基于 libxml2 这一 XML 解析库的 Python 封装,解析速度比 Beautiful Soup 更快</li>
-</ul>
-<h1 id="环境管理"><a href="#环境管理" class="headerlink" title="环境管理"></a>环境管理</h1><ul>
-<li>virtualenv：创建独立 Python 环境的工具</li>
-<li>virtualenvwrapper：virtualenv 的一组扩展</li>
-</ul>
-<h1 id="包管理"><a href="#包管理" class="headerlink" title="包管理"></a>包管理</h1><ul>
-<li>pip：Python 包和依赖关系管理工具</li>
-<li>conda：跨平台，Python 二进制包管理工具</li>
-</ul>
-<h1 id="并发和并行"><a href="#并发和并行" class="headerlink" title="并发和并行"></a>并发和并行</h1><ul>
-<li>threading：(Python 标准库)更高层的线程接口</li>
-<li>multiprocessing：(Python 标准库) 基于进程的“线程”接口</li>
-</ul>
-<h1 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h1><ul>
-<li>logging：(Python 标准库) 为 Python 提供日志功能。</li>
-</ul>
-<h1 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h1><ul>
-<li>six：Python 2 和 3 的兼容性工具</li>
-</ul>
-<h1 id="计算机视觉"><a href="#计算机视觉" class="headerlink" title="计算机视觉"></a>计算机视觉</h1><ul>
-<li>opencv</li>
-</ul>
-<h1 id="机器学习"><a href="#机器学习" class="headerlink" title="机器学习"></a>机器学习</h1><ul>
-<li>tensorflow</li>
-</ul>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="https://www.jianshu.com/p/886cbabbfe9e" target="_blank" rel="noopener">Python 笔记四：Python的常用库收集</a>, by brandonxiang </li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/09/Virtualenv简易教程/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/09/Virtualenv简易教程/" itemprop="url">
-                  Virtualenv简易教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-10-09 21:08:13" itemprop="dateCreated datePublished" datetime="2018-10-09T21:08:13+08:00">2018-10-09</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-10-14 17:46:49" itemprop="dateModified" datetime="2018-10-14T17:46:49+08:00">2018-10-14</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>virtualenv是一个创建隔离python环境的工具，主要用于解决包冲突问题。</p>
-<h1 id="安装方法"><a href="#安装方法" class="headerlink" title="安装方法"></a>安装方法</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pip3 install virtualenv</span><br></pre></td></tr></table></figure>
-<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><h2 id="创建项目的虚拟环境"><a href="#创建项目的虚拟环境" class="headerlink" title="创建项目的虚拟环境"></a>创建项目的虚拟环境</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd my_project_folder</span><br><span class="line">$ virtualenv venv #venv是虚拟环境名称</span><br></pre></td></tr></table></figure>
-<p>执行上述命令后，将生成一个与虚拟环境同名的文件夹，包含 Python 可执行文件和 pip 库的拷贝，可用于安装其他包。</p>
-<p>但是默认情况下，虚拟环境中不会包含也无法使用系统环境的global site-packages。比如系统环境里安装了 requests 模块，在虚拟环境里import requests会提示ImportError。如果想使用系统环境的第三方软件包，可以在创建虚拟环境时使用参数–system-site-packages。如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">virtualenv --system-site-packages venv</span><br></pre></td></tr></table></figure></p>
-<p>此外可以指定虚拟环境所使用的 Python 版本，但前提是系统中已经安装了该版本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">virtualenv -p /usr/bin/python2.7 venv</span><br></pre></td></tr></table></figure></p>
-<h2 id="使用虚拟环境"><a href="#使用虚拟环境" class="headerlink" title="使用虚拟环境"></a>使用虚拟环境</h2><p>启动虚拟环境：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd venv</span><br><span class="line">source bin/activate </span><br><span class="line">python -V</span><br></pre></td></tr></table></figure></p>
-<p>退出虚拟环境：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deactivate</span><br></pre></td></tr></table></figure></p>
-<h1 id="virtualenvwrapper"><a href="#virtualenvwrapper" class="headerlink" title="virtualenvwrapper"></a>virtualenvwrapper</h1><p>virtualenvwrapper是virtualenv 的扩展工具，提供了一系列命令行命令，可以方便地创建、删除、复制、切换不同的虚拟环境。同时，使用该扩展后，所有虚拟环境都会被放置在同一个目录下。</p>
-<h2 id="安装方法-1"><a href="#安装方法-1" class="headerlink" title="安装方法"></a>安装方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install virtualenvwrapper</span><br></pre></td></tr></table></figure>
-<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><p>在$home/.bashrc文件中添加如下几行代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># bash -f file检测文件是否是普通文件（既不是目录，也不是设备文件），如果是，则返回 true</span><br><span class="line">if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then</span><br><span class="line">   export WORKON_HOME=$HOME/.virtualenvs </span><br><span class="line">   source /usr/local/bin/virtualenvwrapper.sh</span><br><span class="line">fi</span><br></pre></td></tr></table></figure></p>
-<h2 id="使用方法-1"><a href="#使用方法-1" class="headerlink" title="使用方法"></a>使用方法</h2><p>mkvirtualenv 也可以使用 virtualenv 的参数，比如 –python 来指定 Python 版本。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mkvirtualenv venv # 创建虚拟环境，虚拟环境目录都在 WORKON_HOME 里</span><br><span class="line"></span><br><span class="line">lsvirtualenv -b # 列出虚拟环境</span><br><span class="line"></span><br><span class="line">workon [虚拟环境名称] # 切换虚拟环境</span><br><span class="line"></span><br><span class="line">lssitepackages # 查看环境里安装了哪些包</span><br><span class="line"></span><br><span class="line">cdvirtualenv [子目录名] # 进入当前环境的目录</span><br><span class="line"></span><br><span class="line">cpvirtualenv [source] [dest] # 复制虚拟环境</span><br><span class="line"></span><br><span class="line">deactivate # 退出虚拟环境</span><br><span class="line"></span><br><span class="line">rmvirtualenv [虚拟环境名称] # 删除虚拟环境</span><br></pre></td></tr></table></figure></p>
-<h1 id="conda-vs-pip-vs-virtualenv"><a href="#conda-vs-pip-vs-virtualenv" class="headerlink" title="conda vs. pip vs. virtualenv"></a>conda vs. pip vs. virtualenv</h1><p>Conda是一个开源包管理系统和环境管理系统，用于安装多个版本的软件包及其依赖关系，并在它们之间轻松切换。 它适用于Linux，OS X和Windows，是为Python程序创建的，但可以打包和分发任何软件。</p>
-<p>Pip是一个以Python计算机程序语言写成的软件包管理系统，用于安装和管理软件包。</p>
-<p>它们直接的区别如下：</p>
-<p align="center">
-    <img src="images/conda_compare.png" width="90%" alt="conda vs. pip vs. virtualenv">
-</p>
-
-<h1 id="pip使用方法"><a href="#pip使用方法" class="headerlink" title="pip使用方法"></a>pip使用方法</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 导出python安装包环境</span><br><span class="line">pip freeze &gt; requirements.txt</span><br><span class="line"># 导入requirements文件</span><br><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="http://codingpy.com/article/virtualenv-must-have-tool-for-python-development/" target="_blank" rel="noopener">http://codingpy.com/article/virtualenv-must-have-tool-for-python-development/</a>.</li>
-<li><a href="https://conda.io/docs/commands.html#conda-vs-pip-vs-virtualenv-commands" target="_blank" rel="noopener">https://conda.io/docs/commands.html#conda-vs-pip-vs-virtualenv-commands</a>.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/09/19/Blender简易教程/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/19/Blender简易教程/" itemprop="url">
-                  Blender简易教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-19 08:48:48" itemprop="dateCreated datePublished" datetime="2018-09-19T08:48:48+08:00">2018-09-19</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-05 13:21:37" itemprop="dateModified" datetime="2019-01-05T13:21:37+08:00">2019-01-05</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近需要用Blender建3D模型，试用了半天，将经验简单总结一下。</p>
-<h1 id="3D建模流程"><a href="#3D建模流程" class="headerlink" title="3D建模流程"></a>3D建模流程</h1><ul>
-<li>建立3D模型：通常在Blender的3D视图窗口对物体进行建模。</li>
-<li>拆分制作纹理：设置缝合边，再展开。打开U/V图像编辑器窗口即可看到拆分效果。导出图片后制作纹理。</li>
-<li>使用材质贴图：设置材质着色，添加纹理。</li>
-</ul>
-<h1 id="Blender快捷键"><a href="#Blender快捷键" class="headerlink" title="Blender快捷键"></a>Blender快捷键</h1><p>Blender快捷键很多，熟练使用可加速3D模型的建立。</p>
-<h2 id="3D视图窗口"><a href="#3D视图窗口" class="headerlink" title="3D视图窗口"></a>3D视图窗口</h2><h3 id="字母键"><a href="#字母键" class="headerlink" title="字母键"></a>字母键</h3><ul>
-<li>A：全选、取消选择</li>
-<li>Shift+A：增加物件，新建的物件会出现在准星的位置</li>
-<li>B：框选，进行多选</li>
-<li>C：刷选，加Shift取消选择，按Esc退出选择</li>
-<li>E：挤出选中对象</li>
-<li>G：移动选中对象</li>
-<li>H：隐藏对象（Hide）</li>
-<li>Alt+H：显示对象</li>
-<li>K: 切割</li>
-<li>N：打开物体属性</li>
-<li>Ctrl+Alt+Q：切换四视图</li>
-<li>R: 旋转</li>
-<li>Ctrl+R: 环切并滑动</li>
-<li>S: 缩放</li>
-<li>Alt+S：法向缩放</li>
-<li>T：打开左侧工具栏</li>
-<li>Tab：编辑模式和物体模式切换</li>
-<li>Ctrl+U:存储为启动文件</li>
-<li>X：删除</li>
-<li>Z：线框模式与实体模式之间切换</li>
-<li>Ctrl+Space：调出三维坐标系操纵物体</li>
-<li>Ctrl+Tab：进行点、线、面的编辑模式</li>
-<li>Shift+空格键：放大视图</li>
-</ul>
-<h3 id="功能键"><a href="#功能键" class="headerlink" title="功能键"></a>功能键</h3><ul>
-<li>F12：计算结果（算图模式），如果是黑色的，需要把摄像机和光源放在同一个图层中，或者选择摄像机和光源的图层。</li>
-</ul>
-<h3 id="数字键"><a href="#数字键" class="headerlink" title="数字键"></a>数字键</h3><p>数字键主要用于视角切换</p>
-<ul>
-<li>1：前视图</li>
-<li>3：侧视图</li>
-<li>5：正交与透视之间切换</li>
-<li>7：俯视图</li>
-</ul>
-<h3 id="鼠标键"><a href="#鼠标键" class="headerlink" title="鼠标键"></a>鼠标键</h3><ul>
-<li>右键：选择物体</li>
-<li>shift+中键：平移</li>
-<li>滚轴/（Ctrl+中键拖拽）：缩放</li>
-</ul>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="https://blog.csdn.net/u010670734/article/details/64538633" target="_blank" rel="noopener"> Blender常用快捷键</a>,by JinunMeng.</li>
-<li><a href="https://www.zhihu.com/question/41303546" target="_blank" rel="noopener">如何系统的学习blender？</a>,by zhihu.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2224,7 +2249,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">73</span>
+                    <span class="site-state-item-count">76</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2317,7 +2342,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">39</span>
+                      
+                    
+                    <span class="site-state-item-count">40</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

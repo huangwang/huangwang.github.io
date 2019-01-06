@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-01-05T11:23:36.313Z</updated>
+  <updated>2019-01-06T13:04:59.180Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -17,13 +17,41 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>飞行仿真之刚体六自由度方程</title>
+    <link href="https://huangwang.github.io/2019/01/06/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F%E4%B9%8B%E5%88%9A%E4%BD%93%E5%85%AD%E8%87%AA%E7%94%B1%E5%BA%A6%E6%96%B9%E7%A8%8B/"/>
+    <id>https://huangwang.github.io/2019/01/06/飞行仿真之刚体六自由度方程/</id>
+    <published>2019-01-06T10:50:47.000Z</published>
+    <updated>2019-01-06T13:04:59.180Z</updated>
+    
+    <content type="html"><![CDATA[<p>在飞行仿真中，获取飞机的位姿是基本要求。将飞行器视为刚体，根据牛顿第二定律和动量矩定理，即可推导出飞机的质心运动方程和飞机绕质心转动的动力学方程，即刚体的六自由度方程。下面即从《航空飞行器飞行动力学》中摘抄刚体六自由度方程的推导过程。</p><h1 id="飞行器质心运动方程"><a href="#飞行器质心运动方程" class="headerlink" title="飞行器质心运动方程"></a>飞行器质心运动方程</h1><p>根据牛顿第二定理：</p><script type="math/tex; mode=display">m\frac{dV}{dt}=F \tag{1}</script><p>式中$m$为飞行器质量，$V$为飞行器飞行速度矢量，$F$为作用于质心处外力的合力矢量。</p><p>具体研究飞行器质心运动规律时，工程上常建立投影正在一动坐标系的标量方程，并认为大气时静止的。</p><h2 id="一般动坐标系中质心动力学方程"><a href="#一般动坐标系中质心动力学方程" class="headerlink" title="一般动坐标系中质心动力学方程"></a>一般动坐标系中质心动力学方程</h2><p>取原点位于飞行器质心的一动坐标系$Oxyz$，它相对惯性坐标系$O_gx_gy_gz_g$有一转动角速度$w$。质心的绝对速度为$V$，如图1所示。</p><p align="center">    <img src="images/DynamicAxis.jpg" width="60%" alt="动系相对于惯性坐标系的关系"></p><p>将速度$V$和角速度$w$分别在动坐标系上投影，则有</p><script type="math/tex; mode=display">V=V_xi+V_yj+V_zk \tag{2}</script><script type="math/tex; mode=display">w=w_xi+w_yj+w_zk \tag{3}</script><p>式中$i,j,k$为动坐标系$Oxyz$的单位矢量。由于$w$存在，其方向将随时间变化。</p><p>将公式$(2)和(3)$带入公式$(1)$，则速度$V$的微分，即质心的绝对加速度为：</p><script type="math/tex; mode=display">\frac{F}{m}=\frac{dV}{dt}=\frac{dV_x}{dt}i+\frac{dV_y}{dt}j+\frac{dV_z}{dt}k+V_x\frac{di}{dt}+V_y\frac{dj}{dt}+V_z\frac{dk}{dt} \tag{4}</script><p>式中单位矢量导数$di/dt$是矢量端点$i$的速度，此时矢端曲线是绕$w$旋转的圆，因此：</p><script type="math/tex; mode=display">\frac{di}{dt}=w\times i</script><script type="math/tex; mode=display">\frac{dy}{dt}=w\times y</script><script type="math/tex; mode=display">\frac{dz}{dt}=w\times z</script><p>将上述关系代入公式$(4)$，即可知质心的绝对加速度可表示为</p><script type="math/tex; mode=display">\frac{F}{m}=\frac{dV}{dt}=\frac{\delta V}{\delta t}+w \times V  \tag{5}</script><p>其中：</p><script type="math/tex; mode=display">\frac{\delta V}{\delta t}=\frac{dV_x}{dt}i+\frac{dV_y}{dt}j+\frac{dV_z}{dt}k</script><p>式$(5)$中$\frac{\delta V}{\delta t}$为动系角速度$w=0$时的加速度，即相当于观察者站在动坐标系中所看到的质心加速度；$w\times V$为由于存在角速度$w$使$V$相对于动坐标系方向发生变化而产生的加速度；$\frac{dV}{dt}$为质心的绝对加速度，即观察者在地面坐标系上所看到的加速度。</p><p>同样合力矢量$F$用动坐标系上投影表示为：</p><script type="math/tex; mode=display">F=F_xi+F_yj+F_zk</script><p>于是式$(5)在动坐标系$Oxyz$上投影的质心动力学标量方程如下：</p><script type="math/tex; mode=display">m(\frac{dV_x}{dt}+V_zw_y-V_yw_z)=F_x</script><script type="math/tex; mode=display">m(\frac{dV_y}{dt}+V_xw_z-V_zw_x)=F_y</script><script type="math/tex; mode=display">m(\frac{dV_z}{dt}+V_yw_x-V_xw_y)=F_z</script><p>上述方程组适用于任何动坐标系。</p><h1 id="飞行器绕质心的动力学方程"><a href="#飞行器绕质心的动力学方程" class="headerlink" title="飞行器绕质心的动力学方程"></a>飞行器绕质心的动力学方程</h1><p>根据动量矩定理，飞行器绕质心的转动运动可表示为：</p><script type="math/tex; mode=display">M=\frac{dh}{dt} \tag{6}</script><p>式中$h$为飞行器对坐标系原点的动量矩；$M$为作用在飞行器上的外力对原点的合力矩。</p><p align="center">    <img src="images/MomentumOfCentroid.jpg" width="60%" alt="对质心的动量矩"></p><p>根据动量矩定义，飞行器上任意微元质量为dm，对坐标系原点的动量矩为：</p><script type="math/tex; mode=display">\Delta h=r\times V dm</script><p>式中$r$为微元质量到坐标系原点的矢径；$V$为该微元质量的速度矢量，则</p><script type="math/tex; mode=display">V=V_o+w\times r</script><p>式中$V_o$为坐标系原点速度（如坐标原点取为飞行器质心，则为质心速度）；$w$为坐标系转动角速度。</p><p>于是飞行器的总动量矩可积分得出</p><script type="math/tex; mode=display">h=\int r\times V dm=\int r dm \times V_o +\int r \times (w \times r) dm</script><p>取坐标系原点为质心时，有</p><script type="math/tex; mode=display">\int r dm=0</script><p>飞行器动量矩简化为</p><script type="math/tex; mode=display">h=\int r \times (w\times r) dm \tag{7}</script><p>上式表明，飞行器的动量矩只取决于转动产生的速度部分，而与质心运动速度$V_o$无关。矢径$r$和角速度$w$用坐标系中投影分量表示为：</p><script type="math/tex; mode=display">r=xi+yj+zk</script><script type="math/tex; mode=display">w=w_xi+w_yj+w_zk</script><p>将上述关系式代入式$(7)$，经整理得：</p><script type="math/tex; mode=display">h_x=w_xI_x-w_yI_{xy}-w_zI_{zx}</script><script type="math/tex; mode=display">h_y=w_yI_y-w_xI_{xy}-w_zI_{yx}</script><script type="math/tex; mode=display">h_z=w_zI_z-w_xI_{zx}-w_yI_{yz}</script><p>式中$I_x,I_y,I_z$分别为飞行器对$Ox轴,Oy轴,Oz轴$地惯性矩，分别为：</p><script type="math/tex; mode=display">I_x=\int (y^2+z^2) dm</script><script type="math/tex; mode=display">I_y=\int (x^2+z^2) dm</script><script type="math/tex; mode=display">I_z=\int (x^2+y^2) dm</script><p>而$I<em>{xy},I</em>{yz},I_{zx}$则为对$Ox轴与Oy轴$，$Oy轴与Oz轴$，$Oz轴与Ox轴$的惯性积，分别为</p><script type="math/tex; mode=display">I_{xy}=\int xy dm</script><script type="math/tex; mode=display">I_{yz}=\int yz dm</script><script type="math/tex; mode=display">I_{zx}=\int zx dm</script><h2 id="一般动坐标系中绕质心转动动力学方程"><a href="#一般动坐标系中绕质心转动动力学方程" class="headerlink" title="一般动坐标系中绕质心转动动力学方程"></a>一般动坐标系中绕质心转动动力学方程</h2><p>具体研究飞行器绕质心转动规律时，矢量形式的式$(6)$使用不便。工程习惯上将其投影在一动坐标系上建成方程的标量形式。此时动坐标系在空中以$w$转动，类同于加速度$\frac{dV}{dt}$，动量矩可以表示为：</p><script type="math/tex; mode=display">M=\frac{dh}{dt}=\frac{\delta h}{\delta t}+w\times h</script><p>类似一般动坐标系中质心动力学方程的推导，最终可得转动运动方程的标量形式为：</p><script type="math/tex; mode=display">m(\frac{dh_x}{dt}+h_zw_y-h_yw_z)=F_x</script><script type="math/tex; mode=display">m(\frac{dh_y}{dt}+h_xw_z-h_zw_x)=F_y</script><script type="math/tex; mode=display">m(\frac{dh_z}{dt}+h_yw_x-h_xw_y)=F_z</script><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol><li>方振平,陈万春,张曙光. 航空飞行器飞行动力学[M]. 2015.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;在飞行仿真中，获取飞机的位姿是基本要求。将飞行器视为刚体，根据牛顿第二定律和动量矩定理，即可推导出飞机的质心运动方程和飞机绕质心转动的动力学方程，即刚体的六自由度方程。下面即从《航空飞行器飞行动力学》中摘抄刚体六自由度方程的推导过程。&lt;/p&gt;
+&lt;h1 id=&quot;飞行器质心运动
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="3D" scheme="https://huangwang.github.io/tags/3D/"/>
+    
+      <category term="飞行力学" scheme="https://huangwang.github.io/tags/%E9%A3%9E%E8%A1%8C%E5%8A%9B%E5%AD%A6/"/>
+    
+  </entry>
+  
+  <entry>
     <title>MathJax语法笔记</title>
     <link href="https://huangwang.github.io/2019/01/05/MathJax%E8%AF%AD%E6%B3%95%E7%AC%94%E8%AE%B0/"/>
     <id>https://huangwang.github.io/2019/01/05/MathJax语法笔记/</id>
     <published>2019-01-05T10:05:32.000Z</published>
-    <updated>2019-01-05T11:23:36.313Z</updated>
+    <updated>2019-01-06T11:44:23.160Z</updated>
     
-    <content type="html"><![CDATA[<p>MathJax是一个跨浏览器的JavaScript库，它使用MathML、LaTeX和ASCIIMathML标记在Web浏览器中显示数学符号。MathJax是在Apache许可证下作为开源软件发布的。</p><h1 id="安装MathJax"><a href="#安装MathJax" class="headerlink" title="安装MathJax"></a>安装MathJax</h1><p>MathJax有三种安装方式：最简单的方法就是使用分布式网络服务中的MathJax的副本，它位于 cdn.mathjax.org ,但是你也可以下载并安装一个MathJax的副本到你的服务器,或者使用在你本地硬盘的副本（这样是不需要使用网络）。 官方文档里有详细的描述。</p><h1 id="MathJax语法"><a href="#MathJax语法" class="headerlink" title="MathJax语法"></a>MathJax语法</h1><h2 id="如何插入公式"><a href="#如何插入公式" class="headerlink" title="如何插入公式"></a>如何插入公式</h2><p>LaTeX的数学公式有两种：行中公式和独立公式。行中公式放在文中与其它文字混编，独立公式单独成行。</p><p>行中公式可以用如下两种方法表示：</p><blockquote><p>＼(数学公式＼)　或　$数学公式$</p></blockquote><p>独立公式可以用如下两种方法表示：</p><blockquote><p>＼[数学公式＼]　或　<script type="math/tex">数学公式</script></p></blockquote><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://zh.wikipedia.org/wiki/MathJax" target="_blank" rel="noopener">MathJax</a>, by wikipedia.</li><li><a href="https://www.zybuluo.com/knight/note/96093" target="_blank" rel="noopener">MathJax使用LaTeX语法编写数学公式教程</a>, by knight.</li><li><a href="https://www.mathjax.org/" target="_blank" rel="noopener">MathJax Home</a>, by mathjax.</li></ol>]]></content>
+    <content type="html"><![CDATA[<p>MathJax是一个跨浏览器的JavaScript库，它使用MathML、LaTeX和ASCIIMathML标记在Web浏览器中显示数学符号。MathJax是在Apache许可证下作为开源软件发布的。</p><h1 id="安装MathJax"><a href="#安装MathJax" class="headerlink" title="安装MathJax"></a>安装MathJax</h1><p>MathJax有三种安装方式：最简单的方法就是使用分布式网络服务中的MathJax的副本，它位于 cdn.mathjax.org ,但是你也可以下载并安装一个MathJax的副本到你的服务器,或者使用在你本地硬盘的副本（这样是不需要使用网络）。 官方文档里有详细的描述。</p><h1 id="MathJax语法"><a href="#MathJax语法" class="headerlink" title="MathJax语法"></a>MathJax语法</h1><h2 id="如何插入公式"><a href="#如何插入公式" class="headerlink" title="如何插入公式"></a>如何插入公式</h2><p>LaTeX的数学公式有两种：行中公式和独立公式。行中公式放在文中与其它文字混编，独立公式单独成行。</p><p>行中公式可以用如下两种方法表示：</p><blockquote><p>＼(数学公式＼)　或　$数学公式$</p></blockquote><p>独立公式可以用如下两种方法表示：</p><blockquote><p>＼[数学公式＼]　或　<script type="math/tex">数学公式</script></p></blockquote><h2 id="打Tag和引用公式"><a href="#打Tag和引用公式" class="headerlink" title="打Tag和引用公式"></a>打Tag和引用公式</h2><p>如果在某个公式之后，又想要引用原公式并说明原公式的出处，可以用 tagging/labelling/referencing system来做。 </p><p>可以用 \tag{yourtag} 来给原公式打 Tag。</p><script type="math/tex; mode=display">m\frac{dV}{dt}=F \tag{1}</script><p>如果在后面需要引用它，就在 \tag 后面加上 \label{somelabel}，yourtag 和 somelabel不一定要一样，但最好一样。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://zh.wikipedia.org/wiki/MathJax" target="_blank" rel="noopener">MathJax</a>, by wikipedia.</li><li><a href="https://www.zybuluo.com/knight/note/96093" target="_blank" rel="noopener">MathJax使用LaTeX语法编写数学公式教程</a>, by knight.</li><li><a href="https://www.mathjax.org/" target="_blank" rel="noopener">MathJax Home</a>, by mathjax.</li></ol>]]></content>
     
     <summary type="html">
     
@@ -516,32 +544,6 @@
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
       <category term="计算机视觉" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>三维建模方法简介</title>
-    <link href="https://huangwang.github.io/2018/12/05/%E4%B8%89%E7%BB%B4%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95%E7%AE%80%E4%BB%8B/"/>
-    <id>https://huangwang.github.io/2018/12/05/三维建模方法简介/</id>
-    <published>2018-12-05T13:17:42.000Z</published>
-    <updated>2018-12-05T13:39:26.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>三维建模是一种常用技术，奈何心向往之，却没有时间去系统学习，也没有做出过一个作品。下面将我看到的一些好的有关三维建模的资料记录一下，以做备忘。</p><h1 id="三维建模方法"><a href="#三维建模方法" class="headerlink" title="三维建模方法"></a>三维建模方法</h1><h2 id="选择软件"><a href="#选择软件" class="headerlink" title="选择软件"></a>选择软件</h2><p>当前三维软件层出不穷，既有商业级的3ds MAX、MAYA、Creator，也有免费使用的Blender、MilkShape。</p><h2 id="下载蓝图"><a href="#下载蓝图" class="headerlink" title="下载蓝图"></a>下载蓝图</h2><p>飞行仿真的三维模型主要有飞行器、机场建筑等。和大多数虚拟现实中使用的模型一样，并不需要CAD级别的精度，一般是下载一些图片或飞机整体蓝图作为蓝本，采用多边形建模的方法分部建模。蓝图下载网址首推：</p><p><a href="http://www.the-blueprints.com/" target="_blank" rel="noopener">the‑blueprints.com</a></p><p>这里免费提供各种汽车、国内外飞机、船舶的三视图图纸下载。</p><h2 id="多边形建模"><a href="#多边形建模" class="headerlink" title="多边形建模"></a>多边形建模</h2><p>采用下载的蓝图，作为贴图放置在相应的投影平面上，然后采用多边形建模的方法画出各部分细节。多边形建模的思想就是采用一个诸如一个最接近的多边形，进行点线面的操作就可以绘制出复杂的飞机外形。</p><p>多边形建模从最基本的外形开始变形，可以从点线面及整体四个级别的操作，在越需要突出外形细节处用越多的点，通过建立网格模型，然后使用网格平滑功能生成平滑的曲面模型。</p><p>建模时不能有重复的点线面等几何体，否则即使表面上已经贴好了材质，但载入程序后，往往会因为Z向深度冲突的原因产生闪烁效果。其细节取决于您的需求，需要花费大量的时间。</p><h2 id="贴图"><a href="#贴图" class="headerlink" title="贴图"></a>贴图</h2><p>真实世界的模型带有各种彩色并具有光泽度。完成了几何体的建模对于一个模型来说只完成了一小半工作，还需要给模型添加材质。</p><p>与一般的模型不同，飞行器出于气动设计的考虑，其表面模型一般成流线型的曲面，且部件组成复杂，界线较难区分，即使是UVW贴图也难以胜任。因此，对飞行器的贴图主要采用3ds MAX的UVW展开贴图技术贴图。</p><p>一个模型最好只有一个贴图，因为贴图数目过多零散会影响计算机载入三维模型时间和效率。因此，一般将整个模型各个部件组合为一个多边形，各部件为元素，待完成UVW贴图后再分离成单独的部件。UVW展开贴图有多重形式，如长方体展开（即按六个视图投影）、平面展开等，按需选择。</p><p>在一张贴图上展开整个模型的UV坐标显然是有限的，需要根据现实精度调整各个部分的贴图大小。保存这些展开的贴图坐标并渲染输出UV模板图像文件。UV模板图像其实就是整个模型的贴图的界线图像，通过Photoshop等图像处理软件处理，采用尽可能真实的图像放置在对应的区域。最后将材质赋给对象即完成贴图渲染。</p><h2 id="数据导出"><a href="#数据导出" class="headerlink" title="数据导出"></a>数据导出</h2><p>直接采用3ds MAX绘制的三维模型当然是<em>.max格式，它不能为外界程序读取。这时就需要根据自己的开发环境选择导出的数据格式，比如用开源的OSG做仿真开发，就需要OSGExp插件的支持，导成</em>.ive、<em>.osg、</em>.osgb等格式即可。但无论导出何种格式，<strong>切记保证模型质心与建模的原点不能相差不远，还要注意光照、贴图格式以及单位问题</strong>。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://zhuanlan.zhihu.com/p/34555581" target="_blank" rel="noopener">飞行仿真—1.三维建模篇</a>,by WFYX.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;三维建模是一种常用技术，奈何心向往之，却没有时间去系统学习，也没有做出过一个作品。下面将我看到的一些好的有关三维建模的资料记录一下，以做备忘。&lt;/p&gt;
-&lt;h1 id=&quot;三维建模方法&quot;&gt;&lt;a href=&quot;#三维建模方法&quot; class=&quot;headerlink&quot; title=&quot;三
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="3D" scheme="https://huangwang.github.io/tags/3D/"/>
     
   </entry>
   

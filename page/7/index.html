@@ -128,7 +128,7 @@
   };
 </script>
 
-  <title>Jack Huang's Blog</title>
+  <title>归档 | Jack Huang's Blog</title>
   
 
 
@@ -175,8 +175,7 @@
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left 
-  page-home">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-archive">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -297,1751 +296,392 @@
           
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
-    
+
+  
+  
+  
+  <div class="post-block archive">
+    <div id="posts" class="posts-collapse">
+      <span class="archive-move-on"></span>
+
+      
+      <span class="archive-page-counter">
+        
+        
+         
+          
+        不错! 目前共计 79 篇日志。 继续努力。
+      </span>
       
 
-  
+      
 
-  
-  
-  
+        
+        
+        
 
-  
+        
+          
+          <div class="collection-title">
+            <h2 class="archive-year" id="archive-year-2018">2018</h2>
+          </div>
+        
+        
+
+        
 
   <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/13/Cesium卫星地图和高程数据切片经验总结/">
+    <header class="post-header">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
+      <h3 class="post-title">
         
+            <a class="post-title-link" href="/2018/06/13/Cesium卫星地图和高程数据切片经验总结/" itemprop="url">
+              
+                <span itemprop="name">Cesium卫星地图和高程数据切片经验总结</span>
+              
+            </a>
         
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/13/Cesium卫星地图和高程数据切片经验总结/" itemprop="url">
-                  Cesium卫星地图和高程数据切片经验总结
-                </a>
-              
-            
-          </h2>
-        
+      </h3>
 
-        <div class="post-meta">
-          <span class="post-time">
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-06-13T21:20:48+08:00" content="2018-06-13">
+          06-13
+        </time>
+      </div>
 
-            
-            
-            
+    </header>
+  </article>
 
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
 
-              
-                
-              
-
-              <time title="创建时间：2018-06-13 21:20:48" itemprop="dateCreated datePublished" datetime="2018-06-13T21:20:48+08:00">2018-06-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-10-09 23:46:21" itemprop="dateModified" datetime="2018-10-09T23:46:21+08:00">2018-10-09</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
 
       
-      
 
-      
         
-          
-            <p>最近研究在Cesium中调用自定义的图像和地形，不借助任何GIS系统（如Arcgis、天地图等），方便在网络不好或离线的情况下使用。下面对整个过程进行总结。</p>
-<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="地图服务提供方法"><a href="#地图服务提供方法" class="headerlink" title="地图服务提供方法"></a>地图服务提供方法</h2><p>目前互联网地图服务商提供的地图服务分成两种<sup>[3]</sup>：  </p>
-<ul>
-<li>图像瓦片地图服务<br>这种方法目前最常见，其提供的是图片格式的瓦片，在客户端将拼接成真正的地图。</li>
-<li>矢量瓦片地图服务<br>这种方法正在发展，其提供矢量的瓦片数据，然后在客户端进行渲染，是今后的发展方向。</li>
-</ul>
-<p>地图服务在使用过程中需要获取特定经纬度所在区域的瓦片和获取瓦片上像素点对应的经纬度，因此需要进行经纬度坐标与瓦片坐标、像素坐标的相互转换。</p>
-<h3 id="经纬度与瓦片编号互换"><a href="#经纬度与瓦片编号互换" class="headerlink" title="经纬度与瓦片编号互换"></a>经纬度与瓦片编号互换</h3><p>互联网地图的经纬度坐标与瓦片坐标相互转换只与该地图商的墨卡托投影和瓦片编号的定义有关，跟地图商采用的大地坐标系标准无关。</p>
-<h3 id="经纬度与瓦片像素互换"><a href="#经纬度与瓦片像素互换" class="headerlink" title="经纬度与瓦片像素互换"></a>经纬度与瓦片像素互换</h3><p>转换方式与地图商采用的大地坐标系有关。国际标准的经纬度坐标是WGS84。Open Street Map、外国版的Google Map都是采用WGS84；高德地图使用的坐标系是GCJ-02；百度地图使用的坐标系是BD-09。</p>
-<h2 id="地图投影"><a href="#地图投影" class="headerlink" title="地图投影"></a>地图投影</h2><p>地图投影，是指按照一定的数学法则将地球椭球面上的经纬网转换到平面上，使地面的地理坐标与平面直角坐标建立起函数关系。这是绘制地图的数学基础之一。由于地球是一个不可展的球体，使用物理方法将其展平会引起褶皱、拉伸和断裂，因此要使用地图投影实现由曲面向平面的转化。</p>
-<h3 id="麦卡托投影法"><a href="#麦卡托投影法" class="headerlink" title="麦卡托投影法"></a>麦卡托投影法</h3><p>麦卡托投影法 (Mercator projection)，又称麦卡托投影法、正轴等角圆柱投影，是一种等角的圆柱形地图投影法。本投影法得名于法兰德斯出身的地理学家杰拉杜斯·麦卡托，他于1569年发表长202公分、宽124公分以此方式绘制的世界地图。在以此投影法绘制的地图上，经纬线于任何位置皆垂直相交，使世界地图可以绘制在一个长方形上。由于可显示任两点间的正确方位，航海用途的海图、航路图大都以此方式绘制。在该投影中线型比例尺在图中任意一点周围都保持不变，从而可以保持大陆轮廓投影后的角度和形状不变（即等角）；但麦卡托投影会使面积产生变形，极点的比例甚至达到了无穷大。</p>
-<p align="center">
-    <img src="images/墨卡托投影示意图.jpg" width="50%" alt="墨卡托投影示意图">
-</p>
-各大地图服务商大都采用了Web Mercator进行投影，瓦片坐标系的不同主要是投影截取的地球范围不同、瓦片坐标起点不同<sup>[3]</sup>。
-
-## 瓦片切割和瓦片坐标
-对于经过墨卡托投影为平面的世界地图，在不同的地图分辨率(整个世界地图的像素大小)下，通过切割的方式将世界地图划分为像素为256px/256px的地图单元，划分成的每一块地图单元称为地图瓦片。其特定如下：
-* 具有唯一的瓦片等级（Level）和瓦片坐标编号（tileX, tileY）。
-* 瓦片分辨率为256*256。
-* 最小的地图等级是0，此时世界地图只由一张瓦片组成。
-* 瓦片等级越高，组成世界地图的瓦片数越多，可以展示的地图越详细。
-* 某一瓦片等级地图的瓦片是由低一级的各瓦片切割成的4个瓦片组成，形成了瓦片金字塔。<p align="center">
-    <img src="images/瓦片金字塔.jpg" width="50%" alt="瓦片金字塔">
-</p>
-
-<h1 id="过程总结"><a href="#过程总结" class="headerlink" title="过程总结"></a>过程总结</h1><p>将自定义图像和地形以Web形式发布后，在cesium中调用自定义图像和地形很简单，代码如下，关键是图像和地形的获取和处理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var tmsImageryProvider=Cesium.createTileMapServiceImageryProvider(&#123;</span><br><span class="line">    url:&apos;http://localhost:8080/test_tms_tiles&apos;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">var terrainProvider=new Cesium.CesiumTerrainProvider(&#123;</span><br><span class="line">    url:&apos;http://localhost:8080/terrain_tiles&apos;</span><br><span class="line">&#125;);</span><br><span class="line">var viewer = new Cesium.Viewer(&apos;cesiumContainer&apos;, &#123;</span><br><span class="line">    imageryProvider : tmsImageryProvider,</span><br><span class="line">    terrainProvider: terrainProvider,</span><br><span class="line">    baseLayerPicker: false,</span><br><span class="line">    geocoder: false,</span><br><span class="line">    shadows: false,</span><br><span class="line">    shouldAnimate: true</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
-<h2 id="卫星图像的获取和处理"><a href="#卫星图像的获取和处理" class="headerlink" title="卫星图像的获取和处理"></a>卫星图像的获取和处理</h2><p>卫星图像获取可以使用一些相关软件，如水经注等。其原理通常是从一些地图服务商下载地图瓦片后重新拼接，再分割成对应格式的瓦片。拼接的图像最好输出为tif格式，因为tif格式可以在头部包含一些信息，例如地理坐标等信息，以方便后续的瓦片切割，以及被GIS系统直接识别导入。为使切割后的瓦片能够被Cesium直接调用，应采用标准TMS方式。<br>通常卫星图像下载软件提供多种瓦片分割方式，如果能直接进行标准TMS瓦片分割最好不过，如果不可以进行标准TMS分割，则可使用GDAL。<br>GDAL是地理空间数据抽象库的简称，是一个地理空间数据的格式转换及处理工具。文章最后将详细介绍其安装使用方法。使用GDAL进行卫星图像瓦片分割主要使用gdal2tiles.py工具。具体步骤如下：</p>
-<ol>
-<li>选取之前下载拼接的最大分辨率的tif卫星图像</li>
-<li>使用如下命令切割卫星图片,将自动生成瓦片金字塔。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdal2tiles.py &lt;image&gt; &lt;tilesdir&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="地形的获取和处理"><a href="#地形的获取和处理" class="headerlink" title="地形的获取和处理"></a>地形的获取和处理</h2><p>Cesium支持多种地形provider来接收地形数据瓦片<sup>[8]</sup>：</p>
-<ol>
-<li>Cesium Terrain Server——高分辨率的全球地形数据，支持地形光照和水流效果。地形瓦片提交给客户端的数据的格式用的是quantized-mesh v1.0。</li>
-<li>Esri ArcGIS Image Server——从Esri影像服务里的高度图中产生地形数据集。详情见Cesium里的ArcGisImageServerTerrainProvider.</li>
-<li>VR-TheWorld Server——从一个VR-TheWorld服务里的高度图中产生地形数据。它们的托管服务器有全球90米的数据，包括深度测量。</li>
-<li>Ellipsoid——是Cesium默认的地形provider，是一个光滑的椭球面，没有现实的地形，地形高度为0。  </li>
-</ol>
-<p>常用的CesiumTerrainProvider支持两种格式的地形：一种是quantized-mesh格式的地形数据，另一种是基于高度图技术的DEM。前一种技术是Cesium独有不开放，因此将使用DEM数据在Cesium中渲染地形。  </p>
-<p>DEM数据是数字高程模型，是描述每个点位的高程数据，没有其他附加信息<sup>[9]</sup>。DEM数据在ArcGIS中打开只能看到是灰度图。通过相关软件可直接下载各大地图服务商的高程数据，但没有在Cesium中加载成功。下面介绍一种经过验证可在Cesium中成功加载地形的方法：</p>
-<ol>
-<li>下载地形数据。可以从地理空间数据云下载地形数据，网址为<a href="http://www.gscloud.cn/。注册登录后，在首页选择“DEM" target="_blank" rel="noopener">http://www.gscloud.cn/。注册登录后，在首页选择“DEM</a> 数字高程数据”，在选择“GDEMV2 30M 分辨率数字高程数据”。</li>
-<li><p>合并地形数据。使用GDAL下的gdal_merge.py工具将下载的地形数据合并成一个Tif文件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdal_merge.py -o out.tif input1.tif input2.tif</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>切割地形数据。使用牛人制作的gdal2srtmtiles.py脚本分割地形数据。编辑gdal2srtmtiles.py，在最后设置高程文件和输出目录。</p>
-</li>
-<li>发布地形服务。把terrain_tiles直接放到与 Cesium同端口的Tomcat或IIS站点<br>下（不能跨域），即可发布服务。 需要在Web Server中增加配置 .terrain文件的 Content-Type设为 application/octet-stream，同时拷贝“覆盖至生成tiles结果”目录中的 layer.json文件和0文件夹至生成结果目录下，比如我当前是 terrain_tiles目录下。</li>
-</ol>
-<h2 id="GDAL的安装使用"><a href="#GDAL的安装使用" class="headerlink" title="GDAL的安装使用"></a>GDAL的安装使用</h2><p>GDAL不推荐从源码编译安装，建议从gisinternals下载gdal-203-1911-x64-core.msi、GDAL-2.3.0.win-amd64-py2.7.msi直接二进制安装。安装步骤如下：</p>
-<ol>
-<li>安装python2.7。安装完成后配置环境变量，在path中添加 C:\Python27;</li>
-<li>安装gdal-203-1911-x64-core.msi。安装完成后，设置环境变量GDAL_DATA，值为C:\Program Files\GDAL\gdal-data\，修改环境变量PATH，增加C:\Program Files\GDAL; </li>
-<li>pip install numpy。这是为了使用地形切割的脚本gdal2srtmtiles.py。</li>
-<li>安装GDAL-2.3.0.win-amd64-py2.7.msi。</li>
-</ol>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://cesiumjs.org/tutorials/Imagery-Layers-Tutorial/" target="_blank" rel="noopener">https://cesiumjs.org/tutorials/Imagery-Layers-Tutorial/</a>, by cesiumjs</li>
-<li><a href="https://cesiumjs.org/tutorials/Terrain-Tutorial/" target="_blank" rel="noopener">https://cesiumjs.org/tutorials/Terrain-Tutorial/</a>, by cesiumjs</li>
-<li><a href="http://cntchen.github.io/2016/05/09/国内主要地图瓦片坐标系定义及计算原理/" target="_blank" rel="noopener">http://cntchen.github.io/2016/05/09/国内主要地图瓦片坐标系定义及计算原理/</a>, by CntChen</li>
-<li><a href="https://zh.wikipedia.org/wiki/地图投影" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/地图投影</a>, by wikipedia</li>
-<li><a href="https://yanyinhong.github.io/2017/05/02/How-to-insert-image-in-hexo-post/" target="_blank" rel="noopener">https://yanyinhong.github.io/2017/05/02/How-to-insert-image-in-hexo-post/</a>, by Yan Yinhong</li>
-<li><a href="https://blog.csdn.net/wbz810/article/details/79294511，by" target="_blank" rel="noopener">https://blog.csdn.net/wbz810/article/details/79294511，by</a> wbz810.</li>
-<li><a href="http://www.gdal.org/，by" target="_blank" rel="noopener">http://www.gdal.org/，by</a> gdal</li>
-<li><a href="https://blog.csdn.net/u013929284/article/details/71616600" target="_blank" rel="noopener">https://blog.csdn.net/u013929284/article/details/71616600</a>, by Super洛伽</li>
-<li><a href="https://www.jianshu.com/p/62d6f03f44e3，by" target="_blank" rel="noopener">https://www.jianshu.com/p/62d6f03f44e3，by</a> CrazyGIS</li>
-</ol>
-
-          
         
+        
+
+        
+        
+
+        
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h3 class="post-title">
+        
+            <a class="post-title-link" href="/2018/06/10/Cesium中飞行器姿态控制/" itemprop="url">
+              
+                <span itemprop="name">Cesium中飞行器姿态控制</span>
+              
+            </a>
+        
+      </h3>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-06-10T21:52:42+08:00" content="2018-06-10">
+          06-10
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+
       
+
+        
+        
+        
+
+        
+        
+
+        
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h3 class="post-title">
+        
+            <a class="post-title-link" href="/2018/06/09/春江花月夜/" itemprop="url">
+              
+                <span itemprop="name">春江花月夜</span>
+              
+            </a>
+        
+      </h3>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-06-09T23:30:32+08:00" content="2018-06-09">
+          06-09
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+
+      
+
+        
+        
+        
+
+        
+        
+
+        
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h3 class="post-title">
+        
+            <a class="post-title-link" href="/2018/06/09/Cesium小部件animation和timeline的系统时间显示/" itemprop="url">
+              
+                <span itemprop="name">Cesium小部件animation和timeline的系统时间显示</span>
+              
+            </a>
+        
+      </h3>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-06-09T22:50:22+08:00" content="2018-06-09">
+          06-09
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+
+      
+
+        
+        
+        
+
+        
+        
+
+        
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h3 class="post-title">
+        
+            <a class="post-title-link" href="/2018/06/03/Matplotlib蜡烛图绘制教程/" itemprop="url">
+              
+                <span itemprop="name">Matplotlib蜡烛图绘制教程</span>
+              
+            </a>
+        
+      </h3>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-06-03T09:41:25+08:00" content="2018-06-03">
+          06-03
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+
+      
+
+        
+        
+        
+
+        
+        
+
+        
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h3 class="post-title">
+        
+            <a class="post-title-link" href="/2018/05/26/matplotlib用法笔记/" itemprop="url">
+              
+                <span itemprop="name">matplotlib用法笔记</span>
+              
+            </a>
+        
+      </h3>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-05-26T23:42:59+08:00" content="2018-05-26">
+          05-26
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+
+      
+
+        
+        
+        
+
+        
+        
+
+        
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h3 class="post-title">
+        
+            <a class="post-title-link" href="/2018/05/26/python3与python2的区别与兼容/" itemprop="url">
+              
+                <span itemprop="name">python3与python2的区别与兼容</span>
+              
+            </a>
+        
+      </h3>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-05-26T18:58:07+08:00" content="2018-05-26">
+          05-26
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+
+      
+
+        
+        
+        
+
+        
+        
+
+        
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h3 class="post-title">
+        
+            <a class="post-title-link" href="/2018/05/24/git用法总结/" itemprop="url">
+              
+                <span itemprop="name">git用法总结</span>
+              
+            </a>
+        
+      </h3>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-05-24T08:32:03+08:00" content="2018-05-24">
+          05-24
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+
+      
+
+        
+        
+        
+
+        
+        
+
+        
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h3 class="post-title">
+        
+            <a class="post-title-link" href="/2018/05/13/Vue-js集成three-js/" itemprop="url">
+              
+                <span itemprop="name">Vue.js集成three.js</span>
+              
+            </a>
+        
+      </h3>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-05-13T21:03:47+08:00" content="2018-05-13">
+          05-13
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+
+      
+
+        
+        
+        
+
+        
+        
+
+        
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h3 class="post-title">
+        
+            <a class="post-title-link" href="/2018/05/13/Windows批处理编程语法解析/" itemprop="url">
+              
+                <span itemprop="name">Windows批处理编程语法解析</span>
+              
+            </a>
+        
+      </h3>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-05-13T09:26:50+08:00" content="2018-05-13">
+          05-13
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+
+      
+
     </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
   
   
   
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/10/Cesium中飞行器姿态控制/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/10/Cesium中飞行器姿态控制/" itemprop="url">
-                  Cesium中飞行器姿态控制
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-10 21:52:42" itemprop="dateCreated datePublished" datetime="2018-06-10T21:52:42+08:00">2018-06-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-12-26 20:43:27" itemprop="dateModified" datetime="2018-12-26T20:43:27+08:00">2018-12-26</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="问题提出"><a href="#问题提出" class="headerlink" title="问题提出"></a>问题提出</h1><p>最近研究开源虚拟地球Cesium，遇到一个问题：在获取飞行器经度纬度高度偏航俯仰滚转六个参数的前提下，如何在Cesium中用CZML文件表示，从而完美实现飞行器姿态轨迹的复现。在CZML的position属性中使用cartographicDegrees表示飞行器的经度纬度高度，可以很好复现飞行器的轨迹。然而在CZML的orientation属性中使用unitQuaternion表示飞机自身姿态时，飞机姿态总是不对。</p>
-<h1 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h1><h2 id="基本知识"><a href="#基本知识" class="headerlink" title="基本知识"></a>基本知识</h2><p>在Cesium中存在两种常用坐标系：</p>
-<ol>
-<li>世界坐标系<br>世界坐标系统是以椭球中心为原点的笛卡尔空间直角坐标系。</li>
-<li>地理坐标系<br>地理坐标系即人们常用的使用经度、纬度、高度表示位置的坐标系。</li>
-<li>站心坐标系<br>又称为Earth-fixed coordinate system（站点坐标系、东-北-天坐标系ENU）。可分为站心直角坐标系和站心极坐标系。<br>常用的站心直角坐标系定义为：以站心（如GPS接收天线中心）为坐标系原点O，Z轴与椭球法线重合，向上为正（天向），y与椭球短半轴重合（北向），x轴与地球椭球的长半轴重合（东向）所构成的直角坐标系，称为当地东北天坐标系（ENU）。<br>飞行器的偏航、俯仰、滚转即是以站心直角坐标系为参考。</li>
-<li>模型坐标系<br>模型坐标系以物体的中心为坐标原点，物体旋转、平移等操作都是围绕局部坐标系进行的。这时当物体模型进行旋转、平移等操作时，局部坐标系也执行相应的旋转、平移等操作。<br>局部坐标系是一个假想的坐标系，该坐标系与物体的相对位置至始至终是不变的，假想出这个坐标系的目的主要是为了正向理解对三维场景中物体执行的平移和旋转操作。使用局部坐标系理解模型变换时，所有的变换操作直接作用与局部坐标系，由于局部坐标系与物体的相对位置不变，因此对局部坐标系进行平移、旋转和缩放时，物体在场景中位置和形状也会发生相应的变化。</li>
-</ol>
-<p>在Cesium中存在两种世界坐标系和地理坐标系之间坐标转换的方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 经纬度转换为世界坐标</span><br><span class="line">Cesium.Cartesian3.fromDegrees(longitude, latitude, height, ellipsoid, result) </span><br><span class="line"># 世界坐标转换为经纬度</span><br><span class="line">var ellipsoid=viewer.scene.globe.ellipsoid;</span><br><span class="line">var cartesian3=new Cesium.cartesian3(x,y,z);</span><br><span class="line">var cartographic=ellipsoid.cartesianToCartographic(cartesian3);</span><br><span class="line">var lat=Cesium.Math.toDegrees(cartograhphic.latitude);</span><br><span class="line">var lng=Cesium.Math.toDegrees(cartograhpinc.longitude);</span><br><span class="line">var alt=cartographic.height;</span><br></pre></td></tr></table></figure></p>
-<h2 id="CZML分析"><a href="#CZML分析" class="headerlink" title="CZML分析"></a>CZML分析</h2><p>CZML是一种用来描述动态场景的JSON架构的语言，主要用于Cesium在浏览器中的展示。它可以用来描述点、线、布告板、模型以及其他的图元，同时定义他们是怎样随时间变化的<sup>[3]</sup>。<br>CZML可使用model属性直接加载3D模型，由position属性决定模型在世界坐标系内的位置，由orientation决定模型在世界坐标系内的姿态，并最终由orientation的unitQuaternion表示。<br>unitQuaternion即单位四元数，可与偏航俯仰滚转相互转换，并避免偏航俯仰滚转的万向节锁定问题，但其本质上都是一个旋转矩阵，可决定模型在世界坐标系内的姿态。</p>
-<h2 id="获取正确的飞行器姿态"><a href="#获取正确的飞行器姿态" class="headerlink" title="获取正确的飞行器姿态"></a>获取正确的飞行器姿态</h2><p>首先计算飞行器模型坐标系对站点直角坐标系的旋转矩阵（在制作飞行器3D模型时，应使其中心在本地坐标系原点，机头机翼与轴平行，方便计算在站点直角坐标系内的旋转角度），再乘以由飞行器偏航俯仰滚转得到的旋转矩阵，再乘以站点直角坐标系对世界坐标系的旋转矩阵。将最终得到旋转矩阵转换为单位四元数，即得到正确的飞行器姿态。</p>
-<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>参考代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var lon=113,lat=34;//模型的站心经纬度</span><br><span class="line">var h1=0,p1=0,r1=0;//模型坐标系对站点坐标系的旋转角度</span><br><span class="line">var h2=0,p2=0,r2=0;//模型在站点坐标系的姿态</span><br><span class="line">var center = Cesium.Cartesian3.fromDegrees(lon, lat)</span><br><span class="line">var hpr = new Cesium.HeadingPitchRoll(h1+h2, p1+p2, r1+r2)</span><br><span class="line">var q1 = Cesium.Transforms.headingPitchRollQuaternion(center, hpr)</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://stackoverflow.com/questions/43389069/cesium-how-to-animate-an-aircraft-from-pitch-roll-heading" target="_blank" rel="noopener">https://stackoverflow.com/questions/43389069/cesium-how-to-animate-an-aircraft-from-pitch-roll-heading</a>, by stackoverflow.</li>
-<li><a href="https://blog.csdn.net/qq_34149805/article/details/78393540" target="_blank" rel="noopener">https://blog.csdn.net/qq_34149805/article/details/78393540</a>. by finalLi.</li>
-<li><a href="http://www.cnblogs.com/laixiangran/p/4997971.html" target="_blank" rel="noopener">http://www.cnblogs.com/laixiangran/p/4997971.html</a>. by laixiangran.</li>
-<li><a href="https://github.com/AnalyticalGraphicsInc/cesium/wiki/CZML-Structure" target="_blank" rel="noopener">https://github.com/AnalyticalGraphicsInc/cesium/wiki/CZML-Structure</a>. by AnalyticalGraphicsInc.</li>
-<li>3D坐标系.<a href="https://www.jianshu.com/p/8d483fa1acbd" target="_blank" rel="noopener">https://www.jianshu.com/p/8d483fa1acbd</a>. by S_H_C.</li>
-<li>3D空间的坐标系. <a href="https://blog.csdn.net/trojanpizza/article/details/6652533" target="_blank" rel="noopener">https://blog.csdn.net/trojanpizza/article/details/6652533</a>. by trojanpizza.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/09/春江花月夜/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/09/春江花月夜/" itemprop="url">
-                  春江花月夜
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-09 23:30:32 / 修改时间：23:32:38" itemprop="dateCreated datePublished" datetime="2018-06-09T23:30:32+08:00">2018-06-09</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <center>
-作者：张若虚
-春江潮水连海平，海上明月共潮生。
-滟滟随波千万里，何处春江无月明？
-江流宛转绕芳甸，月照花林皆似霰。
-空里流霜不觉飞，汀上白沙看不见。
-江天一色无纤尘，皎皎空中孤月轮。
-江畔何人初见月，江月何年初照人？
-人生代代无穷已，江月年年祇相似。
-不知江月待何人？但见长江送流水。
-白云一片去悠悠，青枫浦上不胜愁。
-谁家今夜扁舟子，何处相思明月楼？
-可怜楼上月徘徊，应照离人妆镜台。
-玉户帘中卷不去，捣衣砧上拂还来。
-此时相望不相闻，愿逐月华流照君。
-鸿雁长飞光不度，鱼龙潜跃水成文。
-昨夜闲潭梦落花，可怜春半不还家。
-江水流春去欲尽，江潭落月复西斜。
-斜月沉沉藏海雾，碣石潇湘无限路。
-不知乘月几人归，落月摇情满江树。
-</center>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/09/Cesium小部件animation和timeline的系统时间显示/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/09/Cesium小部件animation和timeline的系统时间显示/" itemprop="url">
-                  Cesium小部件animation和timeline的系统时间显示
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-09 22:50:22 / 修改时间：23:28:14" itemprop="dateCreated datePublished" datetime="2018-06-09T22:50:22+08:00">2018-06-09</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Cesium的小部件animation和timeline显示UTC系统时间，需要将其改为本地系统时间。修改方法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">this.viewer.animation.viewModel.dateFormatter = localeDateTimeFormatter</span><br><span class="line">this.viewer.animation.viewModel.timeFormatter = localeTimeFormatter</span><br><span class="line">this.viewer.timeline.makeLabel = function (time) &#123; return localeDateTimeFormatter(time) &#125;</span><br><span class="line"></span><br><span class="line">// Date formatting to a global form</span><br><span class="line">function localeDateTimeFormatter(datetime, viewModel, ignoredate) &#123;</span><br><span class="line">    var julianDT = new Cesium.JulianDate(); </span><br><span class="line">    Cesium.JulianDate.addHours(datetime,8,julianDT)</span><br><span class="line">    var gregorianDT= Cesium.JulianDate.toGregorianDate(julianDT)</span><br><span class="line">    var objDT;</span><br><span class="line">    if (ignoredate)</span><br><span class="line">        objDT = &apos;&apos;;</span><br><span class="line">    else &#123;</span><br><span class="line">        objDT = new Date(gregorianDT.year, gregorianDT.month - 1, gregorianDT.day);</span><br><span class="line">        objDT = gregorianDT.year  + &apos;年&apos; +objDT.toLocaleString(&quot;zh-cn&quot;, &#123; month: &quot;short&quot; &#125;)+ gregorianDT.day + &apos;日&apos; ;</span><br><span class="line">        if (viewModel || gregorianDT.hour + gregorianDT.minute === 0)</span><br><span class="line">        return objDT;</span><br><span class="line">        objDT += &apos; &apos;;</span><br><span class="line">    &#125;</span><br><span class="line">    return objDT + Cesium.sprintf(&quot;%02d:%02d:%02d&quot;, gregorianDT.hour, gregorianDT.minute, gregorianDT.second);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function localeTimeFormatter(time, viewModel) &#123;</span><br><span class="line">    return localeDateTimeFormatter(time, viewModel, true);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上述代码还存在一个问题，当timeline小部件不活动时，其仍然显示UTC标准系统时间。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/chienchia/article/details/29185479" target="_blank" rel="noopener">https://blog.csdn.net/chienchia/article/details/29185479</a>, by chienchia.</li>
-<li><a href="https://stackoverflow.com/questions/45875490/change-utc-timezone-to-sgt-timezone-in-cesiumjs" target="_blank" rel="noopener">https://stackoverflow.com/questions/45875490/change-utc-timezone-to-sgt-timezone-in-cesiumjs</a>, by stackoverflow.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/03/Matplotlib蜡烛图绘制教程/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/03/Matplotlib蜡烛图绘制教程/" itemprop="url">
-                  Matplotlib蜡烛图绘制教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-03 09:41:25 / 修改时间：11:30:52" itemprop="dateCreated datePublished" datetime="2018-06-03T09:41:25+08:00">2018-06-03</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>股票分析离不开各种图表的绘制，尤其是最常用的蜡烛图。下面介绍python中使用matplotlib绘制蜡烛图的过程。</p>
-<h1 id="环境及配置"><a href="#环境及配置" class="headerlink" title="环境及配置"></a>环境及配置</h1><p>使用的环境如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ python3 --version</span><br><span class="line">Python 3.6.5rc1</span><br><span class="line">$ ipython3</span><br><span class="line">In [1]: import matplotlib</span><br><span class="line">In [2]: matplotlib.__version__</span><br><span class="line">Out[2]: &apos;2.2.2&apos;</span><br><span class="line">In [3]: import tushare as ts</span><br><span class="line">In [4]: ts.__version__</span><br><span class="line">Out[4]: &apos;1.1.9&apos;</span><br><span class="line">In [5]: import talib</span><br><span class="line">In [6]: talib.__version__</span><br><span class="line">Out[6]: &apos;0.4.17&apos;</span><br></pre></td></tr></table></figure></p>
-<p>绘制蜡烛图通常使用matplotlib.finance库，但这个库在matplotlib 2.0后已经被废弃，并被移到一个名叫mpl_finance的库中。可使用如下命令安装mpl_finance。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install https://github.com/matplotlib/mpl_finance/archive/master.zip</span><br></pre></td></tr></table></figure></p>
-<p>mpl_finance使用雅虎接口获取股票数据，但是不稳定，因此推荐使用tushare库获取股票数据。另外使用talib计算股票各种技术分析指标，例如常用的均线数据。需要注意的是通过pip3按照的talib库是对C/C++版talib的包装，因此需先安装C/C++版talib。</p>
-<h1 id="蜡烛图绘制"><a href="#蜡烛图绘制" class="headerlink" title="蜡烛图绘制"></a>蜡烛图绘制</h1><h2 id="蜡烛图绘制函数简介"><a href="#蜡烛图绘制函数简介" class="headerlink" title="蜡烛图绘制函数简介"></a>蜡烛图绘制函数简介</h2><p>mpl_finance库中蜡烛图的绘制主要有以下四个函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">candlestick2_ochl(ax, opens, closes, highs, lows, width=4, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=0.75)</span><br><span class="line">candlestick2_ohlc(ax, opens, highs, lows, closes, width=4, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=0.75)</span><br><span class="line">candlestick_ochl(ax, quotes, width=0.2, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=1.0)</span><br><span class="line">candlestick_ohlc(ax, quotes, width=0.2, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=1.0)</span><br></pre></td></tr></table></figure></p>
-<p>在这四个函数的使用过程中需要注意的是：</p>
-<ul>
-<li>candlestick2_ohlc函数假定opens, highs, lows, closes中任意一个值不存在，则其他值也不存在。</li>
-<li>candlestick_ochl和candlestick_ohlc的输入参数quotes是(time, open, close, high, low, …)元组序列，其中time必须是浮点日期格式，具体参见date2num。</li>
-</ul>
-<p>蜡烛图绘制函数存在日线图的时间间隔问题（非交易日无法跳过，导致图像断裂）。常用解决方法是建议重新调整横坐标，被动地过滤掉非交易时间段<sup>[2]</sup>。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ax.set_xticks(range(0, len(data[&apos;date&apos;]), 10))</span><br><span class="line">ax.set_xticklabels(data[&apos;date&apos;][::10])</span><br></pre></td></tr></table></figure></p>
-<h2 id="蜡烛图的简单绘制"><a href="#蜡烛图的简单绘制" class="headerlink" title="蜡烛图的简单绘制"></a>蜡烛图的简单绘制</h2><p>蜡烛图的简单例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import talib</span><br><span class="line">import tushare as ts</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import mpl_finance as mpf</span><br><span class="line"> </span><br><span class="line">data = ts.get_k_data(&apos;002320&apos;)</span><br><span class="line">sma_10 = talib.SMA(np.array(data[&apos;close&apos;]), 10)</span><br><span class="line">sma_30 = talib.SMA(np.array(data[&apos;close&apos;]), 30)</span><br><span class="line">fig = plt.figure(figsize=(24, 8))</span><br><span class="line">ax = fig.add_subplot(1, 1, 1)</span><br><span class="line">ax.set_xticks(range(0, len(data[&apos;date&apos;]), 50))</span><br><span class="line">ax.set_xticklabels(data[&apos;date&apos;][::50])</span><br><span class="line">ax.plot(sma_10, label=&apos;10 日均线&apos;)</span><br><span class="line">ax.plot(sma_30, label=&apos;30 日均线&apos;)</span><br><span class="line">ax.legend(loc=&apos;upper left&apos;)</span><br><span class="line">mpf.candlestick2_ochl(ax, data[&apos;open&apos;], data[&apos;close&apos;], data[&apos;high&apos;], data[&apos;low&apos;],width=0.5, colorup=&apos;r&apos;, colordown=&apos;green&apos;,alpha=0.6)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://matplotlib.org/api/finance_api.html" target="_blank" rel="noopener">https://matplotlib.org/api/finance_api.html</a>, by matplotlib</li>
-<li><a href="https://ipreacher.github.io/2017/candlestick/" target="_blank" rel="noopener">https://ipreacher.github.io/2017/candlestick/</a>, by The North</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/26/matplotlib用法笔记/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/26/matplotlib用法笔记/" itemprop="url">
-                  matplotlib用法笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-26 23:42:59" itemprop="dateCreated datePublished" datetime="2018-05-26T23:42:59+08:00">2018-05-26</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-06-03 09:37:48" itemprop="dateModified" datetime="2018-06-03T09:37:48+08:00">2018-06-03</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>matplotlib 是Python编程语言及其数值数学扩展包 NumPy的可视化操作界面。它为利用通用的图形用户界面工具包，如Tkinter, wxPython, Qt或GTK+向应用程序嵌入式绘图提供了应用程序接口（API）。此外，matplotlib还有一个基于图像处理库（如开放图形库OpenGL）的pylab接口，其设计与MATLAB非常类似—尽管并不怎么好用。SciPy就是用matplotlib进行图形绘制。</p>
-<h1 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h1><p>使用plt.figure定义一个图像窗口。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line">x = np.linspace(-1, 1, 50)</span><br><span class="line">y = 2*x + 1</span><br><span class="line">plt.figure() </span><br><span class="line">plt.plot(x, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="设置坐标轴"><a href="#设置坐标轴" class="headerlink" title="设置坐标轴"></a>设置坐标轴</h2><p>使用plt.xlim设置x坐标轴范围：(-1, 2)； 使用plt.ylim设置y坐标轴范围：(-2, 3)；<br>使用plt.xlabel设置x坐标轴名称：’I am x’； 使用plt.ylabel设置y坐标轴名称：’I am y’；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line">plt.xlabel(&apos;I am x&apos;)</span><br><span class="line">plt.ylabel(&apos;I am y&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>使用np.linspace定义范围以及个数：范围是(-1,2);个数是5. 使用print打印出新定义的范围. 使用plt.xticks设置x轴刻度：范围是(-1,2);个数是5.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">new_ticks = np.linspace(-1, 2, 5)</span><br><span class="line">print(new_ticks)</span><br><span class="line">plt.xticks(new_ticks)</span><br></pre></td></tr></table></figure></p>
-<p>使用plt.yticks设置y轴刻度以及名称：刻度为[-2, -1.8, -1, 1.22, 3]；对应刻度的名称为[‘really bad’,’bad’,’normal’,’good’, ‘really good’]. 使用plt.show显示图像.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.yticks([-2, -1.8, -1, 1.22, 3],[r&apos;$really\ bad$&apos;, r&apos;$bad$&apos;, r&apos;$normal$&apos;, r&apos;$good$&apos;, r&apos;$really\ good$&apos;])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<p>使用plt.gca获取当前坐标轴信息. 使用.spines设置边框：右侧边框；使用.set_color设置边框颜色：默认白色； 使用.spines设置边框：上边框；使用.set_color设置边框颜色：默认白色；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax = plt.gca()</span><br><span class="line">ax.spines[&apos;right&apos;].set_color(&apos;none&apos;)</span><br><span class="line">ax.spines[&apos;top&apos;].set_color(&apos;none&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="调整坐标轴"><a href="#调整坐标轴" class="headerlink" title="调整坐标轴"></a>调整坐标轴</h2><p>使用.xaxis.set_ticks_position设置x坐标刻度数字或名称的位置：bottom.（所有位置：top，bottom，both，default，none）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ax.xaxis.set_ticks_position(&apos;bottom&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>使用.spines设置边框：x轴；使用.set_position设置边框位置：y=0的位置；（位置所有属性：outward，axes，data）<br>使用.yaxis.set_ticks_position设置y坐标刻度数字或名称的位置：left.（所有位置：left，right，both，default，none）<br>使用.spines设置边框：y轴；使用.set_position设置边框位置：x=0的位置；（位置所有属性：outward，axes，data） 使用plt.show显示图像.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax.spines[&apos;bottom&apos;].set_position((&apos;data&apos;, 0))</span><br><span class="line">ax.yaxis.set_ticks_position(&apos;left&apos;)</span><br><span class="line">ax.spines[&apos;left&apos;].set_position((&apos;data&apos;,0))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="legend图例"><a href="#legend图例" class="headerlink" title="legend图例"></a>legend图例</h2><h3 id="基本用法-1"><a href="#基本用法-1" class="headerlink" title="基本用法"></a>基本用法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">x = np.linspace(-3, 3, 50)</span><br><span class="line">y1 = 2*x + 1</span><br><span class="line">y2 = x**2</span><br><span class="line"></span><br><span class="line">plt.figure()</span><br><span class="line">#set x limits</span><br><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line"></span><br><span class="line"># set new sticks</span><br><span class="line">new_sticks = np.linspace(-1, 2, 5)</span><br><span class="line">plt.xticks(new_sticks)</span><br><span class="line"># set tick labels</span><br><span class="line">plt.yticks([-2, -1.8, -1, 1.22, 3],</span><br><span class="line">           [r&apos;$really\ bad$&apos;, r&apos;$bad$&apos;, r&apos;$normal$&apos;, r&apos;$good$&apos;, r&apos;$really\ good$&apos;])</span><br><span class="line"></span><br><span class="line"># set line syles</span><br><span class="line">l1, = plt.plot(x, y1, label=&apos;linear line&apos;)</span><br><span class="line">l2, = plt.plot(x, y2, color=&apos;red&apos;, linewidth=1.0, linestyle=&apos;--&apos;, label=&apos;square line&apos;)</span><br><span class="line"></span><br><span class="line">plt.legend(loc=&apos;upper right&apos;)</span><br></pre></td></tr></table></figure>
-<h3 id="调整位置和名称"><a href="#调整位置和名称" class="headerlink" title="调整位置和名称"></a>调整位置和名称</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.legend(handles=[l1, l2], labels=[&apos;up&apos;, &apos;down&apos;],  loc=&apos;best&apos;)</span><br></pre></td></tr></table></figure>
-<p>其中’loc’参数有多种，’best’表示自动分配最佳位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&apos;best&apos; : 0,          </span><br><span class="line">&apos;upper right&apos;  : 1,</span><br><span class="line">&apos;upper left&apos;   : 2,</span><br><span class="line">&apos;lower left&apos;   : 3,</span><br><span class="line">&apos;lower right&apos;  : 4,</span><br><span class="line">&apos;right&apos;        : 5,</span><br><span class="line">&apos;center left&apos;  : 6,</span><br><span class="line">&apos;center right&apos; : 7,</span><br><span class="line">&apos;lower center&apos; : 8,</span><br><span class="line">&apos;upper center&apos; : 9,</span><br><span class="line">&apos;center&apos;       : 10,</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Matplotlib" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Matplotlib</a>, by wikipedia</li>
-<li><a href="https://morvanzhou.github.io" target="_blank" rel="noopener">https://morvanzhou.github.io</a>, by morvanzhou</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/26/python3与python2的区别与兼容/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/26/python3与python2的区别与兼容/" itemprop="url">
-                  python3与python2的区别与兼容
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-26 18:58:07" itemprop="dateCreated datePublished" datetime="2018-05-26T18:58:07+08:00">2018-05-26</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-10-09 20:57:11" itemprop="dateModified" datetime="2018-10-09T20:57:11+08:00">2018-10-09</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python是一种广泛使用的高级编程语言，属于通用型编程语言，由吉多·范罗苏姆创造，第一版发布于1991年。可以视之为一种改良（加入一些其他编程语言的优点，如面向对象）的LISP。作为一种解释型语言，Python的设计哲学强调代码的可读性和简洁的语法（尤其是使用空格缩进划分代码块，而非使用大括号或者关键词）。相比于C++或Java，Python让开发者能够用更少的代码表达想法。不管是小型还是大型程序，该语言都试图让程序的结构清晰明了。</p>
-<p>与Scheme、Ruby、Perl、Tcl等动态类型编程语言一样，Python拥有动态类型系统和垃圾回收功能，能够自动管理内存使用，并且支持多种编程范式，包括面向对象、命令式、函数式和过程式编程。其本身拥有一个巨大而广泛的标准库。</p>
-<p>Python 解释器本身几乎可以在所有的操作系统中运行。Python的正式解释器CPython是用C语言编写的、是一个由社区驱动的自由软件，目前由Python软件基金会管理。</p>
-<h1 id="python3与python2区别"><a href="#python3与python2区别" class="headerlink" title="python3与python2区别"></a>python3与python2区别</h1><h2 id="print函数"><a href="#print函数" class="headerlink" title="print函数"></a>print函数</h2><p>Python 2 的 print 声明在Python 3中已经被 print() 函数取代<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">print &apos;Hello, World!&apos;</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">print(&apos;Hello, World!&apos;)</span><br></pre></td></tr></table></figure></p>
-<h2 id="整除"><a href="#整除" class="headerlink" title="整除"></a>整除</h2><p>/是精确除法，//是向下取整除法，%是求模。</p>
-<p>//和%运算符在2和3版本中一样，但是运算符/不一样。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">&gt;&gt;&gt; 3 / 2</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; 3 // 2</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; 3 / 2.0</span><br><span class="line">1.5</span><br><span class="line">&gt;&gt;&gt; 3 // 2.0</span><br><span class="line">1.0</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; 3 / 2</span><br><span class="line">1.5</span><br><span class="line">&gt;&gt;&gt; 3 // 2</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; 3 / 2.0</span><br><span class="line">1.5</span><br><span class="line">&gt;&gt;&gt; 3 // 2.0</span><br><span class="line">1.0</span><br></pre></td></tr></table></figure></p>
-<h2 id="Unicode"><a href="#Unicode" class="headerlink" title="Unicode"></a>Unicode</h2><p>由于历史遗留问题，Python 2.x版本虽然支持Unicode，但在语法上需要’xxx’和u’xxx’两种字符串表示方式。</p>
-<p>在Python 3.x版本中，把’xxx’和u’xxx’统一成Unicode编码，即写不写前缀u都是一样的，而以字节形式表示的字符串则必须加上b前缀：b’xxx’。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; 中国 = &apos;china&apos; </span><br><span class="line">&gt;&gt;&gt; print(中国)</span><br><span class="line">china</span><br></pre></td></tr></table></figure></p>
-<h2 id="xrange模块"><a href="#xrange模块" class="headerlink" title="xrange模块"></a>xrange模块</h2><p>在 Python 2 中 xrange() 创建迭代对象的用法是非常流行的。比如： for 循环或者是列表/集合/字典推导式。</p>
-<p>在 Python 3 中，range() 是像 xrange() 那样实现以至于一个专门的 xrange() 函数都不再存在（在 Python 3 中 xrange() 会抛出命名异常）。</p>
-<h2 id="不等运算符"><a href="#不等运算符" class="headerlink" title="不等运算符"></a>不等运算符</h2><p>Python 2.x中不等于有两种写法 != 和 &lt;&gt;</p>
-<p>Python 3.x中去掉了&lt;&gt;, 只有!=一种写法</p>
-<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ul>
-<li>Py3.X去除了long类型，现在只有一种整型——int，但它的行为就像2.X版本的long</li>
-<li>新增了bytes类型，对应于2.X版本的八位串</li>
-<li>dict的.keys()、.items 和.values()方法返回迭代器，而之前的iterkeys()等函数都被废弃。同时去掉的还有 dict.has_key()，用 in替代它吧 。</li>
-</ul>
-<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><ul>
-<li>在 Python 3 中处理异常也轻微的改变了，在 Python 3 中我们现在使用 as 作为关键词。</li>
-<li>捕获异常的语法由 except exc, var 改为 except exc as var。<br>使用语法except (exc1, exc2) as var可以同时捕获多种类别的异常。 Python 2.6已经支持这两种语法。</li>
-</ul>
-<h2 id="解析用户的输入"><a href="#解析用户的输入" class="headerlink" title="解析用户的输入"></a>解析用户的输入</h2><ul>
-<li><p>在python2.x中raw_input()和input()，两个函数都存在，其中区别为</p>
-<p>  raw_input()—-将所有输入作为字符串看待，返回字符串类型</p>
-<p>  input()——-只能接收“数字”的输入，在对待纯数字输入时具有自己的特性，它返回所输入的数字的类型（int, float）</p>
-</li>
-<li><p>在python3.x中raw_input()和input()进行了整合，去除了raw_input()，仅保留了input()函数，其接收任意任性输入，将所有输入默认为字符串处理，并返回字符串类型。</p>
-</li>
-</ul>
-<h2 id="返回可迭代对象，而不是列表"><a href="#返回可迭代对象，而不是列表" class="headerlink" title="返回可迭代对象，而不是列表"></a>返回可迭代对象，而不是列表</h2><p>如果在 xrange 章节看到的，现在在 Python 3 中一些方法和函数返回迭代对象 — 代替 Python 2 中的列表。</p>
-<p>因为我们通常那些遍历只有一次，我认为这个改变对节约内存很有意义。尽管如此，它也是可能的，相对于生成器 —- 如需要遍历多次。它是不那么高效的。</p>
-<p>而对于那些情况下，我们真正需要的是列表对象，我们可以通过 list() 函数简单的把迭代对象转换成一个列表。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">&gt;&gt;&gt; print range(3) </span><br><span class="line">[0, 1, 2]</span><br><span class="line">&gt;&gt;&gt; print type(range(3))</span><br><span class="line">&lt;type &apos;list&apos;&gt;</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; print(range(3))</span><br><span class="line">range(0, 3)</span><br><span class="line">&gt;&gt;&gt; print(type(range(3)))</span><br><span class="line">&lt;class &apos;range&apos;&gt;</span><br><span class="line">&gt;&gt;&gt; print(list(range(3)))</span><br><span class="line">[0, 1, 2]</span><br></pre></td></tr></table></figure></p>
-<h2 id="For循环变量和全局命名空间泄漏"><a href="#For循环变量和全局命名空间泄漏" class="headerlink" title="For循环变量和全局命名空间泄漏"></a>For循环变量和全局命名空间泄漏</h2><p>在 Python 3.x 中 for 循环变量不会再导致命名空间泄漏。</p>
-<p>在 Python 3.x 中做了一个改变，在 What’s New In Python 3.0 中有如下描述：<br>“列表推导不再支持 [… for var in item1, item2, …] 这样的语法。使用 [… for var in (item1, item2, …)] 代替。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">&gt;&gt;&gt; i = 1</span><br><span class="line">&gt;&gt;&gt; print &apos;before: i =&apos;, i</span><br><span class="line">before: i = 1</span><br><span class="line">&gt;&gt;&gt; print &apos;comprehension: &apos;, [i for i in range(5)]</span><br><span class="line">comprehension:  [0, 1, 2, 3, 4]</span><br><span class="line">&gt;&gt;&gt; print &apos;after: i =&apos;, i</span><br><span class="line">after: i = 4</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; i = 1</span><br><span class="line">&gt;&gt;&gt; print(&apos;before: i =&apos;, i)</span><br><span class="line">before: i = 1</span><br><span class="line">&gt;&gt;&gt; print(&apos;comprehension:&apos;, [i for i in range(5)])</span><br><span class="line">comprehension: [0, 1, 2, 3, 4]</span><br><span class="line">&gt;&gt;&gt; print(&apos;after: i =&apos;, i)</span><br><span class="line">after: i = 1</span><br></pre></td></tr></table></figure></p>
-<h1 id="兼容python3与python2"><a href="#兼容python3与python2" class="headerlink" title="兼容python3与python2"></a>兼容python3与python2</h1><p>当前python3的普及还不尽人意，因此编写的python程序能同时兼容python2与python3是十分必要的。下面介绍同时支持python2与python3的方法。</p>
-<ul>
-<li>放弃python 2.6之前的python版本</li>
-<li>使用 2to3 工具对代码检查</li>
-<li>使用python -3执行python程序</li>
-<li>from <strong>future</strong> import<br>  “from <strong>future</strong> import”后即可使使用python的未来特性了。python的完整future特性可见 <strong>future</strong> 。python3中所有字符都变成了unicode。在python2中unicode字符在定义时需要在字符前面加 u，但在3中则不需要家u，而且在加u后程序会无法编译通过。为了解决该问题可以 “from future import unicode_literals” ，这样python2中字符的行为将和python3中保持一致，python2中定义普通字符将自动识别为unicode。</li>
-<li><p>import问题<br>  python3中“少”了很多python2的包，在大多情况下这些包之是改了个名字而已。我们可以在import的时候对这些问题进行处理。</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">try:#python2</span><br><span class="line">    from UserDict import UserDict</span><br><span class="line">    #建议按照python3的名字进行import</span><br><span class="line">    from UserDict import DictMixin as MutableMapping</span><br><span class="line">except ImportError:#python3</span><br><span class="line">    from collections import UserDict</span><br><span class="line">    from collections import MutableMapping</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用python3的方式写程序</p>
-</li>
-<li><p>检查当前运行的python版本</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">if sys.version &gt; &apos;3&apos;:</span><br><span class="line">    PY3 = True</span><br><span class="line">else:</span><br><span class="line">    PY3 = False</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>six<br>不推荐使用six。</p>
-</li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Python" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Python</a>, by wikipedia</li>
-<li><a href="https://www.jianshu.com/p/85583e032eb8" target="_blank" rel="noopener">https://www.jianshu.com/p/85583e032eb8</a>, by EarthChen</li>
-<li><a href="http://python.jobbole.com/83987/" target="_blank" rel="noopener">http://python.jobbole.com/83987/</a>, by 天地一沙鸥</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/24/git用法总结/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/24/git用法总结/" itemprop="url">
-                  git用法总结
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-24 08:32:03" itemprop="dateCreated datePublished" datetime="2018-05-24T08:32:03+08:00">2018-05-24</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-07-08 23:35:26" itemprop="dateModified" datetime="2018-07-08T23:35:26+08:00">2018-07-08</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>git是一个分布式版本控制软件，最初由林纳斯·托瓦兹（Linus Torvalds）创作，于2005年以GPL发布。最初目的是为更好地管理Linux内核开发而设计<sup>[1]</sup>。</p>
-<ul>
-<li><p>查看代码仓库中标签</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>检出指定标签代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout tag_name</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>打包导出仓库代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git archive --format zip --output ..\emsdk\zips\1.38.8.zip HEAD</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://zh.wikipedia.org/zh-hans/Git" target="_blank" rel="noopener">https://zh.wikipedia.org/zh-hans/Git</a>, by wikipedia</li>
-<li><a href="http://yijiebuyi.com/blog/eacf4d053fad77affffae397d9af7172.html" target="_blank" rel="noopener">http://yijiebuyi.com/blog/eacf4d053fad77affffae397d9af7172.html</a>, by 一介布衣</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/13/Vue-js集成three-js/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/13/Vue-js集成three-js/" itemprop="url">
-                  Vue.js集成three.js
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-13 21:03:47" itemprop="dateCreated datePublished" datetime="2018-05-13T21:03:47+08:00">2018-05-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-06-03 09:40:02" itemprop="dateModified" datetime="2018-06-03T09:40:02+08:00">2018-06-03</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Three.js是一个跨浏览器的脚本，使用JavaScript函数库或API来在网页浏览器中创建和展示动画的三维计算机图形。Three.js使用WebGL。源代码托管在GitHub。</p>
-<p>下面介绍在Vue.js中集成three.js的步骤。</p>
-<ol>
-<li>安装vue-cli脚手架</li>
-<li><p>安装three.js</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save three</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>编写使用three.js创建3D场景的Vuejs组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id=&quot;container&quot;&gt;&lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">import * as Three from &apos;three&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;Home&apos;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      camera: null,</span><br><span class="line">      scene: null,</span><br><span class="line">      renderer: null,</span><br><span class="line">      mesh: null</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    init: function () &#123;</span><br><span class="line">      var container = document.getElementById(&apos;container&apos;)</span><br><span class="line"></span><br><span class="line">      this.camera = new Three.PerspectiveCamera(70, container.clientWidth / container.clientHeight, 0.01, 10)</span><br><span class="line">      this.camera.position.z = 1</span><br><span class="line"></span><br><span class="line">      this.scene = new Three.Scene()</span><br><span class="line"></span><br><span class="line">      var geometry = new Three.BoxGeometry(0.2, 0.2, 0.2)</span><br><span class="line">      var material = new Three.MeshNormalMaterial()</span><br><span class="line"></span><br><span class="line">      this.mesh = new Three.Mesh(geometry, material)</span><br><span class="line">      this.scene.add(this.mesh)</span><br><span class="line"></span><br><span class="line">      this.renderer = new Three.WebGLRenderer(&#123; antialias: true &#125;)</span><br><span class="line">      this.renderer.setSize(container.clientWidth, container.clientHeight)</span><br><span class="line">      container.appendChild(this.renderer.domElement)</span><br><span class="line">    &#125;,</span><br><span class="line">    animate: function () &#123;</span><br><span class="line">      requestAnimationFrame(this.animate)</span><br><span class="line">      this.mesh.rotation.x += 0.01</span><br><span class="line">      this.mesh.rotation.y += 0.02</span><br><span class="line">      this.renderer.render(this.scene, this.camera)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted () &#123;</span><br><span class="line">    this.init()</span><br><span class="line">    this.animate()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;style  rel=&quot;stylesheet/scss&quot; lang=&quot;scss&quot; scoped&gt;</span><br><span class="line">#container &#123;</span><br><span class="line">  width: 100%;</span><br><span class="line">  height: 100%;</span><br><span class="line">  margin: 0;</span><br><span class="line">  padding: 0;</span><br><span class="line">  overflow: hidden;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Three.js" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Three.js</a>, by Wikipedia</li>
-<li><a href="https://stackoverflow.com/questions/47849626/import-and-use-three-js-library-in-vue-component" target="_blank" rel="noopener">https://stackoverflow.com/questions/47849626/import-and-use-three-js-library-in-vue-component</a>, by Stackoverlflow</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/13/Windows批处理编程语法解析/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/13/Windows批处理编程语法解析/" itemprop="url">
-                  Windows批处理编程语法解析
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-13 09:26:50" itemprop="dateCreated datePublished" datetime="2018-05-13T09:26:50+08:00">2018-05-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-05 19:50:37" itemprop="dateModified" datetime="2019-01-05T19:50:37+08:00">2019-01-05</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>批处理文件(BAT文件)是DOS，OS/2和Microsoft Windows中的一种脚本文件<sup>[1]</sup>。 它由命令行解释器执行的一系列命令组成，存储在纯文本文件中，通常以BAT为扩展名。批处理文件可以包含解释器交互接受的任何命令，并使用在批处理文件中启用条件分支和循环的构造，如IF，FOR和GOTO标签。在Windows平台自动化部署或处理日常重复性工作时，常使用Windows批处理文件。</p>
-<p>下面简单介绍Windows BAT文件的语法。</p>
-<ul>
-<li>@ </li>
-</ul>
-<p>让执行窗口中不显示它后面这一行的命令本身。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 使用@将不显示后面的echo off命令</span><br><span class="line">@ echo off</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>echo</li>
-</ul>
-<p>echo即回显或反馈的意思。它由两种状态：打开和关闭。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 将不显示后续的命令</span><br><span class="line">@ echo off</span><br><span class="line">// 将显示后续的命令</span><br><span class="line">@ echo on</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>::</li>
-</ul>
-<p>注释命令。在批处理文件中与rem命令等效</p>
-<ul>
-<li>call</li>
-</ul>
-<p>call命令用来从一个批处理文件调用另一个批处理文件。只有当被调用的批处理文件执行完成时，才返回。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">call pm2-startup install</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>pause</li>
-</ul>
-<p>暂停命令。方便用户查看信息，查看完毕后可继续执行。</p>
-<ul>
-<li>explorer</li>
-</ul>
-<p>在 cmd 下输入explorer可打开文件夹图形界面，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 在图形界面中打开当前文件夹</span><br><span class="line">explorer .</span><br></pre></td></tr></table></figure></p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://en.wikipedia.org/wiki/Batch_file" target="_blank" rel="noopener">Batch file</a>,by Wikipedia.</li>
-<li><a href="https://www.cnblogs.com/s1ihome/archive/2009/01/15/batTutorial.html" target="_blank" rel="noopener">批处理最完整人性化教程(.bat文件语法)</a>, by s1ihome.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-  </section>
 
   
   <nav class="pagination">
     <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
+
 
 
 

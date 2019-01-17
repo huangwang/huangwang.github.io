@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="说来惭愧，我虽然计算机科学专业科班出生，但是对面向对象编程的理解并不透彻。但在看到“如何写一手漂亮的模型：面向对象编程的设计原则综述”后，感觉收获不少，欣喜之余感觉摘抄记录一下。 面向对象编程的设计原则为了写出清晰的、高质量的、可维护并且可扩展的代码，面向对象编程（OOP）将是我们最佳的选择。 对象类型因为我们要围绕对象来建立代码，所以区分它们的不同责任和变化是有用的。一般来说，面向对象的编程有三">
+<meta name="keywords" content="笔记本,软件工程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面向对象编程的设计原则">
+<meta property="og:url" content="https://huangwang.github.io/2019/01/17/面向对象编程的设计原则/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="说来惭愧，我虽然计算机科学专业科班出生，但是对面向对象编程的理解并不透彻。但在看到“如何写一手漂亮的模型：面向对象编程的设计原则综述”后，感觉收获不少，欣喜之余感觉摘抄记录一下。 面向对象编程的设计原则为了写出清晰的、高质量的、可维护并且可扩展的代码，面向对象编程（OOP）将是我们最佳的选择。 对象类型因为我们要围绕对象来建立代码，所以区分它们的不同责任和变化是有用的。一般来说，面向对象的编程有三">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-17T14:16:57.269Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="面向对象编程的设计原则">
+<meta name="twitter:description" content="说来惭愧，我虽然计算机科学专业科班出生，但是对面向对象编程的理解并不透彻。但在看到“如何写一手漂亮的模型：面向对象编程的设计原则综述”后，感觉收获不少，欣喜之余感觉摘抄记录一下。 面向对象编程的设计原则为了写出清晰的、高质量的、可维护并且可扩展的代码，面向对象编程（OOP）将是我们最佳的选择。 对象类型因为我们要围绕对象来建立代码，所以区分它们的不同责任和变化是有用的。一般来说，面向对象的编程有三">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Jack Huang's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://huangwang.github.io/2019/01/17/面向对象编程的设计原则/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>面向对象编程的设计原则 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jack Huang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/17/面向对象编程的设计原则/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">面向对象编程的设计原则
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-17 21:56:12 / 修改时间：22:16:57" itemprop="dateCreated datePublished" datetime="2019-01-17T21:56:12+08:00">2019-01-17</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/17/面向对象编程的设计原则/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2019/01/17/面向对象编程的设计原则/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>说来惭愧，我虽然计算机科学专业科班出生，但是对面向对象编程的理解并不透彻。但在看到“如何写一手漂亮的模型：面向对象编程的设计原则综述”后，感觉收获不少，欣喜之余感觉摘抄记录一下。</p>
+<h1 id="面向对象编程的设计原则"><a href="#面向对象编程的设计原则" class="headerlink" title="面向对象编程的设计原则"></a>面向对象编程的设计原则</h1><p>为了写出清晰的、高质量的、可维护并且可扩展的代码，面向对象编程（OOP）将是我们最佳的选择。</p>
+<h2 id="对象类型"><a href="#对象类型" class="headerlink" title="对象类型"></a>对象类型</h2><p>因为我们要围绕对象来建立代码，所以区分它们的不同责任和变化是有用的。一般来说，面向对象的编程有三种类型的对象。</p>
+<h3 id="实体对象"><a href="#实体对象" class="headerlink" title="实体对象"></a>实体对象</h3><p>这类对象通常对应着问题空间中的一些现实实体。比如我们要建立一个角色扮演游戏（RPG），那么简单的 Hero 类就是一个实体对象。</p>
+<p>这类对象通常包含关于它们自身的属性（例如 health 或 mana），这些属性根据具体的规则都是可修改的。</p>
+<h3 id="控制对象（Control-Object）"><a href="#控制对象（Control-Object）" class="headerlink" title="控制对象（Control Object）"></a>控制对象（Control Object）</h3><p>控制对象（有时候也称作管理对象）主要负责与其它对象的协调，这是一些管理并调用其它对象的对象。我们上面的 RPG 案例中有一个很棒的例子，Fight 类控制两个英雄，并让它们对战。</p>
+<p>在这种类中，为对战封装编程逻辑可以给我们提供多个好处：其中之一就是动作的可扩展性。我们可以很容易地将参与战斗的英雄传递给非玩家角色（NPC），这样它们就能利用相同的 API。我们还可以很容易地继承这个类，并复写一些功能来满足新的需要。</p>
+<h3 id="边界对象（Boundary-Object）"><a href="#边界对象（Boundary-Object）" class="headerlink" title="边界对象（Boundary Object）"></a>边界对象（Boundary Object）</h3><p>这些是处在系统边缘的对象。任何一个从其它系统获取输入或者给其它系统产生输出的对象都可以被归类为边界对象，无论那个系统是用户，互联网或者是数据库。</p>
+<p>这些边界对象负责向系统内部或者外部传递信息。例如对要接收的用户指令，我们需要一个边界对象来将键盘输入（比如一个空格键）转换为一个可识别的域事件（例如角色的跳跃）。</p>
+<h3 id="Bonus：值对象（Value-Object）"><a href="#Bonus：值对象（Value-Object）" class="headerlink" title="Bonus：值对象（Value Object）"></a>Bonus：值对象（Value Object）</h3><p>价值对象代表的是域（domain）中的一个简单值。它们无法改变，不恒一。</p>
+<p>如果将它们结合在我们的游戏中，Money 类或者 Damage 类就表示这种对象。上述的对象让我们容易地区分、寻找和调试相关功能，然而仅使用基础的整形数组或者整数却无法实现这些功能。</p>
+<p><strong>它们可以归类为实体对象的子类别</strong>。</p>
+<h2 id="关键设计原则"><a href="#关键设计原则" class="headerlink" title="关键设计原则"></a>关键设计原则</h2><p>设计原则是软件设计中的规则，过去这些年里已经证明它们是有价值的。严格地遵循这些原则有助于软件达到一流的质量。</p>
+<h3 id="抽象（Abstraction）"><a href="#抽象（Abstraction）" class="headerlink" title="抽象（Abstraction）"></a>抽象（Abstraction）</h3><p>抽象就是将一个概念在一定的语境中简化为原始本质的一种思想。它允许我们拆解一个概念来更好的理解它。</p>
+<p>上面的游戏案例阐述了抽象，让我们来看一下 Fight 类是如何构建的。我们以尽可能简单的方式使用它，即在实例化的过程中给它两个英雄作为参数，然后调用 fight() 方法。不多也不少，就这些。</p>
+<h3 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h3><p>封装可以被认为是将某些东西放在一个类以内，并限制了它向外部展现的信息。在软件中，限制对内部对象和属性的访问有助于保证数据的完整性。</p>
+<p>将内部编程逻辑封装成黑盒子，我们的类将更容易管理，因为我们知道哪部分可以被其它系统使用，哪些不行。这意味着我们在保留公共部分并且保证不破坏任何东西的同时能够重用内部逻辑。此外，我们从外部使用封装功能变得更加简单，因为需要考虑的事情也更少。</p>
+<h3 id="分解"><a href="#分解" class="headerlink" title="分解"></a>分解</h3><p>分解就是把一个对象分割为多个更小的独立部分，这些独立的部分更易于理解、维护和编程。</p>
+<p>试想我们现在希望 Hero 类能结合更多的 RPG 特征，例如 buffs，资产，装备，角色属性。</p>
+<p>解决方案就是将 Hero 对象分解为多个更小的对象，每个小对象可承担一些功能。</p>
+<p>下面是三种分解关系：</p>
+<ul>
+<li>关联：在两个组成部分之间定义一个松弛的关系。两个组成部分不互相依赖，但是可以一起工作。例如 Hero 对象和 Zone 对象。</li>
+<li>聚合：在整体和部分之间定义一个弱「包含」关系。这种关系比较弱，因为部分可以在没有整体的时候存在。例如 HeroInventory（英雄财产）和 Item（条目）。HeroInventory 可以有很多 Items，而且一个 Items 也可以属于任何 HeroInventory（例如交易条目）。</li>
+<li>组成：一个强「包含」关系，其中整体和部分不能彼此分离。部分不能被共享，因为整体要依赖于这些特定的部分。例如 Hero（英雄）和 HeroAttributes（英雄属性）。</li>
+</ul>
+<h3 id="泛化"><a href="#泛化" class="headerlink" title="泛化"></a>泛化</h3><p>泛化可能是最重要的设计原则，即我们提取共享特征，并将它们结合到一起的过程。我们都知道函数和类的继承，这就是一种泛化。</p>
+<p>做一个比较可能会将这个解释得更加清楚：尽管抽象通过隐藏非必需的细节减少了复杂性，但是泛化通过用一个单独构造体来替代多个执行类似功能的实体。</p>
+<p>在给出的例子中，我们将常用的 Hero 类和 NPC 类泛化为一个共同的父类 Entity，并通过继承简化子类的构建。</p>
+<p>这里，我们通过将它们的共同功能移动到基本类中来减少复杂性，而不是让 NPC 类和 Hero 类将所有的功能都实现两次。</p>
+<h3 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h3><p>组合就是把多个对象结合为一个更复杂对象的过程。这种方法会创建对象的示例，并且使用它们的功能，而不是直接继承它。</p>
+<p>使用组合原则的对象就被称作组合对象（composite object）。这种组合对象在要比所有组成部分都简单，这是非常重要的一点。当把多个类结合成一个类的时候，我们希望把抽象的层次提高一些，让对象更加简单。</p>
+<p>组合对象的 API 必须隐藏它的内部模块，以及内部模块之间的交互。就像一个机械时钟，它有三个展示时间的指针，以及一个设置时间的旋钮，但是它内部包含很多运动的独立部件。</p>
+<p>正如我所说的，组合要优于继承，这意味着我们应该努力将共用功能移动到一个独立的对象中，然后其它类就使用这个对象的功能，而不是将它隐藏在所继承的基本类中。</p>
+<h2 id="批判性思考"><a href="#批判性思考" class="headerlink" title="批判性思考"></a>批判性思考</h2><p>尽管这些设计原则是在数十年经验中形成的，但盲目地将这些原则应用到代码之前进行批判性思考是很重要的。</p>
+<p>任何事情都是过犹不及！有时候这些原则可以走得很远，但是实际上有时会变成一些很难使用的东西。</p>
+<p>作为一个工程师，我们需要根据独特的情境去批判地评价最好的方法，而不是盲目地遵从并应用任意的原则。</p>
+<h2 id="关注点的内聚、耦合和分离"><a href="#关注点的内聚、耦合和分离" class="headerlink" title="关注点的内聚、耦合和分离"></a>关注点的内聚、耦合和分离</h2><h3 id="内聚（Cohesion）"><a href="#内聚（Cohesion）" class="headerlink" title="内聚（Cohesion）"></a>内聚（Cohesion）</h3><p>内聚代表的是模块内部责任的分明，或者是模块的复杂度。</p>
+<p>如果我们的类只执行一个任务，而没有其它明确的目标，那么这个类就有着高度内聚性。另一方面，如果从某种程度而言它在做的事情并不清楚，或者具有多于一个的目标，那么它的内聚性就非常低。</p>
+<p>我们希望代码具有较高的内聚性，如果发现它们有非常多的目标，或许我们应该将它们分割出来。</p>
+<h3 id="耦合"><a href="#耦合" class="headerlink" title="耦合"></a>耦合</h3><p>耦合获取的是连接不同类的复杂度。我们希望类与其它的类具有尽可能少、尽可能简单的联系，所以我们就可以在未来的事件中交换它们（例如改变网络框架）。</p>
+<p>在很多编程语言中，这都是通过大量使用接口来实现的，它们抽象出处理特定逻辑的类，然后表征为一种适配层，每个类都可以嵌入其中。</p>
+<h3 id="分离关注点"><a href="#分离关注点" class="headerlink" title="分离关注点"></a>分离关注点</h3><p>分离关注点（SoC）是这样一种思想：软件系统必须被分割为功能上互不重叠的部分。或者说关注点必须分布在不同的地方，其中关注点表示能够为一个问题提供解决方案。</p>
+<p>网页就是一个很好的例子，它具有三个层（信息层、表示层和行为层），这三个层被分为三个不同的地方（分别是 HTML，CSS，以及 JS）。</p>
+<p>如果重新回顾一下我们的 RPG 例子，你会发现它在最开始具有很多关注点（应用 buffs 来计算袭击伤害、处理资产、装备条目，以及管理属性）。我们通过分解将那些关注点分割成更多的内聚类，它们抽象并封装了它们的细节。我们的 Hero 类现在仅仅作为一个组合对象，它比之前更加简单。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>对小规模的代码应用这些原则可能看起来很复杂。但是事实上，对于未来想要开发和维护的任何一个软件项目而言，这些规则都是必须的。在刚开始写这种代码会有些成本，但是从长期来看，它会回报以几倍增长。</p>
+<p>这些原则保证我们的系统更加：</p>
+<p>可扩展：高内聚使得不用关心不相关的功能就可以更容易地实现新模块。<br>可维护：低耦合保证一个模块的改变通常不会影响其它模块。高内聚保证一个系统需求的改变只需要更改尽可能少的类。<br>可重用：高内聚保证一个模块的功能是完整的，也是被妥善定义的。低耦合使得模块尽可能少地依赖系统的其它部分，这使得模块在其它软件中的重用变得更加容易。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/36330531" target="_blank" rel="noopener">如何写一手漂亮的模型：面向对象编程的设计原则综述</a>,by 机器之心.</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/笔记本/" rel="tag"># 笔记本</a>
+          
+            <a href="/tags/软件工程/" rel="tag"># 软件工程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/12/机器学习之线性回归问题求解/" rel="next" title="机器学习之线性回归问题求解">
+                <i class="fa fa-chevron-left"></i> 机器学习之线性回归问题求解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Jack Huang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">80</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#面向对象编程的设计原则"><span class="nav-number">1.</span> <span class="nav-text">面向对象编程的设计原则</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#对象类型"><span class="nav-number">1.1.</span> <span class="nav-text">对象类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实体对象"><span class="nav-number">1.1.1.</span> <span class="nav-text">实体对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#控制对象（Control-Object）"><span class="nav-number">1.1.2.</span> <span class="nav-text">控制对象（Control Object）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#边界对象（Boundary-Object）"><span class="nav-number">1.1.3.</span> <span class="nav-text">边界对象（Boundary Object）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bonus：值对象（Value-Object）"><span class="nav-number">1.1.4.</span> <span class="nav-text">Bonus：值对象（Value Object）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关键设计原则"><span class="nav-number">1.2.</span> <span class="nav-text">关键设计原则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#抽象（Abstraction）"><span class="nav-number">1.2.1.</span> <span class="nav-text">抽象（Abstraction）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装"><span class="nav-number">1.2.2.</span> <span class="nav-text">封装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分解"><span class="nav-number">1.2.3.</span> <span class="nav-text">分解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛化"><span class="nav-number">1.2.4.</span> <span class="nav-text">泛化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组合"><span class="nav-number">1.2.5.</span> <span class="nav-text">组合</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#批判性思考"><span class="nav-number">1.3.</span> <span class="nav-text">批判性思考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关注点的内聚、耦合和分离"><span class="nav-number">1.4.</span> <span class="nav-text">关注点的内聚、耦合和分离</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内聚（Cohesion）"><span class="nav-number">1.4.1.</span> <span class="nav-text">内聚（Cohesion）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#耦合"><span class="nav-number">1.4.2.</span> <span class="nav-text">耦合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分离关注点"><span class="nav-number">1.4.3.</span> <span class="nav-text">分离关注点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">1.5.</span> <span class="nav-text">结语</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">2.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a></div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: decodeURI(window.location.pathname),
+            owner: 'huangwang',
+            repo: 'gitment-comments',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'c5aa25b94035c77665be42dbeff0d229f2d66108',
+            
+                client_id: '60cc27182c03877da9a2'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

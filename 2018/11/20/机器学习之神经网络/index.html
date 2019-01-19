@@ -117,7 +117,12 @@
 <meta property="og:image" content="https://huangwang.github.io/2018/11/20/机器学习之神经网络/images/activation.svg">
 <meta property="og:image" content="https://huangwang.github.io/2018/11/20/机器学习之神经网络/images/LeNet.png">
 <meta property="og:image" content="https://huangwang.github.io/2018/11/20/机器学习之神经网络/images/AlexNet.jpg">
-<meta property="og:updated_time" content="2019-01-19T02:22:32.674Z">
+<meta property="og:image" content="https://huangwang.github.io/2018/11/20/机器学习之神经网络/images/vgg.png">
+<meta property="og:image" content="https://huangwang.github.io/2018/11/20/机器学习之神经网络/images/NiN_VS_VGG.jpg">
+<meta property="og:image" content="https://huangwang.github.io/2018/11/20/机器学习之神经网络/images/Inception.jpg">
+<meta property="og:image" content="https://huangwang.github.io/2018/11/20/机器学习之神经网络/images/residual-block.svg">
+<meta property="og:image" content="https://huangwang.github.io/2018/11/20/机器学习之神经网络/images/densenet.svg">
+<meta property="og:updated_time" content="2019-01-19T15:14:48.447Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习之神经网络">
 <meta name="twitter:description" content="人工神经网络（英语：Artificial Neural Network，ANN），简称神经网络（Neural Network，NN）或类神经网络，在机器学习和认知科学领域，是一种模仿生物神经网络（动物的中枢神经系统，特别是大脑）的结构和功能的数学模型或计算模型，用于对函数进行估计或近似。 神经网络由大量的人工神经元联结进行计算。大多数情况下人工神经网络能在外界信息的基础上改变内部结构，是一种自适应">
@@ -384,7 +389,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-19 10:22:32" itemprop="dateModified" datetime="2019-01-19T10:22:32+08:00">2019-01-19</time>
+                <time title="修改时间：2019-01-19 23:14:48" itemprop="dateModified" datetime="2019-01-19T23:14:48+08:00">2019-01-19</time>
               
             
           </span>
@@ -511,9 +516,9 @@
 <center>图6 LeNet结构</center>
 
 <ul>
-<li>输入层：输入图像的大小为32<em>32，这要比mnist数据库中的最大字母（28</em>28）还大。作用： 图像较大，这样做的目的是希望潜在的明显特征，比如笔画断续，角点等能够出现在最高层特征监测子感受野的中心。</li>
-<li>卷积层：C1，C3为卷积层，S2，S4为降采样层（即池化层）</li>
-<li>全连接层：F5,F6为全连接层，还有一个输出层。</li>
+<li>输入层：输入图像的大小为32*32，这要比mnist数据库中的最大字母（28*28）还大。作用： 图像较大，这样做的目的是希望潜在的明显特征，比如笔画断续，角点等能够出现在最高层特征监测子感受野的中心。</li>
+<li>卷积层：C1，C3，C5为卷积层，S2，S4为降采样层。</li>
+<li>全连接层：F6为全连接层，还有一个输出层。</li>
 </ul>
 <h2 id="深度卷积神经⽹络（AlexNet）"><a href="#深度卷积神经⽹络（AlexNet）" class="headerlink" title="深度卷积神经⽹络（AlexNet）"></a>深度卷积神经⽹络（AlexNet）</h2><p>2012年，AlexNet横空出世。这个模型的名字来源于论⽂第⼀作者的姓名Alex Krizhevsky。AlexNet使⽤了8层卷积神经⽹络，并以很⼤的优势赢得了ImageNet 2012图像识别挑战赛。它⾸次证明了学习到的特征可以超越⼿⼯设计的特征，从而⼀举打破计算机视觉研究的前状。</p>
 <h3 id="AlexNet与LeNet区别"><a href="#AlexNet与LeNet区别" class="headerlink" title="AlexNet与LeNet区别"></a>AlexNet与LeNet区别</h3><p>AlexNet与LeNet的设计理念⾮常相似，但也有显著的区别。</p>
@@ -536,6 +541,54 @@
 <center>图7 AlexNet结构</center>
 
 <p>由于当时的显卡容量问题，AlexNet 的60M个参数无法全部放在一张显卡上操作，所以采用了两张显卡分开操作的形式，其中在C3，R1，R2，R3层上出现交互，所谓的交互就是通道的合并，是一种串接操作。</p>
+<h2 id="使⽤重复元素的⽹络（VGG网络）"><a href="#使⽤重复元素的⽹络（VGG网络）" class="headerlink" title="使⽤重复元素的⽹络（VGG网络）"></a>使⽤重复元素的⽹络（VGG网络）</h2><p>VGG的名字来源于论⽂作者所在的实验室Visual Geometry Group。2014年VGG提出了可以通过重复使⽤简单的基础块来构建深度模型的思路。</p>
+<p>VGG块的组成规律是：连续使⽤数个相同的填充为1、窗口形状为3*3的卷积层后接上⼀个步幅为2、窗口形状为2*2的最⼤池化层。卷积层保持输⼊的⾼和宽不变，而池化层则对其减半。</p>
+<p>VGG相比AlexNet的一个改进是采用连续的几个3x3的卷积核代替AlexNet中的较大卷积核（11x11，7x7，5x5）。对于给定的感受野（与输出有关的输入图片的局部大小），采用堆积的小卷积核是优于采用大的卷积核，因为多层非线性层可以增加网络深度来保证学习更复杂的模式，而且代价还比较小（参数更少）。</p>
+<p>与AlexNet和LeNet⼀样，VGG⽹络由卷积层模块后接全连接层模块构成。卷积层模块串联数个vgg_block，其超参数由变量conv_arch定义。该变量指定了每个VGG块⾥卷积层个数和输出通道数。全连接模块则跟AlexNet中的⼀样。</p>
+<p>构造⼀个最简单的VGG⽹络VGG-11。它有5个卷积块，前2块使⽤单卷积层，而后3块使⽤双卷积层。第⼀块的输出通道是64，之后每次对输出通道数翻倍，直到变为512。</p>
+<p></p><p align="center">
+    <img src="images/vgg.png" width="90%" alt="VGG结构">
+</p><p></p>
+<center>图8 VGG结构</center>
+
+<h2 id="⽹络中的⽹络（NiN）"><a href="#⽹络中的⽹络（NiN）" class="headerlink" title="⽹络中的⽹络（NiN）"></a>⽹络中的⽹络（NiN）</h2><p>在AlexNet问世不久，⽹络中的⽹络（NiN）提出即串联多个由卷积层和“全连接”层构成的小⽹络来构建⼀个深层⽹络。</p>
+<p>卷积层的输⼊和输出通常是四维数组（样本，通道，⾼，宽），而全连接层的输⼊和输出则通常是⼆维数组（样本，特征）。如果想在全连接层后再接上卷积层，则需要将全连接层的输出变换为四维。1*1卷积层可以看成全连接层中空间维度（⾼和宽）上的每个元素相当于样本，通道相当于特征。因此， NiN使⽤1*1卷积层来替代全连接层，从而使空间信息能够⾃然传递到后⾯的层中去。</p>
+<p>NiN结构（右边）与AlexNet、VGG（左边）的区别：</p>
+<p></p><p align="center">
+    <img src="images/NiN_VS_VGG.jpg" width="90%" alt="NiN与VGG区别">
+</p><p></p>
+<center>图9 NiN与VGG区别</center>
+
+<p>NiN块是NiN中的基础块。它由⼀个卷积层加两个充当全连接层的1 * 1卷积层串联而成。其中第⼀个卷积层的超参数可以⾃⾏设置，而第⼆和第三个卷积层的超参数⼀般是固定的。</p>
+<p>NiN重复使⽤由卷积层和代替全连接层的1 * 1卷积层构成的NiN块来构建深层⽹络。NiN去除了容易造成过拟合的全连接输出层，而是将其替换成输出通道数等于标签类别数的NiN块和全局平均池化层。</p>
+<h2 id="含并⾏连结的⽹络（GoogLeNet）"><a href="#含并⾏连结的⽹络（GoogLeNet）" class="headerlink" title="含并⾏连结的⽹络（GoogLeNet）"></a>含并⾏连结的⽹络（GoogLeNet）</h2><p>在2014年的ImageNet图像识别挑战赛中，⼀个名叫GoogLeNet的⽹络结构⼤放异彩。它虽然在名字上向LeNet致敬，但在⽹络结构上已经很难看到LeNet的影⼦。GoogLeNet吸收了NiN中⽹络串联⽹络的思想，并在此基础上做了很⼤改进。</p>
+<p>GoogLeNet中的基础卷积块叫作Inception块，得名于同名电影《盗梦空间》（Inception）。与NiN块相⽐，这个基础块在结构上更加复杂，如图所⽰。</p>
+<p></p><p align="center">
+    <img src="images/Inception.jpg" width="90%" alt="Inception块结构">
+</p><p></p>
+<center>图10 Inception块结构</center>
+
+<p>Inception块⾥有4条并⾏的线路。前3条线路使⽤窗口⼤小分别是1 * 1、3 * 3和5 * 5的卷积层来抽取不同空间尺⼨下的信息，其中中间2个线路会对输⼊先做1 * 1卷积来减少输⼊通道数，以降低模型复杂度。第四条线路则使⽤3*3最⼤池化层，后接1*1卷积层来改变通道数。4条线路都使⽤了合适的填充来使输⼊与输出的⾼和宽⼀致。最后我们将每条线路的输出在通道维上连结，并输⼊接下来的层中去。</p>
+<p>Inception块中可以⾃定义的超参数是每个层的输出通道数，以此来控制模型复杂度。</p>
+<p>GoogLeNet跟VGG⼀样，在主体卷积部分中使⽤5个模块（block），每个模块之间使⽤步幅为2的3*3最⼤池化层来减小输出⾼宽。</p>
+<h2 id="残差网络（ResNet）"><a href="#残差网络（ResNet）" class="headerlink" title="残差网络（ResNet）"></a>残差网络（ResNet）</h2><p>让我们先思考一个问题：对神经网络模型添加新的层，充分训练后的模型是否只可能更有效地降低训练误差？理论上，原模型解的空间只是新模型解的空间的子空间。也就是说，如果我们能将新添加的层训练成恒等映射 f(x)=x ，新模型和原模型将同样有效。由于新模型可能得出更优的解来拟合训练数据集，因此添加层似乎更容易降低训练误差。然而在实践中，添加过多的层后训练误差往往不降反升。即使利用批量归一化带来的数值稳定性使训练深层模型更加容易，该问题仍然存在。针对这一问题，何恺明等人提出了残差网络（ResNet）。它在2015年的ImageNet图像识别挑战赛夺魁，并深刻影响了后来的深度神经网络的设计。</p>
+<p>让我们聚焦于神经网络局部。如图11所示，设输入为 x 。假设我们希望学出的理想映射为 f(x) ，从而作为图11上方激活函数的输入。左图虚线框中的部分需要直接拟合出该映射 f(x) ，而右图虚线框中的部分则需要拟合出有关恒等映射的残差映射 f(x)−x 。残差映射在实际中往往更容易优化。以本节开头提到的恒等映射作为我们希望学出的理想映射 f(x) 。我们只需将图11中右图虚线框内上方的加权运算（如仿射）的权重和偏差参数学成0，那么 f(x) 即为恒等映射。实际中，当理想映射 f(x) 极接近于恒等映射时，残差映射也易于捕捉恒等映射的细微波动。<strong>图11右图也是ResNet的基础块，即残差块（residual block）。在残差块中，输入可通过跨层的数据线路更快地向前传播。</strong></p>
+<p></p><p align="center">
+    <img src="images/residual-block.svg" width="90%" alt="ResNet残差块结构">
+</p><p></p>
+<center>图11 ResNet残差块结构</center>
+
+<p>ResNet沿用了VGG全 3×3 卷积层的设计。残差块里首先有2个有相同输出通道数的 3×3 卷积层。每个卷积层后接一个批量归一化层和ReLU激活函数。然后我们将输入跳过这两个卷积运算后直接加在最后的ReLU激活函数前。这样的设计要求两个卷积层的输出与输入形状一样，从而可以相加。如果想改变通道数，就需要引入一个额外的 1×1 卷积层来将输入变换成需要的形状后再做相加运算。</p>
+<h2 id="稠密连接网络（DenseNet）"><a href="#稠密连接网络（DenseNet）" class="headerlink" title="稠密连接网络（DenseNet）"></a>稠密连接网络（DenseNet）</h2><p>稠密连接网络（DenseNet）与ResNet的主要区别如图12所示。</p>
+<p></p><p align="center">
+    <img src="images/densenet.svg" width="90%" alt="ResNet（左）与DenseNet（右）在跨层连接上的主要区别：使用相加和使用连结">
+</p><p></p>
+<center>图12 ResNet（左）与DenseNet（右）在跨层连接上的主要区别：使用相加和使用连结</center>
+
+<p>图12中将部分前后相邻的运算抽象为模块A和模块B。与ResNet的主要区别在于，DenseNet里模块B的输出不是像ResNet那样和模块A的输出相加，而是在通道维上连结。这样模块A的输出可以直接传入模块B后面的层。在这个设计里，模块A直接跟模块B后面的所有层连接在了一起。这也是它被称为“稠密连接”的原因。</p>
+<p>DenseNet的主要构建模块是稠密块（dense block）和过渡层（transition layer）。前者定义了输入和输出是如何连结的，后者则用来控制通道数，使之不过大。</p>
+<h2 id="MobileNets：同样的卷积层，更少的参数"><a href="#MobileNets：同样的卷积层，更少的参数" class="headerlink" title="MobileNets：同样的卷积层，更少的参数"></a>MobileNets：同样的卷积层，更少的参数</h2><p>MobileNet，正如其名，这是一个非常简单快速并且准确率也不错的CNN网络结构，它大大减少了网络层的参数数量，使得网络的前向传播和后向传播的运算量大幅减少，最终成为了一个效率极高的CNN网络。</p>
+<h2 id="ShuffleNets：Group-convolution-Channel-Shuffle"><a href="#ShuffleNets：Group-convolution-Channel-Shuffle" class="headerlink" title="ShuffleNets：Group convolution+Channel Shuffle"></a>ShuffleNets：Group convolution+Channel Shuffle</h2><p>ShuffleNet是Face++提出的一种轻量化网络结构，主要思路是使用Group convolution和Channel shuffle改进ResNet，可以看作是ResNet的压缩版本。</p>
 <h1 id="循环神经网络"><a href="#循环神经网络" class="headerlink" title="循环神经网络"></a>循环神经网络</h1><h1 id="生成对抗网络"><a href="#生成对抗网络" class="headerlink" title="生成对抗网络"></a>生成对抗网络</h1><h1 id="训练神经网络"><a href="#训练神经网络" class="headerlink" title="训练神经网络"></a>训练神经网络</h1><p>通常使用方向传播算法训练神经网络<sup>[3]</sup>，但一些常见情况都会导致反向传播算法出错。</p>
 <ul>
 <li>梯度消失</li>
@@ -564,6 +617,8 @@
 <li><a href="https://google-developers.appspot.com/machine-learning/crash-course/backprop-scroll/?hl=zh-CN" target="_blank" rel="noopener">反向传播算法动态演示</a>, by google.</li>
 <li><a href="http://zh.d2l.ai/" target="_blank" rel="noopener">动手学深度学习</a>,by d2l-zh.</li>
 <li><a href="https://blog.csdn.net/Genius_zz/article/details/52804585" target="_blank" rel="noopener">神经网络之LeNet结构分析及参数详解</a>,by Genius_zz.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/47391705" target="_blank" rel="noopener">经典CNN结构简析：AlexNet、VGG、NIN、GoogLeNet、ResNet etc. </a>,by Uno Whoiam.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/41423739" target="_blank" rel="noopener">一文读懂VGG网络</a>,by Amusi.</li>
 </ol>
 
       
@@ -833,7 +888,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#神经元"><span class="nav-number">1.</span> <span class="nav-text">神经元</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#激活函数"><span class="nav-number">1.1.</span> <span class="nav-text">激活函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#神经元网络"><span class="nav-number">2.</span> <span class="nav-text">神经元网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#多层神经元网络"><span class="nav-number">2.1.</span> <span class="nav-text">多层神经元网络</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#卷积神经网络"><span class="nav-number">3.</span> <span class="nav-text">卷积神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#卷积神经⽹络（LeNet）"><span class="nav-number">3.1.</span> <span class="nav-text">卷积神经⽹络（LeNet）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LeNet结构"><span class="nav-number">3.1.1.</span> <span class="nav-text">LeNet结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深度卷积神经⽹络（AlexNet）"><span class="nav-number">3.2.</span> <span class="nav-text">深度卷积神经⽹络（AlexNet）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AlexNet与LeNet区别"><span class="nav-number">3.2.1.</span> <span class="nav-text">AlexNet与LeNet区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AlexNet结构"><span class="nav-number">3.2.2.</span> <span class="nav-text">AlexNet结构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#循环神经网络"><span class="nav-number">4.</span> <span class="nav-text">循环神经网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#生成对抗网络"><span class="nav-number">5.</span> <span class="nav-text">生成对抗网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练神经网络"><span class="nav-number">6.</span> <span class="nav-text">训练神经网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#神经元"><span class="nav-number">1.</span> <span class="nav-text">神经元</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#激活函数"><span class="nav-number">1.1.</span> <span class="nav-text">激活函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#神经元网络"><span class="nav-number">2.</span> <span class="nav-text">神经元网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#多层神经元网络"><span class="nav-number">2.1.</span> <span class="nav-text">多层神经元网络</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#卷积神经网络"><span class="nav-number">3.</span> <span class="nav-text">卷积神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#卷积神经⽹络（LeNet）"><span class="nav-number">3.1.</span> <span class="nav-text">卷积神经⽹络（LeNet）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LeNet结构"><span class="nav-number">3.1.1.</span> <span class="nav-text">LeNet结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深度卷积神经⽹络（AlexNet）"><span class="nav-number">3.2.</span> <span class="nav-text">深度卷积神经⽹络（AlexNet）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AlexNet与LeNet区别"><span class="nav-number">3.2.1.</span> <span class="nav-text">AlexNet与LeNet区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AlexNet结构"><span class="nav-number">3.2.2.</span> <span class="nav-text">AlexNet结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使⽤重复元素的⽹络（VGG网络）"><span class="nav-number">3.3.</span> <span class="nav-text">使⽤重复元素的⽹络（VGG网络）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#⽹络中的⽹络（NiN）"><span class="nav-number">3.4.</span> <span class="nav-text">⽹络中的⽹络（NiN）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#含并⾏连结的⽹络（GoogLeNet）"><span class="nav-number">3.5.</span> <span class="nav-text">含并⾏连结的⽹络（GoogLeNet）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#残差网络（ResNet）"><span class="nav-number">3.6.</span> <span class="nav-text">残差网络（ResNet）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#稠密连接网络（DenseNet）"><span class="nav-number">3.7.</span> <span class="nav-text">稠密连接网络（DenseNet）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MobileNets：同样的卷积层，更少的参数"><span class="nav-number">3.8.</span> <span class="nav-text">MobileNets：同样的卷积层，更少的参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ShuffleNets：Group-convolution-Channel-Shuffle"><span class="nav-number">3.9.</span> <span class="nav-text">ShuffleNets：Group convolution+Channel Shuffle</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#循环神经网络"><span class="nav-number">4.</span> <span class="nav-text">循环神经网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#生成对抗网络"><span class="nav-number">5.</span> <span class="nav-text">生成对抗网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#训练神经网络"><span class="nav-number">6.</span> <span class="nav-text">训练神经网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

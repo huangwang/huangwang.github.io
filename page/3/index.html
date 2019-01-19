@@ -1986,7 +1986,7 @@ v_{k+1}(s) &\overset{.}{=} \max_{a} \mathbb E_{\pi}[R_{t+1}+\gamma v _{k}(S_{t+1
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-17 21:50:41" itemprop="dateModified" datetime="2019-01-17T21:50:41+08:00">2019-01-17</time>
+                <time title="修改时间：2019-01-19 10:22:32" itemprop="dateModified" datetime="2019-01-19T10:22:32+08:00">2019-01-19</time>
               
             
           </span>
@@ -2089,7 +2089,41 @@ v_{k+1}(s) &\overset{.}{=} \max_{a} \mathbb E_{\pi}[R_{t+1}+\gamma v _{k}(S_{t+1
 <li>隐藏层（Hidden layer），简称“隐层”，是输入层和输出层之间众多神经元和链接组成的各个层面。隐层可以有一层或多层。隐层的节点（神经元）数目不定，但数目越多神经网络的非线性越显著，从而神经网络的强健性（robustness）（控制系统在一定结构、大小等的参数摄动下，维持某些性能的特性）更显著。习惯上会选输入节点1.2至1.5倍的节点。</li>
 </ul>
 <p>这种网络一般称为感知器（对单隐藏层）或多层感知器（对多隐藏层），神经网络的类型已经演变出很多种，这种分层的结构也并不是对所有的神经网络都适用。</p>
-<h1 id="训练神经网络"><a href="#训练神经网络" class="headerlink" title="训练神经网络"></a>训练神经网络</h1><p>通常使用方向传播算法训练神经网络<sup>[3]</sup>，但一些常见情况都会导致反向传播算法出错。</p>
+<h1 id="卷积神经网络"><a href="#卷积神经网络" class="headerlink" title="卷积神经网络"></a>卷积神经网络</h1><p>卷积神经⽹络（convolutional neural network）是含有卷积层（convolutional layer）的神经⽹<br>络。下面将按时间顺序介绍各类经典的卷积神经网络。</p>
+<h2 id="卷积神经⽹络（LeNet）"><a href="#卷积神经⽹络（LeNet）" class="headerlink" title="卷积神经⽹络（LeNet）"></a>卷积神经⽹络（LeNet）</h2><p>LeNet是⼀个早期⽤来识别⼿写数字图像的卷积神经⽹络，于80 年代末期提出。这个名字来源于LeNet论⽂的第⼀作者Yann LeCun。LeNet展⽰了通过梯度下降训练卷积神经⽹络可以达到⼿写数字识别在当时最先进的结果。这个奠基性的⼯作第⼀次将卷积神经⽹络推上舞台，为世⼈所知。</p>
+<h3 id="LeNet结构"><a href="#LeNet结构" class="headerlink" title="LeNet结构"></a>LeNet结构</h3><p>LeNet一共有7层（不包括输入层），可分为卷积层块和全连接层块两个部分，如图6所示。</p>
+<p></p><p align="center">
+    <img src="images/LeNet.png" width="90%" alt="LeNet结构">
+</p><p></p>
+<center>图6 LeNet结构</center>
+
+<ul>
+<li>输入层：输入图像的大小为32<em>32，这要比mnist数据库中的最大字母（28</em>28）还大。作用： 图像较大，这样做的目的是希望潜在的明显特征，比如笔画断续，角点等能够出现在最高层特征监测子感受野的中心。</li>
+<li>卷积层：C1，C3为卷积层，S2，S4为降采样层（即池化层）</li>
+<li>全连接层：F5,F6为全连接层，还有一个输出层。</li>
+</ul>
+<h2 id="深度卷积神经⽹络（AlexNet）"><a href="#深度卷积神经⽹络（AlexNet）" class="headerlink" title="深度卷积神经⽹络（AlexNet）"></a>深度卷积神经⽹络（AlexNet）</h2><p>2012年，AlexNet横空出世。这个模型的名字来源于论⽂第⼀作者的姓名Alex Krizhevsky。AlexNet使⽤了8层卷积神经⽹络，并以很⼤的优势赢得了ImageNet 2012图像识别挑战赛。它⾸次证明了学习到的特征可以超越⼿⼯设计的特征，从而⼀举打破计算机视觉研究的前状。</p>
+<h3 id="AlexNet与LeNet区别"><a href="#AlexNet与LeNet区别" class="headerlink" title="AlexNet与LeNet区别"></a>AlexNet与LeNet区别</h3><p>AlexNet与LeNet的设计理念⾮常相似，但也有显著的区别。</p>
+<p>第⼀，与相对较小的LeNet相⽐，AlexNet包含8层变换，其中有5层卷积和2层全连接隐藏层，以及1个全连接输出层。</p>
+<p>第⼆，AlexNet将sigmoid激活函数改成了更加简单的ReLU激活函数。</p>
+<p>第三，AlexNet通过丢弃法来控制全连接层的模型复杂度。</p>
+<p>第四，AlexNet引⼊了⼤量的图像增⼴，如翻转、裁剪和颜⾊变化，从而进⼀步扩⼤数据集来缓解过拟合。</p>
+<h3 id="AlexNet结构"><a href="#AlexNet结构" class="headerlink" title="AlexNet结构"></a>AlexNet结构</h3><p>AlexNet的一些参数和结构图： </p>
+<ul>
+<li>卷积层：5层 </li>
+<li>全连接层：3层 </li>
+<li>深度：8层 </li>
+<li>参数个数：60M </li>
+<li>神经元个数：650k </li>
+<li>分类数目：1000类</li>
+</ul>
+<p></p><p align="center">
+    <img src="images/AlexNet.jpg" width="90%" alt="AlexNet结构">
+</p><p></p>
+<center>图7 AlexNet结构</center>
+
+<p>由于当时的显卡容量问题，AlexNet 的60M个参数无法全部放在一张显卡上操作，所以采用了两张显卡分开操作的形式，其中在C3，R1，R2，R3层上出现交互，所谓的交互就是通道的合并，是一种串接操作。</p>
+<h1 id="循环神经网络"><a href="#循环神经网络" class="headerlink" title="循环神经网络"></a>循环神经网络</h1><h1 id="生成对抗网络"><a href="#生成对抗网络" class="headerlink" title="生成对抗网络"></a>生成对抗网络</h1><h1 id="训练神经网络"><a href="#训练神经网络" class="headerlink" title="训练神经网络"></a>训练神经网络</h1><p>通常使用方向传播算法训练神经网络<sup>[3]</sup>，但一些常见情况都会导致反向传播算法出错。</p>
 <ul>
 <li>梯度消失</li>
 </ul>
@@ -2115,6 +2149,8 @@ v_{k+1}(s) &\overset{.}{=} \max_{a} \mathbb E_{\pi}[R_{t+1}+\gamma v _{k}(S_{t+1
 <li><a href="https://developers.google.com/machine-learning/crash-course/introduction-to-neural-networks/anatomy?hl=zh-cn" target="_blank" rel="noopener">神经网络简介</a>,by google.</li>
 <li><a href="https://www.leiphone.com/news/201705/TMsNCqjpOIfN3Bjr.html" target="_blank" rel="noopener">一文详解神经网络 BP 算法原理及 Python 实现</a>,by AI研习社.</li>
 <li><a href="https://google-developers.appspot.com/machine-learning/crash-course/backprop-scroll/?hl=zh-CN" target="_blank" rel="noopener">反向传播算法动态演示</a>, by google.</li>
+<li><a href="http://zh.d2l.ai/" target="_blank" rel="noopener">动手学深度学习</a>,by d2l-zh.</li>
+<li><a href="https://blog.csdn.net/Genius_zz/article/details/52804585" target="_blank" rel="noopener">神经网络之LeNet结构分析及参数详解</a>,by Genius_zz.</li>
 </ol>
 
           

@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="FlightGear是一个始于1997年多平台飞行模拟器、开源软件项目[1]。该项目适用的操作系统主要包括Linux、Microsoft Windows和Mac OS X，采用C++编写。 FlightGear体系结构FlightGear正在支持高级体系结构(High Level Architecture, HLA)[2][3]。 HLAHLA简介高级体系结构（HLA）是分布式仿真的标准，用于通过">
+<meta name="keywords" content="笔记本,3D,计算机仿真">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FlightGear技术分析">
+<meta property="og:url" content="https://huangwang.github.io/2019/01/24/FlightGear技术分析/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="FlightGear是一个始于1997年多平台飞行模拟器、开源软件项目[1]。该项目适用的操作系统主要包括Linux、Microsoft Windows和Mac OS X，采用C++编写。 FlightGear体系结构FlightGear正在支持高级体系结构(High Level Architecture, HLA)[2][3]。 HLAHLA简介高级体系结构（HLA）是分布式仿真的标准，用于通过">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://huangwang.github.io/2019/01/24/FlightGear技术分析/images/HLA_Federation.png">
+<meta property="og:updated_time" content="2019-01-24T15:27:33.052Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="FlightGear技术分析">
+<meta name="twitter:description" content="FlightGear是一个始于1997年多平台飞行模拟器、开源软件项目[1]。该项目适用的操作系统主要包括Linux、Microsoft Windows和Mac OS X，采用C++编写。 FlightGear体系结构FlightGear正在支持高级体系结构(High Level Architecture, HLA)[2][3]。 HLAHLA简介高级体系结构（HLA）是分布式仿真的标准，用于通过">
+<meta name="twitter:image" content="https://huangwang.github.io/2019/01/24/FlightGear技术分析/images/HLA_Federation.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Jack Huang's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://huangwang.github.io/2019/01/24/FlightGear技术分析/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>FlightGear技术分析 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jack Huang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/24/FlightGear技术分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">FlightGear技术分析
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-24 17:32:59 / 修改时间：23:27:33" itemprop="dateCreated datePublished" datetime="2019-01-24T17:32:59+08:00">2019-01-24</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/24/FlightGear技术分析/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2019/01/24/FlightGear技术分析/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>FlightGear是一个始于1997年多平台飞行模拟器、开源软件项目<sup>[1]</sup>。该项目适用的操作系统主要包括Linux、Microsoft Windows和Mac OS X，采用C++编写。</p>
+<h1 id="FlightGear体系结构"><a href="#FlightGear体系结构" class="headerlink" title="FlightGear体系结构"></a>FlightGear体系结构</h1><p>FlightGear正在支持高级体系结构(High Level Architecture, HLA)<sup>[2][3]</sup>。</p>
+<h2 id="HLA"><a href="#HLA" class="headerlink" title="HLA"></a>HLA</h2><h3 id="HLA简介"><a href="#HLA简介" class="headerlink" title="HLA简介"></a>HLA简介</h3><p><strong>高级体系结构（HLA）是分布式仿真的标准，用于通过组合（联合）多个仿真来构建用于更大目的的仿真</strong>。该标准是在美国国防部的领导下于90年代开发的，后来转变为开放的国际IEEE标准。它是北约通过STANAG 4603 [2]推荐的标准。今天，HLA被用于许多领域，包括国防和安全以及民用应用。该体系结构指定以下组件：</p>
+<ul>
+<li>运行时基础结构（RTI），通过不同的编程语言提供标准化的服务集。这些服务包括信息交换，同步和联合管理</li>
+<li>联邦成员（Federates）是使用RTI服务的单独仿真系统，由多个联邦成员对象构成。</li>
+<li>联邦成员对象模型（FOM），指定用于交换数据的对象类和交互类。 FOM可以描述任何域的信息。</li>
+</ul>
+<p></p><p align="center">
+    <img src="images/HLA_Federation.png" width="90%" alt="HLA构成">
+</p><p></p>
+<center>图1  HLA构成</center>
+
+<p>HLA标准由三部分组成：</p>
+<ul>
+<li>IEEE Std 1516-2010框架和规则，它规定了组件或整个联合应遵守的十个体系结构规则。</li>
+<li>IEEE Std 1516.1-2010联邦接口规范，规定了RTI应提供的服务。这些服务以C ++和Java API以及Web服务的形式提供。</li>
+<li>IEEE Std 1516.2-2010对象模型模板规范，它规定了HLA对象模型（如FOM）应使用的格式。</li>
+</ul>
+<h3 id="HLA优势"><a href="#HLA优势" class="headerlink" title="HLA优势"></a>HLA优势</h3><p>与单机仿真相比，这有三大优势<sup>[4]</sup>（例如FlightGear V3.6）：</p>
+<ul>
+<li>它提供了一个强大的环境，使模拟器具有多线程，利用具有多个内核的计算机，或者在不同的计算机（甚至包括不同的平台和操作系统）上运行模拟的不同部分。</li>
+<li>它允许我们分离模拟器的部分，如AI（通过解耦AI交通系统）、FDM、Nasal脚本和渲染器，以及较少时间关键的子系统，如天气，这样我们就可以获得一致（也许更高）的帧速率（即减少Nasal垃圾收集对帧速率的影响）。</li>
+<li>它提供了一个非常好的框架，允许任何人使用除C / C ++之外的编程语言（想想Ada，Java，Python等）创建与FlightGear交互的组件，这些编程语言可能在他们自己的线程中运行，并且驻留在单独的二进制文件中，这也更容易调试/排除故障（想想回归测试，即在专用的gdb / valgrind会话中运行一个自包含的子系统），而不必知道如何修改/补丁和重建FlightGear。</li>
+</ul>
+<h1 id="FlightGear组件构成"><a href="#FlightGear组件构成" class="headerlink" title="FlightGear组件构成"></a>FlightGear组件构成</h1><p>FlightGear由很多开源组件或程序构成<sup>[6]</sup>，具体包括：</p>
+<h2 id="RTI"><a href="#RTI" class="headerlink" title="RTI"></a>RTI</h2><p>RTI是HLA架构的关键组件，相当于中间件。</p>
+<h2 id="OpenRTI"><a href="#OpenRTI" class="headerlink" title="OpenRTI"></a>OpenRTI</h2><p>OpenRTI是一个包含了rti 1.3、rti 1516、rti 1516e标准接口实现的rti库。OpenRTI有如下关键特性：</p>
+<ul>
+<li>易用性高，非常便于使用；</li>
+<li>直接提供C++调用接口，也可以提供Java接口，但目前还没有编码实现；</li>
+<li>可扩展性强；</li>
+<li>一直在维护中的RTI开源项目；</li>
+<li>树状的服务器结构；</li>
+<li>最短路径在内存中不拷贝数据；</li>
+<li>不依赖其它项目，仅仅需要C++编译器，特别的不需要boost；</li>
+<li>支持线程间通信、rti通信和管道间通信，未来可能支持http通信；</li>
+<li>到处都可以运行，能够在Linux、Win32、MacOS和Solaris上运行。</li>
+</ul>
+<h2 id="FDM"><a href="#FDM" class="headerlink" title="FDM"></a>FDM</h2><p>飞行动力学模型（Flight Dynamics Model, FDM）是模拟器内控制飞机物理飞行的数学模型。飞机的3D模型实质是一张图片，其与飞行动力学无关，本质上由FDM控制飞机如何飞行。在FlightGear中主要使用JSBSim和YASim两个飞行动力学模型。</p>
+<h3 id="JSBSim"><a href="#JSBSim" class="headerlink" title="JSBSim"></a>JSBSim</h3><p>JSBSim是一个用C++实现的开源跨平台飞行器动力学模型软件。Flightgear也采用了JSBSim作为其中的飞行器动力模型之一。同时JSBSim也可以作为一个单独的动力学模型软件进行运行。</p>
+<h3 id="YASim"><a href="#YASim" class="headerlink" title="YASim"></a>YASim</h3><p>YASim使用飞机的几何形状生成基本飞行特征。虽然这表明了一种“现实的”或开箱即用的方法，但在获得接近现实主义的结果之前，这只是一种粗略的近似，需要进行大量的调整。如果您的飞机有稳定的飞行数据，例如风洞数据，或者您希望最终生成超逼真的模拟，那么JSBSim可能是更好的方法。 如果你缺乏这样的数据但是知道飞机的几何形状并且能够获得与真实飞行员相同的飞行特性和限制，那么YASim可以提供足以满足大多数模拟需求的解决方案。</p>
+<h2 id="Atlas"><a href="#Atlas" class="headerlink" title="Atlas"></a>Atlas</h2><p>Atlas旨在为FlightGear（一种开源飞行模拟器）的用户制作和展示世界高质量的图表。 这是通过两个主要部分实现的：地图创建者（简称为Map）和Atlas查看器。</p>
+<ul>
+<li><p>地图创建者从FlightGear获取风景数据并将其转换为漂亮的地图图片，可以使用您可能已安装的任何位图图像程序或使用Atlas查看应用程序查看。</p>
+</li>
+<li><p>Atlas查看应用程序可用于浏览您的地图，但也可以直接连接到FlightGear，并在所谓的移动地图显示上显示您的飞机当前位置。</p>
+</li>
+</ul>
+<h2 id="FlightGear-Multiplayer-Server"><a href="#FlightGear-Multiplayer-Server" class="headerlink" title="FlightGear Multiplayer Server"></a>FlightGear Multiplayer Server</h2><p>FGMS或FlightGear多人游戏服务器是FlightGear的独立网络服务器，并根据GPL许可。它允许通过FGFS内的网络与其他飞行员一起飞行。</p>
+<p>可以在服务器配置中配置的服务器列表类型：</p>
+<ul>
+<li>中继服务器 - 网络中的其他服务器。 每个都必须有完整的列表（减去自己）以获得适当的网络功能。</li>
+<li>交叉馈送服务器 - 服务器从本地用户和其他服务器接收的所有内容都将转发到交叉馈送服务器。 用于在同一主机上运行多个连接的fgms实例，例如 用于提供跟踪和未跟踪服务，而不会产生额外的外部流量。</li>
+<li>跟踪器 - 服务器每10秒向跟踪器发送一个每个本地用户的摘要更新。</li>
+<li>HUB  - 通常服务器不会将从服务器接收的数据包发送到其他中继。 HUB服务器将数据从服务器发送到它知道的所有中继。</li>
+</ul>
+<h2 id="OSG"><a href="#OSG" class="headerlink" title="OSG"></a>OSG</h2><p>OSG是OpenSceneGraph的缩写，OpenSceneGraph图形系统是一个基于工业标准OpenGL的软件接口，它让程序员能够更加快速、便捷地创建高性能、跨平台的交互式图形程序。相比于工业标准OpenGL或者其他图形库，OpenSceneGraph的优点明显，除了程序开源和平台无关性以外，其封装并提供了数量众多的提升程序运行时性能的算法、针对包括分页数据库在内的几乎所有的主流数据格式的直接数据接口、 以及针对脚本语言系统Pthyon和Tcl的支持。 </p>
+<p>OpenGL是Open Graphics Library的缩写，其独立于硬件，独立于窗口系统，在运行各种操作系统的各种计算机上都可用，并能在网络环境下以客户/服务器模式工作，是专业图形处理、科学计算等高端应用领域的标准图形库。</p>
+<h2 id="SimGear"><a href="#SimGear" class="headerlink" title="SimGear"></a>SimGear</h2><p>SimGear是一个仿真架构工具集(simulation construction tools)，是FlightGear的仿真引擎，完成了数据结构操作、星历计算、模拟天空、坐标系转换等大部分的工作，它也是一个开源库。</p>
+<h2 id="TerrGear"><a href="#TerrGear" class="headerlink" title="TerrGear"></a>TerrGear</h2><h2 id="PLib"><a href="#PLib" class="headerlink" title="PLib"></a>PLib</h2><p>Plib是Portable Game Libraries的简称，是一个开源库，由Steve J.Baker开发维护，包含3D、音效、GUI、窗口管理等。支持Linux、Windows、MacOSX等系统。Plib的功能模块有：UL、SG、JS、FNT、SSG、ssgAux、PUI、puAux、NET、SL、PSL和PW。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/FlightGear" target="_blank" rel="noopener">FlightGear</a>,by wikipedia.</li>
+<li><a href="http://wiki.flightgear.org/FlightGear_high-level_architecture_support" target="_blank" rel="noopener">FlightGear high-level architecture support</a>,by flightgear</li>
+<li><a href="http://wiki.flightgear.org/Developing_with_HLA" target="_blank" rel="noopener">Developing with HLA</a>,by flightgear.</li>
+<li><a href="http://wiki.flightgear.org/High-Level_Architecture" target="_blank" rel="noopener">High-Level Architecture</a>,by flightgear.</li>
+<li><a href="https://en.wikipedia.org/wiki/High-level_architecture" target="_blank" rel="noopener"><br>High-level architecture</a>,by wikipedia.</li>
+<li><a href="http://wiki.flightgear.org/FlightGear_related_projects" target="_blank" rel="noopener">FlightGear related projects</a>,by wikipedia.</li>
+<li><a href="https://sourceforge.net/p/openrti/wiki/Home/" target="_blank" rel="noopener">OpenRTI</a>,by openrti.</li>
+<li><a href="https://en.wikipedia.org/wiki/JSBSim" target="_blank" rel="noopener">JSBSim</a>,by wikipedia.</li>
+<li><a href="http://wiki.flightgear.org/YASim" target="_blank" rel="noopener">YASim</a>,by flightgear.</li>
+<li><a href="http://wiki.flightgear.org/JSBSim_vs_YASim" target="_blank" rel="noopener">JSBSim vs YASim</a>,by flightgear.</li>
+<li><a href="http://atlas.sourceforge.net/" target="_blank" rel="noopener">Atlas</a>,by atlas.</li>
+<li><a href="http://wiki.flightgear.org/FlightGear_Multiplayer_Server" target="_blank" rel="noopener">FlightGear Multiplayer Server</a>,by flightgear.</li>
+<li><a href="https://blog.csdn.net/qq_24848645/article/details/44177635" target="_blank" rel="noopener">Flightgear操作方式以及几种典型飞机的起飞方法</a>,by Mosquito_蚊子.</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/笔记本/" rel="tag"># 笔记本</a>
+          
+            <a href="/tags/3D/" rel="tag"># 3D</a>
+          
+            <a href="/tags/计算机仿真/" rel="tag"># 计算机仿真</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/23/面向方面编程简介/" rel="next" title="面向方面编程简介">
+                <i class="fa fa-chevron-left"></i> 面向方面编程简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Jack Huang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">83</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#FlightGear体系结构"><span class="nav-number">1.</span> <span class="nav-text">FlightGear体系结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HLA"><span class="nav-number">1.1.</span> <span class="nav-text">HLA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HLA简介"><span class="nav-number">1.1.1.</span> <span class="nav-text">HLA简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HLA优势"><span class="nav-number">1.1.2.</span> <span class="nav-text">HLA优势</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FlightGear组件构成"><span class="nav-number">2.</span> <span class="nav-text">FlightGear组件构成</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RTI"><span class="nav-number">2.1.</span> <span class="nav-text">RTI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OpenRTI"><span class="nav-number">2.2.</span> <span class="nav-text">OpenRTI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FDM"><span class="nav-number">2.3.</span> <span class="nav-text">FDM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JSBSim"><span class="nav-number">2.3.1.</span> <span class="nav-text">JSBSim</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YASim"><span class="nav-number">2.3.2.</span> <span class="nav-text">YASim</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Atlas"><span class="nav-number">2.4.</span> <span class="nav-text">Atlas</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FlightGear-Multiplayer-Server"><span class="nav-number">2.5.</span> <span class="nav-text">FlightGear Multiplayer Server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSG"><span class="nav-number">2.6.</span> <span class="nav-text">OSG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SimGear"><span class="nav-number">2.7.</span> <span class="nav-text">SimGear</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TerrGear"><span class="nav-number">2.8.</span> <span class="nav-text">TerrGear</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PLib"><span class="nav-number">2.9.</span> <span class="nav-text">PLib</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a></div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: decodeURI(window.location.pathname),
+            owner: 'huangwang',
+            repo: 'gitment-comments',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'c5aa25b94035c77665be42dbeff0d229f2d66108',
+            
+                client_id: '60cc27182c03877da9a2'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

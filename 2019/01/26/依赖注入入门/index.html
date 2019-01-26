@@ -102,21 +102,18 @@
 
 
 
-  <meta name="description" content="FlightGear是一个始于1997年多平台飞行模拟器、开源软件项目[1]。该项目适用的操作系统主要包括Linux、Microsoft Windows和Mac OS X，采用C++编写。 FlightGear体系结构当前体系结构FlightGear体系结构基于一个名为“主循环”的无限循环[2]。其流程图如图1所示。在主循环中将依次完成如下工作:  ATC模拟 控制AI对象 在多用户环境中更新其他">
-<meta name="keywords" content="笔记本,3D,计算机仿真">
+  <meta name="description" content="依赖注入定义在软件工程中，依赖注入是种实现控制反转用于解决依赖性设计模式。一个依赖关系指的是可被利用的一种对象（即服务提供端） 。依赖注入是将所依赖的传递给将使用的从属对象（即客户端）。该服务是将会变成客户端的状态的一部分。 传递服务给客户端，而非允许客户端来建立或寻找服务，是本设计模式的基本要求。 依赖注入意义依赖存在的问题如果在 Class A 中，有 Class B 的实例，则称 Class">
+<meta name="keywords" content="笔记本,软件工程">
 <meta property="og:type" content="article">
-<meta property="og:title" content="FlightGear技术分析">
-<meta property="og:url" content="https://huangwang.github.io/2019/01/24/FlightGear技术分析/index.html">
+<meta property="og:title" content="依赖注入入门">
+<meta property="og:url" content="https://huangwang.github.io/2019/01/26/依赖注入入门/index.html">
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
-<meta property="og:description" content="FlightGear是一个始于1997年多平台飞行模拟器、开源软件项目[1]。该项目适用的操作系统主要包括Linux、Microsoft Windows和Mac OS X，采用C++编写。 FlightGear体系结构当前体系结构FlightGear体系结构基于一个名为“主循环”的无限循环[2]。其流程图如图1所示。在主循环中将依次完成如下工作:  ATC模拟 控制AI对象 在多用户环境中更新其他">
+<meta property="og:description" content="依赖注入定义在软件工程中，依赖注入是种实现控制反转用于解决依赖性设计模式。一个依赖关系指的是可被利用的一种对象（即服务提供端） 。依赖注入是将所依赖的传递给将使用的从属对象（即客户端）。该服务是将会变成客户端的状态的一部分。 传递服务给客户端，而非允许客户端来建立或寻找服务，是本设计模式的基本要求。 依赖注入意义依赖存在的问题如果在 Class A 中，有 Class B 的实例，则称 Class">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://huangwang.github.io/2019/01/24/FlightGear技术分析/images/flightgear_mainloop.jpg">
-<meta property="og:image" content="https://huangwang.github.io/2019/01/24/FlightGear技术分析/images/HLA_Federation.png">
-<meta property="og:updated_time" content="2019-01-25T14:59:54.602Z">
+<meta property="og:updated_time" content="2019-01-26T12:44:50.264Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="FlightGear技术分析">
-<meta name="twitter:description" content="FlightGear是一个始于1997年多平台飞行模拟器、开源软件项目[1]。该项目适用的操作系统主要包括Linux、Microsoft Windows和Mac OS X，采用C++编写。 FlightGear体系结构当前体系结构FlightGear体系结构基于一个名为“主循环”的无限循环[2]。其流程图如图1所示。在主循环中将依次完成如下工作:  ATC模拟 控制AI对象 在多用户环境中更新其他">
-<meta name="twitter:image" content="https://huangwang.github.io/2019/01/24/FlightGear技术分析/images/flightgear_mainloop.jpg">
+<meta name="twitter:title" content="依赖注入入门">
+<meta name="twitter:description" content="依赖注入定义在软件工程中，依赖注入是种实现控制反转用于解决依赖性设计模式。一个依赖关系指的是可被利用的一种对象（即服务提供端） 。依赖注入是将所依赖的传递给将使用的从属对象（即客户端）。该服务是将会变成客户端的状态的一部分。 传递服务给客户端，而非允许客户端来建立或寻找服务，是本设计模式的基本要求。 依赖注入意义依赖存在的问题如果在 Class A 中，有 Class B 的实例，则称 Class">
 
 
 
@@ -125,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="https://huangwang.github.io/2019/01/24/FlightGear技术分析/">
+  <link rel="canonical" href="https://huangwang.github.io/2019/01/26/依赖注入入门/">
 
 
 
@@ -135,7 +132,7 @@
   };
 </script>
 
-  <title>FlightGear技术分析 | Jack Huang's Blog</title>
+  <title>依赖注入入门 | Jack Huang's Blog</title>
   
 
 
@@ -320,7 +317,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/24/FlightGear技术分析/">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/26/依赖注入入门/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jack Huang">
@@ -337,7 +334,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">FlightGear技术分析
+          <h2 class="post-title" itemprop="name headline">依赖注入入门
               
             
           </h2>
@@ -362,24 +359,12 @@
                 
               
 
-              <time title="创建时间：2019-01-24 17:32:59" itemprop="dateCreated datePublished" datetime="2019-01-24T17:32:59+08:00">2019-01-24</time>
+              <time title="创建时间：2019-01-26 20:34:08 / 修改时间：20:44:50" itemprop="dateCreated datePublished" datetime="2019-01-26T20:34:08+08:00">2019-01-26</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-25 22:59:54" itemprop="dateModified" datetime="2019-01-25T22:59:54+08:00">2019-01-25</time>
               
             
           </span>
@@ -393,8 +378,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/01/24/FlightGear技术分析/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2019/01/24/FlightGear技术分析/" itemprop="commentsCount"></span>
+                <a href="/2019/01/26/依赖注入入门/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2019/01/26/依赖注入入门/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -429,120 +414,29 @@
       
 
       
-        <p>FlightGear是一个始于1997年多平台飞行模拟器、开源软件项目<sup>[1]</sup>。该项目适用的操作系统主要包括Linux、Microsoft Windows和Mac OS X，采用C++编写。</p>
-<h1 id="FlightGear体系结构"><a href="#FlightGear体系结构" class="headerlink" title="FlightGear体系结构"></a>FlightGear体系结构</h1><h2 id="当前体系结构"><a href="#当前体系结构" class="headerlink" title="当前体系结构"></a>当前体系结构</h2><p>FlightGear体系结构基于一个名为“主循环”的无限循环<sup>[2]</sup>。其流程图如图1所示。在主循环中将依次完成如下工作:</p>
+        <h1 id="依赖注入定义"><a href="#依赖注入定义" class="headerlink" title="依赖注入定义"></a>依赖注入定义</h1><p>在软件工程中，依赖注入是种实现控制反转用于解决依赖性设计模式。一个依赖关系指的是可被利用的一种对象（即服务提供端） 。依赖注入是将所依赖的传递给将使用的从属对象（即客户端）。该服务是将会变成客户端的状态的一部分。 传递服务给客户端，而非允许客户端来建立或寻找服务，是本设计模式的基本要求。</p>
+<h1 id="依赖注入意义"><a href="#依赖注入意义" class="headerlink" title="依赖注入意义"></a>依赖注入意义</h1><h2 id="依赖存在的问题"><a href="#依赖存在的问题" class="headerlink" title="依赖存在的问题"></a>依赖存在的问题</h2><p>如果在 Class A 中，有 Class B 的实例，则称 Class A 对 Class B 有一个依赖。例如下面类 Human 中用到一个 Father 对象，我们就说类 Human 对类 Father 有一个依赖。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class Human &#123;</span><br><span class="line">    ...</span><br><span class="line">    Father father;</span><br><span class="line">    ...</span><br><span class="line">    public Human() &#123;</span><br><span class="line">        father = new Father();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>仔细看这段代码我们会发现存在一些问题：</p>
 <ul>
-<li>ATC模拟</li>
-<li>控制AI对象</li>
-<li>在多用户环境中更新其他飞机</li>
-<li>飞行动力学计算</li>
-<li>风景更新</li>
-<li>音频调度</li>
-<li>渲染</li>
+<li>如果现在要改变 father 生成方式，如需要用new Father(String name)初始化 father，需要修改 Human 代码；</li>
+<li>如果想测试不同 Father 对象对 Human 的影响很困难，因为 father 的初始化被写死在了 Human 的构造函数中；</li>
+<li>如果new Father()过程非常缓慢，单测时我们希望用已经初始化好的 father 对象 Mock 掉这个过程也很困难。</li>
 </ul>
-<p></p><p align="center">
-    <img src="images/flightgear_mainloop.jpg" width="40%" alt="FlightGear主循环流程图">
-</p><p></p>
-<center>图1  FlightGear主循环流程图</center>
-
-<h2 id="高级体系结构"><a href="#高级体系结构" class="headerlink" title="高级体系结构"></a>高级体系结构</h2><p>FlightGear正在支持高级体系结构(High Level Architecture, HLA)<sup>[3][4]</sup>。</p>
-<h3 id="HLA简介"><a href="#HLA简介" class="headerlink" title="HLA简介"></a>HLA简介</h3><p><strong>高级体系结构（HLA）是分布式仿真的标准，用于通过组合（联合）多个仿真来构建用于更大目的的仿真</strong>。该标准是在美国国防部的领导下于90年代开发的，后来转变为开放的国际IEEE标准。它是北约通过STANAG 4603推荐的标准。今天，HLA被用于许多领域，包括国防和安全以及民用应用。该体系结构指定以下组件：</p>
+<h2 id="依赖注入的好处"><a href="#依赖注入的好处" class="headerlink" title="依赖注入的好处"></a>依赖注入的好处</h2><p>上面将依赖在构造函数中直接初始化是一种 Hard init 方式，弊端在于两个类不够独立，不方便测试。我们还有另外一种 Init 方式，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class Human &#123;</span><br><span class="line">    ...</span><br><span class="line">    Father father;</span><br><span class="line">    ...</span><br><span class="line">    public Human(Father father) &#123;</span><br><span class="line">        this.father = father;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面代码中，我们将 father 对象作为构造函数的一个参数传入。在调用 Human 的构造方法之前外部就已经初始化好了 Father 对象。像这种非自己主动初始化依赖，而通过外部来传入依赖的方式，我们就称为依赖注入。</p>
+<p>现在我们发现上面 1 中存在的两个问题都很好解决了，简单的说依赖注入主要有两个好处：</p>
 <ul>
-<li>运行时基础结构（RTI），通过不同的编程语言提供标准化的服务集。这些服务包括信息交换，同步和联合管理</li>
-<li>联邦成员（Federates）是使用RTI服务的单独仿真系统，由多个联邦成员对象构成。</li>
-<li>联邦成员对象模型（FOM），指定用于交换数据的对象类和交互类。 FOM可以描述任何域的信息。</li>
+<li>解耦，将依赖之间解耦。</li>
+<li>因为已经解耦，所以方便做单元测试，尤其是 Mock 测试。</li>
 </ul>
-<p></p><p align="center">
-    <img src="images/HLA_Federation.png" width="90%" alt="HLA构成">
-</p><p></p>
-<center>图2  HLA构成</center>
-
-<p>HLA标准由三部分组成：</p>
-<ul>
-<li>IEEE Std 1516-2010框架和规则，它规定了组件或整个联合应遵守的十个体系结构规则。</li>
-<li>IEEE Std 1516.1-2010联邦接口规范，规定了RTI应提供的服务。这些服务以C ++和Java API以及Web服务的形式提供。</li>
-<li>IEEE Std 1516.2-2010对象模型模板规范，它规定了HLA对象模型（如FOM）应使用的格式。</li>
-</ul>
-<h3 id="HLA优势"><a href="#HLA优势" class="headerlink" title="HLA优势"></a>HLA优势</h3><p>与单机仿真相比，这有三大优势<sup>[5]</sup>（例如FlightGear V3.6）：</p>
-<ul>
-<li>它提供了一个强大的环境，使模拟器具有多线程，利用具有多个内核的计算机，或者在不同的计算机（甚至包括不同的平台和操作系统）上运行模拟的不同部分。</li>
-<li>它允许我们分离模拟器的部分，如AI（通过解耦AI交通系统）、FDM、Nasal脚本和渲染器，以及较少时间关键的子系统，如天气，这样我们就可以获得一致（也许更高）的帧速率（即减少Nasal垃圾收集对帧速率的影响）。</li>
-<li>它提供了一个非常好的框架，允许任何人使用除C / C ++之外的编程语言（想想Ada，Java，Python等）创建与FlightGear交互的组件，这些编程语言可能在他们自己的线程中运行，并且驻留在单独的二进制文件中，这也更容易调试/排除故障（想想回归测试，即在专用的gdb / valgrind会话中运行一个自包含的子系统），而不必知道如何修改/补丁和重建FlightGear。</li>
-</ul>
-<h1 id="FlightGear组件构成"><a href="#FlightGear组件构成" class="headerlink" title="FlightGear组件构成"></a>FlightGear组件构成</h1><p>FlightGear由很多开源组件或程序构成<sup>[6]</sup>，具体包括：</p>
-<h2 id="RTI"><a href="#RTI" class="headerlink" title="RTI"></a>RTI</h2><p>RTI是HLA架构的关键组件，相当于中间件。</p>
-<h3 id="OpenRTI"><a href="#OpenRTI" class="headerlink" title="OpenRTI"></a>OpenRTI</h3><p>OpenRTI是一个包含了rti 1.3、rti 1516、rti 1516e标准接口实现的rti库。OpenRTI有如下关键特性：</p>
-<ul>
-<li>易用性高，非常便于使用；</li>
-<li>直接提供C++调用接口，也可以提供Java接口，但目前还没有编码实现；</li>
-<li>可扩展性强；</li>
-<li>一直在维护中的RTI开源项目；</li>
-<li>树状的服务器结构；</li>
-<li>最短路径在内存中不拷贝数据；</li>
-<li>不依赖其它项目，仅仅需要C++编译器，特别的不需要boost；</li>
-<li>支持线程间通信、rti通信和管道间通信，未来可能支持http通信；</li>
-<li>到处都可以运行，能够在Linux、Win32、MacOS和Solaris上运行。</li>
-</ul>
-<h2 id="FDM"><a href="#FDM" class="headerlink" title="FDM"></a>FDM</h2><p>飞行动力学模型（Flight Dynamics Model, FDM）是模拟器内控制飞机物理飞行的数学模型。飞机的3D模型实质是一张图片，其与飞行动力学无关，本质上由FDM控制飞机如何飞行。在FlightGear中主要使用JSBSim和YASim两个飞行动力学模型。</p>
-<h3 id="JSBSim"><a href="#JSBSim" class="headerlink" title="JSBSim"></a>JSBSim</h3><p>JSBSim是一个用C++实现的开源跨平台飞行器动力学模型软件。Flightgear也采用了JSBSim作为其中的飞行器动力模型之一。同时JSBSim也可以作为一个单独的动力学模型软件进行运行。</p>
-<h3 id="YASim"><a href="#YASim" class="headerlink" title="YASim"></a>YASim</h3><p>YASim使用飞机的几何形状生成基本飞行特征。虽然这表明了一种“现实的”或开箱即用的方法，但在获得接近现实主义的结果之前，这只是一种粗略的近似，需要进行大量的调整。如果您的飞机有稳定的飞行数据，例如风洞数据，或者您希望最终生成超逼真的模拟，那么JSBSim可能是更好的方法。 如果你缺乏这样的数据但是知道飞机的几何形状并且能够获得与真实飞行员相同的飞行特性和限制，那么YASim可以提供足以满足大多数模拟需求的解决方案。</p>
-<h2 id="Atlas"><a href="#Atlas" class="headerlink" title="Atlas"></a>Atlas</h2><p>Atlas旨在为FlightGear（一种开源飞行模拟器）的用户制作和展示世界高质量的图表。 这是通过两个主要部分实现的：地图创建者（简称为Map）和Atlas查看器。</p>
-<ul>
-<li><p>地图创建者从FlightGear获取风景数据并将其转换为漂亮的地图图片，可以使用您可能已安装的任何位图图像程序或使用Atlas查看应用程序查看。</p>
-</li>
-<li><p>Atlas查看应用程序可用于浏览您的地图，但也可以直接连接到FlightGear，并在所谓的移动地图显示上显示您的飞机当前位置。</p>
-</li>
-</ul>
-<h2 id="FlightGear-Multiplayer-Server"><a href="#FlightGear-Multiplayer-Server" class="headerlink" title="FlightGear Multiplayer Server"></a>FlightGear Multiplayer Server</h2><p>FGMS或FlightGear多人游戏服务器是FlightGear的独立网络服务器，并根据GPL许可。它允许通过FGFS内的网络与其他飞行员一起飞行。</p>
-<p>可以在服务器配置中配置的服务器列表类型：</p>
-<ul>
-<li>中继服务器 - 网络中的其他服务器。 每个都必须有完整的列表（减去自己）以获得适当的网络功能。</li>
-<li>交叉馈送服务器 - 服务器从本地用户和其他服务器接收的所有内容都将转发到交叉馈送服务器。 用于在同一主机上运行多个连接的fgms实例，例如 用于提供跟踪和未跟踪服务，而不会产生额外的外部流量。</li>
-<li>跟踪器 - 服务器每10秒向跟踪器发送一个每个本地用户的摘要更新。</li>
-<li>HUB  - 通常服务器不会将从服务器接收的数据包发送到其他中继。 HUB服务器将数据从服务器发送到它知道的所有中继。</li>
-</ul>
-<h2 id="FGCOM"><a href="#FGCOM" class="headerlink" title="FGCOM"></a>FGCOM</h2><p>FGCom是一种语音通信功能。这样您就可以在飞行途中与其他飞行员和空域管制员进行通信。</p>
-<p>主要思想是重现真实的航空通信，换句话说，此功能旨在使您的航班期间尽可能真实地进行无线电通信。</p>
-<p>FGCom有两种方式：</p>
-<p>集成到FlightGear（FGCom内置）：这当然是更好的解决方案，因为更容易使用<br>外部软件（FGCom standalone）：只有在计划在特殊情况下使用FGCom时才应使用此软件</p>
-<h2 id="MPmap"><a href="#MPmap" class="headerlink" title="MPmap"></a>MPmap</h2><p>MPMap是一个实用程序，可以在世界地图上显示在FlightGear世界中飞行的飞机。 除此之外，它还提供对导航数据的访问，例如ILS频率，跑道号和修正。由于它使用谷歌地图，人们可以选择地图或卫星视图。</p>
-<h2 id="SimGear"><a href="#SimGear" class="headerlink" title="SimGear"></a>SimGear</h2><p>SimGear是FlightGear使用的一组开源软件库。该项目仍在开发中，但其目标是成为“仿真内核”，并由其他非FlightGear项目使用。该项目于2000年启动。SimGear与FlightGear和TerraGear一样，需要PLIB进行构建。</p>
-<p>SimGear是一个仿真架构工具集(simulation construction tools)，是FlightGear的仿真引擎，完成了数据结构操作、星历计算、模拟天空、坐标系转换等大部分的工作，它也是一个开源库。</p>
-<h2 id="PLib"><a href="#PLib" class="headerlink" title="PLib"></a>PLib</h2><p>PLIB（便携式游戏库）是由Steve J. Baker编写的一套用于编写游戏的软件库。 FlightGear在其大部分开发中使用了PLIB。 它也被FlightGear相关程序Atlas使用。 PLIB是开源的，并且是在GNU Library General Public License下发布的。</p>
-<p>FlightGear 1.0（2007年发布）是在向OpenSceneGraph（OSG）过渡之前使用PLIB进行3D场景图的最后一次公开发布。 FlightGear仍然使用PLIB执行各种任务; 例如，读取操纵杆输入并显示图形用户界面（GUI）。 在后一种用法中，PLIB的PUI组件最终将由Canvas和Phi在FlightGear中替换，这将极大地改善当前GUI的功能，超出PUI提供的功能。</p>
-<p>构建FlightGear时需要PLIB。</p>
-<h2 id="OSG"><a href="#OSG" class="headerlink" title="OSG"></a>OSG</h2><p>OSG是OpenSceneGraph的缩写，OpenSceneGraph图形系统是一个基于工业标准OpenGL的软件接口，它让程序员能够更加快速、便捷地创建高性能、跨平台的交互式图形程序。相比于工业标准OpenGL或者其他图形库，OpenSceneGraph的优点明显，除了程序开源和平台无关性以外，其封装并提供了数量众多的提升程序运行时性能的算法、针对包括分页数据库在内的几乎所有的主流数据格式的直接数据接口、 以及针对脚本语言系统Pthyon和Tcl的支持。 </p>
-<p>OpenGL是Open Graphics Library的缩写，其独立于硬件，独立于窗口系统，在运行各种操作系统的各种计算机上都可用，并能在网络环境下以客户/服务器模式工作，是专业图形处理、科学计算等高端应用领域的标准图形库。</p>
-<h2 id="场景相关工具"><a href="#场景相关工具" class="headerlink" title="场景相关工具"></a>场景相关工具</h2><h3 id="TerraSync"><a href="#TerraSync" class="headerlink" title="TerraSync"></a>TerraSync</h3><p>要查看飞机下方的地形，您必须安装相应的风景。这可以通过在安装风景的文章中描述的在飞行之前下载某些景点来实现。</p>
-<p>或者，如果您有稳定且相当快速的互联网连接，则可以使用TerraSync。它是一个实用程序，可在模拟器运行时自动下载所需FlightGear场景的最新版本。 TerraSync在后台运行（可选择作为单独的进程），监视您的位置，并从“主时间”服务器“及时”下载（或更新）最新的场景。一段时间以来，TerraSync已经集成到核心FlightGear流程中，因此不需要为典型用户处理TerraSync。</p>
-<p>TerraSync的主存储库，即TerraSync从中下载文件的在线资源，每天与FlightGear Scenery数据库同步一次。因此，当使用TerraSync时，您将永远拥有</p>
-<ul>
-<li>最新的.stg文件，告诉FlightGear放置对象的位置</li>
-<li>最新的对象静态模型。 （静态模型定义仅存在于一个地方的唯一对象，例如着名的建筑物或地标。）</li>
-<li>最新的对象共享模型。 （通用模型在不同的地方使用不止一次，每个都可以代表许多不同的对象，如通用房屋或船舶）</li>
-</ul>
-<h3 id="TerrGear"><a href="#TerrGear" class="headerlink" title="TerrGear"></a>TerrGear</h3><p>TerraGear是开源工具和渲染库的集合，可以在地球的3D表示（即3D模型或3D地图）中转换公开可用的GIS数据，以用于实时渲染项目。 TerraGear可以导入3D数据集，例如DEM地形网格，2D多边形数据集（如海岸线，城市轮廓，湖泊轮廓）和2D栅格数据集，例如1 km NAOO土地利用/土地覆盖数据。它还具有基于可用的FAA数据生成逼真的机场，跑道和照明的工具。</p>
-<p>TerraGear是用于为FlightGear项目生成场景的主要工具。</p>
-<p>如果没有terragear，可以更改Terrain纹理，但不能更改地形。如果要更改城市的纹理，请更改材质文件。如果你想改变海岸线，你需要terragear。检查目录FGDATA/Material中的材料文件，你需要terragear。</p>
+<h1 id="依赖注入实现"><a href="#依赖注入实现" class="headerlink" title="依赖注入实现"></a>依赖注入实现</h1><h2 id="Java-中的依赖注入"><a href="#Java-中的依赖注入" class="headerlink" title="Java 中的依赖注入"></a>Java 中的依赖注入</h2><p>依赖注入的实现有多种途径，而在 Java 中，使用注解是最常用的。通过在字段的声明前添加 @Inject 注解进行标记，来实现依赖对象的自动注入。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class Human &#123;</span><br><span class="line">    ...</span><br><span class="line">    @Inject Father father;</span><br><span class="line">    ...</span><br><span class="line">    public Human() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面这段代码看起来很神奇：只是增加了一个注解，Father 对象就能自动注入了？这个注入过程是怎么完成的？</p>
+<p>实质上，如果你只是写了一个 @Inject 注解，Father 并不会被自动注入。你还需要使用一个依赖注入框架，并进行简单的配置。现在 Java 语言中较流行的依赖注入框架有 Google Guice、Spring 等，而在 Android 上比较流行的有 RoboGuice、Dagger 等。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/FlightGear" target="_blank" rel="noopener">FlightGear</a>,by wikipedia.</li>
-<li><a href="http://wiki.flightgear.org/images/1/1e/New_FG_architecture.pdf" target="_blank" rel="noopener">A NEW ARCHITECTURE FOR FLIGHTGEAR FLIGHT SIMULATOR</a>,by flightgear.</li>
-<li><a href="http://wiki.flightgear.org/FlightGear_high-level_architecture_support" target="_blank" rel="noopener">FlightGear high-level architecture support</a>,by flightgear</li>
-<li><a href="http://wiki.flightgear.org/Developing_with_HLA" target="_blank" rel="noopener">Developing with HLA</a>,by flightgear.</li>
-<li><a href="http://wiki.flightgear.org/High-Level_Architecture" target="_blank" rel="noopener">High-Level Architecture</a>,by flightgear.</li>
-<li><a href="https://en.wikipedia.org/wiki/High-level_architecture" target="_blank" rel="noopener"><br>High-level architecture</a>,by wikipedia.</li>
-<li><a href="http://wiki.flightgear.org/FlightGear_related_projects" target="_blank" rel="noopener">FlightGear related projects</a>,by wikipedia.</li>
-<li><a href="https://sourceforge.net/p/openrti/wiki/Home/" target="_blank" rel="noopener">OpenRTI</a>,by openrti.</li>
-<li><a href="https://en.wikipedia.org/wiki/JSBSim" target="_blank" rel="noopener">JSBSim</a>,by wikipedia.</li>
-<li><a href="http://wiki.flightgear.org/YASim" target="_blank" rel="noopener">YASim</a>,by flightgear.</li>
-<li><a href="http://wiki.flightgear.org/JSBSim_vs_YASim" target="_blank" rel="noopener">JSBSim vs YASim</a>,by flightgear.</li>
-<li><a href="http://atlas.sourceforge.net/" target="_blank" rel="noopener">Atlas</a>,by atlas.</li>
-<li><a href="http://wiki.flightgear.org/FGCom_3.0" target="_blank" rel="noopener">FGCom 3.0</a>,by wikipedia.</li>
-<li><a href="http://wiki.flightgear.org/FlightGear_Multiplayer_Server" target="_blank" rel="noopener">FlightGear Multiplayer Server</a>,by flightgear.</li>
-<li><a href="http://wiki.flightgear.org/SimGear" target="_blank" rel="noopener">SimGear</a>,by flightgear.</li>
-<li><a href="http://wiki.flightgear.org/PLIB" target="_blank" rel="noopener">PLIB</a>,by flightgear.</li>
-<li><a href="http://wiki.flightgear.org/OSG" target="_blank" rel="noopener">OSG</a>,by flightgear.</li>
-<li><a href="https://blog.csdn.net/qq_24848645/article/details/44177635" target="_blank" rel="noopener">Flightgear操作方式以及几种典型飞机的起飞方法</a>,by Mosquito_蚊子.</li>
+<li><a href="https://zh.wikipedia.org/wiki/依赖注入" target="_blank" rel="noopener">依赖注入</a>,by wikipedia.</li>
+<li><a href="https://github.com/android-cn/blog/tree/master/java/dependency-injection" target="_blank" rel="noopener">依赖注入</a>,by android-cn.</li>
 </ol>
 
       
@@ -566,9 +460,7 @@
           
             <a href="/tags/笔记本/" rel="tag"># 笔记本</a>
           
-            <a href="/tags/3D/" rel="tag"># 3D</a>
-          
-            <a href="/tags/计算机仿真/" rel="tag"># 计算机仿真</a>
+            <a href="/tags/软件工程/" rel="tag"># 软件工程</a>
           
         </div>
       
@@ -581,8 +473,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/23/面向方面编程简介/" rel="next" title="面向方面编程简介">
-                <i class="fa fa-chevron-left"></i> 面向方面编程简介
+              <a href="/2019/01/26/模仿学习入门/" rel="next" title="模仿学习入门">
+                <i class="fa fa-chevron-left"></i> 模仿学习入门
               </a>
             
           </div>
@@ -590,10 +482,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/01/25/软件架构的一些思考/" rel="prev" title="软件架构的一些思考">
-                软件架构的一些思考 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -812,7 +700,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#FlightGear体系结构"><span class="nav-number">1.</span> <span class="nav-text">FlightGear体系结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#当前体系结构"><span class="nav-number">1.1.</span> <span class="nav-text">当前体系结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高级体系结构"><span class="nav-number">1.2.</span> <span class="nav-text">高级体系结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HLA简介"><span class="nav-number">1.2.1.</span> <span class="nav-text">HLA简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HLA优势"><span class="nav-number">1.2.2.</span> <span class="nav-text">HLA优势</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FlightGear组件构成"><span class="nav-number">2.</span> <span class="nav-text">FlightGear组件构成</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RTI"><span class="nav-number">2.1.</span> <span class="nav-text">RTI</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenRTI"><span class="nav-number">2.1.1.</span> <span class="nav-text">OpenRTI</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FDM"><span class="nav-number">2.2.</span> <span class="nav-text">FDM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JSBSim"><span class="nav-number">2.2.1.</span> <span class="nav-text">JSBSim</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YASim"><span class="nav-number">2.2.2.</span> <span class="nav-text">YASim</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Atlas"><span class="nav-number">2.3.</span> <span class="nav-text">Atlas</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FlightGear-Multiplayer-Server"><span class="nav-number">2.4.</span> <span class="nav-text">FlightGear Multiplayer Server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FGCOM"><span class="nav-number">2.5.</span> <span class="nav-text">FGCOM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPmap"><span class="nav-number">2.6.</span> <span class="nav-text">MPmap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SimGear"><span class="nav-number">2.7.</span> <span class="nav-text">SimGear</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PLib"><span class="nav-number">2.8.</span> <span class="nav-text">PLib</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSG"><span class="nav-number">2.9.</span> <span class="nav-text">OSG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#场景相关工具"><span class="nav-number">2.10.</span> <span class="nav-text">场景相关工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TerraSync"><span class="nav-number">2.10.1.</span> <span class="nav-text">TerraSync</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TerrGear"><span class="nav-number">2.10.2.</span> <span class="nav-text">TerrGear</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖注入定义"><span class="nav-number">1.</span> <span class="nav-text">依赖注入定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖注入意义"><span class="nav-number">2.</span> <span class="nav-text">依赖注入意义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖存在的问题"><span class="nav-number">2.1.</span> <span class="nav-text">依赖存在的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖注入的好处"><span class="nav-number">2.2.</span> <span class="nav-text">依赖注入的好处</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖注入实现"><span class="nav-number">3.</span> <span class="nav-text">依赖注入实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-中的依赖注入"><span class="nav-number">3.1.</span> <span class="nav-text">Java 中的依赖注入</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

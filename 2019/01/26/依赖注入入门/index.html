@@ -110,7 +110,7 @@
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
 <meta property="og:description" content="依赖注入定义在软件工程中，依赖注入是种实现控制反转用于解决依赖性设计模式。一个依赖关系指的是可被利用的一种对象（即服务提供端） 。依赖注入是将所依赖的传递给将使用的从属对象（即客户端）。该服务是将会变成客户端的状态的一部分。 传递服务给客户端，而非允许客户端来建立或寻找服务，是本设计模式的基本要求。 依赖注入意义依赖存在的问题如果在 Class A 中，有 Class B 的实例，则称 Class">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-26T12:44:50.264Z">
+<meta property="og:updated_time" content="2019-01-26T12:50:01.333Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="依赖注入入门">
 <meta name="twitter:description" content="依赖注入定义在软件工程中，依赖注入是种实现控制反转用于解决依赖性设计模式。一个依赖关系指的是可被利用的一种对象（即服务提供端） 。依赖注入是将所依赖的传递给将使用的从属对象（即客户端）。该服务是将会变成客户端的状态的一部分。 传递服务给客户端，而非允许客户端来建立或寻找服务，是本设计模式的基本要求。 依赖注入意义依赖存在的问题如果在 Class A 中，有 Class B 的实例，则称 Class">
@@ -359,7 +359,7 @@
                 
               
 
-              <time title="创建时间：2019-01-26 20:34:08 / 修改时间：20:44:50" itemprop="dateCreated datePublished" datetime="2019-01-26T20:34:08+08:00">2019-01-26</time>
+              <time title="创建时间：2019-01-26 20:34:08 / 修改时间：20:50:01" itemprop="dateCreated datePublished" datetime="2019-01-26T20:34:08+08:00">2019-01-26</time>
             
 
             
@@ -430,10 +430,11 @@
 <li>解耦，将依赖之间解耦。</li>
 <li>因为已经解耦，所以方便做单元测试，尤其是 Mock 测试。</li>
 </ul>
-<h1 id="依赖注入实现"><a href="#依赖注入实现" class="headerlink" title="依赖注入实现"></a>依赖注入实现</h1><h2 id="Java-中的依赖注入"><a href="#Java-中的依赖注入" class="headerlink" title="Java 中的依赖注入"></a>Java 中的依赖注入</h2><p>依赖注入的实现有多种途径，而在 Java 中，使用注解是最常用的。通过在字段的声明前添加 @Inject 注解进行标记，来实现依赖对象的自动注入。</p>
+<h1 id="依赖注入实现"><a href="#依赖注入实现" class="headerlink" title="依赖注入实现"></a>依赖注入实现</h1><h2 id="Java中的依赖注入"><a href="#Java中的依赖注入" class="headerlink" title="Java中的依赖注入"></a>Java中的依赖注入</h2><p>依赖注入的实现有多种途径，而在 Java 中，使用注解是最常用的。通过在字段的声明前添加 @Inject 注解进行标记，来实现依赖对象的自动注入。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class Human &#123;</span><br><span class="line">    ...</span><br><span class="line">    @Inject Father father;</span><br><span class="line">    ...</span><br><span class="line">    public Human() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>上面这段代码看起来很神奇：只是增加了一个注解，Father 对象就能自动注入了？这个注入过程是怎么完成的？</p>
 <p>实质上，如果你只是写了一个 @Inject 注解，Father 并不会被自动注入。你还需要使用一个依赖注入框架，并进行简单的配置。现在 Java 语言中较流行的依赖注入框架有 Google Guice、Spring 等，而在 Android 上比较流行的有 RoboGuice、Dagger 等。</p>
+<h2 id="PHP中的依赖注入"><a href="#PHP中的依赖注入" class="headerlink" title="PHP中的依赖注入"></a>PHP中的依赖注入</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class Application</span><br><span class="line">&#123;</span><br><span class="line">    function __construct(Auth $auth, Session $session)</span><br><span class="line">    &#123;</span><br><span class="line">        $this-&gt;auth    = $auth;</span><br><span class="line">        $this-&gt;session = $session;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // ... 程式 ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$auth        = new Auth(&apos;localhost&apos;, &apos;root&apos;, &apos;&apos;);</span><br><span class="line">$session     = new Session();</span><br><span class="line">$application = new Application($auth, $session);</span><br><span class="line"></span><br><span class="line">$application-&gt;login(&apos;admin&apos;, &apos;admin&apos;);</span><br></pre></td></tr></table></figure>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://zh.wikipedia.org/wiki/依赖注入" target="_blank" rel="noopener">依赖注入</a>,by wikipedia.</li>
 <li><a href="https://github.com/android-cn/blog/tree/master/java/dependency-injection" target="_blank" rel="noopener">依赖注入</a>,by android-cn.</li>
@@ -700,7 +701,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖注入定义"><span class="nav-number">1.</span> <span class="nav-text">依赖注入定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖注入意义"><span class="nav-number">2.</span> <span class="nav-text">依赖注入意义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖存在的问题"><span class="nav-number">2.1.</span> <span class="nav-text">依赖存在的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖注入的好处"><span class="nav-number">2.2.</span> <span class="nav-text">依赖注入的好处</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖注入实现"><span class="nav-number">3.</span> <span class="nav-text">依赖注入实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-中的依赖注入"><span class="nav-number">3.1.</span> <span class="nav-text">Java 中的依赖注入</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖注入定义"><span class="nav-number">1.</span> <span class="nav-text">依赖注入定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖注入意义"><span class="nav-number">2.</span> <span class="nav-text">依赖注入意义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖存在的问题"><span class="nav-number">2.1.</span> <span class="nav-text">依赖存在的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖注入的好处"><span class="nav-number">2.2.</span> <span class="nav-text">依赖注入的好处</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖注入实现"><span class="nav-number">3.</span> <span class="nav-text">依赖注入实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java中的依赖注入"><span class="nav-number">3.1.</span> <span class="nav-text">Java中的依赖注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PHP中的依赖注入"><span class="nav-number">3.2.</span> <span class="nav-text">PHP中的依赖注入</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

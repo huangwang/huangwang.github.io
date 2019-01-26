@@ -360,7 +360,7 @@
                 
               
 
-              <time title="创建时间：2019-01-26 11:31:05 / 修改时间：13:07:55" itemprop="dateCreated datePublished" datetime="2019-01-26T11:31:05+08:00">2019-01-26</time>
+              <time title="创建时间：2019-01-26 11:31:05 / 修改时间：20:02:05" itemprop="dateCreated datePublished" datetime="2019-01-26T11:31:05+08:00">2019-01-26</time>
             
 
             
@@ -400,10 +400,23 @@
       
         
           
-            <h1 id="模仿学习定义"><a href="#模仿学习定义" class="headerlink" title="模仿学习定义"></a>模仿学习定义</h1><p>模仿学习是指从示教者提供的范例中学习，一般提供人类专家的决策数据${ \tau<em>1,\tau_2,\ldots,\tau_m }$ ，每个决策包含状态和动作序列$\tau_i = &lt;s_1^i,a_1^i,s_2^i,a_2^i,\ldots,s</em>{n_ni+1}^i&gt;$，将所有「状态-动作对」抽取出来构造新的集合 $\mathcal{D}=\left{ (s_1,a_1),(s_2,a_2),(s_3,a_3),\ldots \right}$ 。</p>
-<p>之后就可以把状态作为特征（feature），动作作为标记（label）进行分类（对于离散动作）或回归（对于连续动作）的学习从而得到最优策略模型。模型的训练目标是使模型生成的状态-动作轨迹分布和输入的轨迹分布相匹配。</p>
-<h1 id="模仿学习意义"><a href="#模仿学习意义" class="headerlink" title="模仿学习意义"></a>模仿学习意义</h1><h1 id="模仿学习实现"><a href="#模仿学习实现" class="headerlink" title="模仿学习实现"></a>模仿学习实现</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+            <h1 id="模仿学习定义"><a href="#模仿学习定义" class="headerlink" title="模仿学习定义"></a>模仿学习定义</h1><p>模仿学习是指从示教者提供的范例中学习，一般提供人类专家的决策数据</p>
+<script type="math/tex; mode=display">\{ \tau_1,\tau_2,\ldots,\tau_m \}</script><p>，每个决策包含状态和动作序列  </p>
+<script type="math/tex; mode=display">\tau_i = <s_1^i,a_1^i,s_2^i,a_2^i,\ldots,s_{n_ni+1}^i></script><p>，将所有「状态-动作对」抽取出来构造新的集合 </p>
+<script type="math/tex; mode=display">\mathcal{D}=\{ (s_1,a_1),(s_2,a_2),(s_3,a_3),\ldots \}</script><p>。之后就可以把状态作为特征（feature），动作作为标记（label）进行分类（对于离散动作）或回归（对于连续动作）的学习从而得到最优策略模型。模型的训练目标是使模型生成的状态-动作轨迹分布和输入的轨迹分布相匹配。</p>
+<h1 id="模仿学习意义"><a href="#模仿学习意义" class="headerlink" title="模仿学习意义"></a>模仿学习意义</h1><p>在传统的强化学习任务中，通常通过计算累积奖赏来学习最优策略（policy），这种方式简单直接，而且在可以获得较多训练数据的情况下有较好的表现。然而在多步决策（sequential decision）中，学习器不能频繁地得到奖励，且这种基于累积奖赏及学习方式存在非常巨大的搜索空间。而模仿学习（Imitation Learning）的方法经过多年的发展，已经能够很好地解决多步决策问题，在机器人、 NLP 等领域也有很多的应用。</p>
+<h1 id="模仿学习实现"><a href="#模仿学习实现" class="headerlink" title="模仿学习实现"></a>模仿学习实现</h1><p>当前主要以下几种方法实现模型学习：</p>
+<h2 id="行为克隆（Behavior-Cloning）"><a href="#行为克隆（Behavior-Cloning）" class="headerlink" title="行为克隆（Behavior Cloning）"></a>行为克隆（Behavior Cloning）</h2><p>行为克隆（Behavior Cloning）根据人类提供的状态动作对来习得策略，是作为监督学习的模仿学习。</p>
+<h2 id="逆强化学习（Inverse-Reinforcement-Learning-）"><a href="#逆强化学习（Inverse-Reinforcement-Learning-）" class="headerlink" title="逆强化学习（Inverse Reinforcement Learning ）"></a>逆强化学习（Inverse Reinforcement Learning ）</h2><p>IRL 是 反过来的 RL，RL 是根据 reward 进行参数的调整，然后得到一个 policy。</p>
+<p>但是， IRL 就不同了，因为他没有显示的 reward，只能根据 人类行为，进行 reward的估计（反推 reward 的函数）。在得到 reward 函数估计出来之后，再进行 策略函数的估计。</p>
+<p>逆强化学习是在给定一个专家之后（expert policy），通过不断地寻找 reward function 来满足给定的 statement（即，解释专家的行为，explaining expert behavior）。</p>
+<h2 id="结构化预测（Structured-prediction）"><a href="#结构化预测（Structured-prediction）" class="headerlink" title="结构化预测（Structured prediction）"></a>结构化预测（Structured prediction）</h2><p>在机器学习过程中，对数据的拟合其实就是在找一个拟合函数f，比如对于回归问题（Regression）来说，这个函数输出一个标量（scalar），对于分类问题（Classification）来说，这个函数输出一个类别（一个one-hot的向量），但是有一类的预测，它并不是输出一个标量或者一个类别，而是输出些有结构的输出，比如，一个序列，一个句子，一个图，一颗树。</p>
+<h2 id="生成对抗网络（GAN-for-Imitation-Learning）"><a href="#生成对抗网络（GAN-for-Imitation-Learning）" class="headerlink" title="生成对抗网络（GAN for Imitation Learning）"></a>生成对抗网络（GAN for Imitation Learning）</h2><p>那么如何用 GAN 来做这个事情呢？对应到这件事情上，我们知道，我们想得到的 轨迹 是属于某一个高维的空间中，而 expert 给定的那些轨迹，我们假设是属于一个 distribution，我们想让我们的 model，也去 predict 一个分布出来，然后使得这两者之间尽可能的接近。从而完成 actor 的训练过程。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://zhuanlan.zhihu.com/p/25688750" target="_blank" rel="noopener">模仿学习（Imitation Learning）完全介绍（一）</a>,by 我勒个矗.</li>
+<li><a href="https://yq.aliyun.com/articles/310760" target="_blank" rel="noopener">深度强化学习之：模仿学习（imitation learning）</a>,by wangxiaocvpr.</li>
+<li><a href="https://blog.csdn.net/c2a2o2/article/details/77336551" target="_blank" rel="noopener">机器人学习Robot Learning之模仿学习Imitation Learning的发展</a>,by c2a2o2.</li>
+<li><a href="https://hewangxing.gitee.io/行为克隆/" target="_blank" rel="noopener">行为克隆</a>,by XINGYES.</li>
 </ol>
 
           
@@ -1827,12 +1840,24 @@
                 
               
 
-              <time title="创建时间：2019-01-06 18:50:47 / 修改时间：21:04:59" itemprop="dateCreated datePublished" datetime="2019-01-06T18:50:47+08:00">2019-01-06</time>
+              <time title="创建时间：2019-01-06 18:50:47" itemprop="dateCreated datePublished" datetime="2019-01-06T18:50:47+08:00">2019-01-06</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-26 15:49:33" itemprop="dateModified" datetime="2019-01-26T15:49:33+08:00">2019-01-26</time>
               
             
           </span>
@@ -1875,22 +1900,62 @@
 <p align="center">
     <img src="images/DynamicAxis.jpg" width="60%" alt="动系相对于惯性坐标系的关系">
 </p>
+<center>图1 动系相对于惯性坐标系的关系</center>
 
-<p>将速度$V$和角速度$w$分别在动坐标系上投影，则有</p>
-<script type="math/tex; mode=display">V=V_xi+V_yj+V_zk \tag{2}</script><script type="math/tex; mode=display">w=w_xi+w_yj+w_zk \tag{3}</script><p>式中$i,j,k$为动坐标系$Oxyz$的单位矢量。由于$w$存在，其方向将随时间变化。</p>
-<p>将公式$(2)和(3)$带入公式$(1)$，则速度$V$的微分，即质心的绝对加速度为：</p>
-<script type="math/tex; mode=display">\frac{F}{m}=\frac{dV}{dt}=\frac{dV_x}{dt}i+\frac{dV_y}{dt}j+\frac{dV_z}{dt}k+V_x\frac{di}{dt}+V_y\frac{dj}{dt}+V_z\frac{dk}{dt} \tag{4}</script><p>式中单位矢量导数$di/dt$是矢量端点$i$的速度，此时矢端曲线是绕$w$旋转的圆，因此：</p>
-<script type="math/tex; mode=display">\frac{di}{dt}=w\times i</script><script type="math/tex; mode=display">\frac{dy}{dt}=w\times y</script><script type="math/tex; mode=display">\frac{dz}{dt}=w\times z</script><p>将上述关系代入公式$(4)$，即可知质心的绝对加速度可表示为</p>
-<script type="math/tex; mode=display">\frac{F}{m}=\frac{dV}{dt}=\frac{\delta V}{\delta t}+w \times V  \tag{5}</script><p>其中：</p>
-<script type="math/tex; mode=display">\frac{\delta V}{\delta t}=\frac{dV_x}{dt}i+\frac{dV_y}{dt}j+\frac{dV_z}{dt}k</script><p>式$(5)$中$\frac{\delta V}{\delta t}$为动系角速度$w=0$时的加速度，即相当于观察者站在动坐标系中所看到的质心加速度；$w\times V$为由于存在角速度$w$使$V$相对于动坐标系方向发生变化而产生的加速度；$\frac{dV}{dt}$为质心的绝对加速度，即观察者在地面坐标系上所看到的加速度。</p>
-<p>同样合力矢量$F$用动坐标系上投影表示为：</p>
-<script type="math/tex; mode=display">F=F_xi+F_yj+F_zk</script><p>于是式$(5)在动坐标系$Oxyz$上投影的质心动力学标量方程如下：</p>
-<script type="math/tex; mode=display">m(\frac{dV_x}{dt}+V_zw_y-V_yw_z)=F_x</script><script type="math/tex; mode=display">m(\frac{dV_y}{dt}+V_xw_z-V_zw_x)=F_y</script><script type="math/tex; mode=display">m(\frac{dV_z}{dt}+V_yw_x-V_xw_y)=F_z</script><p>上述方程组适用于任何动坐标系。</p>
-<h1 id="飞行器绕质心的动力学方程"><a href="#飞行器绕质心的动力学方程" class="headerlink" title="飞行器绕质心的动力学方程"></a>飞行器绕质心的动力学方程</h1><p>根据动量矩定理，飞行器绕质心的转动运动可表示为：</p>
-<script type="math/tex; mode=display">M=\frac{dh}{dt} \tag{6}</script><p>式中$h$为飞行器对坐标系原点的动量矩；$M$为作用在飞行器上的外力对原点的合力矩。</p>
+将速度$V$和角速度$w$分别在动坐标系上投影，则有
+
+$$V=V_xi+V_yj+V_zk \tag{2}$$
+$$w=w_xi+w_yj+w_zk \tag{3}$$
+
+式中$i,j,k$为动坐标系$Oxyz$的单位矢量。由于$w$存在，其方向将随时间变化。
+
+将公式$(2)和(3)$带入公式$(1)$，则速度$V$的微分，即质心的绝对加速度为：
+
+$$
+\frac{F}{m}=\frac{dV}{dt}=\frac{dV_x}{dt}i+\frac{dV_y}{dt}j+\frac{dV_z}{dt}k+V_x\frac{di}{dt}+V_y\frac{dj}{dt}+V_z\frac{dk}{dt} \tag{4}
+$$
+
+式中单位矢量导数$di/dt$是矢量端点$i$的速度，此时矢端曲线是绕$w$旋转的圆，因此：
+
+$$\frac{di}{dt}=w\times i$$
+$$\frac{dy}{dt}=w\times y$$
+$$\frac{dz}{dt}=w\times z$$
+
+将上述关系代入公式$(4)$，即可知质心的绝对加速度可表示为
+
+$$\frac{F}{m}=\frac{dV}{dt}=\frac{\delta V}{\delta t}+w \times V  \tag{5}$$
+
+其中：
+
+$$\frac{\delta V}{\delta t}=\frac{dV_x}{dt}i+\frac{dV_y}{dt}j+\frac{dV_z}{dt}k$$
+
+式$(5)$中$\frac{\delta V}{\delta t}$为动系角速度$w=0$时的加速度，即相当于观察者站在动坐标系中所看到的质心加速度；$w\times V$为由于存在角速度$w$使$V$相对于动坐标系方向发生变化而产生的加速度；$\frac{dV}{dt}$为质心的绝对加速度，即观察者在地面坐标系上所看到的加速度。
+
+同样合力矢量$F$用动坐标系上投影表示为：
+
+$$F=F_xi+F_yj+F_zk$$
+
+于是式$(5)在动坐标系$Oxyz$上投影的质心动力学标量方程如下：
+
+$$m(\frac{dV_x}{dt}+V_zw_y-V_yw_z)=F_x$$
+$$m(\frac{dV_y}{dt}+V_xw_z-V_zw_x)=F_y$$
+$$m(\frac{dV_z}{dt}+V_yw_x-V_xw_y)=F_z$$
+
+上述方程组适用于任何动坐标系。
+
+# 飞行器绕质心的动力学方程
+
+根据动量矩定理，飞行器绕质心的转动运动可表示为：
+
+$$M=\frac{dh}{dt} \tag{6}$$
+
+式中$h$为飞行器对坐标系原点的动量矩；$M$为作用在飞行器上的外力对原点的合力矩。
+
 <p align="center">
     <img src="images/MomentumOfCentroid.jpg" width="60%" alt="对质心的动量矩">
 </p>
+
+<center>图2 对质心的动量矩</center>
 
 <p>根据动量矩定义，飞行器上任意微元质量为dm，对坐标系原点的动量矩为：</p>
 <script type="math/tex; mode=display">\Delta h=r\times V dm</script><p>式中$r$为微元质量到坐标系原点的矢径；$V$为该微元质量的速度矢量，则</p>
@@ -2023,7 +2088,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-06 19:44:23" itemprop="dateModified" datetime="2019-01-06T19:44:23+08:00">2019-01-06</time>
+                <time title="修改时间：2019-01-26 16:00:26" itemprop="dateModified" datetime="2019-01-26T16:00:26+08:00">2019-01-26</time>
               
             
           </span>
@@ -2063,11 +2128,11 @@
 <h1 id="MathJax语法"><a href="#MathJax语法" class="headerlink" title="MathJax语法"></a>MathJax语法</h1><h2 id="如何插入公式"><a href="#如何插入公式" class="headerlink" title="如何插入公式"></a>如何插入公式</h2><p>LaTeX的数学公式有两种：行中公式和独立公式。行中公式放在文中与其它文字混编，独立公式单独成行。</p>
 <p>行中公式可以用如下两种方法表示：</p>
 <blockquote>
-<p>＼(数学公式＼)　或　$数学公式$</p>
+<p>(数学公式)　或　$数学公式$</p>
 </blockquote>
 <p>独立公式可以用如下两种方法表示：</p>
 <blockquote>
-<p>＼[数学公式＼]　或　<script type="math/tex">数学公式</script></p>
+<p>[数学公式]　或　$$数学公式$$</p>
 </blockquote>
 <h2 id="打Tag和引用公式"><a href="#打Tag和引用公式" class="headerlink" title="打Tag和引用公式"></a>打Tag和引用公式</h2><p>如果在某个公式之后，又想要引用原公式并说明原公式的出处，可以用 tagging/labelling/referencing system来做。 </p>
 <p>可以用 \tag{yourtag} 来给原公式打 Tag。</p>

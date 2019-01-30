@@ -1246,7 +1246,7 @@ v_{k+1}(s) &\overset{.}{=} \max_{a} \mathbb E_{\pi}[R_{t+1}+\gamma v _{k}(S_{t+1
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-21 20:50:22" itemprop="dateModified" datetime="2019-01-21T20:50:22+08:00">2019-01-21</time>
+                <time title="修改时间：2019-01-29 20:15:58" itemprop="dateModified" datetime="2019-01-29T20:15:58+08:00">2019-01-29</time>
               
             
           </span>
@@ -1454,7 +1454,7 @@ v_{k+1}(s) &\overset{.}{=} \max_{a} \mathbb E_{\pi}[R_{t+1}+\gamma v _{k}(S_{t+1
 <h2 id="ShuffleNets：Group-convolution-Channel-Shuffle"><a href="#ShuffleNets：Group-convolution-Channel-Shuffle" class="headerlink" title="ShuffleNets：Group convolution+Channel Shuffle"></a>ShuffleNets：Group convolution+Channel Shuffle</h2><p>ShuffleNet是Face++提出的一种轻量化网络结构，主要思路是使用Group convolution和Channel shuffle改进ResNet，可以看作是ResNet的压缩版本。</p>
 <h1 id="循环神经网络"><a href="#循环神经网络" class="headerlink" title="循环神经网络"></a>循环神经网络</h1><p>循环神经网络是为更好地处理时序信息而设计的。它引入状态变量来存储过去的信息，并用其与当前的输入共同决定当前的输出。</p>
 <p>循环神经网络常用于处理序列数据，如一段文字或声音、购物或观影的顺序，甚至是图像中的一行或一列像素。因此，循环神经网络有着极为广泛的实际应用，如语言模型、文本分类、机器翻译、语音识别、图像分析、手写识别和推荐系统。</p>
-<p>现在我们考虑输入数据存在时间相关性的情况。假设 $X<em>t∈R^{n×d}$ 是序列中时间步 $t$ 的小批量输入， $H_t∈R^{n×h}$ 是该时间步的隐藏变量。与多层感知机不同的是，这里我们保存上一时间步的隐藏变量 $H</em>{t−1}$ ，并引入一个新的权重参数 $W_{hh}∈R^{h×h}$ ，该参数用来描述在当前时间步如何使用上一时间步的隐藏变量。具体来说，时间步 $t$ 的隐藏变量的计算由当前时间步的输入和上一时间步的隐藏变量共同决定：</p>
+<p>现在我们考虑输入数据存在时间相关性的情况。假设 $X<em>t∈R^{n×d}$ 是序列中时间步 $t$ 的小批量输入，$H_t∈R^{n×h}$ 是该时间步的隐藏变量。与多层感知机不同的是，这里我们保存上一时间步的隐藏变量 $H</em>{t−1}$ ，并引入一个新的权重参数 $W_{hh}∈R^{h×h}$ ，该参数用来描述在当前时间步如何使用上一时间步的隐藏变量。具体来说，时间步 $t$ 的隐藏变量的计算由当前时间步的输入和上一时间步的隐藏变量共同决定：</p>
 <script type="math/tex; mode=display">H_t=ϕ(X_tW_{xh}+H_{t−1}W_{hh}+b_h)</script><p>与多层感知机相比，我们在这里添加了 $H<em>{t−1}W</em>{hh}$一项。由上式中相邻时间步的隐藏变量 $H<em>t$ 和 $H</em>{t−1}$ 之间的关系可知，这里的隐藏变量能够捕捉截至当前时间步的序列的历史信息，就像是神经网络当前时间步的状态或记忆一样。因此，该隐藏变量也称为隐藏状态。由于隐藏状态在当前时间步的定义使用了上一时间步的隐藏状态，上式的计算是循环的。<strong>使用循环计算的网络即循环神经网络（recurrent neural network）</strong>。</p>
 <p>循环神经网络有很多种不同的构造方法。含上式所定义的隐藏状态的循环神经网络是极为常见的一种。若无特别说明，本章中的循环神经网络均基于上式中隐藏状态的循环计算。在时间步 $t$ ，输出层的输出和多层感知机中的计算类似：</p>
 <script type="math/tex; mode=display">O_t=H_tW_{hq}+b_q</script><p>循环神经网络的参数包括隐藏层的权重 $W<em>{xh}∈R^{d×h}$ 、 $W</em>{hh}∈R^{h×h}$ 和偏差  $b<em>h∈R^{1×h}$ ，以及输出层的权重 $W</em>{hq}∈R^{h×q}$ 和偏差 $b_q∈R^{1×q}$ 。值得一提的是，即便在不同时间步，循环神经网络也始终使用这些模型参数。因此，循环神经网络模型参数的数量不随时间步的增加而增长。</p>

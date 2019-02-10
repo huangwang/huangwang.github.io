@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-02-09T04:51:16.108Z</updated>
+  <updated>2019-02-10T15:25:39.630Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>最优化算法之动态规划入门</title>
+    <link href="https://huangwang.github.io/2019/02/10/%E6%9C%80%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95%E4%B9%8B%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E5%85%A5%E9%97%A8/"/>
+    <id>https://huangwang.github.io/2019/02/10/最优化算法之动态规划入门/</id>
+    <published>2019-02-10T15:15:14.000Z</published>
+    <updated>2019-02-10T15:25:39.630Z</updated>
+    
+    <content type="html"><![CDATA[<p>动态规划（英语：Dynamic programming，简称DP）是一种在数学、管理科学、计算机科学、经济学和生物信息学中使用的，通过把原问题分解为相对简单的子问题的方式求解复杂问题的方法。</p><p>动态规划常常适用于有重叠子问题和最优子结构性质的问题，动态规划方法所耗时间往往远少于朴素解法。</p><p>动态规划中包含三个重要子概念：</p><ul><li>最优子结构</li><li>边界</li><li>状态转移公式</li></ul><p>对有重叠子问题和最优子结构性质的问题，在建模之后，即获得其状态转移公式和边界之后，可采用下列算法求解：</p><ul><li>递归求解</li><li>备忘录算法</li><li>动态规划求解</li></ul><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://zh.wikipedia.org/wiki/动态规划" target="_blank" rel="noopener">动态规划</a>,by wikipedia.</li><li><a href="https://zhuanlan.zhihu.com/p/31628866" target="_blank" rel="noopener">漫画：什么是动态规划？</a>,by 程序员小灰.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;动态规划（英语：Dynamic programming，简称DP）是一种在数学、管理科学、计算机科学、经济学和生物信息学中使用的，通过把原问题分解为相对简单的子问题的方式求解复杂问题的方法。&lt;/p&gt;
+&lt;p&gt;动态规划常常适用于有重叠子问题和最优子结构性质的问题，动态规划方法所
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="机器学习" scheme="https://huangwang.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>PID控制算法原理分析</title>
@@ -511,32 +537,6 @@
       <category term="Linux" scheme="https://huangwang.github.io/tags/Linux/"/>
     
       <category term="计算机安全" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AE%89%E5%85%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Cesium中3D模型的驱动方法</title>
-    <link href="https://huangwang.github.io/2018/12/26/Cesium%E4%B8%AD3D%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%A9%B1%E5%8A%A8%E6%96%B9%E6%B3%95/"/>
-    <id>https://huangwang.github.io/2018/12/26/Cesium中3D模型的驱动方法/</id>
-    <published>2018-12-26T12:43:21.000Z</published>
-    <updated>2018-12-26T14:13:15.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Cesium中3D模型的运动可以使用CZML直接驱动，但使用该方法前提是能事先计算出3D模型的运动轨迹，具有很大的局限性。那么如何实时驱动3D模型呢？</p><h1 id="Cesium渲染过程分析"><a href="#Cesium渲染过程分析" class="headerlink" title="Cesium渲染过程分析"></a>Cesium渲染过程分析</h1><p>Cesium渲染过程的分析可以参考链接1。Cesium的渲染始于虚拟地球组件CesiumWidget的startRenderLoop方法，在该方法中将调用requestAnimationFrame函数开始渲染。</p><p>虚拟地球组件CesiumWidget包含Scene组件，在其render方法随后调用Scene的render方法。在场景组件Scene的render方法中提供了preUpdate、postUpdate、preRender、postRender四个事件对象，这四个事件对象将是我们实时驱动3D模型的关键。</p><h2 id="preUpdate事件"><a href="#preUpdate事件" class="headerlink" title="preUpdate事件"></a>preUpdate事件</h2><p>在Cesium更新渲染周期开始之前以目标帧率触发preUpdate事件。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">scene.postUpdate.addEventListener(function() &#123;</span><br><span class="line">    // This code will run at 60 FPS</span><br><span class="line">    if (changeToPromptRender) &#123;</span><br><span class="line">        scene.requestRender();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><h2 id="postUpdate事件"><a href="#postUpdate事件" class="headerlink" title="postUpdate事件"></a>postUpdate事件</h2><p>在场景更新之后，新帧渲染之前以目标帧率触发postUpdate事件。</p><h2 id="preRender事件"><a href="#preRender事件" class="headerlink" title="preRender事件"></a>preRender事件</h2><p>在场景更新之后，新帧渲染之前触发preRender事件。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">scene.preRender.addEventListener(function() &#123;</span><br><span class="line">    // This code will run when a new frame is rendered</span><br><span class="line">    // including when changeToPromptRender is true</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><h2 id="postRender事件"><a href="#postRender事件" class="headerlink" title="postRender事件"></a>postRender事件</h2><p>在新帧渲染之后触发postRender事件。</p><h1 id="实时驱动3D模型"><a href="#实时驱动3D模型" class="headerlink" title="实时驱动3D模型"></a>实时驱动3D模型</h1><p>从上一节对Cesium渲染过程分析可知，要实时驱动3D模型，应订阅场景Scene的preUpdate事件，在preUpdate事件的处理函数中改变3D模型的位置和姿态。</p><h2 id="订阅preUpdate事件"><a href="#订阅preUpdate事件" class="headerlink" title="订阅preUpdate事件"></a>订阅preUpdate事件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//订阅场景的preUpdate事件</span><br><span class="line">viewer.scene.preUpdate.addEventListener(function(scene, time) &#123;</span><br><span class="line">    speedVector = Cesium.Cartesian3.multiplyByScalar(Cesium.Cartesian3.UNIT_X, speed / 10, speedVector);</span><br><span class="line">    position = Cesium.Matrix4.multiplyByPoint(planePrimitive.modelMatrix, speedVector, position);</span><br><span class="line">    pathPosition.addSample(Cesium.JulianDate.now(), position);</span><br><span class="line">    Cesium.Transforms.headingPitchRollToFixedFrame(position, hpRoll, Cesium.Ellipsoid.WGS84, fixedFrameTransform, planePrimitive.modelMatrix);</span><br><span class="line"></span><br><span class="line">    if (fromBehind.checked) &#123;</span><br><span class="line">        // Zoom to model</span><br><span class="line">        Cesium.Matrix4.multiplyByPoint(planePrimitive.modelMatrix, planePrimitive.boundingSphere.center, center);</span><br><span class="line">        hpRange.heading = hpRoll.heading;</span><br><span class="line">        hpRange.pitch = hpRoll.pitch;</span><br><span class="line">        camera.lookAt(center, hpRange);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><h2 id="获取czml实体的参数"><a href="#获取czml实体的参数" class="headerlink" title="获取czml实体的参数"></a>获取czml实体的参数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">viewer.scene.preUpdate.addEventListener(function(scene, time) &#123;</span><br><span class="line">    //target是czml实体对象</span><br><span class="line">    //获取time时刻target的位置参数</span><br><span class="line">    target.position.getValue(time,position)</span><br><span class="line">    console.log(position)</span><br><span class="line">    </span><br><span class="line">    target.orientation.getValue(time,orientation)</span><br><span class="line">    console.log(orientation)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">viewer.scene.preUpdate.addEventListener(function(scene, time) &#123;</span><br><span class="line">    var pos=target.position.getValue(time)</span><br><span class="line">    console.log(pos.toString())</span><br><span class="line">    //世界坐标转经纬高</span><br><span class="line">    var cartographicPosition = Cesium.Ellipsoid.WGS84.cartesianToCartographic(pos);</span><br><span class="line">    console.log(cartographicPosition.toString())</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><h2 id="使用Entity-API加载3D模型"><a href="#使用Entity-API加载3D模型" class="headerlink" title="使用Entity API加载3D模型"></a>使用Entity API加载3D模型</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">var viewer = new Cesium.Viewer(&apos;cesiumContainer&apos;);</span><br><span class="line">var center=Cesium.Cartesian3.fromDegrees(-123.0744619, 44.0503706,100);</span><br><span class="line">var hpr=Cesium.HeadingPitchRoll.fromDegrees(90,-90,0);</span><br><span class="line">//从headingPitchRoll转四元数</span><br><span class="line">var quatern=Cesium.Transforms.headingPitchRollQuaternion(center,hpr);</span><br><span class="line"></span><br><span class="line">var entity = viewer.entities.add(&#123;</span><br><span class="line">    position :center ,    </span><br><span class="line">    orientation:quatern ,</span><br><span class="line">    model : &#123;</span><br><span class="line">        uri : &apos;../../../../Apps/SampleData/models/missile.glb&apos;,</span><br><span class="line">        scale: 0.1,</span><br><span class="line">        minimumPixelSize:50,</span><br><span class="line">        maximumScale:5000</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">viewer.trackedEntity = entity;</span><br></pre></td></tr></table></figure><h2 id="使用Primitive-API加载3d模型"><a href="#使用Primitive-API加载3d模型" class="headerlink" title="使用Primitive API加载3d模型"></a>使用Primitive API加载3d模型</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var viewer = new Cesium.Viewer(&apos;cesiumContainer&apos;);</span><br><span class="line"></span><br><span class="line">var center1=Cesium.Cartesian3.fromDegrees(-123.0744619, 44.0503706,100);</span><br><span class="line">var hpr1=Cesium.HeadingPitchRoll.fromDegrees(90,-90,100);</span><br><span class="line">//计算模式矩阵，实现本地坐标系坐标到世界坐标系坐标的转换</span><br><span class="line">var modelMatrix=Cesium.Transforms.headingPitchRollToFixedFrame(center1, hpr1)</span><br><span class="line"></span><br><span class="line">var model = viewer.scene.primitives.add(Cesium.Model.fromGltf(&#123;</span><br><span class="line">    url : &apos;../../../../Apps/SampleData/models/missile.glb&apos;,</span><br><span class="line">    modelMatrix : modelMatrix,</span><br><span class="line">    scale : 1.0</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://huangwang.github.io/2018/11/08/Cesium摄像头跟踪飞机实体时晃动问题分析/">Cesium摄像头跟踪飞机实体时晃动问题分析</a>,by jack huang.</li><li><a href="https://cesium.com/blog/2018/01/24/cesium-scene-rendering-performance/" target="_blank" rel="noopener">Improving Performance with Explicit Rendering</a>, by Gabby Getz.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;Cesium中3D模型的运动可以使用CZML直接驱动，但使用该方法前提是能事先计算出3D模型的运动轨迹，具有很大的局限性。那么如何实时驱动3D模型呢？&lt;/p&gt;
-&lt;h1 id=&quot;Cesium渲染过程分析&quot;&gt;&lt;a href=&quot;#Cesium渲染过程分析&quot; class=&quot;head
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="Cesium" scheme="https://huangwang.github.io/tags/Cesium/"/>
     
   </entry>
   

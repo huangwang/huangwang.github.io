@@ -314,6 +314,207 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/22/sequelize-cli使用经验总结/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/22/sequelize-cli使用经验总结/" itemprop="url">
+                  sequelize-cli使用经验总结
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-22 22:12:55" itemprop="dateCreated datePublished" datetime="2018-06-22T22:12:55+08:00">2018-06-22</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-06-23 10:42:08" itemprop="dateModified" datetime="2018-06-23T10:42:08+08:00">2018-06-23</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Sequelize 是一个基于 promise 的 Node.js ORM, 目前支持 Postgres, MySQL, SQLite 和 Microsoft SQL Server. 它具有强大的事务支持, 关联关系, 读取和复制等功能<sup>[2]</sup>. 下面主要介绍如何使用sequelize-cli工具快速构建nodejs的数据访问层。</p>
+<h1 id="基于express创建nodejs-web应用"><a href="#基于express创建nodejs-web应用" class="headerlink" title="基于express创建nodejs web应用"></a>基于express创建nodejs web应用</h1><p>基于express建立nodejs的web应用，在此基础上再使用sequlize建立数据访问层和数据库。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir myapp</span><br><span class="line">cd myapp</span><br><span class="line">express</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure></p>
+<h1 id="基于sequelize创建数据访问层和数据库"><a href="#基于sequelize创建数据访问层和数据库" class="headerlink" title="基于sequelize创建数据访问层和数据库"></a>基于sequelize创建数据访问层和数据库</h1><h2 id="安装sequlize"><a href="#安装sequlize" class="headerlink" title="安装sequlize"></a>安装sequlize</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save sequelize</span><br><span class="line">npm install --save mysql2</span><br></pre></td></tr></table></figure>
+<h2 id="安装sequelize-cli"><a href="#安装sequelize-cli" class="headerlink" title="安装sequelize-cli"></a>安装sequelize-cli</h2><p>首先应安装sequelize-cli工具，可以选择全局安装，也可以选择本地安装。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save sequelize-cli</span><br><span class="line">npm install -g sequelize-cli</span><br></pre></td></tr></table></figure></p>
+<h2 id="建立初始的ORM引导框架"><a href="#建立初始的ORM引导框架" class="headerlink" title="建立初始的ORM引导框架"></a>建立初始的ORM引导框架</h2><p>使用如下命令在Nodejs Web应用中建立初始的数据访问层。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir db</span><br><span class="line">cd db</span><br><span class="line">../node_modules/.bin/sequelize init</span><br></pre></td></tr></table></figure></p>
+<p>这将创建以下文件夹:</p>
+<ul>
+<li>config, 包含配置文件，它告诉CLI如何连接数据库</li>
+<li>models,包含您的项目的所有模型</li>
+<li>migrations, 包含所有迁移文件</li>
+<li>seeders, 包含所有种子文件</li>
+</ul>
+<h2 id="修改配置文件以连接到数据库管理系统，并创建数据库"><a href="#修改配置文件以连接到数据库管理系统，并创建数据库" class="headerlink" title="修改配置文件以连接到数据库管理系统，并创建数据库"></a>修改配置文件以连接到数据库管理系统，并创建数据库</h2><p>在建立模型之前，应先修改config/config.json，以告诉 CLI 如何连接到数据库。config/config.json内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;development&quot;: &#123;</span><br><span class="line">    &quot;username&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;password&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;database&quot;: &quot;database_development&quot;,</span><br><span class="line">    &quot;host&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;dialect&quot;: &quot;mysql&quot;,</span><br><span class="line">    &quot;pool&quot;:&#123;</span><br><span class="line">        &quot;max&quot;: 5,</span><br><span class="line">        &quot;min&quot;: 0,</span><br><span class="line">        &quot;idle&quot;: 10000</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;timezone&quot;: &quot;+08:00&quot;,</span><br><span class="line">    &quot;define&quot;:&#123;</span><br><span class="line">      &quot;charset&quot;: &quot;utf8&quot;,</span><br><span class="line">      &quot;dialectOptions&quot;:&#123;</span><br><span class="line">          &quot;collate&quot;: &quot;utf8_general_ci&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;test&quot;: &#123;</span><br><span class="line">    &quot;username&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;password&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;database&quot;: &quot;database_test&quot;,</span><br><span class="line">    &quot;host&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;dialect&quot;: &quot;mysql&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;production&quot;: &#123;</span><br><span class="line">    &quot;username&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;password&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;database&quot;: &quot;database_test&quot;,</span><br><span class="line">    &quot;host&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;dialect&quot;: &quot;mysql&quot;,</span><br><span class="line">    &quot;pool&quot;:&#123;</span><br><span class="line">        &quot;max&quot;: 5,</span><br><span class="line">        &quot;min&quot;: 0,</span><br><span class="line">        &quot;idle&quot;: 10000</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;timezone&quot;: &quot;+08:00&quot;,</span><br><span class="line">    &quot;define&quot;:&#123;</span><br><span class="line">      &quot;charset&quot;: &quot;utf8&quot;,</span><br><span class="line">      &quot;dialectOptions&quot;:&#123;</span><br><span class="line">          &quot;collate&quot;: &quot;utf8_general_ci&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上述配置修改了数据库的字符集，使之能支持中文。当然在创建数据库之前，应配置mysql数据库管理系，使其支持utf8字符集。可执行如下命令查看其支持的字符集，如果其不支持uft字符集，请按照参考链接[3]进行修改。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables like &apos;%char%&apos;;</span><br><span class="line">+--------------------------+---------------------------------------------------------+</span><br><span class="line">| Variable_name            | Value                                                   |</span><br><span class="line">+--------------------------+---------------------------------------------------------+</span><br><span class="line">| character_set_client     | utf8                                                    |</span><br><span class="line">| character_set_connection | utf8                                                    |</span><br><span class="line">| character_set_database   | utf8                                                    |</span><br><span class="line">| character_set_filesystem | binary                                                  |</span><br><span class="line">| character_set_results    | utf8                                                    |</span><br><span class="line">| character_set_server     | utf8                                                    |</span><br><span class="line">| character_set_system     | utf8                                                    |</span><br><span class="line">| character_sets_dir       | C:\Program Files\MySQL\MySQL Server 5.5\share\charsets\ |</span><br><span class="line">+--------------------------+---------------------------------------------------------+</span><br><span class="line">8 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>使用如下命令创建数据库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize db:create</span><br></pre></td></tr></table></figure></p>
+<h2 id="创建模型"><a href="#创建模型" class="headerlink" title="创建模型"></a>创建模型</h2><p>我们将使用 model:generate 命令。 此命令需要两个选项：</p>
+<ul>
+<li>name, 模型的名称</li>
+<li>attributes, 模型的属性列表</li>
+</ul>
+<p>创建一个名叫 User 的模型：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize model:generate --name User --attributes firstName:string,lastName:string,email:string</span><br></pre></td></tr></table></figure></p>
+<p>这将发生以下事情:</p>
+<ul>
+<li>在 models 文件夹中创建了一个 user 模型文件</li>
+<li>在 migrations 文件夹中创建了一个名字像 XXXXXXXXXXXXXX-create-user.js 的迁移文件</li>
+</ul>
+<p><b>注意:</b> _Sequelize 将只使用模型文件，它是表描述。另一边，迁移文件是该模型的更改，或更具体的是说 CLI 所使用的表。 处理迁移，如提交或日志，以进行数据库的某些更改。</p>
+<p>再创建一个名为Role的模型，它跟User是一对多的关系：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize model:generate --name Role --attributes roleName:string</span><br></pre></td></tr></table></figure></p>
+<h2 id="定义关系"><a href="#定义关系" class="headerlink" title="定义关系"></a>定义关系</h2><p>Role和User是一对多的关系，因此需要修改它们的模型定义。<br>修改migrations/20180622153726-create-role.js如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line">module.exports = (sequelize, DataTypes) =&gt; &#123;</span><br><span class="line">  var Role = sequelize.define(&apos;Role&apos;, &#123;</span><br><span class="line">    roleName: DataTypes.STRING</span><br><span class="line">  &#125;, &#123;&#125;);</span><br><span class="line">  Role.associate = function(models) &#123;</span><br><span class="line">    // associations can be defined here</span><br><span class="line">    Role.hasMany(models.User)</span><br><span class="line">  &#125;;</span><br><span class="line">  return Role;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>修改migrations/20180622153152-create-user.js如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line">module.exports = (sequelize, DataTypes) =&gt; &#123;</span><br><span class="line">  var User = sequelize.define(&apos;User&apos;, &#123;</span><br><span class="line">    firstName: DataTypes.STRING,</span><br><span class="line">    lastName: DataTypes.STRING,</span><br><span class="line">    email: DataTypes.STRING</span><br><span class="line">  &#125;, &#123;&#125;);</span><br><span class="line">  User.associate = function(models) &#123;</span><br><span class="line">    // associations can be defined here</span><br><span class="line">    User.belongsTo(models.Role, &#123;</span><br><span class="line">            onDelete: &quot;NULL&quot;,</span><br><span class="line">            foreignKey: &#123;</span><br><span class="line">                allowNull: false</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">  &#125;;</span><br><span class="line">  return User;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="修改和运行迁移"><a href="#修改和运行迁移" class="headerlink" title="修改和运行迁移"></a>修改和运行迁移</h2><p>Role和User是一对多的关系，因此需要修改User迁移文件的定义。<br>修改models/user.js如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line">module.exports = &#123;</span><br><span class="line">  up: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">    return queryInterface.createTable(&apos;Users&apos;, &#123;</span><br><span class="line">      id: &#123;</span><br><span class="line">        allowNull: false,</span><br><span class="line">        autoIncrement: true,</span><br><span class="line">        primaryKey: true,</span><br><span class="line">        type: Sequelize.INTEGER</span><br><span class="line">      &#125;,</span><br><span class="line">      roleId: &#123; // name of the key we&apos;re adding </span><br><span class="line">          type: Sequelize.INTEGER,</span><br><span class="line">          allowNull: false,</span><br><span class="line">          references: &#123;</span><br><span class="line">              model: &apos;Roles&apos;, // name of Target model</span><br><span class="line">              key: &apos;id&apos;, // key in Target model that we&apos;re referencing</span><br><span class="line">          &#125;,</span><br><span class="line">          onUpdate: &apos;CASCADE&apos;,</span><br><span class="line">          onDelete: &apos;CASCADE&apos;,</span><br><span class="line">      &#125;,</span><br><span class="line">      firstName: &#123;</span><br><span class="line">        type: Sequelize.STRING</span><br><span class="line">      &#125;,</span><br><span class="line">      lastName: &#123;</span><br><span class="line">        type: Sequelize.STRING</span><br><span class="line">      &#125;,</span><br><span class="line">      email: &#123;</span><br><span class="line">        type: Sequelize.STRING</span><br><span class="line">      &#125;,</span><br><span class="line">      createdAt: &#123;</span><br><span class="line">        allowNull: false,</span><br><span class="line">        type: Sequelize.DATE</span><br><span class="line">      &#125;,</span><br><span class="line">      updatedAt: &#123;</span><br><span class="line">        allowNull: false,</span><br><span class="line">        type: Sequelize.DATE</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">  down: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">    return queryInterface.dropTable(&apos;Users&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><b>注意：</b>这里主要给User添加了外键字段，外键字段命名有规则：通常为小写的模型名加Id，即驼峰风格。例如这里加了roleId的外键字段。</p>
+<p>直到目前为止，CLI没有将任何东西插入数据库。 刚刚为模型 User和Role创建了必需的模型和迁移文件。 现在要在数据库中实际创建该表，需要运行 db:migrate 命令。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize db:migrate</span><br></pre></td></tr></table></figure></p>
+<p>此命令将执行这些步骤：</p>
+<ul>
+<li>将在数据库中确保一个名为 SequelizeMeta 的表。 此表用于记录在当前数据库上运行的迁移</li>
+<li>开始寻找尚未运行的任何迁移文件。 这可以通过检查 SequelizeMeta 表。 在这个例子中，它将运行创建的 XXXXXXXXXXXXXX-create-role.js和XXXXXXXXXXXXXX-create-user.js 迁移。</li>
+<li>创建一个名为 Roles 的表，其中包含其迁移文件中指定的所有列。</li>
+<li>创建一个名为 Users 的表，其中包含其迁移文件中指定的所有列。</li>
+</ul>
+<h2 id="创建种子，生成测试数据"><a href="#创建种子，生成测试数据" class="headerlink" title="创建种子，生成测试数据"></a>创建种子，生成测试数据</h2><p>假设我们希望在默认情况下将一些数据插入到几个表中。 例如创建几个用户和角色：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize seed:generate --name demo-role</span><br><span class="line">../node_modules/.bin/sequelize seed:generate --name demo-user</span><br></pre></td></tr></table></figure></p>
+<p>这个命令将会在 seeders 文件夹中创建两个种子文件。文件名看起来像是 XXXXXXXXXXXXXX-demo-role.js和XXXXXXXXXXXXXX-demo-user.js，它遵循相同的 up/down 语义，如迁移文件。</p>
+<p>现在我们应该编辑这两个文件，将演示角色插入Role表,将演示用户插入User表。修改XXXXXXXXXXXXXX-demo-role.js如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  up: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">      return queryInterface.bulkInsert(&apos;Roles&apos;, [&#123;</span><br><span class="line">        roleName: &apos;管理员&apos;,</span><br><span class="line">        createdAt:new Date(),</span><br><span class="line">        updatedAt:new Date()</span><br><span class="line">      &#125;,&#123;</span><br><span class="line">        roleName: &apos;普通用户&apos;,</span><br><span class="line">        createdAt:new Date(),</span><br><span class="line">        updatedAt:new Date()</span><br><span class="line">      &#125;], &#123;&#125;);</span><br><span class="line"></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  down: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">      return queryInterface.bulkDelete(&apos;Roles&apos;, null, &#123;&#125;);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>修改XXXXXXXXXXXXXX-demo-user.js如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  up: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">      return queryInterface.bulkInsert(&apos;Users&apos;, [&#123;</span><br><span class="line">        roleId:1,</span><br><span class="line">        firstName: &apos;John&apos;,</span><br><span class="line">        lastName: &apos;Doe&apos;,</span><br><span class="line">        email: &apos;demo@demo.com&apos;,</span><br><span class="line">        createdAt:new Date(),</span><br><span class="line">        updatedAt:new Date()</span><br><span class="line">      &#125;,&#123;</span><br><span class="line">        roleId:1,</span><br><span class="line">        firstName: &apos;Jack&apos;,</span><br><span class="line">        lastName: &apos;Smith&apos;,</span><br><span class="line">        email: &apos;jack@demo.com&apos;,</span><br><span class="line">        createdAt:new Date(),</span><br><span class="line">        updatedAt:new Date()</span><br><span class="line">      &#125;], &#123;&#125;);</span><br><span class="line"></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  down: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">      return queryInterface.bulkDelete(&apos;Users&apos;, null, &#123;&#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>种子文件修改后，即可使用如下命令将演示数据插入数据库中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize db:seed:all</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://docs.sequelizejs.com/，by" target="_blank" rel="noopener">http://docs.sequelizejs.com/，by</a> sequelizejs</li>
+<li><a href="https://github.com/demopark/sequelize-docs-Zh-CN，by" target="_blank" rel="noopener">https://github.com/demopark/sequelize-docs-Zh-CN，by</a> demopark</li>
+<li><a href="https://www.jianshu.com/p/b85cc8a05e53" target="_blank" rel="noopener">https://www.jianshu.com/p/b85cc8a05e53</a>, by 最怕认真</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/21/Visual-Studio-Community-2017离线安装/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1867,172 +2068,6 @@ console.log(y);
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/26/matplotlib用法笔记/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/26/matplotlib用法笔记/" itemprop="url">
-                  matplotlib用法笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-26 23:42:59" itemprop="dateCreated datePublished" datetime="2018-05-26T23:42:59+08:00">2018-05-26</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-06-03 09:37:48" itemprop="dateModified" datetime="2018-06-03T09:37:48+08:00">2018-06-03</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>matplotlib 是Python编程语言及其数值数学扩展包 NumPy的可视化操作界面。它为利用通用的图形用户界面工具包，如Tkinter, wxPython, Qt或GTK+向应用程序嵌入式绘图提供了应用程序接口（API）。此外，matplotlib还有一个基于图像处理库（如开放图形库OpenGL）的pylab接口，其设计与MATLAB非常类似—尽管并不怎么好用。SciPy就是用matplotlib进行图形绘制。</p>
-<h1 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h1><p>使用plt.figure定义一个图像窗口。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line">x = np.linspace(-1, 1, 50)</span><br><span class="line">y = 2*x + 1</span><br><span class="line">plt.figure() </span><br><span class="line">plt.plot(x, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="设置坐标轴"><a href="#设置坐标轴" class="headerlink" title="设置坐标轴"></a>设置坐标轴</h2><p>使用plt.xlim设置x坐标轴范围：(-1, 2)； 使用plt.ylim设置y坐标轴范围：(-2, 3)；<br>使用plt.xlabel设置x坐标轴名称：’I am x’； 使用plt.ylabel设置y坐标轴名称：’I am y’；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line">plt.xlabel(&apos;I am x&apos;)</span><br><span class="line">plt.ylabel(&apos;I am y&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>使用np.linspace定义范围以及个数：范围是(-1,2);个数是5. 使用print打印出新定义的范围. 使用plt.xticks设置x轴刻度：范围是(-1,2);个数是5.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">new_ticks = np.linspace(-1, 2, 5)</span><br><span class="line">print(new_ticks)</span><br><span class="line">plt.xticks(new_ticks)</span><br></pre></td></tr></table></figure></p>
-<p>使用plt.yticks设置y轴刻度以及名称：刻度为[-2, -1.8, -1, 1.22, 3]；对应刻度的名称为[‘really bad’,’bad’,’normal’,’good’, ‘really good’]. 使用plt.show显示图像.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.yticks([-2, -1.8, -1, 1.22, 3],[r&apos;$really\ bad$&apos;, r&apos;$bad$&apos;, r&apos;$normal$&apos;, r&apos;$good$&apos;, r&apos;$really\ good$&apos;])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<p>使用plt.gca获取当前坐标轴信息. 使用.spines设置边框：右侧边框；使用.set_color设置边框颜色：默认白色； 使用.spines设置边框：上边框；使用.set_color设置边框颜色：默认白色；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax = plt.gca()</span><br><span class="line">ax.spines[&apos;right&apos;].set_color(&apos;none&apos;)</span><br><span class="line">ax.spines[&apos;top&apos;].set_color(&apos;none&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="调整坐标轴"><a href="#调整坐标轴" class="headerlink" title="调整坐标轴"></a>调整坐标轴</h2><p>使用.xaxis.set_ticks_position设置x坐标刻度数字或名称的位置：bottom.（所有位置：top，bottom，both，default，none）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ax.xaxis.set_ticks_position(&apos;bottom&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>使用.spines设置边框：x轴；使用.set_position设置边框位置：y=0的位置；（位置所有属性：outward，axes，data）<br>使用.yaxis.set_ticks_position设置y坐标刻度数字或名称的位置：left.（所有位置：left，right，both，default，none）<br>使用.spines设置边框：y轴；使用.set_position设置边框位置：x=0的位置；（位置所有属性：outward，axes，data） 使用plt.show显示图像.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax.spines[&apos;bottom&apos;].set_position((&apos;data&apos;, 0))</span><br><span class="line">ax.yaxis.set_ticks_position(&apos;left&apos;)</span><br><span class="line">ax.spines[&apos;left&apos;].set_position((&apos;data&apos;,0))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="legend图例"><a href="#legend图例" class="headerlink" title="legend图例"></a>legend图例</h2><h3 id="基本用法-1"><a href="#基本用法-1" class="headerlink" title="基本用法"></a>基本用法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">x = np.linspace(-3, 3, 50)</span><br><span class="line">y1 = 2*x + 1</span><br><span class="line">y2 = x**2</span><br><span class="line"></span><br><span class="line">plt.figure()</span><br><span class="line">#set x limits</span><br><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line"></span><br><span class="line"># set new sticks</span><br><span class="line">new_sticks = np.linspace(-1, 2, 5)</span><br><span class="line">plt.xticks(new_sticks)</span><br><span class="line"># set tick labels</span><br><span class="line">plt.yticks([-2, -1.8, -1, 1.22, 3],</span><br><span class="line">           [r&apos;$really\ bad$&apos;, r&apos;$bad$&apos;, r&apos;$normal$&apos;, r&apos;$good$&apos;, r&apos;$really\ good$&apos;])</span><br><span class="line"></span><br><span class="line"># set line syles</span><br><span class="line">l1, = plt.plot(x, y1, label=&apos;linear line&apos;)</span><br><span class="line">l2, = plt.plot(x, y2, color=&apos;red&apos;, linewidth=1.0, linestyle=&apos;--&apos;, label=&apos;square line&apos;)</span><br><span class="line"></span><br><span class="line">plt.legend(loc=&apos;upper right&apos;)</span><br></pre></td></tr></table></figure>
-<h3 id="调整位置和名称"><a href="#调整位置和名称" class="headerlink" title="调整位置和名称"></a>调整位置和名称</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.legend(handles=[l1, l2], labels=[&apos;up&apos;, &apos;down&apos;],  loc=&apos;best&apos;)</span><br></pre></td></tr></table></figure>
-<p>其中’loc’参数有多种，’best’表示自动分配最佳位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&apos;best&apos; : 0,          </span><br><span class="line">&apos;upper right&apos;  : 1,</span><br><span class="line">&apos;upper left&apos;   : 2,</span><br><span class="line">&apos;lower left&apos;   : 3,</span><br><span class="line">&apos;lower right&apos;  : 4,</span><br><span class="line">&apos;right&apos;        : 5,</span><br><span class="line">&apos;center left&apos;  : 6,</span><br><span class="line">&apos;center right&apos; : 7,</span><br><span class="line">&apos;lower center&apos; : 8,</span><br><span class="line">&apos;upper center&apos; : 9,</span><br><span class="line">&apos;center&apos;       : 10,</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Matplotlib" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Matplotlib</a>, by wikipedia</li>
-<li><a href="https://morvanzhou.github.io" target="_blank" rel="noopener">https://morvanzhou.github.io</a>, by morvanzhou</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2080,7 +2115,7 @@ console.log(y);
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">103</span>
+                    <span class="site-state-item-count">104</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

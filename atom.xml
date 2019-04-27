@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-04-27T09:39:12.532Z</updated>
+  <updated>2019-04-27T14:08:28.052Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -17,11 +17,39 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Px4编译开发环境配置</title>
-    <link href="https://huangwang.github.io/2019/04/26/Px4%E7%BC%96%E8%AF%91%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"/>
-    <id>https://huangwang.github.io/2019/04/26/Px4编译开发环境配置/</id>
+    <title>PX4开发基本概念解读</title>
+    <link href="https://huangwang.github.io/2019/04/27/PX4%E5%BC%80%E5%8F%91%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E8%A7%A3%E8%AF%BB/"/>
+    <id>https://huangwang.github.io/2019/04/27/PX4开发基本概念解读/</id>
+    <published>2019-04-27T14:02:29.000Z</published>
+    <updated>2019-04-27T14:08:28.052Z</updated>
+    
+    <content type="html"><![CDATA[<p>进行PX4开发，必先了解PX4体系结构及相关概念。下面及简要介绍PX4开发的相关知识。</p><h1 id="PX4体系结构"><a href="#PX4体系结构" class="headerlink" title="PX4体系结构"></a>PX4体系结构</h1><p>PX4由两个层次组成：一是飞行控制栈(flight stack)，即自驾仪的软件解决方案，二是中间件，一种可以支持任意类型自主机器人的通用机器人中间件。</p><p>所有的无人机机型，事实上所有的包括船舶在内的机器人系统，都具有同一代码库。整个系统设计是反应式(reactive)的，这意味着：</p><ul><li>所有的功能被划分为可替换部件</li><li>通过异步消息传递进行通信</li><li>该系统可以应对不同的工作负载</li></ul><p>除了这些运行时考虑之外，其模块化最大限度地提高了系统的可重用性。</p><h1 id="PX4飞行模式"><a href="#PX4飞行模式" class="headerlink" title="PX4飞行模式"></a>PX4飞行模式</h1><p>飞行模式定义了系统在任何给定时间的状态。用户可以使用远程遥控器或者QGroundControl地面站来进行飞行模式切换。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://dev.px4.io/en/" target="_blank" rel="noopener">PX4 Development Guide (STABLE - v1.8.2)</a>,by Dronecode.</li><li><a href="https://dev.px4.io/zh/" target="_blank" rel="noopener">PX4开发指南</a>, by Dronecode.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;进行PX4开发，必先了解PX4体系结构及相关概念。下面及简要介绍PX4开发的相关知识。&lt;/p&gt;
+&lt;h1 id=&quot;PX4体系结构&quot;&gt;&lt;a href=&quot;#PX4体系结构&quot; class=&quot;headerlink&quot; title=&quot;PX4体系结构&quot;&gt;&lt;/a&gt;PX4体系结构&lt;/h1&gt;&lt;p
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="无人机" scheme="https://huangwang.github.io/tags/%E6%97%A0%E4%BA%BA%E6%9C%BA/"/>
+    
+      <category term="飞行仿真" scheme="https://huangwang.github.io/tags/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>PX4编译开发环境配置</title>
+    <link href="https://huangwang.github.io/2019/04/26/PX4%E7%BC%96%E8%AF%91%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"/>
+    <id>https://huangwang.github.io/2019/04/26/PX4编译开发环境配置/</id>
     <published>2019-04-26T12:50:05.000Z</published>
-    <updated>2019-04-27T09:39:12.532Z</updated>
+    <updated>2019-04-27T14:02:48.300Z</updated>
     
     <content type="html"><![CDATA[<p>拟在基于NuttX的硬件平台如Pixhawk系列开源硬件平台上运行自定义的Px4自驾仪软件，因此需要建立Px4的编译开发环境。以官方文档推荐，在Ubuntu 16.04 LTS操作系统上建立Px4编译开发环境为例，记录整个配置过程。</p><h1 id="安装Ubuntu-16-04-LTS"><a href="#安装Ubuntu-16-04-LTS" class="headerlink" title="安装Ubuntu 16.04 LTS"></a>安装Ubuntu 16.04 LTS</h1><p>官方推荐在Mac OS和Linux上进行开发，因此选择安装Ubuntu 16.04 LTS作为Px4开发的操作系统。主要步骤如下：</p><ol><li>安装VirtualBox系统虚拟机</li><li>在VirtualBox创建虚拟机</li><li>在虚拟机中安装Ubuntu 16.04 LTS操作系统</li></ol><h1 id="Ubuntu中安装工具链"><a href="#Ubuntu中安装工具链" class="headerlink" title="Ubuntu中安装工具链"></a>Ubuntu中安装工具链</h1><h2 id="权限设置"><a href="#权限设置" class="headerlink" title="权限设置"></a>权限设置</h2><p>为了使当前用户能够访问串口，将当前用户添加到dialout组。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo usermod -a -G dialout $USER</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure><h2 id="安装工具链"><a href="#安装工具链" class="headerlink" title="安装工具链"></a>安装工具链</h2><h3 id="Pixhawk-NuttX-and-jMAVSim"><a href="#Pixhawk-NuttX-and-jMAVSim" class="headerlink" title="Pixhawk/NuttX (and jMAVSim)"></a>Pixhawk/NuttX (and jMAVSim)</h3><p>针对基于NuttX的硬件平台如Pixhawk构建开发工具链，步骤如下：</p><ol><li>下载ubuntu_sim_nuttx.sh</li><li>运行脚本ubuntu_sim_nuttx.sh</li><li>完成后重启</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget https://raw.githubusercontent.com/PX4/Devguide/master/build_scripts/ubuntu_sim_nuttx.sh</span><br><span class="line">source ubuntu_sim_nuttx.sh</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure><h1 id="编译Px4软件"><a href="#编译Px4软件" class="headerlink" title="编译Px4软件"></a>编译Px4软件</h1><h2 id="下载Px4源代码"><a href="#下载Px4源代码" class="headerlink" title="下载Px4源代码"></a>下载Px4源代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/src</span><br><span class="line">cd ~/src</span><br><span class="line">git clone https://github.com/PX4/Firmware.git</span><br><span class="line"></span><br><span class="line">cd Firmware</span><br><span class="line"></span><br><span class="line"># list the releases (tags)</span><br><span class="line">git tag -l</span><br><span class="line"></span><br><span class="line"># Checkout code for particular tag (e.g. for tag v1.8.2 stable version)</span><br><span class="line">git checkout v1.8.2</span><br><span class="line"></span><br><span class="line">git submodule update --init --recursive</span><br></pre></td></tr></table></figure><p>现在可以通过编译源代码来构建二进制文件。在直接使用硬件前，推荐先<strong>进行仿真</strong>。</p><h2 id="jMAVSim仿真器"><a href="#jMAVSim仿真器" class="headerlink" title="jMAVSim仿真器"></a>jMAVSim仿真器</h2><p>在直接使用硬件之前，以jMAVSim仿真器为目标平台构建PX4，验证PX4的正确性。<strong>注意在virtualbox中启动3D图形加速，防止jMAVSim运行出错！</strong></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">make posix jmavsim</span><br><span class="line"></span><br><span class="line"># 起飞四旋翼无人机</span><br><span class="line">pxh&gt; commander takeoff</span><br></pre></td></tr></table></figure><h2 id="基于NuttX-Pixhawk的硬件板"><a href="#基于NuttX-Pixhawk的硬件板" class="headerlink" title="基于NuttX / Pixhawk的硬件板"></a>基于NuttX / Pixhawk的硬件板</h2><p>以Pixhawk为目标平台，构建PX4。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd Firmware</span><br><span class="line">make px4fmu-v2_default</span><br></pre></td></tr></table></figure><p>注意到“make”是一个字符命令编译工具，“px4fmu-v2”是硬件/ardupilot版本，“default”是默认配置，所有的PX4编译目标遵循这个规则。</p><p>成功编译的最后输出是这样的：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[100%] Linking CXX executable firmware_nuttx</span><br><span class="line">[100%] Built target firmware_nuttx</span><br><span class="line">Scanning dependencies of target build/firmware_px4fmu-v2</span><br><span class="line">[100%] Generating nuttx-px4fmu-v2-default.px4</span><br><span class="line">[100%] Built target build/firmware_px4fmu-v2</span><br></pre></td></tr></table></figure><p>通过在命令后面添加‘upload’，编译的二进制程序就会通过USB上传到飞控硬件:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make px4fmu-v2_default upload</span><br></pre></td></tr></table></figure><p>上传成功时输出情况如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Erase  : [====================] 100.0%</span><br><span class="line">Program: [====================] 100.0%</span><br><span class="line">Verify : [====================] 100.0%</span><br><span class="line">Rebooting.</span><br><span class="line"></span><br><span class="line">[100%] Built target upload</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://dev.px4.io/en/" target="_blank" rel="noopener">PX4 Development Guide (STABLE - v1.8.2)</a>,by Dronecode.</li><li><a href="https://dev.px4.io/zh/" target="_blank" rel="noopener">PX4开发指南</a>, by Dronecode.</li><li><a href="https://github.com/DrTon/jMAVSim/issues/42" target="_blank" rel="noopener">running JMAVSim in vmware fails</a>, by jMAVSim issues.</li></ol>]]></content>
     
@@ -512,32 +540,6 @@
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
       <category term="软件工程" scheme="https://huangwang.github.io/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>元强化学习研究笔记</title>
-    <link href="https://huangwang.github.io/2019/01/27/%E5%85%83%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%A0%94%E7%A9%B6%E7%AC%94%E8%AE%B0/"/>
-    <id>https://huangwang.github.io/2019/01/27/元强化学习研究笔记/</id>
-    <published>2019-01-27T04:48:18.000Z</published>
-    <updated>2019-01-31T12:33:49.458Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="元强化学习定义"><a href="#元强化学习定义" class="headerlink" title="元强化学习定义"></a>元强化学习定义</h1><p>什么是元强化学习？这得从深度学习开始说起。</p><p>Deep Learning研究一个从x到y的映射mapping，只是这个映射函数f是用一个端到端的深度神经网络来表示。如果是计算机视觉中的图像识别，那么x就是图片，y就是标签；如果是自然语言处理中的文本翻译，那么x就是比如中文，y就是英文；如果是深度增强学习中的玩Atari游戏，那么x就是屏幕画面，y就是输出的动作。<strong>深度学习研究的就是通过深度神经网络来学习一个针对某一特定任务task的模型</strong>。通过大量的样本进行训练，训练完，这个模型就可以用在特定任务上。</p><p>而<strong>Meta Learning研究Task</strong>！Meta Learning的目的是希望学习很多很多的task，然后有了这些学习经验之后，在面对新的task的时候可以游刃有余，学的快又学的好！那为什么叫Meta呢？Deep Learning是在Task里面研究，现在Meta Learning是在Task外面，更高层级来研究。也就是在Meta Learning的问题上，Task是作为样本来输入的。</p><p>Meta RL（Meta Reinforcement Learning）是Meta Learning应用到Reinforcement Learning的一个研究方向，核心的想法就是希望AI在学习大量的RL任务中获取足够的先验知识Prior Knowledge然后在面对新的RL任务时能够 学的更快，学的更好，能够自适应新环境！</p><h1 id="元强化学习意义"><a href="#元强化学习意义" class="headerlink" title="元强化学习意义"></a>元强化学习意义</h1><p>元强化学习试图解决深度强化学习存在的如下问题：</p><ul><li><strong>它的样本利用率非常低</strong>。换言之为了让模型的表现达到一定高度需要极为大量的训练样本。</li><li><strong>最终表现很多时候不够好</strong>。在很多任务上用非强化学习甚至非学习的其它方法，如基于模型的控制（model based control），线性二次型调节器（Linear Quadratic Regulator）等等可以获得好得多的表现。最气人的是这些模型很多时候样本利用率还高。当然这些模型有的时候会有一些假设比如有训练好的模型可以模仿，比如可以进行蒙特卡洛树搜索等等。</li><li><strong>DRL成功的关键离不开一个好的奖励函数（reward function），然而这种奖励函数往往很难设计</strong>。在Deep Reinforcement Learning That Matters作者提到有时候把奖励乘以一个常数模型表现就会有天和地的区别。但奖励函数的坑爹之处还不止如此。奖励函数的设计需要保证：<ul><li>加入了合适的先验，良好的定义了问题和在一切可能状态下的对应动作。坑爹的是模型很多时候会找到作弊的手段。Alex举的一个例子是有一个任务需要把红色的乐高积木放到蓝色的乐高积木上面，奖励函数的值基于红色乐高积木底部的高度而定。结果一个模型直接把红色乐高积木翻了一个底朝天。仔啊，你咋学坏了，阿爸对你很失望啊。</li><li>奖励函数的值太过稀疏。换言之大部分情况下奖励函数在一个状态返回的值都是0。这就和我们人学习也需要鼓励，学太久都没什么回报就容易气馁。都说21世纪是生物的世纪，怎么我还没感觉到呢？21世纪才刚开始呢。我等不到了啊啊啊啊啊。</li><li>有的时候在奖励函数上下太多功夫会引入新的偏见（bias）。</li><li>要找到一个大家都使用而又具有好的性质的奖励函数。这里Alex没很深入地讨论，但链接了一篇陶神（Terence Tao）的博客，大家有兴趣可以去看下。</li></ul></li><li><strong>局部最优/探索和剥削（exploration vs. exploitation）的不当应用</strong>。Alex举的一个例子是有一个连续控制的环境里，一个类似马的四足机器人在跑步，结果模型不小心多看到了马四脚朝天一顿乱踹后结果较好的情况，于是你只能看到四脚朝天的马了。</li><li><strong>对环境的过拟合</strong>。DRL少有在多个环境上玩得转的。你训练好的DQN在一个Atari game上work了，换一个可能就完全不work。即便你想要做迁移学习，也没有任何保障你能成功。</li><li><strong>不稳定性</strong>。<ul><li>读DRL论文的时候会发现有时候作者们会给出一个模型表现随着尝试random seed数量下降的图，几乎所有图里模型表现最终都会降到0。相比之下在监督学习里不同的超参数或多或少都会表现出训练带来的变化，而DRL里运气不好可能很长时间你模型表现的曲线都没有任何变化，因为完全不work。</li><li>即便知道了超参数和随机种子，你的实现只要稍有差别，模型的表现就可以千差万别。这可能就是Deep Reinforcement Learning That Matters一文里John Schulman两篇不同文章里同一个算法在同一个任务上表现截然不同的原因。</li><li>即便一切都很顺利，从我个人的经验和之前同某DRL研究人员的交流来看只要时间一长你的模型表现就可能突然从很好变成完全不work。原因我不是完全确定，可能和过拟合和variance过大有关。</li></ul></li></ul><h1 id="元强化学习方法"><a href="#元强化学习方法" class="headerlink" title="元强化学习方法"></a>元强化学习方法</h1><p>Meta RL（Meta Reinforcement Learning）是Meta Learning应用到Reinforcement Learning的一个研究方向。因此元强化学习的研究借鉴了元学习的思想和方法。</p><h2 id="元学习方法"><a href="#元学习方法" class="headerlink" title="元学习方法"></a>元学习方法</h2><h3 id="HyperNetwork-生成参数"><a href="#HyperNetwork-生成参数" class="headerlink" title="HyperNetwork 生成参数"></a>HyperNetwork 生成参数</h3><p>HyperNetwork是一个蛮有名的网络，简单说就是用一个网络来生成另外一个网络的参数。那么我们这里非常直接，我们的设想就是希望用一个hypernetwork输入训练集数据，然后给我输出我的对应模型也就是上图f的参数，我们希望输出的这个参数能够使得在测试图片上取得好的识别效果。那么，有了这样设计，这个hypernetwork其实就是一个meta network。大家可以看到，本来基本的做法是用训练集直接训练这个模型f，但是现在我们用这个hypernetwork不训练了，直接给你输出参数，这等价于hypernetwork学会了如何学习图像识别，这也是为什么meta learning也同时叫做learning to learn的原因。我们通过hypernetwork学会学习。训练好了这个模型，连反向传播梯度下降都不要了，直接给你参数，是不是很酷？</p><h3 id="Conditional-Neural-Network-条件神经网络"><a href="#Conditional-Neural-Network-条件神经网络" class="headerlink" title="Conditional Neural Network 条件神经网络"></a>Conditional Neural Network 条件神经网络</h3><p>直接把D_train当做条件输入到f中，那么这个f本身就变成一个meta network了。也就是条件神经网络实际上能够得到和上面的hypernetwork一样的意义。因为我们可以想，只要条件D_train变了，那么y_test肯定也就变了。所以这里就非常非常直接了。把数据全部输入进去，让神经网络自己学就行了，不外乎就是去设计一个合适的网络结构而已。那么，这里最最简单粗暴的网络结构就是SNAIL算法使用temporal convolutional network，也就是wavenet的架构：</p><h3 id="MAML-基于梯度的做法"><a href="#MAML-基于梯度的做法" class="headerlink" title="MAML 基于梯度的做法"></a>MAML 基于梯度的做法</h3><p>MAML的核心步骤就是</p><ul><li><p>采集Task，得到D_train和D_test</p></li><li><p>使用D_train对神经网络f训练少数几步，得到新的参数</p></li><li><p>利用新的参数训练D_test，然后使得梯度下降更新一开始的参数。</p></li></ul><h3 id="三种解决办法的优缺点"><a href="#三种解决办法的优缺点" class="headerlink" title="三种解决办法的优缺点"></a>三种解决办法的优缺点</h3><p>先说HyperNetwork生成参数的做法。这种做法最大的问题就在于参数空间是很大的，所以要生成合适的参数特别是巨量的参数其实是比较困难的，所以目前绝大多数生成参数的做法都是只生成少量参数，比如一层的MLP，或者对于参数的空间进行一定的限制，比如就在[-1,1]之间，否则空间太多，有无数种选择输出一样的结果，就很难训了。但是采样HyperNetwork又有其灵活性，意味着我们可以只更新少部分参数，而不用全部。</p><p>接下来就是条件神经网络了。这又有什么问题呢？我觉得在性能上绝对会是最好的，很直接，但是不好看，一直要拖着一个条件，网络很大。不管是生成参数还是MAML，他们的模型网络就是独立的，之后只要输入x就行了，而条件神经网络每次都要输入条件，很烦啊。</p><p>那么MAML呢？可能最烦人的就是二次梯度了，这意味着MAML的训练会很慢，那么就很难hold住大网络了。实际上MAML目前对于大的网络结构比如Resnet效果并不好。然后MAML是使用D_train的Loss来更新整个网络，对比HyperNetwork缺少灵活性。这个Loss就是最好的吗？不见得。如果D_train是无监督数据，那怎么办？所以MAML是有局限性的。</p><p>目前各种各样的Meta Learning研究，在方法论上都逃不出这三种方法。要么改改网络结构，要么结合一下上面的方法，比如先MAML再生成参数，或者hypernetwork和conditional neural network混着用等等。那么什么才是终极必杀呢？可能还是要具体问题具体看吧，对于不同的问题采用不同办法效果会不一样。这些都值得我们去探索。</p><h2 id="元强化学习方法-1"><a href="#元强化学习方法-1" class="headerlink" title="元强化学习方法"></a>元强化学习方法</h2><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://zhuanlan.zhihu.com/p/46059552" target="_blank" rel="noopener">Meta Learning单排小教学</a>,by Flood Sung.</li><li><a href="https://zhuanlan.zhihu.com/p/41223529" target="_blank" rel="noopener">最前沿: Meta RL论文解读</a>,by Flood Sung.</li><li><a href="https://zhuanlan.zhihu.com/p/33936457" target="_blank" rel="noopener">这里有一篇深度强化学习劝退文</a>,by Frankenstein.</li><li><a href="https://juejin.im/post/5ad41c826fb9a028d375ddd7" target="_blank" rel="noopener">周志华：满足这三大条件，可以考虑不用深度神经网络</a>,by 周志华教授.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;元强化学习定义&quot;&gt;&lt;a href=&quot;#元强化学习定义&quot; class=&quot;headerlink&quot; title=&quot;元强化学习定义&quot;&gt;&lt;/a&gt;元强化学习定义&lt;/h1&gt;&lt;p&gt;什么是元强化学习？这得从深度学习开始说起。&lt;/p&gt;
-&lt;p&gt;Deep Learning研究一个从x到y
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="机器学习" scheme="https://huangwang.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   

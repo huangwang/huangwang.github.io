@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[PX4应用开发简要教程]]></title>
+    <url>%2F2019%2F04%2F29%2FPX4%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E7%AE%80%E8%A6%81%E6%95%99%E7%A8%8B%2F</url>
+    <content type="text"><![CDATA[本文说明如何创建和运行第一个板载应用程序。 它涵盖了PX4上应用程序开发所需的所有基本概念和API。 开发环境在开发第一个PX4应用程序之前，需要构建如下开发环境： PX4 SITL模拟器或兼容PX4的飞行控制器。 PX4开发工具链用于所需目标。 从Github下载PX4源代码 简单应用代码编写本节创建一个最小的应用，仅用于打印Hello Sky！。整个应用由一个简单C文件和一个cmake定义文件构成。具体步骤如下： 创建目录Firmware/src/examples/px4_simple_app 在上述目录中创建C文件px4_simple_app.c 在上述目录中创建cmake定义文件CMakeLists.txt px4_simple_app.c代码内容如下： 12345678910111213141516/** * @file px4_simple_app.c * Minimal application example for PX4 autopilot * * @author Example User &lt;mail@example.com&gt; */#include &lt;px4_log.h&gt;__EXPORT int px4_simple_app_main(int argc, char *argv[]);int px4_simple_app_main(int argc, char *argv[])&#123; PX4_INFO(&quot;Hello Sky!&quot;); return OK;&#125; CMakeLists.txt文件内容如下： 123456789px4_add_module( MODULE examples__px4_simple_app MAIN px4_simple_app STACK_MAIN 2000 SRCS px4_simple_app.c DEPENDS platforms__common ) px4_add_module()方法从模块描述构建静态库。 MAIN块列出了模块的名称 。这会将该模块与NuttX一起注册，以便可以从PX4 shell或SITL控制台调用它。 编译链接针对不同的目标平台，使用不同的make命令构建： jMAVSim Simulator: make posix_sitl_default jmavsim Pixhawk v1/2: make px4fmu-v2_default Pixhawk v3: make px4fmu-v4_default 测试应用（硬件）上传固件到开发板在开发板上测试，使用如下命令上传PX4固件： Pixhawk v1/2: make px4fmu-v2_default upload Pixhawk v3: make px4fmu-v4_default upload 连接控制台现在通过串口或USB连接到系统控制台。 点击ENTER将弹出shell提示符： 1234nsh&gt;nsh&gt;helpnsh&gt; px4_simple_appHello Sky! 测试应用（SITL）如果您正在使用SITL，PX4控制台将自动启动。 与nsh控制台一样，您可以键入help以查看内置应用程序列表。 输入px4_simple_app以运行最小应用程序。 12pxh&gt; px4_simple_appINFO [px4_simple_app] Hello Sky! 参考链接 PX4编译开发环境配置,by jackhuang. PX4开发基本概念解读,by jackhuang. First Application Tutorial (Hello Sky),by dronecode.]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>飞行仿真</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[OpenCV4.0相机标定教程]]></title>
     <url>%2F2019%2F04%2F28%2FOpenCV4-0%E7%9B%B8%E6%9C%BA%E6%A0%87%E5%AE%9A%E6%95%99%E7%A8%8B%2F</url>
     <content type="text"><![CDATA[相机已经存在了很长时间。 然而，随着20世纪后期廉价针孔相机的推出，它们成为我们日常生活中的常见现象。 不幸的是，这种便宜与其价格有关：严重失真。 幸运的是，这些是常数，并且通过校准和一些重新映射，我们可以纠正这一点。 此外，通过校准，您还可以确定相机的自然单位（像素）与真实世界单位（例如毫米）之间的关系。这个校准过程就是相机标定。 理论对于失真，OpenCV考虑了径向和切向因子。 对于径向因子，使用以下公式： x_{distorted} = x( 1 + k_1 r^2 + k_2 r^4 + k_3 r^6) \\ y_{distorted} = y( 1 + k_1 r^2 + k_2 r^4 + k_3 r^6)因此，对于$（x，y）$坐标处的未失真像素点，其在失真图像上的位置将是$（x{distorted},y{distorted}）$。 径向变形的存在表现为“桶状”或“鱼眼”效应。 由于摄像镜头与成像平面不完全平行，因此会发生偏心畸变。 它可以通过公式表示： x_{distorted} = x + [ 2p_1xy + p_2(r^2+2x^2)] \\ y_{distorted} = y + [ p_1(r^2+ 2y^2)+ 2p_2xy]所以我们有五个失真参数，在OpenCV中呈现为一行矩阵，有5列： distortion\_coefficients=(k_1 \hspace{10pt} k_2 \hspace{10pt} p_1 \hspace{10pt} p_2 \hspace{10pt} k_3)现在我们使用以下公式进行单位转换： \left [ \begin{matrix} x \\ y \\ w \end{matrix} \right ] = \left [ \begin{matrix} f_x & 0 & c_x \\ 0 & f_y & c_y \\ 0 & 0 & 1 \end{matrix} \right ] \left [ \begin{matrix} X \\ Y \\ Z \end{matrix} \right ]这里通过使用单应性坐标系（和$w = Z$）来解释$w$的存在。 未知参数是$f_x$和$f_y$（相机焦距）和（$c_x，c_y$），它们是以像素坐标表示的光学中心。 如果对于两个轴，使用具有给定纵横比（通常为1）的共同焦距，则$f_y = f_x a$，并且在上部公式中，我们将具有单个焦距$f$。 包含这四个参数的矩阵称为*相机矩阵。 虽然无论使用何种相机分辨率，失真系数都是相同的，但应根据校准分辨率的当前分辨率进行缩放。 确定这两个矩阵的过程是校准。 通过基本几何方程计算这些参数。 使用的等式取决于所选择的校准对象。 目前，OpenCV支持三种类型的校准对象： 古典黑白棋枰 对称的圆圈图案 不对称的圆圈图案 基本上，您需要使用相机拍摄这些图案的快照，然后让OpenCV找到它们。 每个找到的模式都会产生一个新的等式。 要求解方程，您需要至少预定数量的模式快照，以形成一个良好的方程系统。 棋盘图案的数量较高，圆圈图案的数量较少。 例如，理论上棋盘图案需要至少两个快照。 但是，实际上我们的输入图像中存在大量噪声，因此为了获得良好的结果，您可能需要至少10个不同位置的输入模式的快照。 目标OpenCV4.0中相机标定样例程序的目标： 确定失真矩阵 确定相机矩阵 从摄像机，视频和图像文件列表中获取输入 从XML / YAML文件中读取配置 将结果保存到XML / YAML文件中 计算重新投影误差 源代码您也可以在OpenCV源库的samples / cpp / tutorial_code / calib3d / camera_calibration /文件夹中找到源代码，或从此处下载。要使用该程序，请使用-h参数运行它。该程序有一个重要的参数：配置文件的名称。如果没有给出，那么它将尝试打开名为“default.xml”的那个。这是XML格式的示例配置文件。在配置文件中，您可以选择将相机用作输入，视频文件或图像列表。如果选择最后一个，则需要创建一个配置文件，用于枚举要使用的图像。这是一个例子。要记住的重要部分是需要使用绝对路径或应用程序工作目录中的相对路径来指定图像。您可以在上面提到的samples目录中找到所有这些。 应用程序启动时从配置文件中读取设置。虽然这是它的一个重要部分，但它与本教程的主题无关：摄像机校准。因此，我选择不在此处发布该部分的代码。有关如何执行此操作的技术背景，您可以在使用XML和YAML文件的文件输入和输出教程中找到。 构建相机标定程序切换到camera_calibration示例教程源代码所在目录，创建build临时目录并创建CMakeLists.txt文件。 123cd ~/opencv/samples/cpp/tutorial_code/calib3d/camera_calibration/mkdir buildtouch CMakeLists.txt CMakeLists.txt文件内容如下：1234567cmake_minimum_required(VERSION 2.8)set (CMAKE_CXX_STANDARD 11)project( camera_calibration )find_package( OpenCV REQUIRED )include_directories( $&#123;OpenCV_INCLUDE_DIRS&#125; )add_executable( camera_calibration camera_calibration.cpp )target_link_libraries( camera_calibration $&#123;OpenCV_LIBS&#125; ) 构建相机标定程序：123cd buildcmake ..make 参考链接 Using OpenCV with gcc and CMake,by opencv. Camera calibration With OpenCV,by opencv. C++11 activation with or ,by stackoverflow. 计算机视觉之相机成像原理与坐标系转换,by jack huang.]]></content>
@@ -17,7 +26,7 @@
       <tags>
         <tag>笔记本</tag>
         <tag>计算机视觉</tag>
-        <tag>OpenCV</tag>
+        <tag>opencv</tag>
       </tags>
   </entry>
   <entry>

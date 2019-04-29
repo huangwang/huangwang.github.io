@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-04-29T00:38:34.902Z</updated>
+  <updated>2019-04-29T12:47:18.224Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>PX4应用开发简要教程</title>
+    <link href="https://huangwang.github.io/2019/04/29/PX4%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E7%AE%80%E8%A6%81%E6%95%99%E7%A8%8B/"/>
+    <id>https://huangwang.github.io/2019/04/29/PX4应用开发简要教程/</id>
+    <published>2019-04-29T12:11:19.000Z</published>
+    <updated>2019-04-29T12:47:18.224Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文说明如何创建和运行第一个板载应用程序。 它涵盖了PX4上应用程序开发所需的所有基本概念和API。</p><h1 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h1><p>在开发第一个PX4应用程序之前，需要构建如下开发环境：</p><ul><li>PX4 SITL模拟器或兼容PX4的飞行控制器。</li><li>PX4开发工具链用于所需目标。</li><li>从Github下载PX4源代码</li></ul><h1 id="简单应用"><a href="#简单应用" class="headerlink" title="简单应用"></a>简单应用</h1><h2 id="代码编写"><a href="#代码编写" class="headerlink" title="代码编写"></a>代码编写</h2><p>本节创建一个最小的应用，仅用于打印Hello Sky！。整个应用由一个简单C文件和一个cmake定义文件构成。具体步骤如下：</p><ol><li>创建目录Firmware/src/examples/px4_simple_app</li><li>在上述目录中创建C文件px4_simple_app.c</li><li>在上述目录中创建cmake定义文件CMakeLists.txt</li></ol><p>px4_simple_app.c代码内容如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * @file px4_simple_app.c</span><br><span class="line"> * Minimal application example for PX4 autopilot</span><br><span class="line"> *</span><br><span class="line"> * @author Example User &lt;mail@example.com&gt;</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">#include &lt;px4_log.h&gt;</span><br><span class="line"></span><br><span class="line">__EXPORT int px4_simple_app_main(int argc, char *argv[]);</span><br><span class="line"></span><br><span class="line">int px4_simple_app_main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    PX4_INFO(&quot;Hello Sky!&quot;);</span><br><span class="line">    return OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>CMakeLists.txt文件内容如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">px4_add_module(</span><br><span class="line">    MODULE examples__px4_simple_app</span><br><span class="line">    MAIN px4_simple_app</span><br><span class="line">    STACK_MAIN 2000</span><br><span class="line">    SRCS</span><br><span class="line">        px4_simple_app.c</span><br><span class="line">    DEPENDS</span><br><span class="line">        platforms__common</span><br><span class="line">    )</span><br></pre></td></tr></table></figure><p>px4_add_module()方法从模块描述构建静态库。 MAIN块列出了模块的名称 。这会将该模块与NuttX一起注册，以便可以从PX4 shell或SITL控制台调用它。</p><h2 id="编译链接"><a href="#编译链接" class="headerlink" title="编译链接"></a>编译链接</h2><p>针对不同的目标平台，使用不同的make命令构建：</p><ul><li>jMAVSim Simulator: make posix_sitl_default jmavsim</li><li>Pixhawk v1/2: make px4fmu-v2_default</li><li>Pixhawk v3: make px4fmu-v4_default</li></ul><h2 id="测试应用（硬件）"><a href="#测试应用（硬件）" class="headerlink" title="测试应用（硬件）"></a>测试应用（硬件）</h2><h3 id="上传固件到开发板"><a href="#上传固件到开发板" class="headerlink" title="上传固件到开发板"></a>上传固件到开发板</h3><p>在开发板上测试，使用如下命令上传PX4固件：</p><ul><li>Pixhawk v1/2: make px4fmu-v2_default upload</li><li>Pixhawk v3: make px4fmu-v4_default upload</li></ul><h3 id="连接控制台"><a href="#连接控制台" class="headerlink" title="连接控制台"></a>连接控制台</h3><p>现在通过串口或USB连接到系统控制台。 点击ENTER将弹出shell提示符：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">nsh&gt;</span><br><span class="line">nsh&gt;help</span><br><span class="line">nsh&gt; px4_simple_app</span><br><span class="line">Hello Sky!</span><br></pre></td></tr></table></figure><h2 id="测试应用（SITL）"><a href="#测试应用（SITL）" class="headerlink" title="测试应用（SITL）"></a>测试应用（SITL）</h2><p>如果您正在使用SITL，PX4控制台将自动启动。 与nsh控制台一样，您可以键入help以查看内置应用程序列表。</p><p>输入px4_simple_app以运行最小应用程序。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pxh&gt; px4_simple_app</span><br><span class="line">INFO  [px4_simple_app] Hello Sky!</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://huangwang.github.io/2019/04/26/PX4编译开发环境配置/">PX4编译开发环境配置</a>,by jackhuang.</li><li><a href="https://huangwang.github.io/2019/04/27/PX4开发基本概念解读/">PX4开发基本概念解读</a>,by jackhuang.</li><li><a href="https://dev.px4.io/en/apps/hello_sky.html" target="_blank" rel="noopener">First Application Tutorial (Hello Sky)</a>,by dronecode.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;本文说明如何创建和运行第一个板载应用程序。 它涵盖了PX4上应用程序开发所需的所有基本概念和API。&lt;/p&gt;
+&lt;h1 id=&quot;开发环境&quot;&gt;&lt;a href=&quot;#开发环境&quot; class=&quot;headerlink&quot; title=&quot;开发环境&quot;&gt;&lt;/a&gt;开发环境&lt;/h1&gt;&lt;p&gt;在开发第
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="飞行仿真" scheme="https://huangwang.github.io/tags/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F/"/>
+    
+  </entry>
   
   <entry>
     <title>OpenCV4.0相机标定教程</title>
@@ -48,7 +74,7 @@
     <link href="https://huangwang.github.io/2019/04/28/Ubuntu-16-04%E5%AE%89%E8%A3%85opencv%E7%9A%84%E6%96%B9%E6%B3%95/"/>
     <id>https://huangwang.github.io/2019/04/28/Ubuntu-16-04安装opencv的方法/</id>
     <published>2019-04-28T11:38:11.000Z</published>
-    <updated>2019-04-28T15:03:15.057Z</updated>
+    <updated>2019-04-29T12:13:29.549Z</updated>
     
     <content type="html"><![CDATA[<p>本文记录在Ubuntu16.04 LTS操作系统中从源代码编译安装OpenCV的过程。</p><h1 id="安装必需的软件包"><a href="#安装必需的软件包" class="headerlink" title="安装必需的软件包"></a>安装必需的软件包</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[compiler] sudo apt-get install build-essential</span><br><span class="line">[required] sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev</span><br><span class="line">[optional] sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev</span><br></pre></td></tr></table></figure><h1 id="下载OpenCV源代码"><a href="#下载OpenCV源代码" class="headerlink" title="下载OpenCV源代码"></a>下载OpenCV源代码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~/&lt;my_working_directory&gt;</span><br><span class="line">git clone https://github.com/opencv/opencv.git</span><br><span class="line">git clone https://github.com/opencv/opencv_contrib.git</span><br></pre></td></tr></table></figure><h1 id="使用CMake构建OpenCV"><a href="#使用CMake构建OpenCV" class="headerlink" title="使用CMake构建OpenCV"></a>使用CMake构建OpenCV</h1><h2 id="创建临时的build目录"><a href="#创建临时的build目录" class="headerlink" title="创建临时的build目录"></a>创建临时的build目录</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd ~/opencv</span><br><span class="line"># 查看并检出OpenCV最新发布版</span><br><span class="line">git tag</span><br><span class="line">git checkout 4.1.0</span><br><span class="line"></span><br><span class="line">mkdir build</span><br><span class="line">cd build</span><br></pre></td></tr></table></figure><h2 id="创建配置文件"><a href="#创建配置文件" class="headerlink" title="创建配置文件"></a>创建配置文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_</span><br><span class="line">INSTALL_PREFIX=/usr/local ..</span><br></pre></td></tr></table></figure><h2 id="构建OpenCV"><a href="#构建OpenCV" class="headerlink" title="构建OpenCV"></a>构建OpenCV</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -j3 # runs 3 jobs in parallel</span><br></pre></td></tr></table></figure><h2 id="安装OpenCV"><a href="#安装OpenCV" class="headerlink" title="安装OpenCV"></a>安装OpenCV</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo make install</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://docs.opencv.org/4.1.0/d7/d9f/tutorial_linux_install.html" target="_blank" rel="noopener">Installation in Linux</a>, by opencv.</li><li><a href="https://github.com/opencv/opencv/issues/13154" target="_blank" rel="noopener">4.0.0 does not produce pkgconfig file</a>, by opencv.</li><li><a href="https://zh.wikipedia.org/zh-hans/Pkg-config" target="_blank" rel="noopener">Pkg-config</a>,by wikipedia.</li></ol>]]></content>
     
@@ -67,7 +93,7 @@
     
       <category term="计算机视觉" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/"/>
     
-      <category term="OpenCV" scheme="https://huangwang.github.io/tags/OpenCV/"/>
+      <category term="opencv" scheme="https://huangwang.github.io/tags/opencv/"/>
     
   </entry>
   
@@ -518,32 +544,6 @@
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
       <category term="软件工程" scheme="https://huangwang.github.io/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>最优化算法之动态规划入门</title>
-    <link href="https://huangwang.github.io/2019/02/10/%E6%9C%80%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95%E4%B9%8B%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E5%85%A5%E9%97%A8/"/>
-    <id>https://huangwang.github.io/2019/02/10/最优化算法之动态规划入门/</id>
-    <published>2019-02-10T15:15:14.000Z</published>
-    <updated>2019-02-10T15:25:39.630Z</updated>
-    
-    <content type="html"><![CDATA[<p>动态规划（英语：Dynamic programming，简称DP）是一种在数学、管理科学、计算机科学、经济学和生物信息学中使用的，通过把原问题分解为相对简单的子问题的方式求解复杂问题的方法。</p><p>动态规划常常适用于有重叠子问题和最优子结构性质的问题，动态规划方法所耗时间往往远少于朴素解法。</p><p>动态规划中包含三个重要子概念：</p><ul><li>最优子结构</li><li>边界</li><li>状态转移公式</li></ul><p>对有重叠子问题和最优子结构性质的问题，在建模之后，即获得其状态转移公式和边界之后，可采用下列算法求解：</p><ul><li>递归求解</li><li>备忘录算法</li><li>动态规划求解</li></ul><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://zh.wikipedia.org/wiki/动态规划" target="_blank" rel="noopener">动态规划</a>,by wikipedia.</li><li><a href="https://zhuanlan.zhihu.com/p/31628866" target="_blank" rel="noopener">漫画：什么是动态规划？</a>,by 程序员小灰.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;动态规划（英语：Dynamic programming，简称DP）是一种在数学、管理科学、计算机科学、经济学和生物信息学中使用的，通过把原问题分解为相对简单的子问题的方式求解复杂问题的方法。&lt;/p&gt;
-&lt;p&gt;动态规划常常适用于有重叠子问题和最优子结构性质的问题，动态规划方法所
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="机器学习" scheme="https://huangwang.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   

@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[计算机科学术语辨析]]></title>
+    <url>%2F2019%2F05%2F05%2F%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E6%9C%AF%E8%AF%AD%E8%BE%A8%E6%9E%90%2F</url>
+    <content type="text"><![CDATA[计算机科学中的一些术语是同行之间进行交流的工具，但是这些术语约定俗成，缺乏权威定义，在不同的语境下有不同的涵义，不同的人有不同的理解，由此造成很多分歧。本文记录常用计算机科学术语，通过规范和校正其内涵和外延，避免分歧，提高效率。 常用术语架构模式模块组件控件中间件术语辨析面向对象编程 VS 面向过程编程组件化开发 VS 模块化开发参考链接 面向对象 vs 类与继承 vs 面向组件, by 龙腾道默默地.]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>软件工程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[PX4应用开发简要教程]]></title>
     <url>%2F2019%2F04%2F29%2FPX4%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E7%AE%80%E8%A6%81%E6%95%99%E7%A8%8B%2F</url>
     <content type="text"><![CDATA[本文说明如何创建和运行第一个板载应用程序。 它涵盖了PX4上应用程序开发所需的所有基本概念和API。 开发环境在开发第一个PX4应用程序之前，需要构建如下开发环境： PX4 SITL模拟器或兼容PX4的飞行控制器。 PX4开发工具链用于所需目标。 从Github下载PX4源代码 简单应用代码编写本节创建一个最小的应用，仅用于打印Hello Sky！。整个应用由一个简单C文件和一个cmake定义文件构成。具体步骤如下： 创建目录Firmware/src/examples/px4_simple_app 在上述目录中创建C文件px4_simple_app.c 在上述目录中创建cmake定义文件CMakeLists.txt px4_simple_app.c代码内容如下： 12345678910111213141516/** * @file px4_simple_app.c * Minimal application example for PX4 autopilot * * @author Example User &lt;mail@example.com&gt; */#include &lt;px4_log.h&gt;__EXPORT int px4_simple_app_main(int argc, char *argv[]);int px4_simple_app_main(int argc, char *argv[])&#123; PX4_INFO(&quot;Hello Sky!&quot;); return OK;&#125; CMakeLists.txt文件内容如下： 123456789px4_add_module( MODULE examples__px4_simple_app MAIN px4_simple_app STACK_MAIN 2000 SRCS px4_simple_app.c DEPENDS platforms__common ) px4_add_module()方法从模块描述构建静态库。 MAIN块列出了模块的名称 。这会将该模块与NuttX一起注册，以便可以从PX4 shell或SITL控制台调用它。 编译链接针对不同的目标平台，使用不同的make命令构建： jMAVSim Simulator: make posix_sitl_default jmavsim Pixhawk v1/2: make px4fmu-v2_default Pixhawk v3: make px4fmu-v4_default 测试应用（硬件）上传固件到开发板在开发板上测试，使用如下命令上传PX4固件： Pixhawk v1/2: make px4fmu-v2_default upload Pixhawk v3: make px4fmu-v4_default upload 连接控制台现在通过串口或USB连接到系统控制台。 点击ENTER将弹出shell提示符： 1234nsh&gt;nsh&gt;helpnsh&gt; px4_simple_appHello Sky! 测试应用（SITL）如果您正在使用SITL，PX4控制台将自动启动。 与nsh控制台一样，您可以键入help以查看内置应用程序列表。 输入px4_simple_app以运行最小应用程序。 12pxh&gt; px4_simple_appINFO [px4_simple_app] Hello Sky! 参考链接 PX4编译开发环境配置,by jackhuang. PX4开发基本概念解读,by jackhuang. First Application Tutorial (Hello Sky),by dronecode.]]></content>

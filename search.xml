@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[Dell笔记本安装Ubuntu16.04出现的问题及解决方案]]></title>
-    <url>%2F2019%2F05%2F11%2FDell%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%AE%89%E8%A3%85Ubuntu16-04%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%2F</url>
-    <content type="text"><![CDATA[PX4开发推荐在Ubuntu16.04上进行，然在一些带独立显卡的笔记本上安装时，进入安装界面就卡住了。解决方案可参考链接Ubuntu16.04—64位安装及使用中出现的问题。主要有两种方法： 重新开机，光标选中“Install Ubuntu” ，按“e”，进入grub界面，将倒数第二行中的“quiet splash —-”改为“nomodeset”。F10保存，就可以进入安装界面，进行安装。 加入nomodeset参数试试，不行的话，再试试加入nouveau.modeset=0.如果能顺利安装，则安装好后，sudo gedit /boot/grub/grub.cfg 在里面找到相应位置加上，就不用每次开机都改了。 参考链接 Ubuntu16.04—64位安装及使用中出现的问题,by 一部电影.]]></content>
+    <title><![CDATA[使用nvm进行nodejs版本管理]]></title>
+    <url>%2F2019%2F05%2F11%2F%E4%BD%BF%E7%94%A8nvm%E8%BF%9B%E8%A1%8Cnodejs%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86%2F</url>
+    <content type="text"><![CDATA[nvm是一个简单bash脚本，用于管理多个活动的nodejs版本。在linux操作系统中使用nvm安装和管理nodejs十分方便。下面简单介绍ubuntu 16.04操作系统下nvm的安装使用。 安装脚本在Ubuntu 16.04的终端中，直接运行如下命令： 1wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash 管理Nodejs 安装最新nodejs长期支持版 1nvm install --lts 卸载最新nodejs长期支持版 1nvm uninstall --lts 参考链接 Node Version Manager, by nvm-sh.]]></content>
       <tags>
         <tag>笔记本</tag>
-        <tag>linux</tag>
+        <tag>nodejs</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Dell笔记本安装Ubuntu16.04出现的问题及解决方案]]></title>
+    <url>%2F2019%2F05%2F11%2FDell%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%AE%89%E8%A3%85Ubuntu16-04%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%2F</url>
+    <content type="text"><![CDATA[PX4开发推荐在Ubuntu16.04上进行，然在一些带独立显卡的笔记本上安装时，进入安装界面就卡住了。问题产生原因显然与显卡驱动有关。 解决方案解决方案可参考链接Ubuntu16.04—64位安装及使用中出现的问题。主要有两种方法： 重新开机，光标选中“Install Ubuntu” ，按“e”，进入grub界面，将倒数第二行中的“quiet splash —-”改为“nomodeset”。F10保存，就可以进入安装界面，进行安装。 如果加入nomodeset参数不行，则试试加入nouveau.modeset=0，步骤一样。 后续维护如果能顺利安装，则安装好后，添加选项到/etc/default/grub文件。步骤如下：1sudo gedit /etc/default/grub 然后将nomodeset选项添加到 GRUB_CMDLINE_LINUX_DEFAULT: 1234567GRUB_DEFAULT=0GRUB_HIDDEN_TIMEOUT=0GRUB_HIDDEN_TIMEOUT_QUIET=trueGRUB_TIMEOUT=5GRUB_DISTRIBUTOR=`lsb_release -i -s 2&gt; /dev/null || echo Debian`GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet splash nomodeset&quot;GRUB_CMDLINE_LINUX=&quot;&quot; 最后更显grub启动文件：1sudo update-grub 参数含义附内核显示参数的含义：123456789101112131415nomodeset 不载入所有关于显示卡的驱动nouveau.modeset=0 关闭nvidia显卡的驱动，反之=1为开启i915.modeset=0 关闭Intel显卡的驱动，挺好奇对于Intel内显会有什么影响xforcevesa或radeon.modeset=0 xforcevesa 跟AMD显卡(ATI)有关的设定，我猜也是关闭acpi=off 回归旧时代，电源相关设定，OS无法控管，交给bios处理acpi功能失效，有不少硬体上奇怪的问题，可以用这参数解决 参考链接 Ubuntu16.04—64位安装及使用中出现的问题,by 一部电影. acpi_osi=linux、 nomodeset是什么意思? 功能?, by 峰Caesar. How do I set ‘nomodeset’ after I’ve already installed Ubuntu?,by askubuntu.]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>Ubuntu</tag>
       </tags>
   </entry>
   <entry>

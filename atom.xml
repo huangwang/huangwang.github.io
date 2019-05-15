@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-05-15T13:28:49.953Z</updated>
+  <updated>2019-05-15T14:13:27.068Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>PX4无人机MAVROS外部控制教程</title>
+    <link href="https://huangwang.github.io/2019/05/15/PX4%E6%97%A0%E4%BA%BA%E6%9C%BAMAVROS%E5%A4%96%E9%83%A8%E6%8E%A7%E5%88%B6%E6%95%99%E7%A8%8B/"/>
+    <id>https://huangwang.github.io/2019/05/15/PX4无人机MAVROS外部控制教程/</id>
+    <published>2019-05-15T13:36:12.000Z</published>
+    <updated>2019-05-15T14:13:27.068Z</updated>
+    
+    <content type="html"><![CDATA[<p>PX4中的offboard模式能够接受来自外部的控制指令，搭配机载或支持MAVROS的协同计算机，可在PX4飞控平台上加入视觉处理或人工智能，以实现无人机自动控制功能。下面即介绍如何在基于MAVROS的协同计算机上运行程序控制PX4无人机。具体过程如下：</p><h1 id="PX4固件参数设置"><a href="#PX4固件参数设置" class="headerlink" title="PX4固件参数设置"></a>PX4固件参数设置</h1><p>在开始无人机外部控制开发之前，您需要在PX4固件中设置两件事:</p><ul><li>将RC开关映射到场外模式激活</li></ul><p>要执行此操作，请在QGroundControl中加载参数并查找RC_MAP_OFFB_SW参数，您可以为其分配要用于激活offboard模式的RC通道。 以这样一种方式映射事物是非常有用的。当你脱离offboard模式时，你会进入位置控制。</p><p>虽然此步骤不是强制性的，因为您可以使用MAVLink消息激活offboard模式。 我们认为这种方法更安全。</p><ul><li>启用配套计算机接口</li></ul><p>查找SYS_COMPANION参数并将其设置为921600（推荐）或57600. 此参数将激活<strong>Telem2</strong>端口上的MAVLink流，其中包含特定于板载模式的数据流以及相应的波特率（921600 8N1或57600 8N1）。 </p><p><strong>本人实验测试时SYS_COMPANION参数设置成Companion Link(57600) 。此外要注意通过Telem2端口的无线收发装置与地面支持MAVROS的具有无线收发装置的协同计算机连接。并长按安全锁手动解锁无人机</strong></p><h1 id="安装MAVROS"><a href="#安装MAVROS" class="headerlink" title="安装MAVROS"></a>安装MAVROS</h1><p>在地面协同计算机上安装MAVROS请参考<a href="https://huangwang.github.io/2019/05/10/Ubuntu16-04%E5%AE%89%E8%A3%85MAVROS/">Ubuntu16.04安装MAVROS</a>，完成后使用如下命令启动MAVROS:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ roscore</span><br><span class="line"># 启动MAVROS,链接到本地ROS</span><br><span class="line">$ roslaunch mavros px4.launch fcu_url:=serial:///dev/ttyUSB0:57600</span><br></pre></td></tr></table></figure><h1 id="构建Offboard示例程序"><a href="#构建Offboard示例程序" class="headerlink" title="构建Offboard示例程序"></a>构建Offboard示例程序</h1><p>ROS节点Offboard示例程序的构建请参考<a href="https://huangwang.github.io/2019/05/15/ROS构建Package和Node的教程/">ROS构建Package和Node的教程</a>，完成后使用如下命令启动Offboard示例程序：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd catkin_ws/</span><br><span class="line">$ source devel/setup.bash</span><br><span class="line">$ rosrun offboard offboard_node</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://huangwang.github.io/2019/05/15/PX4软件在环仿真之MAVROS外部控制/">PX4软件在环仿真之MAVROS外部控制</a>,by jackhuang. </li><li><a href="https://dev.px4.io/en/ros/offboard_control.html" target="_blank" rel="noopener">Offboard Control</a>, by dronecode.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;PX4中的offboard模式能够接受来自外部的控制指令，搭配机载或支持MAVROS的协同计算机，可在PX4飞控平台上加入视觉处理或人工智能，以实现无人机自动控制功能。下面即介绍如何在基于MAVROS的协同计算机上运行程序控制PX4无人机。具体过程如下：&lt;/p&gt;
+&lt;h1 i
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="PX4" scheme="https://huangwang.github.io/tags/PX4/"/>
+    
+      <category term="Gazebo" scheme="https://huangwang.github.io/tags/Gazebo/"/>
+    
+  </entry>
   
   <entry>
     <title>PX4软件在环仿真之MAVROS外部控制</title>
@@ -516,34 +544,6 @@
       
         &lt;p&gt;FlightGear中创建新飞机粗略地分成四步：创建飞机的3D模型，创建飞机的飞行动力学模型，创建飞机操作动画，实现飞机各子系统。具体而言，又可分成两个主要的开发领域：飞行动力学模型开发和飞机3D模型开发。&lt;/p&gt;
 &lt;h1 id=&quot;飞机3D模型开发&quot;&gt;&lt;a href=&quot;#飞
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="3D" scheme="https://huangwang.github.io/tags/3D/"/>
-    
-      <category term="计算机仿真" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BB%BF%E7%9C%9F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>FlightGear安装飞机和场景的方法</title>
-    <link href="https://huangwang.github.io/2019/03/13/FlightGear%E5%AE%89%E8%A3%85%E9%A3%9E%E6%9C%BA%E5%92%8C%E5%9C%BA%E6%99%AF%E7%9A%84%E6%96%B9%E6%B3%95/"/>
-    <id>https://huangwang.github.io/2019/03/13/FlightGear安装飞机和场景的方法/</id>
-    <published>2019-03-13T00:21:13.000Z</published>
-    <updated>2019-03-13T09:56:42.301Z</updated>
-    
-    <content type="html"><![CDATA[<p>FlightGear可安装额外的飞行器和地景。</p><h1 id="安装地景"><a href="#安装地景" class="headerlink" title="安装地景"></a>安装地景</h1><p>FlightGear的详细地景可以覆盖整个世界。默认的FlightGear安装包只包括旧金山周边一小块区域，因此想要飞到其他地方，得下载额外的地景。</p><p>每一块地景被打包成一个压缩包，每经纬度10度为一块。每一个压缩包以10×10经纬度命名，如w130n50.tgz。</p><p>下载FlightGear地景参考链接1。下载后的地景复制到$FG_ROOT/Scenery或者$FG_SCENERY下。</p><p>使用如下命令解压地景，将在$FG_ROOT/Scenery产生Objects和Terrain两个文件夹，分别为卫星地图和地形数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd $FG_ROOT/Scenery</span><br><span class="line">tar -xvf e110n30.tgz</span><br><span class="line">rm e110n30.tgz</span><br></pre></td></tr></table></figure></p><h1 id="安装飞行器"><a href="#安装飞行器" class="headerlink" title="安装飞行器"></a>安装飞行器</h1><p>默认的FlightGear安装包只有少数几个飞行器，可以从参考链接2中获得大量的飞行器。</p><p>下载的飞行器复制到$FG_ROOT/Aircraft文件夹下。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="http://home.flightgear.org/download/scenery/" target="_blank" rel="noopener">下载FlightGear地景</a>， by flightgear.</li><li><a href="http://home.flightgear.org/download/download-aircraft/" target="_blank" rel="noopener">下载FlightGear飞行器</a>, by flightgear.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;FlightGear可安装额外的飞行器和地景。&lt;/p&gt;
-&lt;h1 id=&quot;安装地景&quot;&gt;&lt;a href=&quot;#安装地景&quot; class=&quot;headerlink&quot; title=&quot;安装地景&quot;&gt;&lt;/a&gt;安装地景&lt;/h1&gt;&lt;p&gt;FlightGear的详细地景可以覆盖整个世界。默认的Flig
       
     
     </summary>

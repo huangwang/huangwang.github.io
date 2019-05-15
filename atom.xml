@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-05-11T11:33:51.015Z</updated>
+  <updated>2019-05-15T12:27:44.237Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ROS构建Package和Node的教程</title>
+    <link href="https://huangwang.github.io/2019/05/15/ROS%E6%9E%84%E5%BB%BAPackage%E5%92%8CNode%E7%9A%84%E6%95%99%E7%A8%8B/"/>
+    <id>https://huangwang.github.io/2019/05/15/ROS构建Package和Node的教程/</id>
+    <published>2019-05-15T11:35:37.000Z</published>
+    <updated>2019-05-15T12:27:44.237Z</updated>
+    
+    <content type="html"><![CDATA[<p>ROS（机器人操作系统，Robot Operating System），是专为机器人软件开发所设计出来的一套电脑操作系统架构。它是一个开源的元级操作系统（后操作系统），提供类似于操作系统的服务，包括硬件抽象描述、底层驱动程序管理、共用功能的执行、程序间消息传递、程序发行包管理，它也提供一些工具和库用于获取、建立、编写和执行多机融合的程序。</p><p>ROS的运行架构是一种使用ROS通信模块实现模块间P2P的松耦合的网络连接的处理架构，它执行若干种类型的通讯，包括：</p><ul><li>基于服务的同步RPC（远程过程调用）通讯；</li><li>基于Topic的异步数据流通讯，还有参数服务器上的数据存储。</li></ul><p>ROS可与PX4一起用于飞行器的外部控制, 它使用MAVROS节点与在硬件上运行的PX4或使用Gazebo Simulator进行通信。MAVROS节点的安装请参考<a href="https://huangwang.github.io/2019/05/10/Ubuntu16-04%E5%AE%89%E8%A3%85MAVROS/">Ubuntu16.04安装MAVROS</a>，下面以编写基于MAVROS的外部控制节点为例，介绍ROS包和节点的构建过程。</p><h1 id="创建ROS包"><a href="#创建ROS包" class="headerlink" title="创建ROS包"></a>创建ROS包</h1><p>catkin和rosbuild是构建ROS包的两种方法。目前多用catkin构建ros包。</p><p>catkin包可以构建为独立项目，与构建普通cmake项目的方式相同，但catkin还提供了工作空间的概念，您可以在其中同时构建多个相互依赖的包。</p><h2 id="ROS包的构成"><a href="#ROS包的构成" class="headerlink" title="ROS包的构成"></a>ROS包的构成</h2><p>ROS包是其代码组织的一种高级结构好哦，最简单的catkin包的构成如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">my_package/</span><br><span class="line">  CMakeLists.txt</span><br><span class="line">  package.xml</span><br></pre></td></tr></table></figure><p>其中:</p><ul><li>包必须包含一个符合catkin的package.xml文件。<ul><li>该package.xml文件提供有关包的元信息。</li></ul></li><li>包必须包含一个使用catkin的CMakeLists.txt。<ul><li>如果它是catkin元数据包，它必须具有相关的样板CMakeLists.txt文件。</li></ul></li><li>包都必须有自己的文件夹。<ul><li>这意味着没有嵌套包，也没有多个包共享同一目录。</li></ul></li></ul><h2 id="catkin工作空间的构成"><a href="#catkin工作空间的构成" class="headerlink" title="catkin工作空间的构成"></a>catkin工作空间的构成</h2><p>使用catkin软件包的推荐方法是使用catkin工作区，但您也可以独立构建catkin软件包。 一个简单的工作空间可能如下所示：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">workspace_folder/        -- WORKSPACE</span><br><span class="line">  src/                   -- SOURCE SPACE</span><br><span class="line">    CMakeLists.txt       -- &apos;Toplevel&apos; CMake file, provided by catkin</span><br><span class="line">    package_1/</span><br><span class="line">      CMakeLists.txt     -- CMakeLists.txt file for package_1</span><br><span class="line">      package.xml        -- Package manifest for package_1</span><br><span class="line">    ...</span><br><span class="line">    package_n/</span><br><span class="line">      CMakeLists.txt     -- CMakeLists.txt file for package_n</span><br><span class="line">      package.xml        -- Package manifest for package_n</span><br></pre></td></tr></table></figure><h2 id="创建catkin包"><a href="#创建catkin包" class="headerlink" title="创建catkin包"></a>创建catkin包</h2><p>通常使用catkin_create_pkg命令创建新的catkin包，具体步骤如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir -p ~/catkin_ws/src</span><br><span class="line">$ cd ~/catkin_ws/src</span><br><span class="line"># 创建名为offboard的ros包，它依赖roscpp、mavros和geometry_msgs</span><br><span class="line">$ catkin_create_pkg offboard roscpp mavros geometry_msgs</span><br><span class="line">$ cd offboard/src/</span><br><span class="line"># 创建offboard_node.cpp，将官方PX4外部控制例程代码写入该文件</span><br><span class="line"># 该文件也是offboard包的第一个node</span><br><span class="line">$ touch offboard_node.cpp</span><br></pre></td></tr></table></figure><p>之后需要修改~/catkin_ws/src/offboard目录下的CMakeLists.txt文件。取消掉一些注释，生成相应节点（否则会出现找不到节点的错误）。</p><p align="center">    <img src="images/cmakelists.png" width="90%" alt="修改CMakeLists.txt文件"></p><h2 id="构建catkin包"><a href="#构建catkin包" class="headerlink" title="构建catkin包"></a>构建catkin包</h2><p>在catkin工作空间（catkin_ws）中，使用catkin_make工具从源文件构建和安装一个包：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/catkin_ws</span><br><span class="line">$ catkin_make</span><br><span class="line">$ catkin_make install</span><br><span class="line"># 配置catkin工作空间，使ros能找到刚生成的offboard包</span><br><span class="line">$ source devel/setup.bash</span><br><span class="line"># 查看ros包路径环境变量是否配置好</span><br><span class="line">$ echo $ROS_PACKAGE_PATH</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://huangwang.github.io/2019/05/10/Ubuntu16-04%E5%AE%89%E8%A3%85MAVROS/">Ubuntu16.04安装MAVROS</a>,by jackhuang.</li><li><a href="http://wiki.ros.org/ROS/Tutorials/CreatingPackage" target="_blank" rel="noopener">Creating a ROS Package</a>, by ros homepage.</li><li><a href="http://wiki.ros.org/ROS/Tutorials/BuildingPackages" target="_blank" rel="noopener">Building a ROS Package</a>, by ros homepage.</li><li><a href="http://wiki.ros.org/ROS/Tutorials/UnderstandingNodes" target="_blank" rel="noopener">Understanding ROS Nodes</a>, by ros homepage.</li><li><a href="https://blog.csdn.net/chishuideyu/article/details/53581013" target="_blank" rel="noopener">catkin 与 rosbuild解析及两者区别和联系</a>,by Xuefeng_BUPT.</li><li><a href="https://blog.csdn.net/oqqENvY12/article/details/55263122" target="_blank" rel="noopener">Pixhawk原生固件PX4之SITL软件在环仿真</a>,by FantasyJXF.</li><li><a href="https://blog.csdn.net/oqqENvY12/article/details/77995192" target="_blank" rel="noopener">Pixhawk原生固件PX4之offboard</a>,by FantasyJXF.</li><li><a href="https://dev.px4.io/en/ros/mavros_offboard.html" target="_blank" rel="noopener">MAVROS Offboard control example</a>, by dronecode.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;ROS（机器人操作系统，Robot Operating System），是专为机器人软件开发所设计出来的一套电脑操作系统架构。它是一个开源的元级操作系统（后操作系统），提供类似于操作系统的服务，包括硬件抽象描述、底层驱动程序管理、共用功能的执行、程序间消息传递、程序发行包管
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="ROS" scheme="https://huangwang.github.io/tags/ROS/"/>
+    
+      <category term="PX4" scheme="https://huangwang.github.io/tags/PX4/"/>
+    
+  </entry>
   
   <entry>
     <title>使用nvm进行nodejs版本管理</title>
@@ -522,31 +549,6 @@
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
       <category term="python" scheme="https://huangwang.github.io/tags/python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Git_Clone大项目超过1G失败解决方案</title>
-    <link href="https://huangwang.github.io/2019/03/09/Git-Clone%E5%A4%A7%E9%A1%B9%E7%9B%AE%E8%B6%85%E8%BF%871G%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/"/>
-    <id>https://huangwang.github.io/2019/03/09/Git-Clone大项目超过1G失败解决方案/</id>
-    <published>2019-03-09T00:59:46.000Z</published>
-    <updated>2019-03-09T12:19:21.799Z</updated>
-    
-    <content type="html"><![CDATA[<p>SourceForge.net，又称SF.net，是开源软件的开发者进行开发管理的集中式场所，也是全球最大开源软件开发平台和仓库。FlightGear的源代码就托管在该平台。最近在使用Git克隆FlightGear的子项目fgdata时，老是到1G时失败。具体情况如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># git clone fgdata大项目时超过1G就会出错</span><br><span class="line">$ git clone https://git.code.sf.net/p/flightgear/fgdata</span><br><span class="line">Cloning into &apos;fgdata&apos;...</span><br><span class="line">remote: Counting objects: 61455, done.</span><br><span class="line">remote: Compressing objects: 100% (27321/27321), done.</span><br><span class="line">error: RPC failed; curl 56 GnuTLS recv error (-110): The TLS connection was non-properly terminated.</span><br><span class="line">fatal: The remote end hung up unexpectedly</span><br><span class="line">fatal: early EOF</span><br><span class="line">fatal: index-pack failed</span><br></pre></td></tr></table></figure><p>经多种方案尝试，使用如下方法可避免该问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git clone git://git.code.sf.net/p/flightgear/fgdata</span><br></pre></td></tr></table></figure></p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://forum.flightgear.org/viewtopic.php?f=20&amp;t=33620&amp;p=329768&amp;hilit=clone+fgdata+fail#p329768" target="_blank" rel="noopener">FGdata downloading error</a>,by flightgear forum.</li><li><a href="https://sourceforge.net/p/forge/documentation/Git/#anonymous-access-read-only" target="_blank" rel="noopener">SourceForge Support</a>,by sourceforge.</li><li><a href="https://www.aneasystone.com/archives/2015/08/git-clone-faster.html" target="_blank" rel="noopener">git clone 太慢怎么办？</a>, by aneasystone.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;SourceForge.net，又称SF.net，是开源软件的开发者进行开发管理的集中式场所，也是全球最大开源软件开发平台和仓库。FlightGear的源代码就托管在该平台。最近在使用Git克隆FlightGear的子项目fgdata时，老是到1G时失败。具体情况如下：&lt;/
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="git" scheme="https://huangwang.github.io/tags/git/"/>
     
   </entry>
   

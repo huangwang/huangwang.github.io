@@ -115,7 +115,7 @@
 <meta property="og:image" content="https://huangwang.github.io/2019/05/26/光线追踪基本概念入门/images/brdf.jpg">
 <meta property="og:image" content="https://huangwang.github.io/2019/05/26/光线追踪基本概念入门/images/localLightModel.jpg">
 <meta property="og:image" content="https://huangwang.github.io/2019/05/26/光线追踪基本概念入门/images/globalLightModel.jpg">
-<meta property="og:updated_time" content="2019-05-28T13:48:27.555Z">
+<meta property="og:updated_time" content="2019-05-29T01:13:22.532Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="光线追踪基本概念入门">
 <meta name="twitter:description" content="光线追踪（Ray tracing）是三维计算机图形学中的特殊渲染算法，跟踪从眼睛发出的光线而不是光源发出的光线，通过这样一项技术生成编排好的场景的数学模型显现出来。光线追踪的优点可以提供更为真实的光影效果，缺点是计算量巨大。 基本概念光线追踪与光栅化渲染作为相对的两个概念，理解光栅化渲染更能解释光线追踪的概念。 光栅化渲染是将向量图形格式表示的图像转换成位图以用于显示器或者打印机输出的过程，如图1">
@@ -382,7 +382,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-05-28 21:48:27" itemprop="dateModified" datetime="2019-05-28T21:48:27+08:00">2019-05-28</time>
+                <time title="修改时间：2019-05-29 09:13:22" itemprop="dateModified" datetime="2019-05-29T09:13:22+08:00">2019-05-29</time>
               
             
           </span>
@@ -495,6 +495,9 @@
 </p><p></p>
 <center>图5  全局光照模型分类</center>
 
+<h1 id="求交检测"><a href="#求交检测" class="headerlink" title="求交检测"></a>求交检测</h1><p>在光线追踪过程中，从眼睛发出的光线与3D模型的三角面求交是一个复杂问题。通常精致的3D模型可能由几十万至上百万三角面构成，如果采用穷举法求交点，其时间复杂度将是O(n), 过于复杂。为了减少不必要的求交检测，应采用空间划分技术，最常用的是平衡kdtree算法，提高求交检测的效率。</p>
+<h2 id="k-d-tree"><a href="#k-d-tree" class="headerlink" title="k-d tree"></a>k-d tree</h2><p>在计算机科学里，k-d树（ k-维树的缩写）是在k维欧几里德空间组织点的数据结构。k-d树可以使用在多种应用场合，如多维键值搜索（例：范围搜寻及最邻近搜索）。k-d树是空间二分树（Binary space partitioning ）的一种特殊情况。</p>
+<p>k-d树是每个节点都为k维点的二叉树。所有非叶子节点可以视作用一个超平面把空间分割成两个半空间。节点左边的子树代表在超平面左边的点，节点右边的子树代表在超平面右边的点。选择超平面的方法如下：每个节点都与k维中垂直于超平面的那一维有关。因此，如果选择按照x轴划分，所有x值小于指定值的节点都会出现在左子树，所有x值大于指定值的节点都会出现在右子树。这样，超平面可以用该x值来确定，其法线为x轴的单位向量。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://zh.wikipedia.org/zh-hans/%E5%85%89%E7%B7%9A%E8%BF%BD%E8%B9%A4" target="_blank" rel="noopener">光线追踪</a>,by wikipedia.</li>
 <li><a href="https://zh.wikipedia.org/wiki/%E6%A0%85%E6%A0%BC%E5%8C%96" target="_blank" rel="noopener">栅格化</a>,by wikipedia.</li>
@@ -507,6 +510,7 @@
 <li><a href="https://blog.csdn.net/ZCMUCZX/article/details/79683263" target="_blank" rel="noopener">冯氏光照模型—镜面光的计算</a>,by MooAiFighting.</li>
 <li><a href="https://zhuanlan.zhihu.com/p/49474631" target="_blank" rel="noopener">什么是光照模型</a>,by 黄琦.</li>
 <li><a href="https://blog.csdn.net/sunacmer/article/details/7451861" target="_blank" rel="noopener">蒙特卡洛光线追踪</a>,by sunacmer.</li>
+<li><a href="https://zh.wikipedia.org/wiki/K-d%E6%A0%91" target="_blank" rel="noopener">k-d树</a>,by wikipedia.</li>
 </ol>
 
       
@@ -782,7 +786,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#辐射度学基本量"><span class="nav-number">2.</span> <span class="nav-text">辐射度学基本量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#渲染方程（The-Rendering-Equation）"><span class="nav-number">3.</span> <span class="nav-text">渲染方程（The Rendering Equation）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#双向反射分布函数（bidirectional-reflectance-distribution-function-BRDF）"><span class="nav-number">4.</span> <span class="nav-text">双向反射分布函数（bidirectional reflectance distribution function, BRDF）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#光照模型（illumination-model）"><span class="nav-number">5.</span> <span class="nav-text">光照模型（illumination model）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#局部光照模型"><span class="nav-number">5.1.</span> <span class="nav-text">局部光照模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全局光照模型"><span class="nav-number">5.2.</span> <span class="nav-text">全局光照模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#辐射度学基本量"><span class="nav-number">2.</span> <span class="nav-text">辐射度学基本量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#渲染方程（The-Rendering-Equation）"><span class="nav-number">3.</span> <span class="nav-text">渲染方程（The Rendering Equation）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#双向反射分布函数（bidirectional-reflectance-distribution-function-BRDF）"><span class="nav-number">4.</span> <span class="nav-text">双向反射分布函数（bidirectional reflectance distribution function, BRDF）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#光照模型（illumination-model）"><span class="nav-number">5.</span> <span class="nav-text">光照模型（illumination model）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#局部光照模型"><span class="nav-number">5.1.</span> <span class="nav-text">局部光照模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全局光照模型"><span class="nav-number">5.2.</span> <span class="nav-text">全局光照模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#求交检测"><span class="nav-number">6.</span> <span class="nav-text">求交检测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#k-d-tree"><span class="nav-number">6.1.</span> <span class="nav-text">k-d tree</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

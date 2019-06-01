@@ -112,12 +112,15 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://huangwang.github.io/2019/05/29/相机位姿估计入门/images/cameraEstimate.png">
 <meta property="og:image" content="https://huangwang.github.io/2019/05/29/相机位姿估计入门/images/cameraModel.png">
-<meta property="og:updated_time" content="2019-05-30T14:13:26.235Z">
+<meta property="og:image" content="https://huangwang.github.io/2019/05/29/相机位姿估计入门/images/File_Distance_by_triangulation.svg">
+<meta property="og:updated_time" content="2019-06-01T05:30:43.214Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="相机位姿估计入门">
 <meta name="twitter:description" content="相机位姿估计是指给定若干图像，估计其中相机运动的问题。求解方法通常分特征点法和直接法两种。下面主要介绍特征点法。 特征点法的思路是先从图像当中提取许多特征，然后在图像间进行特征匹配，这样就得到许多匹配好的点，再根据这些点进行相机位姿的求解。根据传感器形式的不同，可以分成三种情况：  2D-2D，单目相机获取的影像，只能获得像素坐标 3D-3D配对点，RGBD或双目相机，可以获取深度信息 3D-2D">
 <meta name="twitter:image" content="https://huangwang.github.io/2019/05/29/相机位姿估计入门/images/cameraEstimate.png">
 
+
+  
 
 
   <link rel="alternate" href="/atom.xml" title="Jack Huang's Blog" type="application/atom+xml">
@@ -379,7 +382,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-05-30 22:13:26" itemprop="dateModified" datetime="2019-05-30T22:13:26+08:00">2019-05-30</time>
+                <time title="修改时间：2019-06-01 13:30:43" itemprop="dateModified" datetime="2019-06-01T13:30:43+08:00">2019-06-01</time>
               
             
           </span>
@@ -490,7 +493,7 @@ X_{c}\\
 Y_{c}\\ 
 Z_{c}
 \end{pmatrix} \tag{2}</script><p>该公式给出了点P相机坐标系下坐标与像素平面坐标之间的关系。</p>
-<h1 id="运动方程"><a href="#运动方程" class="headerlink" title="运动方程"></a>运动方程</h1><p>设相机内存矩阵为K，即</p>
+<h1 id="2D-2D估计"><a href="#2D-2D估计" class="headerlink" title="2D-2D估计"></a>2D-2D估计</h1><p>设相机内参矩阵为K，即</p>
 <script type="math/tex; mode=display">
 K=\begin{pmatrix}
 f_{x} & 0 & c_{x}\\ 
@@ -525,6 +528,13 @@ f_{x} & 0 & c_{x}\\
 \end{pmatrix} \tag{4}</script><p>将公式(4)代入公式(1)，则有：</p>
 <script type="math/tex; mode=display">K^{-1}p_{2}=RK^{-1}p_{1}+t</script><p>这样便能求解了。但是也导致了一个问题，因为不同帧对应的相机坐标系中P的Z值并不相等。在实际操作中分别除以其本身从而将Z分量归一化为1，这其实就丢失了真实的位置信息，不同帧的缩放是不等的！从而导致2D-2D估计两两帧之间，每次估计的尺度都是不同的。这也就是单目SLAM的尺度不确定性。</p>
 <p><strong>通过2D-2D，最终可获得P点像素坐标 $p$ 对应相机坐标系下归一化坐标$P_{c}^{‘}$</strong>。</p>
+<h1 id="三角测量"><a href="#三角测量" class="headerlink" title="三角测量"></a>三角测量</h1><p>三角测量在三角学与几何学上是一借由测量目标点与固定基准线的已知端点的角度，测量目标距离的方法。而不是直接测量特定位置的距离（三边量测法）。当已知一个边长及两个观测角度时，观测目标点可以被标定为一个三角形的第三个点。</p>
+<p></p><p align="center">
+    <img src="images/File_Distance_by_triangulation.svg" width="90%" alt="基于两固定角度之距离量测示意图">
+</p><p></p>
+<center>图3  基于两固定角度之距离量测示意图</center>
+
+<p>三角测量可用来计算岸边与船只之间的距离及座标。A顶点的观察者测量岸边与船只之间的角度α，B点的观察者则依同理测量出角度β，由长度l或已知的A及B点座标，则可由正弦定理取得在C点船只的座标及距离d。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="http://zhaoxuhui.top/blog/2018/03/18/Location&amp;PoseEstimationInSLAM.html" target="_blank" rel="noopener">SLAM相机位姿估计(1)</a>,by zhaoxuhui.</li>
 <li><a href="https://www.jianshu.com/p/fbf56587a268" target="_blank" rel="noopener">2D-2D相机位姿估计</a>,by 金戈大王.</li>
@@ -537,6 +547,7 @@ f_{x} & 0 & c_{x}\\
 <li><a href="https://www.zhihu.com/question/51510464" target="_blank" rel="noopener">相机位姿求解问题？</a>, by zhihu.</li>
 <li><a href="https://zhehangt.github.io/2017/03/07/SLAM/Basic/PnP/" target="_blank" rel="noopener">3D-2D的运动估计</a>,by 一索哥传奇.</li>
 <li><a href="https://zhehangt.github.io/2017/03/17/SLAM/Basic/ICP/" target="_blank" rel="noopener">3D-3D的运动估计</a>,by 一索哥传奇.</li>
+<li><a href="https://www.cnblogs.com/mafuqiang/p/8302663.html" target="_blank" rel="noopener">相机位姿求解——P3P问题</a>,by 达达MFZ.</li>
 </ol>
 
       
@@ -812,7 +823,7 @@ f_{x} & 0 & c_{x}\\
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#问题分析"><span class="nav-number">1.</span> <span class="nav-text">问题分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小孔成像模型"><span class="nav-number">2.</span> <span class="nav-text">小孔成像模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运动方程"><span class="nav-number">3.</span> <span class="nav-text">运动方程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#问题分析"><span class="nav-number">1.</span> <span class="nav-text">问题分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小孔成像模型"><span class="nav-number">2.</span> <span class="nav-text">小孔成像模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2D-2D估计"><span class="nav-number">3.</span> <span class="nav-text">2D-2D估计</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三角测量"><span class="nav-number">4.</span> <span class="nav-text">三角测量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

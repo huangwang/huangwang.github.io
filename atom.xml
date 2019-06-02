@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-06-01T06:48:37.623Z</updated>
+  <updated>2019-06-02T05:02:49.862Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>图像特征检测与描述</title>
+    <link href="https://huangwang.github.io/2019/06/02/%E5%9B%BE%E5%83%8F%E7%89%B9%E5%BE%81%E6%A3%80%E6%B5%8B%E4%B8%8E%E6%8F%8F%E8%BF%B0/"/>
+    <id>https://huangwang.github.io/2019/06/02/图像特征检测与描述/</id>
+    <published>2019-06-02T02:09:38.000Z</published>
+    <updated>2019-06-02T05:02:49.862Z</updated>
+    
+    <content type="html"><![CDATA[<p>特征检测（英语：Feature detection）是计算机视觉和图像处理中的一个概念。它指的是使用计算机提取图像信息，决定每个图像的点是否属于一个图像特征。特征检测的结果是把图像上的点分为不同的子集，这些子集往往属于孤立的点、连续的曲线或者连续的区域。</p><h1 id="图像特征分类"><a href="#图像特征分类" class="headerlink" title="图像特征分类"></a>图像特征分类</h1><p>特征的精确定义往往由问题或者应用类型决定。特征是一个数字图像中“有趣”的部分，它是许多计算机图像分析算法的起点。因此一个算法是否成功往往由它使用和定义的特征决定。因此特征检测最重要的一个特性是“可重复性”：同一场景的不同图像所提取的特征应该是相同的。</p><p>特征检测是图象处理中的一个初级运算，也就是说它是对一个图像进行的第一个运算处理。它检查每个像素来确定该像素是否代表一个特征。假如它是一个更大的算法的一部分，那么这个算法一般只检查图像的特征区域。作为特征检测的一个前提运算，输入图像一般通过高斯模糊核在尺度空间中被平滑。此后通过局部导数运算来计算图像的一个或多个特征。</p><p>常用的图像特征分成以下四类：</p><ul><li>边缘</li></ul><p>边缘指组成两个图像区域之间边界（或边缘）的像素。一般一个边缘的形状可以是任意的，还可能包括交叉点。在实践中边缘一般被定义为图像中拥有大的梯度的点组成的子集。一些常用的算法还会把梯度高的点联系起来来构成一个更完善的边缘的描写。</p><ul><li>角</li></ul><p>角指图像中点似的特征，在局部它有两维结构。早期的算法首先进行边缘检测，然后分析边缘的走向来寻找边缘突然转向（角）。后来发展的算法不再需要边缘检测这个步骤，而是可以直接在图像梯度中寻找高度曲率。</p><ul><li>区域</li></ul><p>与角不同的是区域描写一个图像中的一个区域性的结构，但是区域也可能仅由一个像素组成，因此许多区域检测也可以用来监测角。一个区域监测器检测图像中一个对于角监测器来说太平滑的区域。</p><p>区域检测可以被想象为把一张图像缩小，然后在缩小的图像上进行角检测。</p><ul><li>脊</li></ul><p>长条形的物体被称为脊。在实践中脊可以被看作是代表对称轴的一维曲线，此外局部针对于每个脊像素有一个脊宽度。从灰梯度图像中提取脊要比提取边缘、角和区域困难。在空中摄影中往往使用脊检测来分辨道路，在医学图像中它被用来分辨血管。</p><h1 id="边缘检测"><a href="#边缘检测" class="headerlink" title="边缘检测"></a>边缘检测</h1><p>边缘检测（英语：Edge detection）是图像处理和计算机视觉中的基本问题，边缘检测的目的是标识数字图像中亮度变化明显的点。图像属性中的显著变化通常反映了属性的重要事件和变化。这些包括（i）深度上的不连续、（ii）表面方向不连续、（iii）物质属性变化和（iv）场景照明变化。 边缘检测是图像处理和计算机视觉中，尤其是特征检测中的一个研究领域。</p><p>图像边缘检测大幅度地减少了数据量，并且剔除了可以认为不相关的信息，保留了图像重要的结构属性。有许多方法用于边缘检测，它们的绝大部分可以划分为两类：基于查找一类和基于零穿越的一类。基于查找的方法通过寻找图像一阶导数中的最大和最小值来检测边界，通常是将边界定位在梯度最大的方向。基于零穿越的方法通过寻找图像二阶导数零穿越来寻找边界，通常是Laplacian过零点或者非线性差分表示的过零点。</p><h2 id="边缘检测的方法"><a href="#边缘检测的方法" class="headerlink" title="边缘检测的方法"></a>边缘检测的方法</h2><p>有许多用于边缘检测的方法，他们大致可分为两类：</p><ul><li>基于搜索的边缘检测</li></ul><p>基于搜索的边缘检测方法首先计算边缘强度，通常用一阶导数表示，例如梯度模;然后，用计算估计边缘的局部方向，通常采用梯度的方向，并利用此方向找到局部梯度模的最大值.</p><ul><li>基于零交叉的边缘检测</li></ul><p>基于零交叉的方法找到由图像得到的二阶导数的零交叉点来定位边缘.通常用拉普拉斯算子或非线性微分方程的零交叉点，我们将在后面的小节中描述.</p><p>滤波做为边缘检测的预处理通常是必要的，通常采用高斯滤波.</p><p>已发表的边缘检测方法应用计算边界强度的度量，这与平滑滤波有本质的不同.正如许多边缘检测方法依赖于图像梯度的计算，他们用不同种类的滤波器来估计x-方向和y-方向的梯度.</p><h1 id="角检测"><a href="#角检测" class="headerlink" title="角检测"></a>角检测</h1><p>角检测（英语：Corner detection）或兴趣点检测（interest point detection），是计算机视觉系统中用来提取特征以及推测图像内容的一种方法.角检测的应用很广，经常用在运动检测，跟踪，图像镶嵌（image mosaicing），全景图缝合（panorama stiching），三维建模以及物体识别中.</p><h2 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h2><p>两条边的交点形成一个角（点）。而图像的要点（也称为受关注点）是指图像中具有代表性以及稳健性（即指该点能够在有噪声干扰的情况下也能稳定的被定位，在大陆亦被称为：鲁棒性）的点。也就是说，要点可以是角（点），也可以不是，例如局部亮点或暗点，线段终点，或者曲线上的曲率最大值点。在实际应用中，很多所谓的（角）点检测算法其实是检测要点，而不仅仅是角（点）。所以，如果我们只想检测角的话，还需要对检测出的要点进一步分析。</p><h2 id="角检测的方法"><a href="#角检测的方法" class="headerlink" title="角检测的方法"></a>角检测的方法</h2><p>在现实世界中，角点对应于物体的拐角，道路的十字路口、丁字路口等。从图像分析的角度来定义角点可以有以下两种定义：</p><ul><li>角点可以是两个边缘的角点；</li><li>角点是邻域内具有两个主方向的特征点；</li><li>前者往往需要对图像边缘进行编码，这在很大程度上依赖于图像的分割与边缘提取，具有相当大的难度和计算量，且一旦待检测目标局部发生变化，很可能导致操作的失败。早期主要有Rosenfeld和Freeman等人的方法，后期有CSS等方法。</li></ul><p>基于图像灰度的方法通过计算点的曲率及梯度来检测角点，避免了第一类方法存在的缺陷，此类方法主要有Moravec算子、Forstner算子、Harris算子、SUSAN算子等。</p><p></p><p align="center">    <img src="images/cornerCheck.png" width="90%" alt="角检测方法发展历程"></p><p></p><center>图1  角检测方法发展历程</center><h3 id="Harris角点"><a href="#Harris角点" class="headerlink" title="Harris角点"></a>Harris角点</h3><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://zh.wikipedia.org/wiki/%E7%89%B9%E5%BE%81%E6%A3%80%E6%B5%8B" target="_blank" rel="noopener">特征检测</a>,by wikipedia.</li><li><a href="https://zh.wikipedia.org/wiki/%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B" target="_blank" rel="noopener">边缘检测</a>,by wikipedia.</li><li><a href="https://zh.wikipedia.org/wiki/%E8%A7%92%E6%A3%80%E6%B5%8B" target="_blank" rel="noopener">角检测</a>,by wikipedia.</li><li><a href="https://www.cnblogs.com/ronny/p/4009425.html" target="_blank" rel="noopener">Harris角点</a>,by Ronny.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;特征检测（英语：Feature detection）是计算机视觉和图像处理中的一个概念。它指的是使用计算机提取图像信息，决定每个图像的点是否属于一个图像特征。特征检测的结果是把图像上的点分为不同的子集，这些子集往往属于孤立的点、连续的曲线或者连续的区域。&lt;/p&gt;
+&lt;h1 i
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="计算机视觉" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/"/>
+    
+      <category term="计算机图形学" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/"/>
+    
+  </entry>
   
   <entry>
     <title>相机位姿估计入门</title>
@@ -529,31 +557,6 @@
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
       <category term="飞行仿真" scheme="https://huangwang.github.io/tags/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>四旋翼无人机制作简易教程</title>
-    <link href="https://huangwang.github.io/2019/03/25/%E5%9B%9B%E6%97%8B%E7%BF%BC%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%88%B6%E4%BD%9C%E7%AE%80%E6%98%93%E6%95%99%E7%A8%8B/"/>
-    <id>https://huangwang.github.io/2019/03/25/四旋翼无人机制作简易教程/</id>
-    <published>2019-03-25T13:40:54.000Z</published>
-    <updated>2019-04-08T12:24:22.360Z</updated>
-    
-    <content type="html"><![CDATA[<p>四轴飞行器又称四旋翼、四转子，是一种多轴飞行器，有四个旋翼来悬停、维持姿态及平飞。和固定翼飞机不同，它通过旋翼提供的推力使飞机升空。它的四个旋翼大小相同，分布位置接近对称。对于简单的设计来说，仅仅通过调整不同旋翼之间的相对速度来调节不同位置的推力，并克服每个旋翼之间的反扭力矩，就可以控制飞机维持姿态、或完成各种机动飞行。下面简单介绍四旋翼无人机的制作过程。</p><h1 id="无人机硬件装配"><a href="#无人机硬件装配" class="headerlink" title="无人机硬件装配"></a>无人机硬件装配</h1><p>组装一件无人机所需配件及其连接示意图如图1所示。</p><p></p><p align="center">    <img src="images/drone_connect.jpg" width="100%" alt="四旋翼无人机机硬件连接图"></p><p></p><center>图1  四旋翼无人机机硬件连接图</center><p>所需配件主要有：</p><ul><li>机身骨架</li><li>一对正浆和一对反浆。注意浆的固定方向与电机旋转方向要一致。</li><li>遥控器及接收机</li><li>无刷电机及电调</li><li>ppm sum receiver</li><li>pixhawk 1，内含安全开关和蜂鸣器</li><li>gps</li><li>锂电池</li><li>云台和摄像头（可选）</li><li>telemetry无线收发装置与图传（可选）</li></ul><h1 id="无人机软件调试"><a href="#无人机软件调试" class="headerlink" title="无人机软件调试"></a>无人机软件调试</h1><h2 id="遥控器与接收机之间对码"><a href="#遥控器与接收机之间对码" class="headerlink" title="遥控器与接收机之间对码"></a>遥控器与接收机之间对码</h2><p>遥控器和接收机之间是配对的，使用之前必须对码，可根据遥控器的使用说明书进行操作。其连接示意图如图2所示。</p><p></p><p align="center">    <img src="images/pair_code.png" width="80%" alt="航模遥控器与接收机对码示意图"></p><p></p><center>图2  航模遥控器与接收机对码示意图</center><h2 id="电子调速器的油门行程和进角设置"><a href="#电子调速器的油门行程和进角设置" class="headerlink" title="电子调速器的油门行程和进角设置"></a>电子调速器的油门行程和进角设置</h2><p>电子调速器主要控制马达的转速，其调试连接示意图如图3所示。</p><p></p><p align="center">    <img src="images/esc.jpg" width="80%" alt="电子调速器连接示意图"></p><p></p><center>图3 电子调速器连接示意图</center><p>如图3所示将电子调速器连接后，即开始设置油门行程和电子调速器进角。设置油门行程即让电子调速器知道遥控器的油门输入范围。而电子调速器进角有高中低之分，类似于汽车档位。低进角速度慢但扭力大，高进角速度快但扭力小，一般设置电子调速器中进角即可满足大多数要求。具体设置说明参照电子调速器使用说明书。</p><h2 id="pixhawk飞控平台的设置"><a href="#pixhawk飞控平台的设置" class="headerlink" title="pixhawk飞控平台的设置"></a>pixhawk飞控平台的设置</h2><p>Pixhawk是PX4飞行堆栈的标准微控制器平台。在pixhawk硬件平台上可运行PX4和ArduPilot两种不同的自动驾驶仪软件套件。如果在pixhawk平台上安装px4自驾仪软件，则使用QGroundControl地面站软件进行设置；如果在pixhawk平台上安装ArduPilot自驾仪软件，则使用MissionPlanner地面站软件进行设置。</p><p>Pixhawk和GPS按照方向捆绑好后，按照地面站软件的指示进行设置。设置好之后，长按Pixhawk的安全开关，再将遥控器油门拉动底并推向最右方，即可解锁Pixhawk。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://zh.wikipedia.org/wiki/四轴飞行器" target="_blank" rel="noopener">四轴飞行器</a>,by wikipedia.</li><li><a href="http://dev.px4.io/" target="_blank" rel="noopener">PX4 autopilot</a>, by px4 homepage.</li><li><a href="http://www.crazepony.com/book/" target="_blank" rel="noopener">Crazepony开源四轴飞行器</a>,by crazepony.</li><li><a href="https://en.wikipedia.org/wiki/ArduPilot" target="_blank" rel="noopener">ArduPilot</a>,by wikipedia.</li><li><a href="https://en.wikipedia.org/wiki/PX4_autopilot" target="_blank" rel="noopener">PX4 autopilot</a>,by wikipedia.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;四轴飞行器又称四旋翼、四转子，是一种多轴飞行器，有四个旋翼来悬停、维持姿态及平飞。和固定翼飞机不同，它通过旋翼提供的推力使飞机升空。它的四个旋翼大小相同，分布位置接近对称。对于简单的设计来说，仅仅通过调整不同旋翼之间的相对速度来调节不同位置的推力，并克服每个旋翼之间的反扭力
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="无人机" scheme="https://huangwang.github.io/tags/%E6%97%A0%E4%BA%BA%E6%9C%BA/"/>
     
   </entry>
   

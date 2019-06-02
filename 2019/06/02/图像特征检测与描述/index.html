@@ -111,7 +111,8 @@
 <meta property="og:description" content="特征检测（英语：Feature detection）是计算机视觉和图像处理中的一个概念。它指的是使用计算机提取图像信息，决定每个图像的点是否属于一个图像特征。特征检测的结果是把图像上的点分为不同的子集，这些子集往往属于孤立的点、连续的曲线或者连续的区域。 图像特征分类特征的精确定义往往由问题或者应用类型决定。特征是一个数字图像中“有趣”的部分，它是许多计算机图像分析算法的起点。因此一个算法是否成功">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://huangwang.github.io/2019/06/02/图像特征检测与描述/images/cornerCheck.jpg">
-<meta property="og:updated_time" content="2019-06-02T05:14:44.541Z">
+<meta property="og:image" content="https://huangwang.github.io/2019/06/02/图像特征检测与描述/images/harris.png">
+<meta property="og:updated_time" content="2019-06-02T05:51:50.386Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="图像特征检测与描述">
 <meta name="twitter:description" content="特征检测（英语：Feature detection）是计算机视觉和图像处理中的一个概念。它指的是使用计算机提取图像信息，决定每个图像的点是否属于一个图像特征。特征检测的结果是把图像上的点分为不同的子集，这些子集往往属于孤立的点、连续的曲线或者连续的区域。 图像特征分类特征的精确定义往往由问题或者应用类型决定。特征是一个数字图像中“有趣”的部分，它是许多计算机图像分析算法的起点。因此一个算法是否成功">
@@ -361,7 +362,7 @@
                 
               
 
-              <time title="创建时间：2019-06-02 10:09:38 / 修改时间：13:14:44" itemprop="dateCreated datePublished" datetime="2019-06-02T10:09:38+08:00">2019-06-02</time>
+              <time title="创建时间：2019-06-02 10:09:38 / 修改时间：13:51:50" itemprop="dateCreated datePublished" datetime="2019-06-02T10:09:38+08:00">2019-06-02</time>
             
 
             
@@ -464,11 +465,34 @@
 </p><p></p>
 <center>图1  角检测方法发展历程</center>
 
-<h3 id="Harris角点检测算法"><a href="#Harris角点检测算法" class="headerlink" title="Harris角点检测算法"></a>Harris角点检测算法</h3><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<h3 id="Harris算法"><a href="#Harris算法" class="headerlink" title="Harris算法"></a>Harris算法</h3><p>Harris角点检测基本原理如图2所示。人眼对角点的识别通常是在一个局部的小区域或小窗口完成的。如果在各个方向上移动这个特征的小窗口，窗口内区域的灰度发生了较大的变化，那么就认为在窗口内遇到了角点。如果这个特定的窗口在图像各个方向上移动时，窗口内图像的灰度没有发生变化，那么窗口内就不存在角点；如果窗口在某一个方向移动时，窗口内图像的灰度发生了较大的变化，而在另一些方向上没有发生变化，那么，窗口内的图像可能就是一条直线的线段。</p>
+<p></p><p align="center">
+    <img src="images/harris.png" width="90%" alt="Harris角点检测基本原理">
+</p><p></p>
+<center>图2  Harris角点检测基本原理</center>
+
+<h3 id="SIFT算法"><a href="#SIFT算法" class="headerlink" title="SIFT算法"></a>SIFT算法</h3><p>SIFT(Scale-invariant features transform, 尺度不变特征变换)是一种检测局部特征的算法，该算法通过求一幅图中的特征点（interest points,or corner points）及其有关scale 和 orientation 的描述子得到特征并进行图像特征点匹配，获得了良好效果。SIFT特征不只具有尺度不变性，即使改变旋转角度，图像亮度或拍摄视角，仍然能够得到好的检测效果。该算法由 David Lowe在1999年所发表，2004年完善总结。</p>
+<p>SIFT算子是把图像中检测到的特征点用一个128维的特征向量进行描述，因此一幅图像经过SIFT算法后表示为一个128维的特征向量集，该特征向量集具有对图像缩放，平移，旋转不变的特征，对于光照、仿射和投影变换也有一定的不变性，是一种非常优秀的局部特征描述算法。</p>
+<p>SIFT算法的流程分别为：</p>
+<ol>
+<li>尺度空间极点检测</li>
+<li>关键点精确定位</li>
+<li>关键点的方向确定</li>
+<li>特征向量的生成</li>
+</ol>
+<h3 id="ORB算法"><a href="#ORB算法" class="headerlink" title="ORB算法"></a>ORB算法</h3><p>ORB的全称是ORiented Brief，是文章ORB: an efficient alternative to SIFT or SURF中提出的一种新的角点检测与特征描述算法。实际上，ORB算法是将FAST角点检测与BRIEF特征描述结合并进行了改进。</p>
+<p>ORB特征由关键点和描述子两部分组成。它的关键点称为“Oriented Fast”，是一种改进的FAST角点。描述子称为“BRIEF(Binary Robust Independent Elementary Feature)”。因此提取ORB特征分为如下两个步骤：</p>
+<ul>
+<li>提取FAST角点(相较于原版FAST角点，ORB中计算了特征点的主方向，为后续的BRIEF描述子增加了旋转不变性)</li>
+<li>计算BRIEF描述子</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://zh.wikipedia.org/wiki/%E7%89%B9%E5%BE%81%E6%A3%80%E6%B5%8B" target="_blank" rel="noopener">特征检测</a>,by wikipedia.</li>
 <li><a href="https://zh.wikipedia.org/wiki/%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B" target="_blank" rel="noopener">边缘检测</a>,by wikipedia.</li>
 <li><a href="https://zh.wikipedia.org/wiki/%E8%A7%92%E6%A3%80%E6%B5%8B" target="_blank" rel="noopener">角检测</a>,by wikipedia.</li>
 <li><a href="https://www.cnblogs.com/ronny/p/4009425.html" target="_blank" rel="noopener">Harris角点</a>,by Ronny.</li>
+<li><a href="https://blog.csdn.net/lhanchao/article/details/52345845" target="_blank" rel="noopener">特征点匹配——SIFT算法详解</a>,by lhanchao.</li>
+<li><a href="http://zhaoxuhui.top/blog/2018/01/29/ORB%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96-%E5%8C%B9%E9%85%8D%E5%8F%8A%E5%AE%9E%E7%8E%B0.html" target="_blank" rel="noopener">ORB特征提取、匹配及实现</a>,by zhaoxuhui.</li>
 </ol>
 
       
@@ -744,7 +768,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#图像特征分类"><span class="nav-number">1.</span> <span class="nav-text">图像特征分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#边缘检测"><span class="nav-number">2.</span> <span class="nav-text">边缘检测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#边缘检测的方法"><span class="nav-number">2.1.</span> <span class="nav-text">边缘检测的方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#角检测"><span class="nav-number">3.</span> <span class="nav-text">角检测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题定义"><span class="nav-number">3.1.</span> <span class="nav-text">问题定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#角检测的方法"><span class="nav-number">3.2.</span> <span class="nav-text">角检测的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Harris角点检测算法"><span class="nav-number">3.2.1.</span> <span class="nav-text">Harris角点检测算法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#图像特征分类"><span class="nav-number">1.</span> <span class="nav-text">图像特征分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#边缘检测"><span class="nav-number">2.</span> <span class="nav-text">边缘检测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#边缘检测的方法"><span class="nav-number">2.1.</span> <span class="nav-text">边缘检测的方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#角检测"><span class="nav-number">3.</span> <span class="nav-text">角检测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题定义"><span class="nav-number">3.1.</span> <span class="nav-text">问题定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#角检测的方法"><span class="nav-number">3.2.</span> <span class="nav-text">角检测的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Harris算法"><span class="nav-number">3.2.1.</span> <span class="nav-text">Harris算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SIFT算法"><span class="nav-number">3.2.2.</span> <span class="nav-text">SIFT算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ORB算法"><span class="nav-number">3.2.3.</span> <span class="nav-text">ORB算法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

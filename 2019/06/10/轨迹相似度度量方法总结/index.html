@@ -110,7 +110,7 @@
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
 <meta property="og:description" content="轨迹相似度度量有广泛的用途，如语音识别分类、模板匹配、信息检索等。下面介绍各种轨迹相似度度量方法。 轨迹定义轨迹可由时间域到空间域的映射函数表示，如： t\stackrel{F}{\longrightarrow}R^d, d&amp;gt;1度量方法轨迹相似度度量方法主要有：  基于点方法： EDR，LCSS，DTW等  基于形状的方法： Frechet， Hausdorff  基于分段的方法：One Way">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-06-11T04:58:57.030Z">
+<meta property="og:updated_time" content="2019-06-11T13:39:05.894Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="轨迹相似度度量方法总结">
 <meta name="twitter:description" content="轨迹相似度度量有广泛的用途，如语音识别分类、模板匹配、信息检索等。下面介绍各种轨迹相似度度量方法。 轨迹定义轨迹可由时间域到空间域的映射函数表示，如： t\stackrel{F}{\longrightarrow}R^d, d&amp;gt;1度量方法轨迹相似度度量方法主要有：  基于点方法： EDR，LCSS，DTW等  基于形状的方法： Frechet， Hausdorff  基于分段的方法：One Way">
@@ -376,7 +376,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-06-11 12:58:57" itemprop="dateModified" datetime="2019-06-11T12:58:57+08:00">2019-06-11</time>
+                <time title="修改时间：2019-06-11 21:39:05" itemprop="dateModified" datetime="2019-06-11T21:39:05+08:00">2019-06-11</time>
               
             
           </span>
@@ -439,9 +439,26 @@
 <li><p>基于特定任务的方法：TRACLUS， Road Network，grid等</p>
 </li>
 </ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<h2 id="基于点的方法"><a href="#基于点的方法" class="headerlink" title="基于点的方法"></a>基于点的方法</h2><h3 id="DTW"><a href="#DTW" class="headerlink" title="DTW"></a>DTW</h3><p>DTW（Dynamic Time Warping, 动态时间规整）可以计算两个时间序列的相似度，尤其适用于不同长度、不同节奏的时间序列（比如不同的人读同一个词的音频序列）。DTW将自动warping扭曲 时间序列（即在时间轴上进行局部的缩放），使得两个序列的形态尽可能的一致，得到最大可能的相似度。</p>
+<p>Dynamic Time Warping（DTW）诞生有一定的历史了（日本学者Itakura提出），它出现的目的也比较单纯，是一种衡量两个长度不同的时间序列的相似度的方法。应用也比较广，主要是在模板匹配中，比如说用在孤立词语音识别（识别两段语音是否表示同一个单词），手势识别，数据挖掘和信息检索等中。</p>
+<p>设 $P=<p_1,p_2,...,p_m>$ 和 $Q=<q_1,q_2,...,q_n>$ 是两个时间序列，则 $P$ 和 $Q$的 DTW距离 $DTW(P,Q)$定义如下：</q_1,q_2,...,q_n></p_1,p_2,...,p_m></p>
+<script type="math/tex; mode=display">DTW(P,Q)= \left\{
+\begin{array}{lcl}
+0     &   &if\ m=n=0\\
+\infty &   &if\ m=0\ or\ n=0\\
+dist(p_1,q_1)+min
+    \left\{
+    \begin{aligned}
+            DTW(Rest(P),Rest(Q))\\
+            DTW(Rest(P),Q)\\
+            DTW(P,Rest(Q))\\
+    \end{aligned}
+    \right\} & & otherwise
+\end{array}
+\right.</script><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.zhihu.com/question/27213170" target="_blank" rel="noopener">如何判断两条轨迹（或曲线）的相似度？</a>,by zhihu.</li>
-<li></li>
+<li><a href="https://zhuanlan.zhihu.com/p/43247215" target="_blank" rel="noopener">动态时间规整（DTW）算法简介</a>,by 文均.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/32849741" target="_blank" rel="noopener">DTW(Dynamic Time Warping)动态时间规整</a>,by X-猪.</li>
 </ol>
 
       
@@ -715,7 +732,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#轨迹定义"><span class="nav-number">1.</span> <span class="nav-text">轨迹定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#度量方法"><span class="nav-number">2.</span> <span class="nav-text">度量方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#轨迹定义"><span class="nav-number">1.</span> <span class="nav-text">轨迹定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#度量方法"><span class="nav-number">2.</span> <span class="nav-text">度量方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于点的方法"><span class="nav-number">2.1.</span> <span class="nav-text">基于点的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DTW"><span class="nav-number">2.1.1.</span> <span class="nav-text">DTW</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

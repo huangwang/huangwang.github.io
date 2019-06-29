@@ -314,6 +314,1330 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/29/Python程序打包成exe/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/29/Python程序打包成exe/" itemprop="url">
+                  Python程序打包成exe
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-29 11:18:51 / 修改时间：11:35:07" itemprop="dateCreated datePublished" datetime="2019-06-29T11:18:51+08:00">2019-06-29</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>大部分人是普通人，不知道如何运行Python脚本程序，因此有必要将Python脚本程序打包成可执行文件，免去安装Python环境，提高Python脚本程序的可用性。</p>
+<h1 id="打包方法"><a href="#打包方法" class="headerlink" title="打包方法"></a>打包方法</h1><p>Python脚本程序的发布有三种方法：</p>
+<ul>
+<li>.py文件：对于开源项目或者源码没那么重要的，直接提供源码，需要使用者自行安装Python并且安装依赖的各种库。</li>
+<li>.pyc文件：有些公司或个人因为机密或者各种原因，不愿意源码被运行者看到，可以使用pyc文件发布，pyc文件是Python解释器可以识别的二进制码，故发布后也是跨平台的，需要使用者安装相应版本的Python和依赖库。</li>
+<li>可执行文件：对于非码农用户，最简单的方式就是提供一个可执行文件，只需要把用法告诉他即可。比较麻烦的是需要针对不同平台需要打包不同的可执行文件（Windows, Linux, Mac,…）。</li>
+</ul>
+<p>下面介绍将Python脚本程序打包成可执行程序的各种工具。</p>
+<center>表1 各种打包工具的对比</center>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Solution</th>
+<th>Windows</th>
+<th>Linux</th>
+<th>OS X</th>
+<th>Python 3</th>
+<th>One file mode</th>
+<th>Zipfile import</th>
+<th>Eggs</th>
+<th>pkg_resources support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bbFreeze</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>py2exe</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+</tr>
+<tr>
+<td>pyInstaller</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr>
+<td>cx_Freeze</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr>
+<td>py2app</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>从上述对Python脚本程序打包工具对比可知，推荐使用pyInstaller。</p>
+<h1 id="PyInstaller打包示例"><a href="#PyInstaller打包示例" class="headerlink" title="PyInstaller打包示例"></a>PyInstaller打包示例</h1><h2 id="安装PyInstaller"><a href="#安装PyInstaller" class="headerlink" title="安装PyInstaller"></a>安装PyInstaller</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pyinstaller</span><br></pre></td></tr></table></figure>
+<h2 id="打包Python脚本"><a href="#打包Python脚本" class="headerlink" title="打包Python脚本"></a>打包Python脚本</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller yourprogram.py</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/45288707" target="_blank" rel="noopener">如何将 Python 程序打包成 .exe 文件？</a>,by 刘哈哈.</li>
+<li><a href="https://blog.csdn.net/zengxiantao1994/article/details/76578421" target="_blank" rel="noopener">Python程序打包成exe可执行文件</a>,by 知行流浪.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/29/Python命令行参数解析示例/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/29/Python命令行参数解析示例/" itemprop="url">
+                  Python命令行参数解析示例
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-29 09:03:23 / 修改时间：19:06:28" itemprop="dateCreated datePublished" datetime="2019-06-29T09:03:23+08:00">2019-06-29</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最新需要一个小程序实现解析命令行参数、遍历指定文件夹，处理指定扩展名的文件。于是简单用python实现一下。</p>
+<h1 id="库选择"><a href="#库选择" class="headerlink" title="库选择"></a>库选择</h1><h2 id="参数解析"><a href="#参数解析" class="headerlink" title="参数解析"></a>参数解析</h2><h3 id="sys-argv"><a href="#sys-argv" class="headerlink" title="sys.argv"></a>sys.argv</h3><p>解析Python中命令行参数的最传统的方法是通过sys.argv。但这种方法比较古老，灵活性很差，同时解析出来的参数都是str类型。但在编写简单脚本，参数较少且固定时比较方便。</p>
+<h3 id="getopt模块"><a href="#getopt模块" class="headerlink" title="getopt模块"></a>getopt模块</h3><p>getopt模块是专门处理命令行参数的模块，用于获取命令行选项和参数，也就是sys.argv。命令行选项使得程序的参数更加灵活。支持短选项模式（-）和长选项模式（—）。</p>
+<h3 id="optparse模块"><a href="#optparse模块" class="headerlink" title="optparse模块"></a>optparse模块</h3><p>optparse，功能强大，易于使用，可以方便地生成标准的、符合Unix/Posix 规范的命令行说明。但在Python2.7后就已经弃用不再维护。</p>
+<h3 id="argparse模块"><a href="#argparse模块" class="headerlink" title="argparse模块"></a>argparse模块</h3><p>argparse模块是Python内置的参数解析模块，使用起来比较简单且功能强大。</p>
+<p>ArgumentParser类创建时的参数如下：</p>
+<ul>
+<li>prog - 程序的名字（默认：sys.argv[0]）</li>
+<li>usage - 描述程序用法的字符串（默认：从解析器的参数生成）</li>
+<li>description - 参数帮助信息之前的文本（默认：空）</li>
+<li>epilog - 参数帮助信息之后的文本（默认：空）</li>
+<li>parents - ArgumentParser 对象的一个列表，这些对象的参数应该包括进去</li>
+<li>formatter_class - 定制化帮助信息的类</li>
+<li>prefix_chars - 可选参数的前缀字符集（默认：‘-‘）</li>
+<li>fromfile_prefix_chars - 额外的参数应该读取的文件的前缀字符集（默认：None）</li>
+<li>argument_default - 参数的全局默认值（默认：None）</li>
+<li>conflict_handler - 解决冲突的可选参数的策略（通常没有必要）</li>
+<li>add_help - 给解析器添加-h/–help 选项（默认：True）</li>
+</ul>
+<p>add_argument函数的参数如下：</p>
+<ul>
+<li>name or flags - 选项字符串的名字或者列表，例如foo 或者-f, –foo。</li>
+<li>action - 在命令行遇到该参数时采取的基本动作类型。</li>
+<li>nargs - 应该读取的命令行参数数目。</li>
+<li>const - 某些action和nargs选项要求的常数值。</li>
+<li>default - 如果命令行中没有出现该参数时的默认值。</li>
+<li>type - 命令行参数应该被转换成的类型。</li>
+<li>choices - 参数可允许的值的一个容器。</li>
+<li>required - 该命令行选项是否可以省略（只针对可选参数）。</li>
+<li>help - 参数的简短描述。</li>
+<li>metavar - 参数在帮助信息中的名字。</li>
+<li>dest - 给parse_args()返回的对象要添加的属性名称。</li>
+</ul>
+<h3 id="参数解析模块比较"><a href="#参数解析模块比较" class="headerlink" title="参数解析模块比较"></a>参数解析模块比较</h3><ul>
+<li>getopt，只能简单的处理命令行参数，无法解析一个参数多个值的情况，如 —file file1 file2 file3。</li>
+<li>optparse，功能强大，易于使用，可以方便地生成标准的、符合Unix/Posix 规范的命令行说明。但在Python2.7后就已经弃用不再维护。</li>
+<li>argparse，使其更加容易的编写用户友好的命令行接口。它所需的程序进程了参数定义，argparse将更好的解析sys.argv。同时argparse模块还能自动生成帮助及用户输入错误参数时的提示信息。</li>
+</ul>
+<h2 id="文件夹遍历"><a href="#文件夹遍历" class="headerlink" title="文件夹遍历"></a>文件夹遍历</h2><p>文件夹遍历有两种方法：</p>
+<ul>
+<li>使用os.walk</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*- </span><br><span class="line">import os </span><br><span class="line">def Test1(rootDir): </span><br><span class="line">    list_dirs = os.walk(rootDir) </span><br><span class="line">    for root, dirs, files in list_dirs: </span><br><span class="line">        for d in dirs: </span><br><span class="line">            print os.path.join(root, d)      </span><br><span class="line">        for f in files: </span><br><span class="line">            print os.path.join(root, f)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用os.listdir</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*- </span><br><span class="line">import os </span><br><span class="line">def Test2(rootDir): </span><br><span class="line">    for lists in os.listdir(rootDir): </span><br><span class="line">        path = os.path.join(rootDir, lists) </span><br><span class="line">        print path </span><br><span class="line">        if os.path.isdir(path): </span><br><span class="line">            Test2(path)</span><br></pre></td></tr></table></figure>
+<h2 id="文件处理"><a href="#文件处理" class="headerlink" title="文件处理"></a>文件处理</h2><p>Python内置了读写文件的函数，用法和C是兼容的。本节介绍内容大致有：文件的打开/关闭、文件对象、文件的读写等。</p>
+<h1 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h1><p>示例代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*- </span><br><span class="line"></span><br><span class="line">import os </span><br><span class="line">import argparse</span><br><span class="line"></span><br><span class="line"># 遍历文件夹</span><br><span class="line">def traverse(pathName,extName):</span><br><span class="line">    extNameList=extName.split(&apos; &apos;) </span><br><span class="line">    print(extNameList)</span><br><span class="line">    list_dirs = os.walk(pathName) </span><br><span class="line">    for root, dirs, files in list_dirs:   </span><br><span class="line">        for f in files:</span><br><span class="line">            targetExt=os.path.splitext(f)[-1]</span><br><span class="line">            if targetExt.lower() in extNameList:</span><br><span class="line">                clearWaterPrint(os.path.join(root, f))</span><br><span class="line"></span><br><span class="line">def clearWaterPrint(fileName):</span><br><span class="line">    print(fileName)</span><br><span class="line">    fileOrgin=open(fileName,&apos;rb&apos;)</span><br><span class="line">    fileTarget=open(fileName+&apos;.exe&apos;,&apos;wb&apos;)</span><br><span class="line">    fileTarget.write(fileOrgin.read())</span><br><span class="line">    fileOrgin.close()</span><br><span class="line">    os.remove(fileName)</span><br><span class="line">    fileTarget.close()</span><br><span class="line">    os.rename(fileName+&apos;.exe&apos;,fileName)</span><br><span class="line">  </span><br><span class="line"># Driver Code </span><br><span class="line">if __name__ == &apos;__main__&apos;: </span><br><span class="line">    # 首先创建一个ArgumentParser对象</span><br><span class="line">    parser = argparse.ArgumentParser(description=&apos;Process the water print!&apos;)   </span><br><span class="line">    # 添加--path设置文件目录</span><br><span class="line">    parser.add_argument(&apos;-p&apos;,&apos;--path&apos;, type = str,dest=&apos;pathName&apos;, help=&apos;give the path of directory&apos;,</span><br><span class="line">    default = &apos;./&apos;)    </span><br><span class="line">    # 添加--ext设置文件目录</span><br><span class="line">    parser.add_argument(&apos;-e&apos;,&apos;--ext&apos;, type = str,dest=&apos;extName&apos;, help=&apos;give the extension name of file&apos;,</span><br><span class="line">    default = &apos;.doc .docx .wav .txt .xml .dot .html .jpg .png&apos;,nargs = &apos;*&apos;)    </span><br><span class="line">    #返回一个命名空间,如果想要使用变量,可用args.attr</span><br><span class="line">    args = parser.parse_args()</span><br><span class="line"></span><br><span class="line">    # Calling traverse() function </span><br><span class="line">    traverse(args.pathName,args.extName)</span><br></pre></td></tr></table></figure>
+<p>使用方法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python3 clearWaterPrint.py -h</span><br><span class="line">python3 clearWaterPrint.py -p /home/test -e .doc .ppt</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://noahsnail.com/2017/09/13/2017-09-13-Python%E7%9A%84%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90/" target="_blank" rel="noopener">Python的命令行参数解析</a>,by Tyan.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/56961708" target="_blank" rel="noopener">Python中最好用的命令行参数解析工具</a>,by Mingle Wong.</li>
+<li><a href="https://blog.51cto.com/laocao/525140" target="_blank" rel="noopener">Python遍历文件夹的两种方法比较</a>,by likecao.</li>
+<li><a href="https://python3-cookbook.readthedocs.io/zh_CN/latest/c05/p04_read_write_binary_data.html" target="_blank" rel="noopener">读写字节数据</a>,by python3-cookbook.</li>
+<li><a href="http://funhacks.net/explore-python/File-Directory/binary_file_io.html" target="_blank" rel="noopener">读写二进制文件</a>,by funhacks.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/26/CPlusPlus标准演化简介/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/26/CPlusPlus标准演化简介/" itemprop="url">
+                  C++标准演化简介
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-26 19:45:12 / 修改时间：20:36:16" itemprop="dateCreated datePublished" datetime="2019-06-26T19:45:12+08:00">2019-06-26</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近阅读采用C++编写的MAVROS源码，遇到很多C++语言的新特性，理解起来很费劲，因此，特地分析一下C++标准演变过程，学习其进化过程中引入的新特性，提高C++源码阅读效率。</p>
+<h1 id="C-标准演变"><a href="#C-标准演变" class="headerlink" title="C++标准演变"></a>C++标准演变</h1><p>2017年12月05日，ISO C++ 委员会正式发布了 C++ 17 标准，官方名称为 ISO/IEC 14882:2017。之前发布的C++标准有C++14、C++11、C++03、C++98。</p>
+<h2 id="C-98"><a href="#C-98" class="headerlink" title="C++98"></a>C++98</h2><p>C++98是第一个C++标准。它分为两个部分：核心语言和C++标准程序库；后者包含了大部分标准模板库和C标准程序库的稍加修改版本。存在许多不属于标准部分的C++程序库，且使用外部链接，程序库甚至可以用C撰写。</p>
+<p>C++标准程序库充分吸收了C标准程序库，并佐以少许的修改，使其与C++良好的运作。另一个大型的程序库部分，是以标准模板库（STL）为基础，STL于1994年2月正式成为ANSI/ISO C++。它提供了实用的工具，如容器类（如：Array和Vector），迭代器（广义指针）提供容器以类似数组的访问方式，以及泛型算法进行搜索和排序的运算。此外还提供了(multi)map和(multi)set，它们都共享相似的成员函数。因此，以下成为可能，使用模板撰写泛型算法，它可以和任何容器或在任何以迭代器定义的序列上运作。如同C，使用#include指令包含标准表头，即可访问程序库里的功能。C++提供69个标准表头，其中19个不再赞成使用。</p>
+<p>使用标准模板库（例如：使用std::vector或std::string来取代C风格的数组或字符数组）有助于导向更安全和更灵活的软件。</p>
+<p>在STL在纳入C++标准以前，是来自HP和后来的SGI的第三方程式库，标准中并未称之为“STL”，它只是标准库中的一部分，但仍有许多人使用这个名称，以别于其它的标准库（输入／输出流、国际化、诊断、C程序库子集，等等）。 另外，如std::basic_string此类标准委员会添加的接口，有时也被误认为STL；实际上它们并不存在于原始的SGI STL中，在标准化后SGI STL才从标准库吸收加入其中。</p>
+<h2 id="C-03"><a href="#C-03" class="headerlink" title="C++03"></a>C++03</h2><p>C++03 是 C++ 语言国际标准的一个版本，正式名称是 ISO/IEC 14882:2003。该标准由国际标准化组织（ISO）和国际电工委员会（IEC）共同制定。</p>
+<p>C++03 取代了 C++ 标准的前一个版本 C++98，后被 C++11 所取代。C++03 主要是在前一个版本的基础上针对实现方的一些问题进行了修复，从而在各个实现间达到一致、保持了可移植性。该版本共涉及 92 项核心语言缺陷报告、125 项库缺陷报告，所提供的新特性只有一项：值初始化（英语：value initialization）。</p>
+<p>C++03 的第 69 号库缺陷报告非常值得一提，为了解决该问题，标准中加入了“std::vector 中的元素必须连续存储”的要求。</p>
+<h2 id="C-11"><a href="#C-11" class="headerlink" title="C++11"></a>C++11</h2><p>C++11，先前被称作C++0x，即ISO/IEC 14882:2011，是C++编程语言的一个标准。它取代第二版标准ISO/IEC 14882:2003（第一版ISO/IEC 14882:1998公开于1998年，第二版于2003年更新，分别通称C++98以及C++03，两者差异很小），且已被C++14取代。相比于C++03，C++11标准包含核心语言的新机能，而且扩展C++标准程序库，并入了大部分的C++ Technical Report 1程序库（数学的特殊函数除外）。 ISO／IEC JTC1/SC22/WG21 C++标准委员会计划在2010年8月之前完成对最终委员会草案的投票，以及于2011年3月召开的标准会议完成国际标准的最终草案。然而，WG21预期ISO将要花费六个月到一年的时间才能正式发布新的C++标准。为了能够如期完成，委员会决定致力于直至2006年为止的提案，忽略新的提案。最终于2011年8月12日公布，并于2011年9月出版。</p>
+<p>2012年2月28日的国际标准草案是最接近于C++11标准的草案，差异仅有编辑上的修正。</p>
+<p>像C++这样的编程语言，透过一种演化的的过程来发展其定义。这个过程不可避免地将引发与现有代码的兼容问题，在C++的发展过程中偶尔会发生。不过根据比雅尼·斯特劳斯特鲁普（C++的创始人并且是委员会的一员）表示，新的标准将几乎100%兼容于现有标准。</p>
+<h2 id="C-14"><a href="#C-14" class="headerlink" title="C++14"></a>C++14</h2><p>C++14是C++的现行标准的非正式名称，正式名称为”International Standard ISO/IEC 14882:2014(E) Programming Language C++”。C++14旨在作为C++11的一个小扩展，主要提供漏洞修复和小的改进。C++14标准的委员会草案（Committee Draft）N3690于2013年5月15日发表。工作草案（Working Draft）N3936已于2014年3月2日完成。最终的投票期结束于2014年8月15日，结果（一致通过）已于8月18日公布。</p>
+<h2 id="C-17"><a href="#C-17" class="headerlink" title="C++17"></a>C++17</h2><p>C++17又称C++1z，是C++的现行标准的非正式名称，正式名称为”International Standard ISO/IEC Programming Language C++”。C++17旨在作为大型扩展，最终的投票期将于2017年结束。</p>
+<p>当前不少著名C++编译器已支持C++17仍未定案的草案（draft），例如最新的GCC6已支持C++ concept的C++事务型内存（Transactional Memory），Visual Studio与Clang当前都提供了modules。</p>
+<h1 id="C-新语言特性"><a href="#C-新语言特性" class="headerlink" title="C++新语言特性"></a>C++新语言特性</h1><h2 id="Lambda函数与表示式"><a href="#Lambda函数与表示式" class="headerlink" title="Lambda函数与表示式"></a>Lambda函数与表示式</h2><p>在标准C++，特别是当使用C++标准程序库算法函数诸如sort和find，用户经常希望能够在算法函数调用的附近定义一个临时的述部函数（又称谓词函数，predicate function）。由于语言本身允许在函数内部定义类别，可以考虑使用函数对象，然而这通常既麻烦又冗赘，也阻碍了代码的流程。此外，标准C++不允许定义于函数内部的类别被用于模板，所以前述的作法是不可行的。</p>
+<p><strong>C++11对lambda（即匿名函数）的支持可以解决上述问题</strong>。</p>
+<p>一个lambda函数可以用如下的方式定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[](int x, int y) &#123; return x + y; &#125;</span><br></pre></td></tr></table></figure>
+<p>这个不具名函数的回返类型是decltype(x+y)。只有在lambda函数匹配”return expression”的形式下，它的回返类型才能被忽略。在前述的情况下，lambda函数仅能为一个述句。</p>
+<p>在一个更为复杂的例子中，回返类型可以被明确的指定如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[](int x, int y) -&gt; int &#123; int z = x + y; return z + x; &#125;</span><br></pre></td></tr></table></figure>
+<p>本例中，一个临时的参数z被创建用来存储中间结果。如同一般的函数，z的值不会保留到下一次该不具名函数再次被调用时。</p>
+<p>如果lambda函数没有传回值（例如void），其回返类型可被完全忽略。</p>
+<p>定义在与lambda函数相同作用域的参数引用也可以被使用。这种的参数集合一般被称作closure（闭包）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[]      // 沒有定义任何变量。使用未定义变量会引发错误。</span><br><span class="line">[x, &amp;y] // x以传值方式传入（默认），y以引用方式传入。</span><br><span class="line">[&amp;]     // 任何被使用到的外部变量都隐式地以引用方式加以引用。</span><br><span class="line">[=]     // 任何被使用到的外部变量都隐式地以传值方式加以引用。</span><br><span class="line">[&amp;, x]  // x显式地以传值方式加以引用。其余变量以引用方式加以引用。</span><br><span class="line">[=, &amp;z] // z显式地以引用方式加以引用。其余变量以传值方式加以引用。</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B" target="_blank" rel="noopener">C++</a>,by wikipedia.</li>
+<li><a href="https://zh.cppreference.com/w/cpp/language/history" target="_blank" rel="noopener">C++ 的历史</a>,by cppreference.</li>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B03" target="_blank" rel="noopener">C++03</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B11" target="_blank" rel="noopener">C++11</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B14" target="_blank" rel="noopener">C++14</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B17" target="_blank" rel="noopener">C++17</a>,by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/23/有趣的数学游戏/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/23/有趣的数学游戏/" itemprop="url">
+                  有趣的数学游戏
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-23 23:29:58" itemprop="dateCreated datePublished" datetime="2019-06-23T23:29:58+08:00">2019-06-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-24 00:11:12" itemprop="dateModified" datetime="2019-06-24T00:11:12+08:00">2019-06-24</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>记录一些有趣的数学游戏，与小伙伴分享。</p>
+<h1 id="三门问题"><a href="#三门问题" class="headerlink" title="三门问题"></a>三门问题</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>三门问题（Monty Hall problem）亦称为蒙提霍尔问题、蒙特霍问题或蒙提霍尔悖论，大致出自美国的电视游戏节目Let’s Make a Deal。</p>
+<p>问题名字来自该节目的主持人蒙提·霍尔（Monty Hall）。参赛者会看见三扇关闭了的门，其中一扇的后面有一辆汽车，选中后面有车的那扇门可赢得该汽车，另外两扇门后面则各藏有一只山羊。当参赛者选定了一扇门，但未去开启它的时候，节目主持人开启剩下两扇门的其中一扇，露出其中一只山羊。主持人其后会问参赛者要不要换另一扇仍然关上的门。问题是：换另一扇门会否增加参赛者赢得汽车的机率？</p>
+<h2 id="问题解答"><a href="#问题解答" class="headerlink" title="问题解答"></a>问题解答</h2><p><a href="https://zhuanlan.zhihu.com/p/70217002" target="_blank" rel="noopener">漫画：反直觉的 “三门问题”</a></p>
+<h1 id="海盗分金币问题"><a href="#海盗分金币问题" class="headerlink" title="海盗分金币问题"></a>海盗分金币问题</h1><h2 id="问题描述-1"><a href="#问题描述-1" class="headerlink" title="问题描述"></a>问题描述</h2><p>经济学上有个“海盗分金”模型：是说5个海盗抢得100枚金币，他们按抽签的顺序依次提方案：首先由1号提出分配方案，然后5人表决，投票要超过半数同意方案才被通过，否则他将被扔入大海喂鲨鱼，依此类推。</p>
+<p>“海盗分金”其实是一个高度简化和抽象的模型，体现了博弈的思想。在“海盗分金”模型中，任何“分配者”想让自己的方案获得通过的关键是事先考虑清楚“挑战者”的分配方案是什么，并用最小的代价获取最大收益，拉拢“挑战者”分配方案中最不得意的人们。</p>
+<h2 id="问题解答-1"><a href="#问题解答-1" class="headerlink" title="问题解答"></a>问题解答</h2><p><a href="https://zhuanlan.zhihu.com/p/55273946" target="_blank" rel="noopener">漫画：有趣的海盗问题</a></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/70217002" target="_blank" rel="noopener">漫画：反直觉的 “三门问题”</a>,by 小灰.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/55273946" target="_blank" rel="noopener">漫画：有趣的海盗问题</a>,by 小灰.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/23/gdb调试入门/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/23/gdb调试入门/" itemprop="url">
+                  gdb调试入门
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-23 14:26:54 / 修改时间：23:17:40" itemprop="dateCreated datePublished" datetime="2019-06-23T14:26:54+08:00">2019-06-23</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>GDB是一个由GNU开源组织发布的、UNIX/LINUX操作系统下的、基于命令行的、功能强大的程序调试工具。 对于一名Linux下工作的c++程序员，gdb是必不可少的工具。</p>
+<h1 id="启动gdb"><a href="#启动gdb" class="headerlink" title="启动gdb"></a>启动gdb</h1><p>对C/C++程序的调试，需要在编译前就加上-g选项。对大型项目，一般选择Debug选项进行编译以 方便gdb调试。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ g++ -g hello.cpp -o hello</span><br></pre></td></tr></table></figure>
+<p>调试可执行文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$gdb &lt;program&gt;</span><br></pre></td></tr></table></figure>
+<p>program也就是你的执行文件，一般在当前目录下。</p>
+<h1 id="gdb交互命令"><a href="#gdb交互命令" class="headerlink" title="gdb交互命令"></a>gdb交互命令</h1><p>启动gdb后，进入到交互模式，通过以下命令完成对程序的调试；注意高频使用的命令一般都会有缩写，熟练使用这些缩写命令能提高调试的效率；</p>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><ul>
+<li>run：简记为 r ，其作用是运行程序，当遇到断点后，程序会在断点处停止运行，等待用户输入下一步的命令。</li>
+<li>continue （简写c ）：继续执行，到下一个断点处（或运行结束）</li>
+<li>next：（简写 n），单步跟踪程序，当遇到函数调用时，也不进入此函数体；此命令同 step 的主要区别是，step 遇到用户自定义的函数，将步进到函数中去运行，而 next 则直接调用函数，不会进入到函数体内。</li>
+<li>step （简写s）：单步调试如果有函数调用，则进入函数；与命令n不同，n是不进入调用的函数的</li>
+<li>until：当你厌倦了在一个循环体内单步跟踪时，这个命令可以运行程序直到退出循环体。</li>
+<li>until+行号： 运行至某行，不仅仅用来跳出循环</li>
+<li>finish： 运行程序，直到当前函数完成返回，并打印函数返回时的堆栈地址和返回值及参数值等信息。</li>
+<li><strong>call 函数(参数)：调用程序中可见的函数，并传递“参数”，如：call gdb_test(55)</strong></li>
+<li>quit：简记为 q ，退出gdb</li>
+</ul>
+<h2 id="设置断点"><a href="#设置断点" class="headerlink" title="设置断点"></a>设置断点</h2><ul>
+<li><strong>break n （简写b n）:在第n行处设置断点</strong><br>（可以带上代码路径和代码名称： b OAGUPDATE.cpp:578）</li>
+<li>b fn1 if a＞b：条件断点设置</li>
+<li>break func（break缩写为b）：在函数func()的入口处设置断点，如：break cb_button</li>
+<li>delete 断点号n：删除第n个断点</li>
+<li>disable 断点号n：暂停第n个断点</li>
+<li>enable 断点号n：开启第n个断点</li>
+<li>clear 行号n：清除第n行的断点</li>
+<li>info b （info breakpoints） ：显示当前程序的断点设置情况</li>
+<li>delete breakpoints：清除所有断点</li>
+</ul>
+<h2 id="查看源代码"><a href="#查看源代码" class="headerlink" title="查看源代码"></a>查看源代码</h2><ul>
+<li>list ：简记为 l ，其作用就是列出程序的源代码，默认每次显示10行。</li>
+<li>list 行号：将显示当前文件以“行号”为中心的前后10行代码，如：list 12</li>
+<li>list 函数名：将显示“函数名”所在函数的源代码，如：list main</li>
+<li>list ：不带参数，将接着上一次 list 命令的，输出下边的内容。</li>
+</ul>
+<h2 id="打印表达式"><a href="#打印表达式" class="headerlink" title="打印表达式"></a>打印表达式</h2><ul>
+<li>print 表达式：简记为 p ，其中“表达式”可以是任何当前正在被测试程序的有效表达式，比如当前正在调试C语言的程序，那么“表达式”可以是任何C语言的有效表达式，包括数字，变量甚至是函数调用。</li>
+<li>print a：将显示整数 a 的值</li>
+<li>print ++a：将把 a 中的值加1,并显示出来</li>
+<li>print name：将显示字符串 name 的值</li>
+<li>print gdb_test(22)：将以整数22作为参数调用 gdb_test() 函数</li>
+<li>print gdb_test(a)：将以变量 a 作为参数调用 gdb_test() 函数</li>
+<li>display 表达式：在单步运行时将非常有用，使用display命令设置一个表达式后，它将在每次单步进行指令后，紧接着输出被设置的表达式及值。如： display a</li>
+<li>watch 表达式：设置一个监视点，一旦被监视的“表达式”的值改变，gdb将强行终止正在被调试的程序。如： watch a</li>
+<li>whatis ：查询变量或函数</li>
+<li>info function： 查询函数</li>
+<li>扩展info locals： 显示当前堆栈页的所有变量</li>
+</ul>
+<h2 id="查询运行信息"><a href="#查询运行信息" class="headerlink" title="查询运行信息"></a>查询运行信息</h2><ul>
+<li>where/bt ：当前运行的堆栈列表；</li>
+<li>bt backtrace 显示当前调用堆栈</li>
+<li>up/down 改变堆栈显示的深度</li>
+<li><strong>set args 参数:指定运行时的参数</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set args -l a -C abc</span><br><span class="line">set args -l=a -C=abc</span><br></pre></td></tr></table></figure>
+<ul>
+<li>show args：查看设置好的参数</li>
+<li>info program： 来查看程序的是否在运行，进程号，被暂停的原因。</li>
+</ul>
+<h2 id="分割窗口"><a href="#分割窗口" class="headerlink" title="分割窗口"></a>分割窗口</h2><ul>
+<li>layout：用于分割窗口，可以一边查看代码，一边测试：</li>
+<li>layout src：显示源代码窗口</li>
+<li>layout asm：显示反汇编窗口</li>
+<li>layout regs：显示源代码/反汇编和CPU寄存器窗口</li>
+<li>layout split：显示源代码和反汇编窗口</li>
+<li>Ctrl + L：刷新窗口</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/gdb.html" target="_blank" rel="noopener">gdb 调试利器</a>,by Linux Tools Quick Tutorial.</li>
+<li><a href="https://blog.csdn.net/blacet/article/details/52385955" target="_blank" rel="noopener">GDB调试带参数的程序（转载＋整理+实践）</a>,by blacet.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/23/随机抽样一致/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/23/随机抽样一致/" itemprop="url">
+                  随机抽样一致
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-23 09:26:08 / 修改时间：11:23:28" itemprop="dateCreated datePublished" datetime="2019-06-23T09:26:08+08:00">2019-06-23</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>随机抽样一致算法（RANdom SAmple Consensus，RANSAC）。它采用迭代的方式从一组包含离群(outlier)的被观测数据中估算出数学模型的参数。 RANSAC是一个非确定性算法，在某种意义上说，它会产生一个在一定概率下合理的结果，而更多次的迭代会使这一概率增加。此RANSAC算法在1981年由Fischler和Bolles首次提出。</p>
+<p>RANSAC的基本假设是</p>
+<ul>
+<li>“内群”(inlier)数据可以通过几组模型的参数来叙述其分布，而“离群”(outlier)数据则是不适合模型化的数据。</li>
+<li>数据会受噪声影响，噪声指的是离群，例如从极端的噪声或错误解释有关数据的测量或不正确的假设。</li>
+<li>RANSAC假定，给定一组（通常很小）的内群，存在一个程序，这个程序可以估算最佳解释或最适用于这一数据模型的参数。</li>
+</ul>
+<h1 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h1><p>这里用一个简单的例子来说明，在一组数据点中找到一条最适合的线。假设，此有一组集合包含了内群以及离群，其中内群为可以被拟合到线段上的点，而离群则是无法被拟合的点。如果我们用简单的最小二乘法来找此线，我们将无法得到一条适合于内群的线，因为最小二乘法会受离群影响而影响其结果。而RANSAC，可以只由内群来计算出模型，而且概率还够高。然而，RANSAC无法保证结果一定最好，所以必须小心选择参数，使其能有足够的概率。</p>
+<div style="display:flex">
+    <div style="width: 45%;margin: 0 2.5%;">
+        <img display="block" src="images/255px-Line_with_outliers.svg.png" width="100%" alt="包含许多离群的一组数据">
+        <div>包含许多离群的一组数据，要找一条最适合的线。</div>
+    </div>
+    <div style="width: 45%;margin: 0 2.5%;">
+        <img display="block" src="images/255px-Fitted_line.svg.png" width="100%" alt="RANSAC找到的线">
+        <div>RANSAC找到的线，离群值对结果没影响（蓝色点为内群，红色点为离群）</div>
+    </div>   
+</div>
+
+<h1 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h1><p>RANSAC算法是一个学习的技巧，通过使用观测数据的随机样本来估计模型参数。RANSAC使用投票机制来寻找优化的拟合结果。每个数据元被用来投票一或多个模型。投票机制基于两点假设：</p>
+<ul>
+<li><p>噪音大的特征并不能一直单独为某个模型投票</p>
+</li>
+<li><p>有足够多的特征来拟合一个好的模型</p>
+</li>
+</ul>
+<p>一般RANSAC算法由两步骤迭代计算：</p>
+<ul>
+<li><p>一个样本子集，包含数据选取（随机选取）。通过使用这些数据得到一个拟合模型和相关的模型参数。样本子集的数量是最小充分的得到模型参数。</p>
+</li>
+<li><p>算法检查数据集中的哪些元素是一直在第一步估计到的模型当中的。如果在阈值（相对噪声的最大偏离度）外的话，该模型元素不能拟合估计到的模型便会被当做outlier。</p>
+</li>
+</ul>
+<p>inliers的设置称作“一致性设置”RANSAC算法会一直迭代直到获得足够的inliers。</p>
+<p>RANSAC的输入是一些观测数据和一些“可信度”参数，实现步骤：</p>
+<ol>
+<li>随机选择一些原始数据，叫作假设inliers子集</li>
+<li>建立模型拟合</li>
+<li>用其他数据来验证，根据模型特定的loss-function来计算是否符合该模型</li>
+<li>如果足够的点都算是“一致性”设置里则该模型算是好模型</li>
+<li>比较所有的“一致性”设置（就是建立的所有模型）看看哪个inliers多就是我们要的。</li>
+</ol>
+<h2 id="参数决定"><a href="#参数决定" class="headerlink" title="参数决定"></a>参数决定</h2><p>假设每个点是真正内群的几率是 $w$ :</p>
+<script type="math/tex; mode=display">w = 真正內群的數目 / 數據總共的數量</script><p>通常我们不知道 $w$ 是多少, $w^n$ 是所选择的n个点都是内群的几率, $1-w^n$ 是所选择的n个点至少有一个不是内群的几率, $(1 − w^n)^k$ 是表示重复k次都没有全部的n个点都是内群的几率, 这边定算法跑k次以后成功的几率是p，那么,</p>
+<script type="math/tex; mode=display">1 − p =(1 − w^n)^k</script><script type="math/tex; mode=display">p = 1 −(1 − w^n)^k</script><p>所以如果希望成功几率高，p = 0.99, 当n不变时，k越大,p越大, 当w不变时，n越大，所需的k就越大, 通常w未知，所以n选小一点比较好。</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>RANSAC常被用在计算机视觉，例如，对应点问题和 估算立体摄影机双眼相对点的基本矩阵。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/36301702" target="_blank" rel="noopener">随机抽样一致RANSAC: Random Sample Consensus</a>,by 江知季.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E9%9A%A8%E6%A9%9F%E6%8A%BD%E6%A8%A3%E4%B8%80%E8%87%B4" target="_blank" rel="noopener">随机抽样一致</a>,by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/22/尺度空间理论简介/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/22/尺度空间理论简介/" itemprop="url">
+                  尺度空间理论简介
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-22 18:53:42 / 修改时间：21:30:21" itemprop="dateCreated datePublished" datetime="2019-06-22T18:53:42+08:00">2019-06-22</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>尺度空间理论最早可以追溯到1962年的T.Iijima最先提出，学术界开始关注尺度空间技术主要在1986年IEEE PAMI上同时刊出的4篇关于尺度空间理论的文章奠定了发展基础。</p>
+<p>现实世界中物体只有具备一定的尺度才能够倍人眼所察觉，计算机视觉学术研究就是在不断的尝试与突破来模拟人眼的观察方法。因此，尺度空间就是试图在图像领域中模拟人眼观察物体的概念与方法。</p>
+<h1 id="尺度空间理论"><a href="#尺度空间理论" class="headerlink" title="尺度空间理论"></a>尺度空间理论</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>图像的尺度空间是指图像的模糊程度，而非图像的大小。近距离看一个物体和远距离看一个物体，模糊程度是不一样的；从近到远，图像越来越模糊的过程，也是图像的尺度越来越大的过程。</p>
+<h2 id="尺度空间的作用"><a href="#尺度空间的作用" class="headerlink" title="尺度空间的作用"></a>尺度空间的作用</h2><ul>
+<li><p>用计算机视觉系统分析未知场景时，计算机并不预先知道图像中物体的尺度。需要同时考虑图像在多尺度下的描述，获知感兴趣物体的最佳尺度；</p>
+</li>
+<li><p>不同的尺度下都有同样的关键点，那么在不同的尺度的输入图像下就都可以检测出来关键点匹配，也就是尺度不变性；</p>
+</li>
+</ul>
+<h2 id="尺度空间的应用"><a href="#尺度空间的应用" class="headerlink" title="尺度空间的应用"></a>尺度空间的应用</h2><ul>
+<li>David G. Lowe教授基于描述数字图像局部特征的尺度空间概念，于1999年提出尺度不变特征变换算法（Scale-invariant feature transform，SIFT）；</li>
+<li>在信息获取与处理、建筑、城市学等不同学科中，都有类似的概念，或有借用尺度空间的概念与方法的可能；</li>
+</ul>
+<h1 id="尺度不变特征转换"><a href="#尺度不变特征转换" class="headerlink" title="尺度不变特征转换"></a>尺度不变特征转换</h1><p>尺度不变特征转换(Scale-invariant feature transform 或 SIFT)是一种机器视觉的算法用来侦测与描述影像中的局部性特征，它在空间尺度中寻找极值点，并提取出其位置、尺度、旋转不变数，此算法由 David Lowe 在1999年所发表，2004年完善总结。 [1] 后续的论文中也有许多基于 SIFT 改进的论文，例如 SURF 将 SIFT 的许多过程近似，达到加速的效果；PCA-SIFT利用主成分分析降低描述子的维度，减少内存的使用并加快配对速度。</p>
+<p>其应用范围包含物体辨识、机器人地图感知与导航、影像缝合、3D模型建立、手势辨识、影像追踪和动作比对。</p>
+<p>此算法有其专利，专利拥有者为 英属哥伦比亚大学。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/Small_Munich/article/details/79968229" target="_blank" rel="noopener">SIFT算法系列之尺度空间</a>,by small_munich.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%B0%BA%E5%BA%A6%E4%B8%8D%E8%AE%8A%E7%89%B9%E5%BE%B5%E8%BD%89%E6%8F%9B" target="_blank" rel="noopener">尺度不变特征转换</a>,by wikipedia.</li>
+<li><a href="https://www.cnblogs.com/ronny/p/3886013.html" target="_blank" rel="noopener">尺度空间理论</a>,by ☆Ronny丶.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/48594812" target="_blank" rel="noopener">特征点检测一</a>,by 张帅宾.</li>
+<li><a href="http://zhaoxuhui.top/blog/2018/01/29/ORB%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96-%E5%8C%B9%E9%85%8D%E5%8F%8A%E5%AE%9E%E7%8E%B0.html" target="_blank" rel="noopener">ORB特征提取、匹配及实现</a>,by zhaoxuhui.</li>
+<li><a href="https://senitco.github.io/2017/07/05/image-feature-brief/" target="_blank" rel="noopener">图像特征描述子之BRIEF</a>,by Senit_Co.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/16/面向对象设计的五大原则SOLID/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -931,1295 +2255,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/10/轨迹相似度度量方法总结/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/10/轨迹相似度度量方法总结/" itemprop="url">
-                  轨迹相似度度量方法总结
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-10 22:39:26" itemprop="dateCreated datePublished" datetime="2019-06-10T22:39:26+08:00">2019-06-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-06-11 21:53:37" itemprop="dateModified" datetime="2019-06-11T21:53:37+08:00">2019-06-11</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>轨迹相似度度量有广泛的用途，如语音识别分类、模板匹配、信息检索等。下面介绍各种轨迹相似度度量方法。</p>
-<h1 id="轨迹定义"><a href="#轨迹定义" class="headerlink" title="轨迹定义"></a>轨迹定义</h1><p>轨迹可由时间域到空间域的映射函数表示，如：</p>
-<script type="math/tex; mode=display">t\stackrel{F}{\longrightarrow}R^d, d>1</script><h1 id="度量方法"><a href="#度量方法" class="headerlink" title="度量方法"></a>度量方法</h1><p>轨迹相似度度量方法主要有：</p>
-<ul>
-<li><p>基于点方法： EDR，LCSS，DTW等</p>
-</li>
-<li><p>基于形状的方法： Frechet， Hausdorff</p>
-</li>
-<li><p>基于分段的方法：One Way Distance, LIP distance</p>
-</li>
-<li><p>基于特定任务的方法：TRACLUS， Road Network，grid等</p>
-</li>
-</ul>
-<h2 id="基于点的方法"><a href="#基于点的方法" class="headerlink" title="基于点的方法"></a>基于点的方法</h2><h3 id="DTW"><a href="#DTW" class="headerlink" title="DTW"></a>DTW</h3><p>DTW（Dynamic Time Warping, 动态时间规整）可以计算两个时间序列的相似度，尤其适用于不同长度、不同节奏的时间序列（比如不同的人读同一个词的音频序列）。DTW将自动warping扭曲 时间序列（即在时间轴上进行局部的缩放），使得两个序列的形态尽可能的一致，得到最大可能的相似度。</p>
-<p>Dynamic Time Warping（DTW）诞生有一定的历史了（日本学者Itakura提出），它出现的目的也比较单纯，是一种衡量两个长度不同的时间序列的相似度的方法。应用也比较广，主要是在模板匹配中，比如说用在孤立词语音识别（识别两段语音是否表示同一个单词），手势识别，数据挖掘和信息检索等中。</p>
-<p>设 $P=<p_1,p_2,...,p_m>$ 和 $Q=<q_1,q_2,...,q_n>$ 是两个时间序列，则 $P$ 和 $Q$的距离 $DTW(P,Q)$ 定义如下：</q_1,q_2,...,q_n></p_1,p_2,...,p_m></p>
-<script type="math/tex; mode=display">DTW(P,Q)= \left\{
-\begin{array}{lcl}
-0     &   &if\ m=n=0\\
-\infty &   &if\ m=0\ or\ n=0\\
-dist(p_1,q_1)+min
-    \left\{
-    \begin{aligned}
-            DTW(Rest(P),Rest(Q))\\
-            DTW(Rest(P),Q)\\
-            DTW(P,Rest(Q))\\
-    \end{aligned}
-    \right\} & & otherwise
-\end{array}
-\right.</script><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.zhihu.com/question/27213170" target="_blank" rel="noopener">如何判断两条轨迹（或曲线）的相似度？</a>,by zhihu.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/43247215" target="_blank" rel="noopener">动态时间规整（DTW）算法简介</a>,by 文均.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/32849741" target="_blank" rel="noopener">DTW(Dynamic Time Warping)动态时间规整</a>,by X-猪.</li>
-<li><a href="https://www.cnblogs.com/luxiaoxun/archive/2013/05/09/3069036.html" target="_blank" rel="noopener">Dynamic Time Warping 动态时间规整算法</a>,by 阿凡卢.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/09/经典控制与现代控制理论的区别与联系/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/09/经典控制与现代控制理论的区别与联系/" itemprop="url">
-                  经典控制与现代控制理论的区别与联系
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-09 16:28:08 / 修改时间：17:21:52" itemprop="dateCreated datePublished" datetime="2019-06-09T16:28:08+08:00">2019-06-09</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>控制理论是工程学与数学的跨领域分支，主要处理在有输入信号的动力系统的行为。系统的外部输入称为“参考值”，系统中的一个或多个变量需随着参考值变化，控制器处理系统的输入，使系统输出得到预期的效果。</p>
-<p>控制理论一般的目的是借由控制器的动作让系统稳定，也就是系统维持在设定值，而且不会在设定值附近晃动。</p>
-<h1 id="控制论简介"><a href="#控制论简介" class="headerlink" title="控制论简介"></a>控制论简介</h1><p>控制理论是</p>
-<ul>
-<li>一个研究如何调整动态系统特性的理论。</li>
-<li>科学中跨学科的领域，起源于工程及数学，逐渐的应用在许多社会科学中，例如心理学、社会学（社会学中的控制理论）、犯罪学及金融系统。</li>
-</ul>
-<p>控制系统可以视为具有四种机能的系统：<strong>量测、比较、计算及修正</strong>。这四个机能可以用五种元素来实现：<strong>感测器、换能器、发送器、控制器及最终控制元件</strong>。量测机能是由感测器、换能器及发送器执行，在实务应用上，这三个元素会整合在一个单体内，像是电阻温度计。比较和计算的机能是由控制器执行，可能是电子式的比例控制（P控制）、PI控制、PID控制、双稳态的迟滞控制，也可能是可编程逻辑控制器（PLC）。早期的控制器也可能是机械式的，像是离心式调速器或是化油器。修正机能是由最终控制元件执行，最终控制元件改变系统的输出，因此影响操纵或控制的变量。</p>
-<h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><p>车辆的巡航定速系统是让车辆维持在由驾驶者设定的固定参考速度。此时控制器为巡航定速系统，车辆为受控体（plant），而系统是由控制器和车辆所组成，而控制变量是引擎节流阀的位置．会决定引擎可以产生的功率。</p>
-<p>一种最单纯的作法是当驾驶者启动巡航定速系统时，固定引擎节流阀的位置。但是若驾驶者在平坦的路面启动巡航定速系统，车辆在上坡时速度会较慢，车辆在下坡时速度又会较快。这种的控制器称为开环控制器，因为没有去量测系统输出（车辆速度）并且影响控制变量（节流阀位置），因此此系统无法去针对车辆遇到的变化（像路面坡度的变动）去进行调整。</p>
-<p>在闭环控制系统中，利用感测器量测系统输出（车辆速度），并将资料送入控制器中，控制器依资料调整控制变量（节流阀位置），来达到维持理想系统输出（使车辆速度和驾驶者设定的参考速度一致）。此时若车辆在上坡时，感测器会量到车辆的速度变慢，因此会调整节流阀位置，加大引擎输出功率，使马达加速。因为有量测车辆速度的回授，因此控制器可以配合车辆速度的变化进行动态调整。因此产生了控制系统中的“环”范式：控制变量影响系统输出，而再根据量测到的系统输出去调整控制变量。</p>
-<h1 id="经典控制理论"><a href="#经典控制理论" class="headerlink" title="经典控制理论"></a>经典控制理论</h1><p>为了克服开环控制器的限制，在控制理论中导入了反馈。闭环的控制器利用回授来控制动态系统的状态或输出。其名称来自系统中的讯息路径：程序输入（例如马达的电压）影响程序输出（例如马达的电流或转矩），利用感测器量测输出，再将量测资料送到控制器中处理，结果送回控制器作为输入信号之一，因此成为一闭环。</p>
-<p>相对于开环控制器，闭环控制器有以下的优点：</p>
-<ul>
-<li>噪声抑制能力（像巡航定速中的路面坡度）。</li>
-<li>即使在数学模型有一些不确定性的情形下（如模型结构和实际系统不是完全符合，或是模型参数和实际数值不是完全一致），仍有一定程度的性能。</li>
-<li>可以稳定不稳定的系统</li>
-<li>减少对于参数变动的灵敏度</li>
-<li>提升命令追随（命令变化时，系统配合命令变化）的性能</li>
-<li>有些系统中，同时出现开环及闭环的控制，此时的开环会称为前馈，目的是为了提升命令追随的性能。</li>
-</ul>
-<p>PID控制器是常见的闭回路控制器架构。</p>
-<h2 id="闭环传递函数"><a href="#闭环传递函数" class="headerlink" title="闭环传递函数"></a>闭环传递函数</h2><p>系统的输出y(t)借由感测器F量测后，和参考值r(t)相减，控制器C根据参考值和输出值的误差e调整受控体P的输入u，如图1所示，这类的控制器称为闭环控制器。</p>
-<p>由于只有一个输入和输出，此系统会称为SISO（单一输入单一输出）控制系统。MIMO（多重输入多重输出）控制系统是指输入或输出不只一个，在实际应用上也很常见，其输入变量和输出变量会用向量表示，而不是单一数值的标量。在分布参量系统中，向量可能是无限维的，即一般的函数。</p>
-<p></p><p align="center">
-    <img src="images/control_loop.png" width="50%" alt="闭环传递函数示意图">
-</p><p></p>
-<center>图1  闭环传递函数示意图</center>
-
-<p>若假设控制器C、受控体P及感测器F都是线性及非时变的（各模组输入和输出的关系不随时间改变），可以将上述系统用拉普拉斯转换来分析，因此可以得到以下的关系：</p>
-<script type="math/tex; mode=display">Y(s)=P(s)U(s)\,\!</script><script type="math/tex; mode=display">U(s)=C(s)E(s)\,\!</script><script type="math/tex; mode=display">E(s)=R(s)-F(s)Y(s)\,\!</script><p>其中 s为拉普拉斯转换中的复变量，若要求解Y(s)用R(s)表示，可得：</p>
-<script type="math/tex; mode=display">Y(s)=\left({\frac  {P(s)C(s)}{1+F(s)P(s)C(s)}}\right)R(s)=H(s)R(s)\,\!</script><p>表示式 $H(s)={\frac {P(s)C(s)}{1+F(s)P(s)C(s)}}\,!$即为系统的闭环传递函数，分子是从r到y的前馈（开环）增益，分母是1加上经过反馈环的增益．即闭环增益，若$|P(s)C(s)|\gg 1\,!$，，也就是说在各s下，其范数都很大，且 $|F(s)|\approx 1\,!$，则Y(s)近似于R(s)，此时输出会紧密的追随参考输入。</p>
-<h2 id="PID"><a href="#PID" class="headerlink" title="PID"></a>PID</h2><p>请参考链接[4]。</p>
-<h1 id="现代控制理论"><a href="#现代控制理论" class="headerlink" title="现代控制理论"></a>现代控制理论</h1><p>经典控制理论以频域分析为主，而现代控制理论利用时域的状态空间表示法，将系统中的输入、输出及状态变量之间的关系用一阶的微分方程表示。为了抽象化输入、输出及状态变量的数量，这些变量一般会用向量来表示，而微分方程或代数方程（当系统是线性时）则会以矩阵形式表示。状态空间表示法也称为时域分析，提供一个方便且简洁的方式针对多重输入及输出的系统建模及分析，在有输入和输出时，也可以利用拉氏转换，将系统所有的资料包括在其中。现代控制理论不同于频域分析，可以分析非线性或不是零初始条件的系统。状态空间就是指坐标轴为状态变量的空间，系统的状态可以表示为状态空间中的一个向量。</p>
-<h1 id="控制理论主题"><a href="#控制理论主题" class="headerlink" title="控制理论主题"></a>控制理论主题</h1><h2 id="稳定性"><a href="#稳定性" class="headerlink" title="稳定性"></a>稳定性</h2><p>在控制理论中的稳定性是指控制系统的状态在特定条件下，可以维持在一定的范围内，不会发散，而在什么范围内才算是稳定则依系统种类而不同。</p>
-<ul>
-<li>没有输入信号的动力系统，其稳定性是用李雅普诺夫稳定性来描述，也就是任何初始条件在 $x<em>{0}$ 附近的轨迹均能维持在 $x</em>{0}$ 附近</li>
-<li>有输入信号的线性系统，其稳定性是用有界输入有界输出稳定性（BIBO 稳定性）来描述，针对任何有界的输入信号，其输出也是有界。</li>
-<li>有输入信号的非线性系统，其稳定性是用输入-状态稳定性（input-to-state stability），结合了李雅普诺夫稳定性及类似有界输入有界输出稳定性的表示方式。</li>
-</ul>
-<h2 id="可控制性及可观测性"><a href="#可控制性及可观测性" class="headerlink" title="可控制性及可观测性"></a>可控制性及可观测性</h2><p>可控制性和可观测性分别是输入和状态，输出和状态之间的性质。是在分析控制系统，决定控制策略或判断是否可以使系统稳定时所需要的重要性质。</p>
-<p>可控制性是指是可以用适当的控制信号作为输入，使特定状态变量的数值变成０，和利用输入调整状态变量的能力有关，若一个状态变量是不可控制的，表示没有输入可以调整这一个状态，若一系统中所有不可控制的状态变量，其动态特性都是稳定的，则此系统称为可稳定的（stabilizable）。</p>
-<p>可观测性是指可以用输出的量测及计算得到状态变量的值，若一个状态变量是不可观测的，表示无法确认此一状态是否稳定，也就无法用此状态来稳定整个系统。若一系统中所有不可控制的观测变量都是稳定的，则此系统称为可检测的（detectable）。</p>
-<h2 id="控制规格"><a href="#控制规格" class="headerlink" title="控制规格"></a>控制规格</h2><p>在控制原理的基础下，已发展出许多不同的控制策略，从非常通用的（PID控制器），到针对特殊系统的控制，尤其是机器人或是航空器的巡航定速控制。</p>
-<p>一个控制问题会有许多的规格，其中稳定性是必要条件的，不论系统开环稳定性如何，控制器需确保在闭环下是稳定的。性能不佳或是调整不当的控制器可能使系统变的不稳定，甚至可能比开环还要不稳定，这是应尽量要避免的。</p>
-<h2 id="模型识别及鲁棒性"><a href="#模型识别及鲁棒性" class="headerlink" title="模型识别及鲁棒性"></a>模型识别及鲁棒性</h2><p>控制系统一定会有一定程度的鲁棒性。控制器一般是依照一个假设的受控系统模组再进行设计，鲁棒性是指一控制器配合的受控系统和原来假设的系统有一点不同，控制器的特性不会有太大的变化。这个规格在实际的控制器中相当重要，因为很少实际系统会完全符合描述它的微分方程，在选择系统数学模型时，一般会进行简化，否则数学模型会非常复杂，甚至无法求得一个完整的模型。</p>
-<h1 id="系统分类"><a href="#系统分类" class="headerlink" title="系统分类"></a>系统分类</h1><h2 id="线性系统控制"><a href="#线性系统控制" class="headerlink" title="线性系统控制"></a>线性系统控制</h2><p>针对MIMO的系统，极点的指定可以用开环系统的状态空间，再将极点放在指定位置，计算对应的回授矩阵。若在复杂的系统中，上述的程序需要用电脑辅助计算才能达到，而且不保证其鲁棒性。而且一般而言无法量到所有的系统状态，在极点指定的设计时需加入观测器（observer）的设计。</p>
-<h2 id="非线性系统控制"><a href="#非线性系统控制" class="headerlink" title="非线性系统控制"></a>非线性系统控制</h2><p>像机器人学及航天产业中的程序一般都有高度非线性的动态，在控制理论中有时可以用线性化的方式转换为线性系统，再依线性系统的方式控制。但有时需要用一些可以配合非线性系统使用的非线性控制理论，例如回授线性化、反推控制、滑动模式控制等。轨迹线性化控制一般利用李亚普诺夫稳定性的基础。微分几何用做为一数学工具，将许多广为人知的线性控制概念扩展到非线性控制中，但其中又有其微妙之处，因此变成一个更有挑战性的问题。</p>
-<h2 id="分散式系统"><a href="#分散式系统" class="headerlink" title="分散式系统"></a>分散式系统</h2><p>分散控制系统是指一个系统由多个控制器来控制。分散控制有几个好处，例如可以控制一个位在广大地理区域的系统，各控制器之间可以用通讯网络彼此交换资料，并协调彼此的行动。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA" target="_blank" rel="noopener">控制理论</a>,by wikipedia.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/34908368" target="_blank" rel="noopener">「珂学原理」精选：经典控制和现代控制理论有何本质区别？</a>,by 王珂.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E6%8B%89%E6%99%AE%E6%8B%89%E6%96%AF%E5%8F%98%E6%8D%A2" target="_blank" rel="noopener">拉普拉斯变换</a>,by wikipedia.</li>
-<li><a href="https://huangwang.github.io/2019/02/09/PID%E6%8E%A7%E5%88%B6%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">PID控制算法原理分析</a>,by jackhuang.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/08/ROS中Package安装方法/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/08/ROS中Package安装方法/" itemprop="url">
-                  ROS中Package安装方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-08 21:41:08 / 修改时间：21:50:37" itemprop="dateCreated datePublished" datetime="2019-06-08T21:41:08+08:00">2019-06-08</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>ROS（机器人操作系统，Robot Operating System），是专为机器人软件开发所设计出来的一套电脑操作系统架构。它是一个开源的元级操作系统（后操作系统），提供类似于操作系统的服务，包括硬件抽象描述、底层驱动程序管理、共用功能的执行、程序间消息传递、程序发行包管理，它也提供一些工具和库用于获取、建立、编写和执行多机融合的程序。</p>
-<p>ROS的Package资源非常丰富，官方库中就有两千多Package，这对扩充ROS的功能十分重要。下面即介绍ROS中Package的安装方法，主要分成两种方法：</p>
-<h1 id="Deb安装方式"><a href="#Deb安装方式" class="headerlink" title="Deb安装方式"></a>Deb安装方式</h1><p>deb方式安装方法十分简单，根据ROS版本，直接运行apt-get命令，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install ros-kinetic-camera-calibration</span><br></pre></td></tr></table></figure>
-<h1 id="源码安装方式"><a href="#源码安装方式" class="headerlink" title="源码安装方式"></a>源码安装方式</h1><p>源码安装方式稍微复杂，安装方法如下：</p>
-<ol>
-<li>创建catkin工作空间</li>
-<li>在catkin工作空间的src文件夹下，下载ROS的Package源代码</li>
-<li>使用catkin build命令编译安装</li>
-</ol>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.zybuluo.com/ferstar/note/214495" target="_blank" rel="noopener">安装ROS软件包</a>,by ferstar.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/06/ROS编译命令catkin简析/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/06/ROS编译命令catkin简析/" itemprop="url">
-                  ROS编译命令catkin简析
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-06 21:47:21 / 修改时间：22:04:41" itemprop="dateCreated datePublished" datetime="2019-06-06T21:47:21+08:00">2019-06-06</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>目前编译ROS的Package有两种方法：</p>
-<ul>
-<li>catkin_make</li>
-<li>catkin build</li>
-</ul>
-<h1 id="catkin-make"><a href="#catkin-make" class="headerlink" title="catkin_make"></a>catkin_make</h1><p>catkin_make 是一个命令行工具，它简化了catkin的标准工作流程。你可以认为catkin_make是在CMake标准工作流程中依次调用了cmake 和 make。</p>
-<p>使用方法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 在catkin工作空间下</span><br><span class="line">$ catkin_make [make_targets] [-DCMAKE_VARIABLES=...]</span><br></pre></td></tr></table></figure>
-<h1 id="catkin"><a href="#catkin" class="headerlink" title="catkin"></a>catkin</h1><p>catkin是一个用于处理catkin元构建系统和catkin工作区的命令行工具。其用法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">`catkin VERB -h` for help on each verb listed below:</span><br><span class="line">  </span><br><span class="line">    build	Builds a catkin workspace.</span><br><span class="line">    clean	Deletes various products of the build verb.</span><br><span class="line">    config	Configures a catkin workspace&apos;s context.</span><br><span class="line">    create	Creates catkin workspace resources like packages.</span><br><span class="line">    env	        Run an arbitrary command in a modified environment. </span><br><span class="line">    init	Initializes a given folder as a catkin workspace.</span><br><span class="line">    list	Lists catkin packages in the workspace or other arbitray folders.</span><br><span class="line">    locate	Get the paths to various locations in a workspace.</span><br><span class="line">    profile	Manage config profiles for a catkin workspace.</span><br></pre></td></tr></table></figure>
-<p>同样可使用catkin build命令编译ROS的package。</p>
-<h1 id="catkin-make与catkin-build的区别"><a href="#catkin-make与catkin-build的区别" class="headerlink" title="catkin_make与catkin build的区别"></a>catkin_make与catkin build的区别</h1><p>与catkin_make不同，catkin命令行工具不仅仅是围绕cmake和make命令的瘦包装器。 catkin build命令隔离地在工作空间的源空间中构建每个包，以防止构建时串扰。 因此，在其最简单的用法中，catkin构建的行为类似于catkin_make_isolated的并行化版本。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://catkin-tools.readthedocs.io/en/latest/migration.html" target="_blank" rel="noopener">Migrating from catkin_make</a>,by catkin_tools homepage.</li>
-<li><a href="http://wiki.ros.org/cn/ROS/Tutorials/BuildingPackages" target="_blank" rel="noopener">编译ROS程序包</a>,by ros wiki.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/04/卡尔曼滤波入门/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/04/卡尔曼滤波入门/" itemprop="url">
-                  卡尔曼滤波入门
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-04 23:27:07" itemprop="dateCreated datePublished" datetime="2019-06-04T23:27:07+08:00">2019-06-04</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-06-05 21:21:55" itemprop="dateModified" datetime="2019-06-05T21:21:55+08:00">2019-06-05</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>卡尔曼滤波（Kalman filter）是一种高效率的递归滤波器（自回归滤波器），它能够从一系列的不完全及包含噪声的测量中，估计动态系统的状态。卡尔曼滤波会根据各测量量在不同时间下的值，考虑各时间下的联合分布，再产生对未知变数的估计，因此会比只以单一测量量为基础的估计方式要准。卡尔曼滤波得名自主要贡献者之一的鲁道夫·卡尔曼。</p>
-<p>卡尔曼滤波在技术领域有许多的应用。常见的有飞机及太空船的导引、导航及控制。卡尔曼滤波也广为使用在时间序列的分析中，例如信号处理及计量经济学中。卡尔曼滤波也是机器人运动规划及控制的重要主题之一，有时也包括在轨迹最佳化。卡尔曼滤波也用在中轴神经系统运动控制的建模中。因为从给与运动命令到收到感觉神经的回授之间有时间差，使用卡尔曼滤波有助于建立符合实际的系统，估计运动系统的目前状态，并且更新命令。</p>
-<h1 id="卡尔曼滤波原理解析"><a href="#卡尔曼滤波原理解析" class="headerlink" title="卡尔曼滤波原理解析"></a>卡尔曼滤波原理解析</h1><p>卡尔曼滤波器的状态矩阵方程如图1所示。</p>
-<p></p><p align="center">
-    <img src="images/kfmEquation.jpg" width="90%" alt="卡尔曼滤波器的状态矩阵方程">
-</p><p></p>
-<center>图1  卡尔曼滤波器的状态矩阵方程</center>
-
-<p>其中，下角标上的k是状态。此处我们将其视为离散时间间隔，比如说k=1 代表 1ms, k=2 代表2ms。</p>
-<p>我们的目的是找到信号 $x$ 的估值 $\hat{x} $，并且希望能对所有的k值都能找到对应的估值。</p>
-<p>另外此处的 $Z_k$ 是实际测量值，记住我们对该值并不完全信任，否则我们也不用费这么多事了。 $K_k$ 称为<strong>卡尔曼增益</strong>（也是最重要的量）， $\hat{x}_k$ 是前一状态下的信号估值。</p>
-<p>现在我们有了测量值，前一状态的信号估值。该方程中唯一未知的量就是卡尔曼增益 $K_k$ 了。对于每个状态，我们都需要计算对应的。这事不简单，但好在我们有所需的计算工具。</p>
-<p>另一方面，假设 $K_k$ 等于0.5，我们会发现该式变成了一个简单的求平均值公式。换句话说，随着状态的变化，我们的 $K_k$ 值将越来越“聪明”。</p>
-<h1 id="卡尔曼滤波器的构造"><a href="#卡尔曼滤波器的构造" class="headerlink" title="卡尔曼滤波器的构造"></a>卡尔曼滤波器的构造</h1><h2 id="建立模型"><a href="#建立模型" class="headerlink" title="建立模型"></a>建立模型</h2><p>此步最为关键，你必须确保卡尔曼滤波器适用于你要解决的问题。</p>
-<p>卡尔曼滤波器的两个方程如下:</p>
-<script type="math/tex; mode=display">x_k=Ax_{k-1}+Bu_k+w_{k-1} \tag{1}</script><script type="math/tex; mode=display">z_k=Hx_k+v_k \tag{2}</script><p>式(1)表达的是每个 $x_k$ 都可以通过一个线性随机方程估计出来。任意 $x_k$ 都是其前一时刻的值与<strong>过程噪音</strong>的线性组合（这个很难概念化）。请记住，大部分情况下该式没有控制信号 $u_k$ 项。</p>
-<p>式(2)告诉我们任何测量值 $z_k$ （无法确定精确与否的测量值）都是信号值与<strong>测量噪声</strong>的线性组合。这两个分量符合高斯分布。</p>
-<p>过程噪声与测量噪声互相统计独立。</p>
-<p>$A, B, H$ 是一般形式的矩阵。但在大多数信号处理问题中，这些量仅为数值。而且虽然这些值在状态变换时会改变，大多数情况下我们都可以假设他们为定值。</p>
-<p>如果我们十分确定我们的系统符合此模型，那么唯一剩下要做的事就是估计噪音函数 $w_{k-1}$ 和 $v_k$ 的平均值以及标准差。我们知道，在实际生活中没有信号满足高斯分布，但我们可以近似其为高斯分布。</p>
-<p>该近似问题不大，因为我们将看到卡尔曼滤波器算法会逐渐向正确的（噪音函数的）估计值收敛，即使高斯噪声参数估计不佳。</p>
-<p>唯一需要记住的是：你估计出来的噪音参数越好（越接近实际），你估计的（输出真实值）就越好。</p>
-<h2 id="开始卡尔曼滤波"><a href="#开始卡尔曼滤波" class="headerlink" title="开始卡尔曼滤波"></a>开始卡尔曼滤波</h2><p>如果你的模型适用于卡尔曼滤波器，那么接下来的步骤就是决定一些必要的参数以及初始值。</p>
-<p>卡尔曼滤波器包含的方程可分为两个方程集：时间更新方程组（用于预测）以及测量更新方程组（用于修正）。这两个方程组在滤波器运行的每一步（每个状态）下都会执行，如图2所示。</p>
-<p></p><p align="center">
-    <img src="images/kfmStep2.jpg" width="70%" alt="卡尔曼滤波的两个步骤">
-</p><p></p>
-<center>图2  卡尔曼滤波的两个步骤</center>
-
-<p>建模部分已经在步骤一完成了，所以矩阵A，B和H已知。这些矩阵很可能是一个常数，而且大部分情况下会等于1。</p>
-<p>剩下的最让人难受的部分就是决定R和Q的值了。R的值还是很容易找的，因为一般情况下我们对环境中的噪音还是能够确认的。（起码能用仪器测一下）。但是找Q的值就没那么直观了。</p>
-<p>为了使滤波器能够运行，我们需要知道 $x_0$ 和 $P_0$ 的估计值。</p>
-<h2 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h2><p>在获得了滤波器运行所需的所有信息后，我们就可以估值迭代了。记住：前一状态的估值将成为当前状态的输入。</p>
-<p></p><p align="center">
-    <img src="images/kfmStep3.jpg" width="70%" alt="卡尔曼滤波的迭代运行">
-</p><p></p>
-<center>图3  卡尔曼滤波的迭代运行</center>
-
-<p>此处 $\hat{x}_k^-$ 是<strong>预估值</strong>，从某种角度来说是第二部分运行前对 x 的一个粗略估计值。</p>
-<p>同时 $P_k^-$ 叫做预估误差协方差。在第二步“测量更新”中我们将会用到这两个预估值。</p>
-<p>$\hat{x}_k$为在时间 k 时的 x 的估计值。（也是我们最想获得的值）。同时，我们得到了用于k+1时刻计算的 $P_k$ 值。</p>
-<p>下一次迭代不会用到我们求得的卡尔曼增益 $K_k$ 的值，该值隐藏而神秘，并且是这些方程集的最重要的部分。</p>
-<p>我们在第二步“测量更新”中求得的值也叫做后部值(posterior values)。这个名称也很说得通。</p>
-<h1 id="卡尔曼滤波器的应用示例"><a href="#卡尔曼滤波器的应用示例" class="headerlink" title="卡尔曼滤波器的应用示例"></a>卡尔曼滤波器的应用示例</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/36745755" target="_blank" rel="noopener">卡尔曼滤波：从入门到精通</a>,by David LEE.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/64539108" target="_blank" rel="noopener">傻瓜也能懂的卡尔曼滤波器（翻译自外网博客）</a>,by 彦鑫.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/25598462" target="_blank" rel="noopener">说说卡尔曼滤波</a>,by 李阳.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2" target="_blank" rel="noopener">卡尔曼滤波</a>,by wikipedia.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/39912633" target="_blank" rel="noopener">图说卡尔曼滤波，一份通俗易懂的教程</a>,by 论智.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/04/求解射线与三角形交点的算法/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/04/求解射线与三角形交点的算法/" itemprop="url">
-                  求解射线与三角形交点的算法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-04 19:46:52 / 修改时间：23:21:13" itemprop="dateCreated datePublished" datetime="2019-06-04T19:46:52+08:00">2019-06-04</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>求解射线与三角形的交点，在光线追踪、碰撞检测、目标拾取等场景中经常使用，是计算机图形学中最基本的操作。下面介绍常用的求解射线与三角形交点的算法。</p>
-<h1 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h1><p>求解射线与三角形交点示意图如图1所示。</p>
-<p></p><p align="center" style="display: flex;">
-    <img src="images/rayInterSection1.png" width="40%" alt="求解射线与三角形交点示意图">
-    <img src="images/rayInterSection2.png" width="40%" alt="求解射线与三角形交点示意图">
-</p><p></p>
-<center>图1  求解射线与三角形交点示意图</center>
-
-<p>射线的参数方程如下，其中O是射线的起点，D是射线的方向，t是常数。</p>
-<script type="math/tex; mode=display">O+Dt</script><p>该方程的含义是一个点从起点O开始，沿着方向D移动任意长度，得到终点R，根据t值的不同，得到的R值也不同，所有这些不同的R值便构成了整条射线，比如下面的射线，起点是P0，方向是u，p0 + tu也就构成了整条射线。</p>
-<p></p><p align="center">
-    <img src="images/ray.jpeg" width="50%" alt="射线方程示意图">
-</p><p></p>
-<center>图2  射线方程示意图</center>
-
-<p>三角形的参数方程如下，其中$V_0$，$V_1$和$V_2$是三角形的三个点，$u, v$是$V_1$和$V_2$的权重，$1-u-v$是$V_0$的权重，并且满足$u&gt;=0, v &gt;= 0,u+v&lt;=1$。</p>
-<script type="math/tex; mode=display">(1-u-v)V_0+uV_1+vV_2</script><p></p><p align="center">
-    <img src="images/triangle.png" width="50%" alt="三角形方程示意图">
-</p><p></p>
-<center>图3  三角形方程示意图</center>
-
-
-<h1 id="直观方法"><a href="#直观方法" class="headerlink" title="直观方法"></a>直观方法</h1><p>求解射线与三角形的交点最直观的方法如下：</p>
-<ol>
-<li>判断射线是否与平面相交</li>
-<li>判断点是否在三角形内</li>
-</ol>
-<p>但该方法需要额外计算三角形所在平面，效率不高。</p>
-<h1 id="Moller-Trumbore方法-Journal-of-Graphic-Tools-1997"><a href="#Moller-Trumbore方法-Journal-of-Graphic-Tools-1997" class="headerlink" title="Moller-Trumbore方法(Journal of Graphic Tools, 1997)"></a>Moller-Trumbore方法(Journal of Graphic Tools, 1997)</h1><p>Moller-Trumbore方法中，求射线与三角形的交点即求解如下方程:</p>
-<script type="math/tex; mode=display">O+Dt=(1-u-v)V_0+uV_1+vV_2</script><p>其中t,u,v是未知数，其他都是已知的。</p>
-<p>移项并整理，将t,u,v提取出来作为未知数，得到下面的线性方程组：</p>
-<script type="math/tex; mode=display">\begin{bmatrix}
-    -D& V_1-V_0 &V_2-V_0
-\end{bmatrix}\begin{bmatrix}
-    t\\u\\v
-\end{bmatrix}=O-V_0</script><p>现在开始解这个方程组，这里要用到两个知识点，一是克莱姆法则，二是向量的混合积。</p>
-<p>令$E_1 = V_1 - V_0，E_2 = V_2 - V_0，T = O - V_0$上式可以改写成:</p>
-<script type="math/tex; mode=display">\begin{bmatrix}
-    -D& E_1 & E_2
-\end{bmatrix}\begin{bmatrix}
-    t\\u\\v
-\end{bmatrix}=T</script><p>根据克莱姆法则，可得到t,u,v的解为：</p>
-<script type="math/tex; mode=display">
-\begin{bmatrix}
-    t\\u\\v
-\end{bmatrix}
-=\frac{1}{\begin{vmatrix}
-    -D & E_1 & E_2
-\end{vmatrix} }
-\begin{vmatrix}
-    T&E_1&E_2\\
-    -D& T& E_2\\
-    -D & E_1& T
-\end{vmatrix}</script><p>根据混合积公式:</p>
-<script type="math/tex; mode=display">\begin{vmatrix}
-    a&b&c
-\end{vmatrix}
-=a\times{b}\cdot{c}</script><p>上式改写为：</p>
-<script type="math/tex; mode=display">
-\begin{bmatrix}
-    t\\u\\v
-\end{bmatrix}
-=\frac{1}{\begin{bmatrix}
-    -D \times E_2 \cdot E_1
-\end{bmatrix} }
-\begin{vmatrix}
-    T \times E_1 \cdot E_2\\
-    D \times E_2 \cdot T\\
-    T \times E_1 \cdot D
-\end{vmatrix}</script><p>令$P=D \times E_2$，$Q=T \times E_1$，得到最终的公式:</p>
-<script type="math/tex; mode=display">\begin{bmatrix}
-    t\\u\\v
-\end{bmatrix}
-=\frac{1}{\begin{bmatrix}
-    P \cdot E_1
-\end{bmatrix} }
-\begin{vmatrix}
-    Q \cdot E_2\\
-    P \cdot T\\
-    Q \cdot D
-\end{vmatrix}</script><p>之所以提炼出P和Q是为了避免重复计算。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.cnblogs.com/graphics/archive/2010/08/09/1795348.html" target="_blank" rel="noopener">射线和三角形的相交检测（ray triangle intersection test）</a>,by zdd.</li>
-<li><a href="http://pkuwwt.github.io/scholarship/2014-04-03-ray-triangle-intersection-tests-for-dummies/" target="_blank" rel="noopener">光线-三角形求交测试算法[译]</a>, by PKUWWT.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E5%85%8B%E8%90%8A%E5%A7%86%E6%B3%95%E5%89%87" target="_blank" rel="noopener">克莱姆法则</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E4%B8%89%E9%87%8D%E7%A7%AF" target="_blank" rel="noopener">混合积</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E9%87%8D%E5%BF%83%E5%9D%90%E6%A0%87" target="_blank" rel="noopener">重心坐标</a>,by wikipedia.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/58199366" target="_blank" rel="noopener">重心坐标（Barycentric coordinates）</a>,by 杨超.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/04/PLY文件格式分析/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/04/PLY文件格式分析/" itemprop="url">
-                  PLY文件格式分析
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-04 19:20:26 / 修改时间：19:42:40" itemprop="dateCreated datePublished" datetime="2019-06-04T19:20:26+08:00">2019-06-04</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>PLY文件是一种存储3D模型的文件格式，全名为多边形档案（Polygon File Format）或 史丹佛三角形档案（Stanford Triangle Format）。</p>
-<p>该格式主要用以储存立体扫描结果的三维数值，透过多边形片面的集合描述三维物体，与其他格式相较之下这是较为简单的方法。它可以储存的资讯包含颜色、透明度、表面法向量、材质座标与资料可信度，并能对多边形的正反两面设定不同的属性。</p>
-<p>在档案内容的储存上PLY有两种版本，分别是纯文字（ASCII）版本与二元码（binary）版本，其差异在储存时是否以ASCII编码表示元素资讯。</p>
-<p>通过分析PLY文件格式，我们可以进而初窥存储3D模型的文件奥秘。</p>
-<h1 id="文件格式"><a href="#文件格式" class="headerlink" title="文件格式"></a>文件格式</h1><p>各种文件格式通常分成文件头和文件内容，PLY格式也不例外。</p>
-<p>每个PLY档都包含档头（header），用以设定网格模型的“元素”与“属性”，以及在档头下方接着一连串的元素“数值资料”。一般而言，网格模型的“元素”就是顶点（vertices）、面（faces），另外还可能包含有边（edges）、深度图样本（samples of range maps）与三角带（triangle strips）等元素。无论是纯文字与二元码的PLY档，档头资讯都是以ASCII编码编写，接续其后的数值资料才有编码之分。</p>
-<p>PLY档案以此行作为开头，以识别PLY格式：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ply</span><br></pre></td></tr></table></figure>
-<p>接着第二行是版本资讯，目前有三种写法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">format ascii 1.0</span><br><span class="line">format binary_little_endian 1.0</span><br><span class="line">format binary_big_endian 1.0</span><br></pre></td></tr></table></figure>
-<p>其中ascii, binary_little_endian, binary_big_endian是档案储存的编码方式，而1.0是遵循的标准版本（现阶段仅有PLY 1.0版）。在档头中可使用’comment’作为一行的开头以编写注解，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">comment This is a comment!</span><br></pre></td></tr></table></figure>
-<p>描述元素及属性，必须使用’element’及’property’的关键字，一般的格式为element下方接着属性列表，例如:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">element &lt;element name&gt; &lt;number in file&gt;</span><br><span class="line">property &lt;data_type&gt; &lt;property name 1&gt;</span><br><span class="line">property &lt;data_type&gt; &lt;property name 2&gt;</span><br><span class="line">property &lt;data_type&gt; &lt;property name 3&gt;</span><br></pre></td></tr></table></figure>
-<p>‘property’不仅定义了资料的型态，其出现顺序亦定义了资料的顺序。内定的资料形态有两种写法：一种是char uchar short ushort int uint float double,另外一种是具有位元长度的int8 uint8 int16 uint16 int32 uint32 float32 float64。 例如，描述一个包含12个顶点的物体，每个顶点使用3个单精度浮点数 (x,y,z）代表点的座标，使用3个unsigned char代表顶点颜色，颜色顺序为 (B, G, R),则档头的写法为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">element vertex 12</span><br><span class="line">property float x</span><br><span class="line">property float y</span><br><span class="line">property float z</span><br><span class="line">property uchar blue</span><br><span class="line">property uchar green</span><br><span class="line">property uchar red</span><br></pre></td></tr></table></figure>
-<p>其中vertex是内定的元素类型，接续的6行property描述构成vertex元素的数值字段顺序代表的意义，及其资料形态。</p>
-<p>另一个常使用的元素是面。由于一个面是由3个以上的顶点所组成，因此使用一个“顶点列表”即可描述一个面, PLY格式使用一个特殊关键字’property list’定义之。 例如，一个具有10个面的物体，其PLY档头可能包含：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">element face 10</span><br><span class="line">property list uchar int vertex_indices</span><br></pre></td></tr></table></figure>
-<p>‘property list’表示该元素face的特性是由一行的顶点列表来描述。列表开头以uchar型态的数值表示列表的项目数，后面接着资料型态为int的顶点索引值（vertex_indices），顶点索引值从0开始。</p>
-<p>最后，标头必须以此行结尾：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">end_header</span><br></pre></td></tr></table></figure>
-<p>档头后接着的是元素资料（端点座标、拓朴连结等）。在ASCII格式中各个端点与面的资讯都是以独立的一行描述，而二元编码格式则连续储存这些资料，载入时须以’element’定义的元素数目以及’property’中设定的资料形态计算各笔字段的长度。</p>
-<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>一个典型的PLY文件结构分成三部分：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">文件头 (从ply开始到end_header）</span><br><span class="line">顶点元素列表</span><br><span class="line">面元素列表</span><br></pre></td></tr></table></figure>
-<p>其中的顶点元素列表一般以x y z方式排列，形态如文件头所定义；而面元素列表是以下列格式表示。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;组成面的端点數N&gt; &lt;端点#1的索引&gt; &lt;端点#2的索引&gt; ... &lt;端点#N的索引&gt;</span><br></pre></td></tr></table></figure>
-<p>以存储一个立方体模型的PLY文件为例，其内容为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">ply</span><br><span class="line">format ascii 1.0</span><br><span class="line">comment made by anonymous</span><br><span class="line">comment this file is a cube</span><br><span class="line">element vertex 8</span><br><span class="line">property float32 x</span><br><span class="line">property float32 y</span><br><span class="line">property float32 z</span><br><span class="line">element face 12</span><br><span class="line">property list uint8 int32 vertex_index</span><br><span class="line">end_header</span><br><span class="line">0 0 0</span><br><span class="line">0 25.8 0</span><br><span class="line">18.9 0 0</span><br><span class="line">18.9 25.8 0</span><br><span class="line">0 0 7.5</span><br><span class="line">0 25.8 7.5</span><br><span class="line">18.9 0 7.5</span><br><span class="line">18.9 25.8 7.5</span><br><span class="line">3 5 1 0</span><br><span class="line">3 5 4 0</span><br><span class="line">3 4 0 2</span><br><span class="line">3 4 6 2</span><br><span class="line">3 7 5 4</span><br><span class="line">3 7 6 4</span><br><span class="line">3 3 2 1</span><br><span class="line">3 1 2 0</span><br><span class="line">3 5 7 1</span><br><span class="line">3 7 1 3</span><br><span class="line">3 7 6 3</span><br><span class="line">3 6 3 2</span><br></pre></td></tr></table></figure>
-<p>PLY文件可用blender软件打开。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/PLY" target="_blank" rel="noopener">PLY</a>,by wikipedia.</li>
-<li><a href="https://blog.csdn.net/sinat_20530977/article/details/44805107" target="_blank" rel="noopener">Opengl学习笔记：（一）.Ply文件文件格式和文件读取</a>,by  为何走到这里.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2267,7 +2302,7 @@ dist(p_1,q_1)+min
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">131</span>
+                    <span class="site-state-item-count">138</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2374,7 +2409,11 @@ dist(p_1,q_1)+min
                     
                       
                     
-                    <span class="site-state-item-count">46</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -2954,8 +2993,6 @@ dist(p_1,q_1)+min
     
       
     
-      
-        
       
     
       

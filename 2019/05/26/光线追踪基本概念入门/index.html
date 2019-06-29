@@ -115,7 +115,7 @@
 <meta property="og:image" content="https://huangwang.github.io/2019/05/26/光线追踪基本概念入门/images/brdf.jpg">
 <meta property="og:image" content="https://huangwang.github.io/2019/05/26/光线追踪基本概念入门/images/localLightModel.jpg">
 <meta property="og:image" content="https://huangwang.github.io/2019/05/26/光线追踪基本概念入门/images/globalLightModel.jpg">
-<meta property="og:updated_time" content="2019-05-29T01:13:22.532Z">
+<meta property="og:updated_time" content="2019-06-22T13:09:44.844Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="光线追踪基本概念入门">
 <meta name="twitter:description" content="光线追踪（Ray tracing）是三维计算机图形学中的特殊渲染算法，跟踪从眼睛发出的光线而不是光源发出的光线，通过这样一项技术生成编排好的场景的数学模型显现出来。光线追踪的优点可以提供更为真实的光影效果，缺点是计算量巨大。 基本概念光线追踪与光栅化渲染作为相对的两个概念，理解光栅化渲染更能解释光线追踪的概念。 光栅化渲染是将向量图形格式表示的图像转换成位图以用于显示器或者打印机输出的过程，如图1">
@@ -382,7 +382,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-05-29 09:13:22" itemprop="dateModified" datetime="2019-05-29T09:13:22+08:00">2019-05-29</time>
+                <time title="修改时间：2019-06-22 21:09:44" itemprop="dateModified" datetime="2019-06-22T21:09:44+08:00">2019-06-22</time>
               
             
           </span>
@@ -470,7 +470,7 @@
 </ul>
 <p>辐射率（Radiance），指每单位面积每单位立体角的辐射通量密度。用符号 $L$ 表示，单位 $W/m^{2} sr$ ，定义为 $L = \frac{d \Phi }{d\omega d A^{\bot } }$ 。其中  $dA^{\bot}$是微分面积dA在垂直于光线方向的投影。</p>
 <h1 id="渲染方程（The-Rendering-Equation）"><a href="#渲染方程（The-Rendering-Equation）" class="headerlink" title="渲染方程（The Rendering Equation）"></a>渲染方程（The Rendering Equation）</h1><p>[Kajiya 1986]第一次将渲染方程引入图形学，使用它来解释光能传输的产生的各种现象。这一方程描述了场景中光能传输达到稳定状态以后，物体表面某个点在某个方向上的辐射亮度（Radiance）与入射辐射亮度等的关系。</p>
-<script type="math/tex; mode=display">L_o(x,w_o)=L_e(x,w_0)+\int_\Omega{f_r(x,w_i,w_0)L_i(x,w_i)cos\theta_idw_i}</script><p>其中，$L<em>o(x,w_o)$表示物体表面点 $x$ 处在方向  $𝜔</em>𝑜$  上出射的辐射亮度，$𝐿𝑒(𝑥, 𝜔<em>0)$表示在该点该方向上自辐射的亮度。$𝐿𝑖(𝑥,𝜔</em>𝑖)$表示该点处 $𝜔<em>𝑖$ 方向入射的辐射亮度，$𝑓𝑟(𝑥, 𝜔</em>𝑖, 𝜔<em>𝑜)$ 是双向反射分布函数（BRDF），描述的是入射方向的辐射亮度对出射方向的贡献，$cos 𝜃𝑖$ 是$𝜔</em>𝑖$与表面法向的点积。在这一方程的基础上，辐射度方法和蒙特卡罗光线跟踪的方法就可以看成是对方程中积分的不同的数值求解方法。</p>
+<script type="math/tex; mode=display">L_o(x,w_o)=L_e(x,w_0)+\int_\Omega{f_r(x,w_i,w_0)L_i(x,w_i)cos\theta_idw_i}</script><p>其中，$L<em>o(x,w_o)$ 表示物体表面点 $x$ 处在方向  $𝜔</em>𝑜$  上出射的辐射亮度，$𝐿𝑒(𝑥, 𝜔<em>0)$ 表示在该点该方向上自辐射的亮度。$𝐿𝑖(𝑥,𝜔</em>𝑖)$ 表示该点处 $𝜔<em>𝑖$ 方向入射的辐射亮度，$𝑓𝑟(𝑥, 𝜔</em>𝑖, 𝜔<em>𝑜)$ 是双向反射分布函数（BRDF），描述的是入射方向的辐射亮度对出射方向的贡献，$cos 𝜃𝑖$ 是$𝜔</em>𝑖$与表面法向的点积。在这一方程的基础上，辐射度方法和蒙特卡罗光线跟踪的方法就可以看成是对方程中积分的不同的数值求解方法。</p>
 <p>BRDF描述的是表面本身的性质，比如它的光滑程度，导电程度等等。由于四面八方的光线都会作用在这个表面，所以我们需要对所有方向进行积分，也就是一个球面上的积分，考虑到积分项中的 $(w_i\cdot n)$ ，那么只有位于正半空间的方向才会对最终积分有贡献，所以最后这个球面的积分就变成了一个半球的积分，如图3所示。</p>
 <p></p><p align="center">
     <img src="images/brdf.jpg" width="90%" alt="光线追踪示意图">
@@ -511,6 +511,7 @@
 <li><a href="https://zhuanlan.zhihu.com/p/49474631" target="_blank" rel="noopener">什么是光照模型</a>,by 黄琦.</li>
 <li><a href="https://blog.csdn.net/sunacmer/article/details/7451861" target="_blank" rel="noopener">蒙特卡洛光线追踪</a>,by sunacmer.</li>
 <li><a href="https://zh.wikipedia.org/wiki/K-d%E6%A0%91" target="_blank" rel="noopener">k-d树</a>,by wikipedia.</li>
+<li><a href="https://blog.csdn.net/a6333230/article/details/82968484" target="_blank" rel="noopener">辐射强度、辐亮度、辐照度——一文搞定</a>,by 三眼二郎.</li>
 </ol>
 
       
@@ -642,7 +643,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">131</span>
+                    <span class="site-state-item-count">138</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -749,7 +750,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">46</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

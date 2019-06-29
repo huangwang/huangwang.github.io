@@ -314,6 +314,1380 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/09/树莓派学习之SFTP管理文件/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/09/树莓派学习之SFTP管理文件/" itemprop="url">
+                  树莓派学习之SFTP管理文件
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-09 21:53:11 / 修改时间：22:39:13" itemprop="dateCreated datePublished" datetime="2018-11-09T21:53:11+08:00">2018-11-09</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>当需要向树莓派发送文件时，可使用SFTP上传下载文件。下面介绍如何使用SFTP向树莓派发送下载文件。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><p>SFTP是Secure File Transfer Protocol的缩写，安全文件传送协议。可以为传输文件提供一种安全的网络的加密方法。sftp 与 ftp 有着几乎一样的语法和功能。</p>
+<p>SFTP 为 SSH的其中一部分，是一种传输文件至服务器的安全方式。在SSH软件包中，已经包含了一个叫作SFTP(Secure File Transfer Protocol)的安全文件信息传输子系统，SFTP本身没有单独的守护进程，它必须使用sshd守护进程（端口号默认是22）来完成相应的连接和答复操作。</p>
+<p>SFTP传输使用了加密/解密技术，所以传输效率比普通的FTP要低得多，如果您对网络安全性要求更高时，可以使用SFTP代替FTP。</p>
+<h2 id="SFTP客户端程序"><a href="#SFTP客户端程序" class="headerlink" title="SFTP客户端程序"></a>SFTP客户端程序</h2><p>在Windows平台，常用的SFTP客户端程序有：</p>
+<ul>
+<li>FileZilla</li>
+<li>WinSCP</li>
+<li>Xftp</li>
+<li>Core FTP</li>
+</ul>
+<p>在Linux平台，可直接使用sftp命令进行连接服务器。</p>
+<h1 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h1><p>下面介绍在Debian平台使用sftp命令连接树莓派，<strong>在此之前应配置树莓派开启ssh服务</strong>。</p>
+<ol>
+<li>建立连接</li>
+</ol>
+<p>使用如下命令连接树莓派：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sftp pi@192.168.0.103</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>查看帮助</li>
+</ol>
+<p>通过help查看在sftp连接下能使用的命令。从帮助中可知，在命令前加前缀“l”或者“！”即可在本地操作系统shell执行命令。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">sftp&gt; help</span><br><span class="line">Available commands:</span><br><span class="line">bye                                Quit sftp</span><br><span class="line">cd path                            Change remote directory to &apos;path&apos;</span><br><span class="line">chgrp grp path                     Change group of file &apos;path&apos; to &apos;grp&apos;</span><br><span class="line">chmod mode path                    Change permissions of file &apos;path&apos; to &apos;mode&apos;</span><br><span class="line">chown own path                     Change owner of file &apos;path&apos; to &apos;own&apos;</span><br><span class="line">df [-hi] [path]                    Display statistics for current directory or</span><br><span class="line">                                   filesystem containing &apos;path&apos;</span><br><span class="line">exit                               Quit sftp</span><br><span class="line">get [-afPpRr] remote [local]       Download file</span><br><span class="line">reget [-fPpRr] remote [local]      Resume download file</span><br><span class="line">reput [-fPpRr] [local] remote      Resume upload file</span><br><span class="line">help                               Display this help text</span><br><span class="line">lcd path                           Change local directory to &apos;path&apos;</span><br><span class="line">lls [ls-options [path]]            Display local directory listing</span><br><span class="line">lmkdir path                        Create local directory</span><br><span class="line">ln [-s] oldpath newpath            Link remote file (-s for symlink)</span><br><span class="line">lpwd                               Print local working directory</span><br><span class="line">ls [-1afhlnrSt] [path]             Display remote directory listing</span><br><span class="line">lumask umask                       Set local umask to &apos;umask&apos;</span><br><span class="line">mkdir path                         Create remote directory</span><br><span class="line">progress                           Toggle display of progress meter</span><br><span class="line">put [-afPpRr] local [remote]       Upload file</span><br><span class="line">pwd                                Display remote working directory</span><br><span class="line">quit                               Quit sftp</span><br><span class="line">rename oldpath newpath             Rename remote file</span><br><span class="line">rm path                            Delete remote file</span><br><span class="line">rmdir path                         Remove remote directory</span><br><span class="line">symlink oldpath newpath            Symlink remote file</span><br><span class="line">version                            Show SFTP version</span><br><span class="line">!command                           Execute &apos;command&apos; in local shell</span><br><span class="line">!                                  Escape to local shell</span><br><span class="line">?                                  Synonym for help</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>下载远程文件到本地主机<br>使用get命令下载远程文件到本地主机：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sftp&gt; get README.TXT </span><br><span class="line">Fetching /home/pi/wiringPi/README.TXT to README.TXT</span><br><span class="line">/home/pi/wiringPi/README.TXT                  100%  606    39.1KB/s   00:00</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>get命令还有一些有用参数，如递归选项“ -r ”来递归的复制一个文件夹里面的内容，“ -P ”或者“ -p ”参数来告诉 SFTP 保持文件的权限访问位的设置和访问时间。</p>
+<ol>
+<li>上传本地文件到远程主机<br>使用“ put ”命令将文件上传到远程主机：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sftp&gt; put README.TXT </span><br><span class="line">Uploading README.TXT to /home/pi/README.TXT</span><br><span class="line">README.TXT                                    100%  606    33.6KB/s   00:00</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>” put “具有类似“ get ”的参数。例如，递归选项“ -r ”可以上传整个文件夹。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li>华华. <a href="https://linuxstory.org/how-to-use-sftp-to-securely-transfer-files-with-a-remote-server/" target="_blank" rel="noopener">手把手教你使用 SFTP 安全地传输文件</a>.2015-12-5.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/08/Cesium摄像头跟踪飞机实体时晃动问题分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/08/Cesium摄像头跟踪飞机实体时晃动问题分析/" itemprop="url">
+                  Cesium摄像头跟踪飞机实体时晃动问题分析
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-08 09:41:32" itemprop="dateCreated datePublished" datetime="2018-11-08T09:41:32+08:00">2018-11-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-26 21:13:16" itemprop="dateModified" datetime="2018-12-26T21:13:16+08:00">2018-12-26</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在3D场景下使用Cesium跟踪飞机时会出现摄像头晃动问题，导致地图背景不断晃动，影响观看。下面以最新的Cesium1.51源码为例，解析Cesium 渲染过程原理，分析跟踪实体时摄像头晃动的原因，找出可能的解决方法。</p>
+<h1 id="Cesium渲染过程分析"><a href="#Cesium渲染过程分析" class="headerlink" title="Cesium渲染过程分析"></a>Cesium渲染过程分析</h1><p>使用Cesium最简单示例代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var viewer = new Cesium.Viewer(&apos;cesiumContainer&apos;);</span><br></pre></td></tr></table></figure></p>
+<p>Viewer是Cesium构建应用的最基础的组件。它又是其他组件的容器，包括：</p>
+<ul>
+<li>animation:控制时间前进、倒退、暂停以及前进和倒退速度的组件</li>
+<li>baseLayerPicker：图层选择组件</li>
+<li>fullscreenButton：控制是否全屏的组件</li>
+<li>vrButton：控制是否VR显示的组件</li>
+<li>geocoder：地理位置搜索组件</li>
+<li>homeButton：返回摄像头默认位置按钮组建</li>
+<li>infoBox：信息框组件</li>
+<li>sceneModePicker：场景模式选择组件</li>
+<li>selectionIndicator：选择指示组件</li>
+<li>timeline：时间线组件</li>
+<li>navigationHelpButton：导航帮助按钮，告诉使用者如何使用鼠标和触摸屏操纵虚拟地球</li>
+<li>CesiumWidget：虚拟地球组件</li>
+</ul>
+<p>其中，虚拟地球组件CesiumWidget是Viewer包含核心组件，在Viewer中创建CesiumWidget对象时，将设置其useDefaultRenderLoop属性。设置该属性将启动渲染函数startRenderLoop。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//from Source/Widgets/CesiumWidget/CesiumWidget.js</span><br><span class="line">useDefaultRenderLoop : &#123;</span><br><span class="line">    get : function() &#123;</span><br><span class="line">        return this._useDefaultRenderLoop;</span><br><span class="line">    &#125;,</span><br><span class="line">    set : function(value) &#123;</span><br><span class="line">        if (this._useDefaultRenderLoop !== value) &#123;</span><br><span class="line">            this._useDefaultRenderLoop = value;</span><br><span class="line">            if (value &amp;&amp; !this._renderLoopRunning) &#123;</span><br><span class="line">                startRenderLoop(this);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<p>函数startRenderLoop是Cesium渲染的开始，其代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">function startRenderLoop(widget) &#123;</span><br><span class="line">    widget._renderLoopRunning = true;</span><br><span class="line"></span><br><span class="line">    var lastFrameTime = 0;</span><br><span class="line">    function render(frameTime) &#123;</span><br><span class="line">        if (widget.isDestroyed()) &#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (widget._useDefaultRenderLoop) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                var targetFrameRate = widget._targetFrameRate;</span><br><span class="line">                if (!defined(targetFrameRate)) &#123;</span><br><span class="line">                    widget.resize();</span><br><span class="line">                    widget.render();</span><br><span class="line">                    requestAnimationFrame(render);</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    var interval = 1000.0 / targetFrameRate;</span><br><span class="line">                    var delta = frameTime - lastFrameTime;</span><br><span class="line"></span><br><span class="line">                    if (delta &gt; interval) &#123;</span><br><span class="line">                        widget.resize();</span><br><span class="line">                        widget.render();</span><br><span class="line">                        lastFrameTime = frameTime - (delta % interval);</span><br><span class="line">                    &#125;</span><br><span class="line">                    requestAnimationFrame(render);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; catch (error) &#123;</span><br><span class="line">                ...</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            widget._renderLoopRunning = false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    requestAnimationFrame(render);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>CesiumWidget组件的render方法随后调用Scene的render方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">Scene.prototype.render = function(time) &#123;</span><br><span class="line">        if (!defined(time)) &#123;</span><br><span class="line">            time = JulianDate.now();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        var frameState = this._frameState;</span><br><span class="line">        this._jobScheduler.resetBudgets();</span><br><span class="line"></span><br><span class="line">        var cameraChanged = this._view.checkForCameraUpdates(this);</span><br><span class="line">        var shouldRender = !this.requestRenderMode || this._renderRequested || cameraChanged || this._logDepthBufferDirty || (this.mode === SceneMode.MORPHING);</span><br><span class="line">        if (!shouldRender &amp;&amp; defined(this.maximumRenderTimeChange) &amp;&amp; defined(this._lastRenderTime)) &#123;</span><br><span class="line">            var difference = Math.abs(JulianDate.secondsDifference(this._lastRenderTime, time));</span><br><span class="line">            shouldRender = shouldRender || difference &gt; this.maximumRenderTimeChange;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (shouldRender) &#123;</span><br><span class="line">            this._lastRenderTime = JulianDate.clone(time, this._lastRenderTime);</span><br><span class="line">            this._renderRequested = false;</span><br><span class="line">            this._logDepthBufferDirty = false;</span><br><span class="line">            var frameNumber = CesiumMath.incrementWrap(frameState.frameNumber, 15000000.0, 1.0);</span><br><span class="line">            updateFrameNumber(this, frameNumber, time);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // Update</span><br><span class="line">        this._preUpdate.raiseEvent(this, time);</span><br><span class="line">        tryAndCatchError(this, update);</span><br><span class="line">        this._postUpdate.raiseEvent(this, time);</span><br><span class="line"></span><br><span class="line">        if (shouldRender) &#123;</span><br><span class="line">            // Render</span><br><span class="line">            this._preRender.raiseEvent(this, time);</span><br><span class="line">            tryAndCatchError(this, render);</span><br><span class="line"></span><br><span class="line">            RequestScheduler.update();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        updateDebugShowFramesPerSecond(this, shouldRender);</span><br><span class="line">        callAfterRenderFunctions(this);</span><br><span class="line"></span><br><span class="line">        if (shouldRender) &#123;</span><br><span class="line">            this._postRender.raiseEvent(this, time);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>Scene的render方法中tryAndCatchError函数将调用render函数。在该render函数中，地球的主要要素（地形&amp;影像）的渲染，将在Globe的beginFrame和endFrame之间完成的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">function render(scene) &#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    if (defined(scene.globe)) &#123;</span><br><span class="line">        scene.globe.beginFrame(frameState);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    updateEnvironment(scene);</span><br><span class="line">    updateAndExecuteCommands(scene, passState, backgroundColor);</span><br><span class="line">    resolveFramebuffers(scene, passState);</span><br><span class="line"></span><br><span class="line">    passState.framebuffer = undefined;</span><br><span class="line">    executeOverlayCommands(scene, passState);</span><br><span class="line"></span><br><span class="line">    if (defined(scene.globe)) &#123;</span><br><span class="line">        scene.globe.endFrame(frameState);</span><br><span class="line"></span><br><span class="line">        if (!scene.globe.tilesLoaded) &#123;</span><br><span class="line">            scene._renderRequested = true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中updateAndExecuteCommands负责数据的调度，比如哪些Tile需要创建，这些Tile相关的地形数据，以及涉及到的影像数据之间的调度，都是在该函数中维护。而scene.globe.endFrame中，会对该帧所涉及的GlobeTile的下载，解析等进行处理。</p>
+<h1 id="Cesium跟踪实体"><a href="#Cesium跟踪实体" class="headerlink" title="Cesium跟踪实体"></a>Cesium跟踪实体</h1><p>在Viewer组件构造函数内，Viewer订阅了场景组件Scene的渲染后事件postRender，以执行Viewer自己的_postRender函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eventHelper.add(scene.postRender, Viewer.prototype._postRender, this);</span><br></pre></td></tr></table></figure></p>
+<p>Viewer的_postRender函数代码如下，其中updateTrackedEntity函数将更新被跟踪实体的摄像头位置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Viewer.prototype._postRender = function() &#123;</span><br><span class="line">    updateZoomTarget(this);</span><br><span class="line">    updateTrackedEntity(this);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>updateTrackedEntity函数代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">function updateTrackedEntity(viewer) &#123;</span><br><span class="line">    if (!viewer._needTrackedEntityUpdate) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var trackedEntity = viewer._trackedEntity;</span><br><span class="line">    var currentTime = viewer.clock.currentTime;</span><br><span class="line"></span><br><span class="line">    //Verify we have a current position at this time. This is only triggered if a position</span><br><span class="line">    //has become undefined after trackedEntity is set but before the boundingSphere has been</span><br><span class="line">    //computed. In this case, we will track the entity once it comes back into existence.</span><br><span class="line">    var currentPosition = Property.getValueOrUndefined(trackedEntity.position, currentTime);</span><br><span class="line"></span><br><span class="line">    if (!defined(currentPosition)) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var scene = viewer.scene;</span><br><span class="line"></span><br><span class="line">    var state = viewer._dataSourceDisplay.getBoundingSphere(trackedEntity, false, boundingSphereScratch);</span><br><span class="line">    if (state === BoundingSphereState.PENDING) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var sceneMode = scene.mode;</span><br><span class="line">    if (sceneMode === SceneMode.COLUMBUS_VIEW || sceneMode === SceneMode.SCENE2D) &#123;</span><br><span class="line">        scene.screenSpaceCameraController.enableTranslate = false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (sceneMode === SceneMode.COLUMBUS_VIEW || sceneMode === SceneMode.SCENE3D) &#123;</span><br><span class="line">        scene.screenSpaceCameraController.enableTilt = false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var bs = state !== BoundingSphereState.FAILED ? boundingSphereScratch : undefined;</span><br><span class="line">    viewer._entityView = new EntityView(trackedEntity, scene, scene.mapProjection.ellipsoid);</span><br><span class="line">    viewer._entityView.update(currentTime, bs);</span><br><span class="line">    viewer._needTrackedEntityUpdate = false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>除此之外，Viewer组件订阅了Clock组建的onTick事件，以执行其自身的_onTick事件处理函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eventHelper.add(clock.onTick, Viewer.prototype._onTick, this);</span><br></pre></td></tr></table></figure></p>
+<p>在Viewer组件的_onTick事件处理函数中，同样会更新被跟踪实体的摄像头位置。而Cesium摄像头跟踪飞机实体时产生晃动的根源即在此处。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Viewer.prototype._onTick = function(clock) &#123;</span><br><span class="line">        var time = clock.currentTime;</span><br><span class="line"></span><br><span class="line">        var isUpdated = this._dataSourceDisplay.update(time);</span><br><span class="line">        if (this._allowDataSourcesToSuspendAnimation) &#123;</span><br><span class="line">            this._clockViewModel.canAnimate = isUpdated;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        var entityView = this._entityView;</span><br><span class="line">        if (defined(entityView)) &#123;</span><br><span class="line">            var trackedEntity = this._trackedEntity;</span><br><span class="line">            var trackedState = this._dataSourceDisplay.getBoundingSphere(trackedEntity, false, boundingSphereScratch);</span><br><span class="line">            if (trackedState === BoundingSphereState.DONE) &#123;</span><br><span class="line">                entityView.update(time, boundingSphereScratch);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">       ...</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure></p>
+<h1 id="可行的解决方案"><a href="#可行的解决方案" class="headerlink" title="可行的解决方案"></a>可行的解决方案</h1><p>在Viewer组件的_onTick函数做如下修改：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Viewer.prototype._onTick = function(clock) &#123;</span><br><span class="line">        var time = clock.currentTime;</span><br><span class="line"></span><br><span class="line">        var isUpdated = this._dataSourceDisplay.update(time);</span><br><span class="line">        if (this._allowDataSourcesToSuspendAnimation) &#123;</span><br><span class="line">            this._clockViewModel.canAnimate = isUpdated;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        var entityView = this._entityView;</span><br><span class="line">        if (defined(entityView)) &#123;</span><br><span class="line">            var trackedEntity = this._trackedEntity;</span><br><span class="line">            var trackedState = this._dataSourceDisplay.getBoundingSphere(trackedEntity, false, boundingSphereScratch);</span><br><span class="line">            if (trackedState === BoundingSphereState.DONE) &#123;</span><br><span class="line">                //entityView.update(time, boundingSphereScratch);</span><br><span class="line">                var range=this.camera.distanceToBoundingSphere(boundingSphereScratch);</span><br><span class="line">                var targetRange=range&gt;boundingSphereScratch.radius*10?range:boundingSphereScratch.radius*10;</span><br><span class="line">                var offset=new HeadingPitchRange(0.0,-Math.toRadians(45.0),targetRange);</span><br><span class="line">                this.camera.viewBoundingSphere(boundingSphereScratch,offset)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">       ...</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="http://www.cnblogs.com/fuckgiser/p/5744509.html" target="_blank" rel="noopener">http://www.cnblogs.com/fuckgiser/p/5744509.html</a>, by 法克鸡丝</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/07/树莓派学习之远程登录/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/07/树莓派学习之远程登录/" itemprop="url">
+                  树莓派学习之远程登录
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-07 22:41:31" itemprop="dateCreated datePublished" datetime="2018-11-07T22:41:31+08:00">2018-11-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-24 21:36:27" itemprop="dateModified" datetime="2018-11-24T21:36:27+08:00">2018-11-24</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>每次通过USB转串口登录树莓派比较麻烦，可以设置树莓派开启ssh和vnc服务，以便通过ssh或vnc远程登录树莓派。下面介绍在Debian中通过ssh或vnc远程登录树莓派的过程。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="SSH"><a href="#SSH" class="headerlink" title="SSH"></a>SSH</h2><p>Secure Shell（安全外壳协议，简称SSH）是一种加密的网络传输协议，可在不安全的网络中为网络服务提供安全的传输环境。SSH通过在网络中创建安全隧道来实现SSH客户端与服务器之间的连接。SSH最常见的用途是远程登录系统，人们通常利用SSH来传输命令行界面和远程执行命令。</p>
+<h3 id="SSH基本用法"><a href="#SSH基本用法" class="headerlink" title="SSH基本用法"></a>SSH基本用法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 以用户名user，登录远程主机host</span><br><span class="line">$ ssh user@host</span><br><span class="line"># SSH的默认端口是22。使用p参数，可以修改这个端口。</span><br><span class="line">$ ssh -p 2222 user@host</span><br></pre></td></tr></table></figure>
+<h3 id="SSH通信过程及风险"><a href="#SSH通信过程及风险" class="headerlink" title="SSH通信过程及风险"></a>SSH通信过程及风险</h3><p>SSH采用了公钥加密保证安全。</p>
+<p>整个过程是这样的：（1）远程主机收到用户的登录请求，把自己的公钥发给用户。（2）用户使用这个公钥，将登录密码加密后，发送回来。（3）远程主机用自己的私钥，解密登录密码，如果密码正确，就同意用户登录。</p>
+<p>这个过程本身是安全的，但是实施的时候存在”中间人攻击”风险：如果有人截获了登录请求，然后冒充远程主机，将伪造的公钥发给用户，那么用户很难辨别真伪。因为不像https协议，SSH协议的公钥是没有证书中心（CA）公证的，也就是说，都是自己签发的。</p>
+<h2 id="VNC"><a href="#VNC" class="headerlink" title="VNC"></a>VNC</h2><p>VNC（Virtual Network Computing），为一种使用RFB协议的显示屏画面分享及远程操作软件。此软件借由网上，可发送键盘与鼠标的动作及即时的显示屏画面。</p>
+<p>VNC与操作系统无关，因此可跨平台使用，例如可用Windows连线到某Linux的计算机，反之亦同。甚至在没有安装客户端程序的计算机中，只要有支持JAVA的浏览器，也可使用。</p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>VNC系统由客户端，服务端和一个协议组成</p>
+<p>VNC的服务端目的是分享其所运行机器的屏幕，服务端被动的允许客户端控制它。VNC客户端（或Viewer）观察控制服务端，与服务端交互。VNC协议Protocol（RFB）是一个简单的协议，传送服务端的原始图像到客户端（一个X,Y位置上的正方形的点阵数据），客户端传送事件消息到服务端。</p>
+<p>服务器发送小方块的帧缓存给客户端，在最简单的情况，VNC协议使用大量的带宽，因此各种各样的方法被发明出来减少通讯的开支，举例来说，有各种各样的编码方法来决定最有效率的方法来传送这些点阵方块。</p>
+<p>VNC默认使用TCP端口5900至5906，而JAVA的VNC客户端使用5800至5806。一个服务端可以在5900端口用“监听模式”连接一个客户端，使用监听模式的一个好处是服务端不需要设置防火墙。</p>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>VNC并非是安全的协议，虽然VNC伺服程序需设置密码才可接受外来连线，且VNC客户端与VNC伺服程序之间的密码传输经过加密，但仍可被轻易的拦截到并使用暴力破解法破解。不过VNC可设计以SSH或VPN传输，以增加安全性。</p>
+<h3 id="VNC软件"><a href="#VNC软件" class="headerlink" title="VNC软件"></a>VNC软件</h3><p>由于VNC以GPL授权，派生出了几个VNC软件：</p>
+<ul>
+<li>RealVNC：由VNC团队部分成员开发，分为全功能商业版及免费版。</li>
+<li>TightVNC：强调节省带宽使用。</li>
+<li>UltraVNC：加入了TightVNC的部分程序及加强性能的图型映射驱动程序，并结合Active Directory及NTLM的账号密码认证，但仅有Windows版本。</li>
+<li>Vine Viewer：MacOSX的VNC客户端。</li>
+</ul>
+<h1 id="配置树莓派支持SSH和VNC"><a href="#配置树莓派支持SSH和VNC" class="headerlink" title="配置树莓派支持SSH和VNC"></a>配置树莓派支持SSH和VNC</h1><p>通过USB转串口登录树莓派后，按如下步骤开启SSH和VNC：</p>
+<ol>
+<li><p>运行命令raspi-config</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo raspi-config</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>选择第五项Interfacing Options</p>
+</li>
+<li>选择enable SSH</li>
+<li>启用SSH，重复步骤一和二，再选择enable VNC。  </li>
+</ol>
+<h1 id="通过SSH或VNC连接树莓派"><a href="#通过SSH或VNC连接树莓派" class="headerlink" title="通过SSH或VNC连接树莓派"></a>通过SSH或VNC连接树莓派</h1><p>debian主机与树莓派在同一个局域网内，则按如下步骤通过SSH或VNC连接树莓派。</p>
+<h2 id="通过nmap命令获取树莓派ip地址"><a href="#通过nmap命令获取树莓派ip地址" class="headerlink" title="通过nmap命令获取树莓派ip地址"></a>通过nmap命令获取树莓派ip地址</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ nmap 192.168.0.1/24</span><br><span class="line">Starting Nmap 7.70 ( https://nmap.org ) at 2018-11-08 13:08 CST</span><br><span class="line"></span><br><span class="line">Nmap scan report for 192.168.0.103</span><br><span class="line">Host is up (0.041s latency).</span><br><span class="line">Not shown: 998 closed ports</span><br><span class="line">PORT     STATE SERVICE</span><br><span class="line">22/tcp   open  ssh</span><br><span class="line">5900/tcp open  vnc</span><br><span class="line"></span><br><span class="line">Nmap done: 256 IP addresses (6 hosts up) scanned in 35.77 seconds</span><br></pre></td></tr></table></figure>
+<p>开启22和5900端口的主机即是树莓派。</p>
+<h2 id="通过ssh远程登录树莓派"><a href="#通过ssh远程登录树莓派" class="headerlink" title="通过ssh远程登录树莓派"></a>通过ssh远程登录树莓派</h2> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 首次登录会给出主机认证不能建立的提示，输入yes可继续，再输入用户密码即可远程登录树莓派</span><br><span class="line">$ ssh pi@192.168.0.103</span><br></pre></td></tr></table></figure>
+<h2 id="通过vnc远程登录树莓派"><a href="#通过vnc远程登录树莓派" class="headerlink" title="通过vnc远程登录树莓派"></a>通过vnc远程登录树莓派</h2><ol>
+<li><p>通过ssh登录树莓派后查看其使用的vnc程序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ apt list --installed | grep vnc</span><br><span class="line">realvnc-vnc-server/now 6.3.1.36657 armhf [已安装，可升级至：6.3.2.39069]</span><br><span class="line"># 可知，树莓派上使用realvnc程序</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在Debian上安装realvnc客户端程序realvnc-vnc-viewer</p>
+</li>
+<li><p>在终端输入vncviewer，输入树莓派ip、用户名、密码即可登录树莓派</p>
+</li>
+</ol>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="http://www.ruanyifeng.com/blog/2011/12/ssh_remote_login.html，" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2011/12/ssh_remote_login.html，</a> by 阮一峰</li>
+<li><a href="https://zh.wikipedia.org/zh-hans/Secure_Shell，" target="_blank" rel="noopener">https://zh.wikipedia.org/zh-hans/Secure_Shell，</a> by wikipedia</li>
+<li><a href="https://zh.wikipedia.org/zh-hans/VNC，" target="_blank" rel="noopener">https://zh.wikipedia.org/zh-hans/VNC，</a> by wikipedia</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/05/树莓派学习之USB转串口/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/05/树莓派学习之USB转串口/" itemprop="url">
+                  树莓派学习之USB转串口
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-05 22:46:43" itemprop="dateCreated datePublished" datetime="2018-11-05T22:46:43+08:00">2018-11-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-27 20:22:53" itemprop="dateModified" datetime="2018-11-27T20:22:53+08:00">2018-11-27</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近研究树莓派，需要通过usb转串口去连接树莓派，然后设置其wifi连接。于是将用到计算机硬件知识整理一下，并记录通过usb转串口设置树莓派wifi连接的过程。</p>
+<h1 id="硬件知识"><a href="#硬件知识" class="headerlink" title="硬件知识"></a>硬件知识</h1><p>计算机硬件常用接口有并口和串口，对应串行通信和并行通信。串行通信（英语：Serial communication）是指在计算机总线或其他数据信道上，每次传输一个比特数据，并连续进行以上单次过程的通信方式。与之对应的是并行通信，它在串行端口上通过一次同时传输若干比特数据的方式进行通信。</p>
+<p>串行通信被用于长距离通信以及大多数计算机网络，在这些应用场合里，电缆和同步化使并行通信实际应用面临困难。凭借着其改善的信号完整性和传播速度，串行通信总线正在变得越来越普遍，甚至在短程距离的应用中，其优越性已经开始超越并行总线不需要串行化组件(serializer)，并解决了诸如时钟偏移（Clock skew）、互联密度（interconnect density）等缺点。PCI到PCI Express的升级就一个例子。</p>
+<h2 id="并口"><a href="#并口" class="headerlink" title="并口"></a>并口</h2><p>并行接口，简称并口。并口采用的是25针D形接头。所谓“并行”，是指8位数据同时通过并行线进行传送，这样数据传送速度大大提高，但并行传送的线路长度受到限制，因为长度增加，干扰就会增加，数据也就容易出错，目前，并行接口主要作为打印机端口等。</p>
+<h2 id="串口"><a href="#串口" class="headerlink" title="串口"></a>串口</h2><p>串口叫做串行接口，也称串行通信接口，即COM口。按电气标准及协议来分包括RS-232-C、RS-422、RS485、USB等。 RS-232-C、RS-422与RS-485标准只对接口的电气特性做出规定，不涉及接插件、电缆或协议。</p>
+<p>串行端口可以用于连接外置调制解调器、绘图仪或串行打印机。它也可以控制台连接的方式连接网络设备，例如路由器和交换机，主要用来配置它们。</p>
+<ul>
+<li>RS-232-C</li>
+</ul>
+<p>也称标准接口，是目前最常用的一种串行通讯接口。它是在1970年由美国电子工业协会（EIA）联合贝尔系统、 调制解调器厂家及计算机终端生产厂家共同制定的用于串行通讯的标准。</p>
+<p>传统的RS-232-C接口标准有22根线，采用标准25芯D型插头座。自IBM PC/AT开始使用简化了的9芯D型插座。计算机一般有两个串行口：COM1和COM2，9针D形接口通常在计算机后面能看到。现在有很多手机数据线或者物流接收器都采用COM口与计算机相连。</p>
+<ul>
+<li>RS-422</li>
+</ul>
+<p>为改进RS-232通信距离短、速率低的缺点，RS-422定义了一种平衡通信接口，将传输速率提高到10Mb/s，传输距离延长到4000英尺（速率低于100kb/s时），并允许在一条平衡总线上连接最多10个接收器。</p>
+<ul>
+<li>RS-485</li>
+</ul>
+<p>为扩展应用范围，EIA又于1983年在RS-422基础上制定了RS-485 标准，增加了多点、双向通信能力，即允许多个发送器连接到同一条总线上，同时增加了发送器的驱动能力和冲突保护特性，扩展了总线共模范围，后命名为 TIA/EIA-485-A标准。</p>
+<ul>
+<li>Universal Serial Bus（通用串行总线）</li>
+</ul>
+<p>简称USB，是目前计算机上应用较广泛的接口规范，由Intel、Microsoft、Compaq、IBM、NEC、Northern Telcom等几家大厂商发起的新型外设接口标准。USB接口是计算机主板上的一种四针接口，其中中间两个针传输数据，两边两个针给外设供电。USB接口速度快、连接简单、不需要外接电源，传输速度12Mbps，新的USB 2.0可达480Mbps；电缆最大长度5米，USB电缆有4条线：2条信号线，2条电源线，可提供5伏特电源，USB电缆还分屏蔽和非屏蔽两种，屏蔽电缆传输速度可达12Mbps，价格较贵，非屏蔽电缆速度为1.5Mbps，但价格便宜；USB通过串联方式最多可串接127个设备；支持热插拔。最新的规格是USB 3.1。</p>
+<ul>
+<li>RJ-45接口</li>
+</ul>
+<p>是以太网最为常用的接口，RJ45是一个常用名称，指的是由IEC(60)603-7标准化，使用由国际性的接插件标准定义的8个位置（8针）的模块化插孔或者插头。</p>
+<h1 id="USB转串口原理"><a href="#USB转串口原理" class="headerlink" title="USB转串口原理"></a>USB转串口原理</h1><h2 id="硬件接口电气特性"><a href="#硬件接口电气特性" class="headerlink" title="硬件接口电气特性"></a>硬件接口电气特性</h2><ul>
+<li><p>TTL电平：一般用作数字芯片的电平，例如芯片的供电电压是5V，那么高电平就是5V，低电平就是0V，这里所说的电平，就是TTL电平。</p>
+</li>
+<li><p>232电平：232电平特制电脑串口的电平，-12V左右为正电平，+12V左右为低电平。我们刚才所见到的“USB转串口线”和电脑原生的串口，就是232电平。</p>
+</li>
+</ul>
+<h2 id="USB转串口方法"><a href="#USB转串口方法" class="headerlink" title="USB转串口方法"></a>USB转串口方法</h2><p>PC的串口电气特性是232电平，单片机的串口电气特性是TTL电平，这两个就不一样，肯定需要某个芯片或者电路来进行转换匹配才可以通信。这个时候我们就需要TTL转232芯片了，常见的是MAX232,MAX3232等。连接方式如下:</p>
+<p align="center">
+    <img src="images/convert1.jpg" width="100%" alt="232转TTL">
+</p>
+
+<p>但是随着USB接口的普及，当前计算机已经取消了串口。为实现232到TTL的转换，又需要USB转232。连接方式如下：</p>
+<p align="center">
+    <img src="images/convert2.jpg" width="100%" alt="USB转232">
+</p>
+
+<p>为简化，可将USB转232和232转TTL集成到一个芯片上。这样的芯片常见的有CH340、PL2303。连接方式如下：</p>
+<p align="center">
+    <img src="images/convert3.jpg" width="100%" alt="USB转TTL">
+</p>
+
+<p>常见的CH340芯片如下图所示：</p>
+<p align="center">
+    <img src="images/usb2ttl.jpg" width="90%" alt="USB转TTL">
+</p>
+
+<h1 id="通过USB转串口连接树莓派"><a href="#通过USB转串口连接树莓派" class="headerlink" title="通过USB转串口连接树莓派"></a>通过USB转串口连接树莓派</h1><p>下面介绍在Debian Linux主机通过USB转串口连接树莓派的过程。</p>
+<h2 id="配置树莓派开启串口通信"><a href="#配置树莓派开启串口通信" class="headerlink" title="配置树莓派开启串口通信"></a>配置树莓派开启串口通信</h2><p>将树莓派操作系统镜像烧录到SD卡后，打开boot分区，编辑其config.txt，在其末尾添加如下代码，以开启串口通信权限。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enable_uart=1</span><br></pre></td></tr></table></figure></p>
+<h2 id="通过USB转串口物理连接树莓派"><a href="#通过USB转串口物理连接树莓派" class="headerlink" title="通过USB转串口物理连接树莓派"></a>通过USB转串口物理连接树莓派</h2><p>通过将USB转串口将Debian主机和树莓派物理连接好之后，给树莓派加电启动。</p>
+<h2 id="查看Debian系统能否识别ch340芯片"><a href="#查看Debian系统能否识别ch340芯片" class="headerlink" title="查看Debian系统能否识别ch340芯片"></a>查看Debian系统能否识别ch340芯片</h2><p>在官方Linux内核版本中自Kernel2.6以后就默认包含了对CH340/CH341芯片的驱动支持。在系统的默认驱动目录/lib/modules/$(uname -r)/kernel/drivers内可找到ch340芯片的驱动文件ch341.ko。</p>
+<p>使用命令lsusb或dmesg查看linux系统是否识别USB转串口硬件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">~$ lsusb</span><br><span class="line">Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub</span><br><span class="line">Bus 001 Device 005: ID 0bda:0129 Realtek Semiconductor Corp. RTS5129 Card Reader Controller</span><br><span class="line">Bus 001 Device 004: ID 8087:0a2a Intel Corp. </span><br><span class="line">Bus 001 Device 003: ID 1bcf:2b8a Sunplus Innovation Technology Inc. </span><br><span class="line">Bus 001 Device 006: ID 1a86:7523 QinHeng Electronics HL-340 USB-Serial adapter</span><br><span class="line">Bus 001 Device 002: ID 046d:c062 Logitech, Inc. M-UAS144 [LS1 Laser Mouse]</span><br><span class="line">Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</span><br></pre></td></tr></table></figure></p>
+<p>Bus 001 Device 006: ID 1a86:7523 QinHeng Electronics HL-340 USB-Serial adapter表明Linux系统识别了usb转串口线缆，芯片类型为HL-340。</p>
+<p>‘dmesg’命令显示linux内核的环形缓冲区信息，我们可以从中获得诸如系统架构、cpu、挂载的硬件，RAM等多个运行级别的大量的系统信息。当计算机启动时，系统内核（操作系统的核心部分）将会被加载到内存中。在加载的过程中会显示很多的信息，在这些信息中我们可以看到内核检测硬件设备。运行dmesg，输出如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">~$ sudo dmesg | tail</span><br><span class="line">[ 4248.441104] usbcore: registered new interface driver usbserial_generic</span><br><span class="line">[ 4248.441112] usbserial: USB Serial support registered for generic</span><br><span class="line">[ 4248.456079] usbcore: registered new interface driver ch341</span><br><span class="line">[ 4248.456088] usbserial: USB Serial support registered for ch341-uart</span><br><span class="line">[ 4248.456097] ch341 1-3:1.0: ch341-uart converter detected</span><br><span class="line">[ 4248.456464] usb 1-3: ch341-uart converter now attached to ttyUSB0</span><br><span class="line">[ 4284.405593] i2c_hid i2c-ELAN1010:00: i2c_hid_get_input: incomplete report (14/65535)</span><br><span class="line">[ 4284.407844] i2c_hid i2c-ELAN1010:00: i2c_hid_get_input: incomplete report (14/65535)</span><br><span class="line">[ 4657.772761] i2c_hid i2c-ELAN1010:00: i2c_hid_get_input: incomplete report (14/65535)</span><br><span class="line">[ 4657.774969] i2c_hid i2c-ELAN1010:00: i2c_hid_get_input: incomplete report (14/65535)</span><br></pre></td></tr></table></figure></p>
+<p>[ 4248.456097] ch341 1-3:1.0: ch341-uart converter detected;<br>[ 4248.456464] usb 1-3: ch341-uart converter now attached to ttyUSB0说明linux系统识别了usb转串口适配器，并附加到ttyUSB0文件上。</p>
+<h2 id="使用minicom连接树莓派"><a href="#使用minicom连接树莓派" class="headerlink" title="使用minicom连接树莓派"></a>使用minicom连接树莓派</h2><p>minicom是linux平台的串行通信程序，类似于windows的超级终端程序。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">$ usermod -a -G dialout $USER</span><br><span class="line">#首次运行minicom使用-s选项，用于设置串行通信参数</span><br><span class="line">$ minicom -s</span><br><span class="line">+-----[configuration]------+</span><br><span class="line">| Filenames and paths      |</span><br><span class="line">| File transfer protocols  |</span><br><span class="line">| Serial port setup        |</span><br><span class="line">| Modem and dialing        |</span><br><span class="line">| Screen and keyboard      |</span><br><span class="line">| Save setup as dfl        |</span><br><span class="line">| Save setup as..          |</span><br><span class="line">| Exit                     |</span><br><span class="line">| Exit from Minicom        |</span><br><span class="line">+--------------------------+</span><br><span class="line">#通过上下键选择Serial port setup</span><br><span class="line">+----------------------------------- +</span><br><span class="line">| A -    Serial Device      : /dev/ttyUSB0   |</span><br><span class="line">| B - Lockfile Location     : /var/lock     |</span><br><span class="line">| C -   Callin Program      :             |</span><br><span class="line">| D -  Callout Program      :             |</span><br><span class="line">| E -    Bps/Par/Bits       : 115200 8N1  |</span><br><span class="line">| F - Hardware Flow Control : Yes         |</span><br><span class="line">| G - Software Flow Control : No          |</span><br><span class="line">|                                         |</span><br><span class="line">|    Change which setting?                |</span><br><span class="line">+----------------------------------+</span><br><span class="line"># 设置Serial Device为/dev/ttyUSB0，然后推出到上一界面，使用enter键Save setup as dfl，保存配置。下次即可直接运行minicom使用之前保存的配置进行串口通信 </span><br><span class="line"># 这时候要选择单独Exit（退出），不要选择Exit from Minicom（退出Minicom），不然你就把minicom关了。</span><br><span class="line"># 这时即可连接树莓派。</span><br></pre></td></tr></table></figure></p>
+<p>连接上树莓派后，输入用户名pi和密码raspberry，即可进入系统。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Raspbian GNU/Linux 9 raspberrypi ttyS0                                       </span><br><span class="line">raspberrypi login: pi                                                        </span><br><span class="line">Password:                                                                    </span><br><span class="line">Last login: Tue Oct  9 13:12:40 UTC 2018 on tty1                             </span><br><span class="line">Linux raspberrypi 4.14.71-v7+ #1145 SMP Fri Sep 21 15:38:35 BST 2018 armv7l</span><br><span class="line">                                        </span><br><span class="line">The programs included with the Debian GNU/Linux system are free software;</span><br><span class="line">the exact distribution terms for each program are described in the</span><br><span class="line">individual files in /usr/share/doc/*/copyright.</span><br><span class="line">                                        </span><br><span class="line">Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent</span><br><span class="line">permitted by applicable law.</span><br><span class="line"></span><br><span class="line">Wi-Fi is disabled because the country is not set.                               </span><br><span class="line">Use raspi-config to set the country before use.                                 </span><br><span class="line">                                                                                </span><br><span class="line">pi@raspberrypi:~$</span><br></pre></td></tr></table></figure></p>
+<p>退出minicom，按Ctrl＋A，再按下X键，会提示你是否退出，yes就可以了。</p>
+<h2 id="配置树莓派wifi连接"><a href="#配置树莓派wifi连接" class="headerlink" title="配置树莓派wifi连接"></a>配置树莓派wifi连接</h2><h3 id="查看周围wifi热点信息"><a href="#查看周围wifi热点信息" class="headerlink" title="查看周围wifi热点信息"></a>查看周围wifi热点信息</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~$ iwlist scan</span><br></pre></td></tr></table></figure>
+<h3 id="配置连接到wifi热点"><a href="#配置连接到wifi热点" class="headerlink" title="配置连接到wifi热点"></a>配置连接到wifi热点</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 编辑wifi文件</span><br><span class="line">pi@raspberrypi:~$ sudo vi /etc/wpa_supplicant/wpa_supplicant.conf</span><br><span class="line"># 在该文件最后添加下面的话</span><br><span class="line">network=&#123;</span><br><span class="line">  ssid=&quot;WIFINAME&quot;</span><br><span class="line">  psk=&quot;password&quot;</span><br><span class="line">&#125;</span><br><span class="line"># 引号部分分别为wifi的名字和密码</span><br><span class="line"># 重启系统</span><br><span class="line">pi@raspberrypi:~$ sudo init 6</span><br><span class="line"># 登录后查看是否连接成功</span><br><span class="line">pi@raspberrypi:~$  ip addr</span><br></pre></td></tr></table></figure>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://www.cnblogs.com/zcshan/archive/2010/12/03/com.html" target="_blank" rel="noopener">https://www.cnblogs.com/zcshan/archive/2010/12/03/com.html</a> ,by 水寒</li>
+<li><a href="https://zh.wikipedia.org/wiki串行端口" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki串行端口</a> , by wikipedia</li>
+<li><a href="https://blog.csdn.net/he_wen_jie/article/details/50983076" target="_blank" rel="noopener">https://blog.csdn.net/he_wen_jie/article/details/50983076</a>. by hwj666</li>
+<li><a href="https://linux.cn/article-3587-1.html" target="_blank" rel="noopener">https://linux.cn/article-3587-1.html</a> , by linux中国</li>
+<li><a href="https://blog.csdn.net/JAZZSOLDIER/article/details/70170466" target="_blank" rel="noopener">https://blog.csdn.net/JAZZSOLDIER/article/details/70170466</a> ， by SoldierJazz2018</li>
+<li><a href="http://blog.51cto.com/irinilu/289622" target="_blank" rel="noopener">http://blog.51cto.com/irinilu/289622</a>, by feng9422</li>
+<li>Pipci. Linux 串口终端调试工具minicom[EB/OL].<a href="https://blog.csdn.net/Pipcie/article/details/79379451" target="_blank" rel="noopener">https://blog.csdn.net/Pipcie/article/details/79379451</a>, 2018-02-26.</li>
+<li><a href="https://blog.csdn.net/huayucong/article/details/51376279，" target="_blank" rel="noopener">https://blog.csdn.net/huayucong/article/details/51376279，</a> by huayucong</li>
+<li><a href="https://blog.csdn.net/wangjiaweiwei/article/details/49612207" target="_blank" rel="noopener">USB转串口CH340接线方法</a>,2015-11-03.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/03/树莓派操作系统镜像烧录方法指南/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/03/树莓派操作系统镜像烧录方法指南/" itemprop="url">
+                  树莓派操作系统镜像烧录方法指南
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-03 18:10:16" itemprop="dateCreated datePublished" datetime="2018-11-03T18:10:16+08:00">2018-11-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-04 18:05:54" itemprop="dateModified" datetime="2018-11-04T18:05:54+08:00">2018-11-04</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>树莓派是一个微型计算机硬件平台，为使其正常工作还需要安装操作系统。通常将树莓派操作系统烧录到SD卡上，再将SD卡插到树莓派上。加电启动后，树莓派就会从SD卡引导启动操作系统，开始工作。这里SD卡就相当于普通计算机的硬盘。下面记录在Debian Linux下烧录树莓派操作系统到SD卡的方法。</p>
+<h1 id="镜像烧录工具"><a href="#镜像烧录工具" class="headerlink" title="镜像烧录工具"></a>镜像烧录工具</h1><h2 id="Etcher"><a href="#Etcher" class="headerlink" title="Etcher"></a>Etcher</h2><p>Etcher是树莓派官方推荐的镜像烧录工具。它采用图形界面，支持Windows、Linux、Mac，使用简单方便，推荐普通用户使用。</p>
+<h2 id="dd"><a href="#dd" class="headerlink" title="dd"></a>dd</h2><p>Linux的dd命令用于复制文件并对原文件的内容进行转换和格式化处理。dd命令功能很强大的，对于一些比较底层的问题，使用dd命令往往可以得到出人意料的效果。用的比较多的还是用dd来备份裸设备。同样也可用dd命令烧录系统镜像。</p>
+<p>使用dd命令必须非常小心，如果输出指定了错误分区，将摧毁该分区的所有数据。</p>
+<h1 id="Linux下镜像烧录过程"><a href="#Linux下镜像烧录过程" class="headerlink" title="Linux下镜像烧录过程"></a>Linux下镜像烧录过程</h1><p>使用Etcher烧录镜像比较简单，重点介绍使用dd命令烧录镜像的方法。</p>
+<h2 id="查找sd卡设备"><a href="#查找sd卡设备" class="headerlink" title="查找sd卡设备"></a>查找sd卡设备</h2><p>可使用lsblk或者fdisk命令查找sd卡存储设备。需要注意的是：</p>
+<ul>
+<li>块设备以/dev/sdX命名，其中X是小写字母，例如/dev/sda。</li>
+<li>测试时发现当计算机只有usb3.0接口时，将不识别usb2.0的sd读卡器。</li>
+</ul>
+<h2 id="烧录镜像到sd卡"><a href="#烧录镜像到sd卡" class="headerlink" title="烧录镜像到sd卡"></a>烧录镜像到sd卡</h2><h3 id="将镜像烧录到sd卡"><a href="#将镜像烧录到sd卡" class="headerlink" title="将镜像烧录到sd卡"></a>将镜像烧录到sd卡</h3><p>使用如下dd命令将树莓派镜像少量到sd卡：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd bs=4M if=2018-10-09-raspbian-stretch.img of=/dev/sdX conv=fsync</span><br></pre></td></tr></table></figure></p>
+<p>其中：</p>
+<ul>
+<li>if=文件名：输入文件名，缺省为标准输入。即指定源文件。</li>
+<li>of=文件名：输出文件名，缺省为标准输出。即指定目的文件。</li>
+<li>bs=bytes：同时设置读入/输出的块大小为bytes个字节。</li>
+<li>conv=conversion：用指定的参数转换文件。</li>
+</ul>
+<h3 id="将压缩镜像烧录到sd卡"><a href="#将压缩镜像烧录到sd卡" class="headerlink" title="将压缩镜像烧录到sd卡"></a>将压缩镜像烧录到sd卡</h3><p>当文件系统不支持大于4GB的文件时，可使用利用管道技术烧录镜像，命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unzip -p 2018-10-09-raspbian-stretch.zip | sudo dd of=/dev/sdX bs=4M conv=fsync</span><br></pre></td></tr></table></figure></p>
+<h3 id="检查烧录进度"><a href="#检查烧录进度" class="headerlink" title="检查烧录进度"></a>检查烧录进度</h3><p>默认情况下dd命令不给出烧录进度信息，最新的dd提供status=progress选项给出进度信息，命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd bs=4M if=2018-10-09-raspbian-stretch.img of=/dev/sdX status=progress conv=fsync</span><br></pre></td></tr></table></figure></p>
+<p>或者可使用dcfldd命令替换dd进行烧录操作。</p>
+<h2 id="检查镜像是否正确的烧录到sd卡"><a href="#检查镜像是否正确的烧录到sd卡" class="headerlink" title="检查镜像是否正确的烧录到sd卡"></a>检查镜像是否正确的烧录到sd卡</h2><p>先使用dd命令将sd卡中内容复制到硬盘，在使用diff或者md5sum检查镜像文件与sd卡内容镜像之间的一致性。</p>
+<p>之前dd命令烧录镜像到sd卡完成后会在shell中输出如下结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">xxx+0 records in</span><br><span class="line">yyy+0 records out</span><br><span class="line">yyyyyyyyyy bytes (yyy kB, yyy KiB) copied, 0.00144744 s, 283 MB/s</span><br></pre></td></tr></table></figure></p>
+<p>xxx是我们需要的，表示读取xxx块记录烧录到sd卡，xxx乘以bs=4M应该等于原始镜像的大小。</p>
+<p>使用如下命令复制sd卡内容到硬盘上：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 经测试count命令没有其作用，该命令将整个sd内容复制到了硬盘，但我们期望只复制之前烧录到sd卡内容</span><br><span class="line">dd bs=4M if=/dev/sdX of=from-sd-card.img count=xxx</span><br></pre></td></tr></table></figure></p>
+<p>如果from-sd-card.img文件大于原始镜像文件，那么先使用truncate命令将from-sd-card.img缩小到原始镜像文件的大小，命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">truncate --reference 2018-10-09-raspbian-stretch.img from-sd-card.img</span><br></pre></td></tr></table></figure></p>
+<p>使用diff命令比较两者直接的一致性，如果不一致，可能烧录过程中有错误。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">diff -s from-sd-card.img 2018-10-09-raspbian-stretch.img</span><br></pre></td></tr></table></figure></p>
+<p>使用sync命令强制将缓存写入硬盘，然后umount sd卡文件系统，最后移除sd卡。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://www.raspberrypi.org/documentation/installation/installing-images/linux.md" target="_blank" rel="noopener">https://www.raspberrypi.org/documentation/installation/installing-images/linux.md</a>, by raspberrypi.</li>
+<li><a href="https://blog.csdn.net/liumang_D/article/details/3899462" target="_blank" rel="noopener">https://blog.csdn.net/liumang_D/article/details/3899462</a>, by liumang_d.</li>
+<li><a href="https://linux.cn/article-8024-1.html" target="_blank" rel="noopener">https://linux.cn/article-8024-1.html</a>, by linux中国</li>
+<li><a href="https://www.jianshu.com/p/ff09ceffa816" target="_blank" rel="noopener">https://www.jianshu.com/p/ff09ceffa816</a>, by 二石兄.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/03/树莓派学习笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/03/树莓派学习笔记/" itemprop="url">
+                  树莓派学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-03 12:41:24" itemprop="dateCreated datePublished" datetime="2018-11-03T12:41:24+08:00">2018-11-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-20 20:46:44" itemprop="dateModified" datetime="2018-12-20T20:46:44+08:00">2018-12-20</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="WiringPi简介"><a href="#WiringPi简介" class="headerlink" title="WiringPi简介"></a>WiringPi简介</h1><p>WiringPi是应用于树莓派平台的GPIO控制库函数，WiringPi遵守GUN Lv3。wiringPi使用C或者C++开发并且可以被其他语言包转，例如python、ruby或者PHP等。WiringPi中的函数类似于Arduino的wiring系统，这使得熟悉arduino的用户使用wringPi更为方便。</p>
+<p>树莓派具有26个普通输入和输出引脚。在这26个引脚中具有8个普通输入和输出管脚，这8个引脚既可以作为输入管脚也可以作为输出管脚。除此之外，树莓派还有一个2线形式的I2C、一个4线形式的SPI和一个UART接口。树莓派上的I2C和SPI接口也可以作为普通端口使用。如果串口控制台被关闭便可以使用树莓派上的UART功能。如果不使用I2C，SPI和UART等复用接口，那么树莓派总共具有8+2+5+2 =17个普通IO。</p>
+<p>wiringPi包括一套gpio控制命令，使用gpio命令可以控制树莓派GPIO管脚。用户可以利用gpio命令通过shell脚本控制或查询GPIO管脚。wiringPi是可以扩展的，可以利用wiringPi的内部模块扩展模拟量输入芯片，可以使用MCP23x17/MCP23x08（I2C 或者SPI）扩展GPIO接口。另外可通过树莓派上的串口和Atmega（例如arduino等）扩展更多的GPIO功能。另外，用户可以自己编写扩展模块并把自定义的扩展模块集成到wiringPi中。WiringPi支持模拟量的读取和设置功能，不过在树莓派上并没有模拟量设备。但是使用WiringPi中的软件模块却可以轻松地应用AD或DA芯片。</p>
+<h1 id="I2C"><a href="#I2C" class="headerlink" title="I2C"></a>I2C</h1><p>I²C（Inter-Integrated Circuit）字面上的意思是集成电路之间，它其实是I²C Bus简称，所以中文应该叫集成电路总线，它是一种串行通信总线，使用多主从架构，由飞利浦公司在1980年代为了让主板、嵌入式系统或手机用以连接低速周边设备而发展。I²C的正确读法为“I平方C”（”I-squared-C”），而“I二C”（”I-two-C”）则是另一种错误但被广泛使用的读法。自2006年10月1日起，使用I²C协议已经不需要支付专利费，但制造商仍然需要付费以获取I²C从属设备地址。</p>
+<h2 id="设计说明"><a href="#设计说明" class="headerlink" title="设计说明"></a>设计说明</h2><p>I²C只使用两条双向漏极开路（Open Drain）（串行数据（SDA）及串行时钟频率（SCL））并利用电阻将电位上拉。I²C允许相当大的工作电压范围，但典型的电压准位为+3.3V或+5v。</p>
+<p>I²C的参考设计使用一个7比特长度的地址空间但保留了16个地址，所以在一组总线最多可和112个节点通信[a]。常见的I²C总线依传输速率的不同而有不同的模式：标准模式（100 Kbit/s）、低速模式（10 Kbit/s），但时钟频率可被允许下降至零，这代表可以暂停通信。而新一代的I²C总线可以和更多的节点（支持10比特长度的地址空间）以更快的速率通信：快速模式（400 Kbit/s）、高速模式（3.4 Mbit/s）。</p>
+<p>虽然最大的节点数目是被地址空间所限制住，但实际上也会被总线上的总电容所限制住，一般而言为400 pF。</p>
+<p align="center">
+    <img src="images/File_I2C_data_transfer.png" width="90%" alt="I²C通信">
+</p>
+
+<p>如上所述，参考设计为使用串行数据线（SDA）和串行时钟线（SCL）、拥有7bit寻址空间的总线。 总线上有两种类型角色的节点：</p>
+<ul>
+<li>主节点 - 产生时钟并发起与从节点的通信</li>
+<li>从节点 - 接收时钟并响应主节点的寻址</li>
+</ul>
+<p>该总线是一种多主控总线，即可以在总线上放置任意多主节点。此外，在停止位（STOP）发出后，一个主节点也可以成为从节点，反之亦然。</p>
+<p>总线上有四种不同的操作模式，虽然大部分设备只作为一种角色和使用其中两种操作模式：</p>
+<ul>
+<li>主节点发送 - 主节点发送数据给从节点</li>
+<li>主节点接收 - 主节点接收从节点数据</li>
+<li>从节点发送 - 从节点发送数据给主节点</li>
+<li>从节点接收 - 从节点接收主节点数据</li>
+</ul>
+<p>一开始，主节点处于主节点发送模式，发送起始位（START），跟着发送希望与之通信的从节点的7bit位地址，最后再发送一个bit读写位，该数据位表示主节点想要与从节点进行读（1）还是写（0）操作。</p>
+<p>如果从节点在总线上，它将以ACK字符比特位应答（低有效）该地址。主节点收到应答后，根据它发送的读写位，处于发送模式或者接收模式，从节点则处于对应的相反模式（接收或发送）。</p>
+<p>地址和数据首先发送最高有效位。 起始位在SCL位高时，由SDA上电平从高变低表示；停止位在SCL为高时，由SDA上电平从低变高表示。其他SDA上的电平变化在SCL为低时发生。</p>
+<p>如果主节点想要向从节点写数据，它将发送一个字节，然后从节点以ACK位应答，如此重复。此时，主节点处于主节点发送模式，从节点处于从节点接收模式。</p>
+<p>如果主节点想要读取从节点数据，它将不断接收从节点发送的一个个字节，在收到每个字节后发送ACK进行应答，除了接收到的最后一个字节。此时，主节点处于主节点接收模式，从节点处于从节点发送模式。</p>
+<p>此后，主节点要么发送停止位终止传输，要么发送另一个START比特以发起另一次传输（即“组合消息”）。</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>I²C被应用在简单且其制造成本较传输速度更为重要的外设上。一些常见的应用如下：</p>
+<ul>
+<li>为了保存用户的设置而访问NVRAM芯片。</li>
+<li>访问低速的数字模拟转换器（DAC）。</li>
+<li>访问低速的模拟数字转换器（ADC）。</li>
+<li>改变监视器的对比度、色调及色彩平衡设置（视频数据通道）。</li>
+<li>改变音量大小。</li>
+<li>获取硬件监视及诊断数据，例如中央处理器的温度及风扇转速。</li>
+<li>读取实时时钟（Real-time clock）。</li>
+<li>在系统设备中用来打开或关闭电源供应。</li>
+</ul>
+<p>I²C的另一个强大用途在于微控制器的应用，利用两根通用的输入输出接脚及软件的规划，可以让微控制器控制一个小型网络。</p>
+<p>外设可以在系统仍然在运作的同时加入或移出总线，这代表对于有热插拔需求的设备而言是个理想的总线。</p>
+<p>像I²C这样的总线之所以流行起来，是因为计算机工程师发现到对于集成电路设计而言，许多的制造成本源自于封装尺寸及接脚数量。更小的包装通常能够减少重量及电源的消耗，这对于移动电话及手持式计算机而言格外重要。</p>
+<h1 id="UART"><a href="#UART" class="headerlink" title="UART"></a>UART</h1><p>在通信和计算机科学中，Serial communication是一个通用概念，泛指所有的串行的通信协议，如RS232、USB、I2C、SPI、1-Wire、Ethernet等。这里的串行（serial），是相对并行通信（parallel communication）来说的，如下图：</p>
+<p align="center">
+    <img src="images/serial_parallel.jpg" width="60%" alt="串行与并行通信">
+</p>
+
+<p>理解串行通信的概念之后，大家可能会有疑问：接收方接收到一长串的、表示0/1电平跳变的信号之后，怎么还原出有效的信息呢？有两种方法：</p>
+<ul>
+<li><p>发送端在发送串行数据的同时，提供一个时钟信号，并按照一定的约定（例如在时钟信号的上升沿的时候，将数据发送出去）发送数据，接收端根据发送端提供的时钟信号，以及大家的约定，接收数据。这就是常说的同步串行通信（Synchronous serial communication），I2C、SPI等有时钟信号的协议，都属于这种通信方式。本文不再详述。</p>
+</li>
+<li><p>发送端在数据发送之前和之后，通过特定形式的信号（例如START信号和STOP信号），告诉接收端，可以开始（或者停止）接收数据了。与此同时，收发两方会约定一个数据发送的速度（就是大名鼎鼎的波特率），发送端在发送START信号之后，就按照固定的节奏发送串行数据，与此同时，接收端在收到START信号之后，也按照固定的节奏接收串行数据。这就是常说的异步串行通信（Asynchronous serial communication），我们本节的主角——串口通信，就是这种通信方式。</p>
+</li>
+</ul>
+<p>UART(Universal Asynchronous Receiver/Transmitter) 即是规定编码格式、bit rate，产生通信所需的bit流的标准。</p>
+<h1 id="SPI"><a href="#SPI" class="headerlink" title="SPI"></a>SPI</h1><p>串行外设接口（Serial Peripheral Interface Bus，SPI），是一种用于短程通信的同步串行通信接口规范，主要应用于单片机系统中。类似I²C。 这种接口首先被Motorola（摩托罗拉）公司开发，然后发展成了一种行业规范。典型应用包含SD卡和液晶显示器。 SPI设备之间使用全双工模式通信，包含一个主机和一个或多个从机。主机产生待读或待写的帧数据，多个从机通过一个片选线路 决定哪个来响应主机的请求。 有时SPI接口被称作四线程接口，SPI准确来讲称为同步串行接口，但是与同步串行接口协议（SSI）不同，SSI是一个四线程 同步通信协议，但是使用差分信号输入同时仅提供一个单工通信信道。</p>
+<h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><p>SPI总线规定了4个保留逻辑信号接口：</p>
+<ul>
+<li>SCLK（Serial Clock）：串列时脉，由主机发出</li>
+<li>MOSI（Master Output,Slave Input）：主机输出从机输入信号，由主机发出</li>
+<li>MISO（Master Input,Slave Output）：主机输入从机输出信号，由从机发出</li>
+<li>SS（Slave Selected）：选择信号，由主机发出，一般是低电位有效</li>
+</ul>
+<p>尽管上面的引脚名称是最常用的，但在过去，有时会使用其他引脚命名约定，因此旧IC产品的SPI端口引脚名称可能有所不同。</p>
+<h1 id="1-Wire"><a href="#1-Wire" class="headerlink" title="1-Wire"></a>1-Wire</h1><p>1-Wire是Maxim子公司达拉斯半导体的专利技术，仅用单一信号线就可像I²C、SPI一样，传输时钟（clock）又传输数据（data），并且数据传输是双向的。1-Wire使用较低的数据传输速率，通常是用来沟通小型设备，如数字温度计。1-Wire有两种速率：标准模式16kbps，驱动模式142kbps。</p>
+<p>单总线只有一根数据线。设备主机或从机通过一个漏极开路或三态端口连接至该数据线，这样允许设备在不发送数据时释放数据总线，以便总线被其它设备所使用。单总线端口为漏极开路其内部等效电路如下图所示。</p>
+<p align="center">
+    <img src="images/1wire.png" width="90%" alt="单总线硬件接口示意图">
+</p>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://blog.csdn.net/xukai871105/article/details/17737005" target="_blank" rel="noopener">树莓派学习笔记——wiringPi简介、安装和管脚说明</a> , by xukai871105.</li>
+<li><a href="https://zh.wikipedia.org/wiki/I%C2%B2C" target="_blank" rel="noopener">I²C</a>, by wikipedia.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/25893717" target="_blank" rel="noopener">UART、RS232、TTL关系浅析</a>, by 老狼.</li>
+<li><a href="https://zh.wikipedia.org/wiki/序列周邊介面" target="_blank" rel="noopener">串行外设接口</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/1-Wire" target="_blank" rel="noopener">1-Wire</a>,by wikipedia.</li>
+<li><a href="https://blog.csdn.net/ce123_zhouwei/article/details/6930439" target="_blank" rel="noopener">1-Wire单总线的基本原理</a>,by ce123.</li>
+<li><a href="https://blog.csdn.net/zhengqijun_/article/details/52505931" target="_blank" rel="noopener">解析单总线协议（1-wire）</a>,by zhengqijun_.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/01/Debian下编译QGroundControl源码/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/01/Debian下编译QGroundControl源码/" itemprop="url">
+                  Debian下编译QGroundControl源码
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-01 22:41:44" itemprop="dateCreated datePublished" datetime="2018-11-01T22:41:44+08:00">2018-11-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-13 22:40:22" itemprop="dateModified" datetime="2019-05-13T22:40:22+08:00">2019-05-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MAVLink（Micro Air Vehicle Link，微型空中飞行器链路通讯协议）是无人飞行器与地面站之间通讯，以及无人飞行器之间通讯最常用的协议。它已经在PX4、APM、PIXHAWK和Parrot AR.Drone飞控平台上进行了大量测试。</p>
+<p>QGroundControl则是一种操纵基于MAVLink通信协议的无人机的跨平台地面站开源软件。下面记录在Debian Linux下从源码编译QGroundControl的过程。</p>
+<h1 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 下载QGroundControl源码</span><br><span class="line">git clone --recursive https://github.com/mavlink/qgroundcontrol.git</span><br><span class="line"># 更新子模块</span><br><span class="line">git submodule update</span><br></pre></td></tr></table></figure>
+<h1 id="安装编译环境"><a href="#安装编译环境" class="headerlink" title="安装编译环境"></a>安装编译环境</h1><ul>
+<li>下载Qt社区版在线安装器，安装5.11.0版本的Qt，安装路径可在/opt下。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 注意要选择安装5.9+以上版本的Qt，因为构建QGC时需要</span><br><span class="line"># 运行qtcreater</span><br><span class="line">$ cd /opt/Qt/Tools/QtCreator/bin/</span><br><span class="line">$ ./qtcreator</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装必要的包</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install speech-dispatcher libudev-dev libsdl2-dev</span><br></pre></td></tr></table></figure>
+<ul>
+<li>解决编译时libQt5PositioningQuick.so.5不存在的bug</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libqt5positioningquick5</span><br><span class="line">sudo find /usr/ -name libQt5PositioningQuick.so.5</span><br><span class="line">cp /usr/lib/x86_64-linux-gnu/libQt5PositioningQuick.so.5 /opt/Qt/5.10.0/gcc_64/lib/libQt5PositioningQuick.so.5</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将当前用户添加到dialout组，获取串口访问权限</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 运行QGroundControl需要当前用户拥有串口访问权限</span><br><span class="line">sudo usermod -a -G dialout $USER</span><br></pre></td></tr></table></figure>
+<h1 id="编译运行"><a href="#编译运行" class="headerlink" title="编译运行"></a>编译运行</h1><p>打开Qt Creater，打开qgroundcontrol.pro工程，构建后运行，即可打开QGroundControl地面站软件。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/hebbely/article/details/79022799" target="_blank" rel="noopener">https://blog.csdn.net/hebbely/article/details/79022799</a>,  by hebbely</li>
+<li><a href="https://dev.qgroundcontrol.com/en/getting_started/" target="_blank" rel="noopener">https://dev.qgroundcontrol.com/en/getting_started/</a>, by Dronecode</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/01/Linux常用命令用法总结/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -893,1232 +2267,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/18/Debian-Linux下安装Docker的方法/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/18/Debian-Linux下安装Docker的方法/" itemprop="url">
-                  Debian_Linux下安装Docker的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-10-18 21:42:00 / 修改时间：22:53:35" itemprop="dateCreated datePublished" datetime="2018-10-18T21:42:00+08:00">2018-10-18</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Docker是一个开放源代码软件项目，让应用程序布署在软件容器下的工作可以自动化进行，借此在Linux操作系统上，提供一个额外的软件抽象层，以及操作系统层虚拟化的自动管理机制。</p>
-<p>Docker利用Linux核心中的资源分离机制，例如cgroups，以及Linux核心名字空间（name space），来创建独立的软件容器（containers）。这可以在单一Linux实体下运作，避免启动一个虚拟机造成的额外负担。Linux核心对名字空间的支持完全隔离了工作环境中应用程序的视野，包括进程树、网上、用户ID与挂载文件系统，而核心的cgroup提供资源隔离，包括CPU、存储器、block I/O与网上。</p>
-<p>下面即记录在Debian Linux下按照Docker社区版的方法。</p>
-<h1 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h1><p>添加Docker的pgp key。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -</span><br></pre></td></tr></table></figure></p>
-<p>配置Docker的Apt仓库。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &apos;deb https://download.docker.com/linux/debian stretch stable&apos; | sudo tee /etc/apt/sources.list.d/docker.list</span><br></pre></td></tr></table></figure></p>
-<p>更新Apt仓库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure></p>
-<h1 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 清除之前安装的Docker版本</span><br><span class="line">apt-get remove docker docker-engine docker.io</span><br><span class="line">// 在安装最新的Docker社区版</span><br><span class="line">apt-get install docker-ce</span><br><span class="line">// 测试docker</span><br><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
-<h1 id="以非root用户管理docker"><a href="#以非root用户管理docker" class="headerlink" title="以非root用户管理docker"></a>以非root用户管理docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo groupadd docker</span><br><span class="line">sudo usermod -aG docker $USER</span><br></pre></td></tr></table></figure>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Docker" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Docker</a> ,by wikipedia.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/14/tensorflow学习笔记/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/14/tensorflow学习笔记/" itemprop="url">
-                  tensorflow学习笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-10-14 13:10:24" itemprop="dateCreated datePublished" datetime="2018-10-14T13:10:24+08:00">2018-10-14</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-12 23:00:16" itemprop="dateModified" datetime="2019-01-12T23:00:16+08:00">2019-01-12</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>TensorFlow™ 是一个开放源代码软件库，用于进行高性能数值计算。借助其灵活的架构，用户可以轻松地将计算工作部署到多种平台（CPU、GPU、TPU）和设备（桌面设备、服务器集群、移动设备、边缘设备等）。TensorFlow™ 最初是由 Google Brain 团队（隶属于 Google 的 AI 部门）中的研究人员和工程师开发的，可为机器学习和深度学习提供强力支持，并且其灵活的数值计算核心广泛应用于许多其他科学领域。</p>
-<h1 id="tensorflow入门"><a href="#tensorflow入门" class="headerlink" title="tensorflow入门"></a>tensorflow入门</h1><p>tensorflow实现机器学习的基本步骤如下：</p>
-<ol>
-<li>定义模型，建立数据流图</li>
-<li>定义loss，并指定优化器 </li>
-<li>传入数据并进行训练 </li>
-<li>使用测试集进行评测</li>
-</ol>
-<h2 id="通用代码框架"><a href="#通用代码框架" class="headerlink" title="通用代码框架"></a>通用代码框架</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line"></span><br><span class="line"># 初始化变量和模型参数，定义训练闭环中的运算</span><br><span class="line"></span><br><span class="line">def inference(X):</span><br><span class="line">    # 计算推断模型在数据X上的输出，并将结果返回</span><br><span class="line"></span><br><span class="line">def loss(X,Y):</span><br><span class="line">    # 依据训练数据X及其期望输出Y计算损失</span><br><span class="line"></span><br><span class="line">def inputs():</span><br><span class="line">    # 读取或生成训练数据X及其期望输出Y</span><br><span class="line"></span><br><span class="line">def train(total_loss):</span><br><span class="line">    # 依据计算的总损失训练或调整模型参数</span><br><span class="line"></span><br><span class="line">def evaluate(sess,X,Y):</span><br><span class="line">    # 对训练得到的模型进行评估</span><br><span class="line"></span><br><span class="line"># 在一个会话对象中启动数据流图，搭建流程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    tf.initialize_all_variables().run()</span><br><span class="line">    </span><br><span class="line">    X,Y=inputs()</span><br><span class="line">    </span><br><span class="line">    total_loss=loss(X,Y)</span><br><span class="line">    train_op=train(total_loss)</span><br><span class="line">    </span><br><span class="line">    coord=tf.train.Coordinator()</span><br><span class="line">    threads=tf.train.start_queue_runners(sess=sess,coord=coord)</span><br><span class="line"></span><br><span class="line">    # 实际的训练迭代次数</span><br><span class="line">    training_steps=1000</span><br><span class="line">    for step in range(training_steps):</span><br><span class="line">        sess.run([train_op])</span><br><span class="line">        # 出于调试和学习的目的，查看损失在训练过程中递减的情况</span><br><span class="line">        if step % 10 =0:</span><br><span class="line">            print &quot;loss: &quot;,sess.run([total_loss])</span><br><span class="line"></span><br><span class="line">    evaluate(sess,X,Y)</span><br><span class="line"></span><br><span class="line">    coord.request_stop()</span><br><span class="line">    coord.join(threads)</span><br><span class="line">    sess.close()</span><br></pre></td></tr></table></figure>
-<h2 id="保存训练检查点"><a href="#保存训练检查点" class="headerlink" title="保存训练检查点"></a>保存训练检查点</h2><p>借助tf.train.Saver类可创建检查点文件，将数据流图中变量保存至其中。修改后框架如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 模型定义代码</span><br><span class="line"># 创建一个Saver对象</span><br><span class="line">saver=tf.train.Saver()</span><br><span class="line"></span><br><span class="line"># 在会话对象中启动数据流图，搭建流程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    # 模型设置</span><br><span class="line"></span><br><span class="line">    # 实际的训练闭环</span><br><span class="line">    for step in range(training_steps):</span><br><span class="line">        sess.run([train_op])</span><br><span class="line"></span><br><span class="line">        if step % 1000 ==0</span><br><span class="line">            # 将创建遵循命名模板为my-model-&#123;step&#125;的检查点文件，默认保存最近的5个文件</span><br><span class="line">            saver.save(sess,&apos;my-model&apos;,global_step=step)</span><br><span class="line">    </span><br><span class="line">    # 模型评估</span><br><span class="line"></span><br><span class="line">    saver.save(sess,&apos;my-model&apos;,global_step=training_steps)</span><br><span class="line">    sess.close()</span><br></pre></td></tr></table></figure></p>
-<p>如果希望从检查点恢复，则使用tf.train.get_checkpoint_state方法验证检查点文件的存在，并使用tf.train.Saver.restore方法恢复变量值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">with tf.Session() as sess:</span><br><span class="line">    # 模型设置</span><br><span class="line"></span><br><span class="line">    initial_step=0</span><br><span class="line"></span><br><span class="line">    # 验证之前是否已经保存了检查点文件</span><br><span class="line">    ckpt=tf.train.get_checkpoint_state(os.path.dirname(__file__))</span><br><span class="line">    if ckpt and ckpt.model_checkpoint_path:</span><br><span class="line">        # 从检查点恢复模型参数</span><br><span class="line">        saver.restore(sess,ckpt.model_checkpoint_path)</span><br><span class="line">        initial_step=int(ckpt.model_checkpoint_path.rsplite(&apos;_&apos;,1)[1])</span><br><span class="line"></span><br><span class="line">    # 实际的训练闭环</span><br><span class="line">    for step in range(initial_step, training_steps):</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="https://www.tensorflow.org/?hl=zh-cn" target="_blank" rel="noopener">https://www.tensorflow.org/?hl=zh-cn</a> .</li>
-<li>面向机器智能的TensorFlow实践, by Sam Abrahams, Danijar Hafner,etc.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/14/Python常用库简介/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/14/Python常用库简介/" itemprop="url">
-                  Python常用库简介
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-10-14 11:22:09" itemprop="dateCreated datePublished" datetime="2018-10-14T11:22:09+08:00">2018-10-14</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-12-05 23:47:16" itemprop="dateModified" datetime="2018-12-05T23:47:16+08:00">2018-12-05</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python的高效开发建立在大量常用库基础上，因此掌握常用的Python库十分必要。下面简单介绍Python的各类常用库。</p>
-<h1 id="常用标准库"><a href="#常用标准库" class="headerlink" title="常用标准库"></a>常用标准库</h1><ul>
-<li>os： 访问操作系统功能模块</li>
-<li>sys： 访问一些环境变量和与 Python 解释器交互</li>
-<li>datetime： 日期时间处理</li>
-<li>collections： 高级数据结构，有序字典，队列等等</li>
-<li>uuid： 生成 UUID 模块</li>
-<li>random： 随机数生成模块</li>
-<li>re： 正则表达式模块</li>
-<li>json： JSON 处理模块</li>
-<li>pdb： 单步调试模块</li>
-</ul>
-<h1 id="科学计算"><a href="#科学计算" class="headerlink" title="科学计算"></a>科学计算</h1><ul>
-<li>scipy：基于Python的matlab实现，旨在实现matlab的所有功能。包含Numpy、Ipython、Pandas、Matplotlib、Sympy等常用库</li>
-<li>numpy： 基于Python的科学计算第三方库，提供了矩阵，线性代数，傅立叶变换等等的解决方案</li>
-<li>pandas： 支持表格等多维数据</li>
-<li>matplotlib： 用Python实现的类matlab的第三方库，用以绘制一些高质量的数学二维图形</li>
-</ul>
-<h1 id="命令交互"><a href="#命令交互" class="headerlink" title="命令交互"></a>命令交互</h1><ul>
-<li>ipython： 交互命令行，适合科学计算</li>
-<li>jupyter： ipython notebook 的延伸，可以直接放在github上</li>
-<li>argparse：(Python 标准库)用于命令项选项与参数解析的模块</li>
-</ul>
-<h1 id="爬虫相关"><a href="#爬虫相关" class="headerlink" title="爬虫相关"></a>爬虫相关</h1><ul>
-<li>urllib: (Python 标准库)，接受URL请求的相关模块</li>
-<li>http: (Python 标准库)，处理所有客户端—服务器http请求的具体细节</li>
-<li>requests: 第三方库，人性化的HTTP请求库，比urllib更好用</li>
-<li>pillow: 处理验证码</li>
-<li>rsa: 处理加密问题</li>
-<li>BeautifulSoup：解析html文档为用户提供需要抓取的数据</li>
-<li>lxml: 是基于 libxml2 这一 XML 解析库的 Python 封装,解析速度比 Beautiful Soup 更快</li>
-</ul>
-<h1 id="环境管理"><a href="#环境管理" class="headerlink" title="环境管理"></a>环境管理</h1><ul>
-<li>virtualenv：创建独立 Python 环境的工具</li>
-<li>virtualenvwrapper：virtualenv 的一组扩展</li>
-</ul>
-<h1 id="包管理"><a href="#包管理" class="headerlink" title="包管理"></a>包管理</h1><ul>
-<li>pip：Python 包和依赖关系管理工具</li>
-<li>conda：跨平台，Python 二进制包管理工具</li>
-</ul>
-<h1 id="并发和并行"><a href="#并发和并行" class="headerlink" title="并发和并行"></a>并发和并行</h1><ul>
-<li>threading：(Python 标准库)更高层的线程接口</li>
-<li>multiprocessing：(Python 标准库) 基于进程的“线程”接口</li>
-</ul>
-<h1 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h1><ul>
-<li>logging：(Python 标准库) 为 Python 提供日志功能。</li>
-</ul>
-<h1 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h1><ul>
-<li>six：Python 2 和 3 的兼容性工具</li>
-</ul>
-<h1 id="计算机视觉"><a href="#计算机视觉" class="headerlink" title="计算机视觉"></a>计算机视觉</h1><ul>
-<li>opencv</li>
-</ul>
-<h1 id="机器学习"><a href="#机器学习" class="headerlink" title="机器学习"></a>机器学习</h1><ul>
-<li>tensorflow</li>
-</ul>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="https://www.jianshu.com/p/886cbabbfe9e" target="_blank" rel="noopener">Python 笔记四：Python的常用库收集</a>, by brandonxiang </li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/09/Virtualenv简易教程/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/09/Virtualenv简易教程/" itemprop="url">
-                  Virtualenv简易教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-10-09 21:08:13" itemprop="dateCreated datePublished" datetime="2018-10-09T21:08:13+08:00">2018-10-09</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-10-14 17:46:49" itemprop="dateModified" datetime="2018-10-14T17:46:49+08:00">2018-10-14</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>virtualenv是一个创建隔离python环境的工具，主要用于解决包冲突问题。</p>
-<h1 id="安装方法"><a href="#安装方法" class="headerlink" title="安装方法"></a>安装方法</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pip3 install virtualenv</span><br></pre></td></tr></table></figure>
-<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><h2 id="创建项目的虚拟环境"><a href="#创建项目的虚拟环境" class="headerlink" title="创建项目的虚拟环境"></a>创建项目的虚拟环境</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd my_project_folder</span><br><span class="line">$ virtualenv venv #venv是虚拟环境名称</span><br></pre></td></tr></table></figure>
-<p>执行上述命令后，将生成一个与虚拟环境同名的文件夹，包含 Python 可执行文件和 pip 库的拷贝，可用于安装其他包。</p>
-<p>但是默认情况下，虚拟环境中不会包含也无法使用系统环境的global site-packages。比如系统环境里安装了 requests 模块，在虚拟环境里import requests会提示ImportError。如果想使用系统环境的第三方软件包，可以在创建虚拟环境时使用参数–system-site-packages。如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">virtualenv --system-site-packages venv</span><br></pre></td></tr></table></figure></p>
-<p>此外可以指定虚拟环境所使用的 Python 版本，但前提是系统中已经安装了该版本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">virtualenv -p /usr/bin/python2.7 venv</span><br></pre></td></tr></table></figure></p>
-<h2 id="使用虚拟环境"><a href="#使用虚拟环境" class="headerlink" title="使用虚拟环境"></a>使用虚拟环境</h2><p>启动虚拟环境：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd venv</span><br><span class="line">source bin/activate </span><br><span class="line">python -V</span><br></pre></td></tr></table></figure></p>
-<p>退出虚拟环境：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deactivate</span><br></pre></td></tr></table></figure></p>
-<h1 id="virtualenvwrapper"><a href="#virtualenvwrapper" class="headerlink" title="virtualenvwrapper"></a>virtualenvwrapper</h1><p>virtualenvwrapper是virtualenv 的扩展工具，提供了一系列命令行命令，可以方便地创建、删除、复制、切换不同的虚拟环境。同时，使用该扩展后，所有虚拟环境都会被放置在同一个目录下。</p>
-<h2 id="安装方法-1"><a href="#安装方法-1" class="headerlink" title="安装方法"></a>安装方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install virtualenvwrapper</span><br></pre></td></tr></table></figure>
-<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><p>在$home/.bashrc文件中添加如下几行代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># bash -f file检测文件是否是普通文件（既不是目录，也不是设备文件），如果是，则返回 true</span><br><span class="line">if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then</span><br><span class="line">   export WORKON_HOME=$HOME/.virtualenvs </span><br><span class="line">   source /usr/local/bin/virtualenvwrapper.sh</span><br><span class="line">fi</span><br></pre></td></tr></table></figure></p>
-<h2 id="使用方法-1"><a href="#使用方法-1" class="headerlink" title="使用方法"></a>使用方法</h2><p>mkvirtualenv 也可以使用 virtualenv 的参数，比如 –python 来指定 Python 版本。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mkvirtualenv venv # 创建虚拟环境，虚拟环境目录都在 WORKON_HOME 里</span><br><span class="line"></span><br><span class="line">lsvirtualenv -b # 列出虚拟环境</span><br><span class="line"></span><br><span class="line">workon [虚拟环境名称] # 切换虚拟环境</span><br><span class="line"></span><br><span class="line">lssitepackages # 查看环境里安装了哪些包</span><br><span class="line"></span><br><span class="line">cdvirtualenv [子目录名] # 进入当前环境的目录</span><br><span class="line"></span><br><span class="line">cpvirtualenv [source] [dest] # 复制虚拟环境</span><br><span class="line"></span><br><span class="line">deactivate # 退出虚拟环境</span><br><span class="line"></span><br><span class="line">rmvirtualenv [虚拟环境名称] # 删除虚拟环境</span><br></pre></td></tr></table></figure></p>
-<h1 id="conda-vs-pip-vs-virtualenv"><a href="#conda-vs-pip-vs-virtualenv" class="headerlink" title="conda vs. pip vs. virtualenv"></a>conda vs. pip vs. virtualenv</h1><p>Conda是一个开源包管理系统和环境管理系统，用于安装多个版本的软件包及其依赖关系，并在它们之间轻松切换。 它适用于Linux，OS X和Windows，是为Python程序创建的，但可以打包和分发任何软件。</p>
-<p>Pip是一个以Python计算机程序语言写成的软件包管理系统，用于安装和管理软件包。</p>
-<p>它们直接的区别如下：</p>
-<p align="center">
-    <img src="images/conda_compare.png" width="90%" alt="conda vs. pip vs. virtualenv">
-</p>
-
-<h1 id="pip使用方法"><a href="#pip使用方法" class="headerlink" title="pip使用方法"></a>pip使用方法</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 导出python安装包环境</span><br><span class="line">pip freeze &gt; requirements.txt</span><br><span class="line"># 导入requirements文件</span><br><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="http://codingpy.com/article/virtualenv-must-have-tool-for-python-development/" target="_blank" rel="noopener">http://codingpy.com/article/virtualenv-must-have-tool-for-python-development/</a>.</li>
-<li><a href="https://conda.io/docs/commands.html#conda-vs-pip-vs-virtualenv-commands" target="_blank" rel="noopener">https://conda.io/docs/commands.html#conda-vs-pip-vs-virtualenv-commands</a>.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/09/19/Blender简易教程/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/19/Blender简易教程/" itemprop="url">
-                  Blender简易教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-19 08:48:48" itemprop="dateCreated datePublished" datetime="2018-09-19T08:48:48+08:00">2018-09-19</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-05-04 19:43:24" itemprop="dateModified" datetime="2019-05-04T19:43:24+08:00">2019-05-04</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近需要用Blender建3D模型，试用了半天，将经验简单总结一下。</p>
-<h1 id="3D建模流程"><a href="#3D建模流程" class="headerlink" title="3D建模流程"></a>3D建模流程</h1><ul>
-<li>建立3D模型：通常在Blender的3D视图窗口对物体进行建模。</li>
-<li>拆分制作纹理：设置缝合边，再展开。打开U/V图像编辑器窗口即可看到拆分效果。导出图片后制作纹理。</li>
-<li>使用材质贴图：设置材质着色，添加纹理。</li>
-</ul>
-<h1 id="Blender快捷键"><a href="#Blender快捷键" class="headerlink" title="Blender快捷键"></a>Blender快捷键</h1><p>Blender快捷键很多，熟练使用可加速3D模型的建立。</p>
-<h2 id="3D视图窗口"><a href="#3D视图窗口" class="headerlink" title="3D视图窗口"></a>3D视图窗口</h2><h3 id="字母键"><a href="#字母键" class="headerlink" title="字母键"></a>字母键</h3><ul>
-<li>A：全选、取消选择</li>
-<li>Shift+A：增加物件，新建的物件会出现在准星的位置</li>
-<li>B：框选，加Shift取消选择，按Esc退出选择</li>
-<li>C：刷选，加Shift取消选择，按Esc退出选择</li>
-<li>Shift+C：将游标设置到坐标系中心</li>
-<li>Ctrl+Shift+C：为骨头添加约束</li>
-<li>Shift+D：复制对象</li>
-<li>E：挤出选中对象</li>
-<li>Shift+E：编辑模式下，打开对称镜像挤出骨架</li>
-<li>F：编辑模式下，在点的基础上构建边或面；在权重绘制模式下，设置笔刷大小</li>
-<li>G：移动选中对象</li>
-<li>Alt+G: 在Pose Mode下，按“Alt+G”骨架归位</li>
-<li>H：隐藏对象（Hide）</li>
-<li>Alt+H：显示对象</li>
-<li>I：增加关键帧</li>
-<li>Shift+I：在Pose Mode下，选中骨架，再按“Shift+I”插入反关节</li>
-<li>Ctrl+J: 在Pose Mode下，连接两个独立的骨架，以便在编辑模式下同时编辑；在Object Mode下，选择两个物件后合并</li>
-<li>K: 切割,按“enter”键完成切割。按“k”键接着按住“ctrl”键移动到线框上可以自动定位到线的二分之一处。按“k”键接着按一下“c”键可以水平垂直或者45度进行切割。按“k”键接着按一下“z”键可以对物体一圈进行切割。</li>
-<li>Ctrl+L：编辑模式下，选择一个点，在Ctrl+L将选择与点相连的连续表面</li>
-<li>M：选中物体，按“M”键，再选择要将物体放置的图层。</li>
-<li>N：打开物体属性</li>
-<li>Ctrl+P：编辑模式下，设置多个骨头的父骨头。</li>
-<li>R: 旋转</li>
-<li>Alt+R: 在Pose Mode下，按“Alt+R”骨架归位</li>
-<li>Ctrl+R: 环切并滑动</li>
-<li>S: 缩放</li>
-<li>S+XYZ：沿XYZ轴方向缩放</li>
-<li>Alt+S：法向缩放</li>
-<li>T：打开左侧工具栏</li>
-<li>U：编辑模式下按“U”，打开UV映射菜单,选择活动面再全选，然后UV展开</li>
-<li>Ctrl+U:存储为启动文件</li>
-<li>W：快捷拓展命令栏</li>
-<li>X：删除</li>
-<li>Z：线框模式与实体模式之间切换</li>
-<li>Shift+Z：视口着色切换到实时渲染模式</li>
-<li>]：在Pose模式下，选择主骨头，再按“]”可直接选择下一根骨头</li>
-<li>Shift+]：在Pose模式下，选择主骨头，再按“Shift+]”可直接选择下一根骨头</li>
-<li>Ctrl+Space：调出三维坐标系操纵物体</li>
-<li>Ctrl+Tab：进行点、线、面的编辑模式</li>
-<li>Ctrl+Alt+Q：切换四视图</li>
-<li>Ctrl+向上箭头：最大化对应视图</li>
-<li>Shift+空格键：放大视图</li>
-<li>Tab：编辑模式和物体模式切换</li>
-</ul>
-<h3 id="功能键"><a href="#功能键" class="headerlink" title="功能键"></a>功能键</h3><ul>
-<li>F12：计算结果（算图模式），如果是黑色的，需要把摄像机和光源放在同一个图层中，或者选择摄像机和光源的图层。</li>
-</ul>
-<h3 id="数字键"><a href="#数字键" class="headerlink" title="数字键"></a>数字键</h3><p>数字键主要用于视角切换</p>
-<ul>
-<li>1：前视图</li>
-<li>3：侧视图</li>
-<li>5：正交与透视之间切换</li>
-<li>7：俯视图</li>
-</ul>
-<h3 id="鼠标键"><a href="#鼠标键" class="headerlink" title="鼠标键"></a>鼠标键</h3><ul>
-<li>右键：选择物体</li>
-<li>shift+中键：平移</li>
-<li>滚轴/（Ctrl+中键拖拽）：缩放</li>
-</ul>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="https://blog.csdn.net/u010670734/article/details/64538633" target="_blank" rel="noopener"> Blender常用快捷键</a>,by JinunMeng.</li>
-<li><a href="https://www.zhihu.com/question/41303546" target="_blank" rel="noopener">如何系统的学习blender？</a>,by zhihu.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/09/11/Windows下将cmd命令添加到右键菜单/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/11/Windows下将cmd命令添加到右键菜单/" itemprop="url">
-                  Windows下将cmd命令添加到右键菜单
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-11 10:35:30 / 修改时间：11:01:32" itemprop="dateCreated datePublished" datetime="2018-09-11T10:35:30+08:00">2018-09-11</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>经常需要使用cmd命令，如果打开cmd窗口后在cd到目标路径，则非常麻烦。可使用如下方法将cmd添加到右键菜单，这样一打开cmd窗口就到了目标路径。设置方法如下：</p>
-<ol>
-<li>打开注册表</li>
-<li>添加注册项<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a) 找到[HKEY_CLASSESS_ROOT\Folder\shell]子键，在其下新建“cmdPrompt”子项，在窗口右侧名称列上点击右键修改，将数值数据改为“CMD快速通道”。</span><br><span class="line"></span><br><span class="line">b) 再在这个项下，新建名为“command”子项，同样修改数值数据修改为c:\windows\system32\cmd.exe /k cd &quot;%1&quot;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>设置完成后即可在目标路径文件夹上右键单击，选择“CMD快速通道”命令，打开cmd窗口的同时，已跳转到目标路径下。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/09/07/Windows平台Python安装与配置教程/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/07/Windows平台Python安装与配置教程/" itemprop="url">
-                  Windows平台Python安装与配置教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-07 22:37:06" itemprop="dateCreated datePublished" datetime="2018-09-07T22:37:06+08:00">2018-09-07</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-03-17 22:01:58" itemprop="dateModified" datetime="2019-03-17T22:01:58+08:00">2019-03-17</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>下面记录在Windows平台安装配置Python的过程。</p>
-<ol>
-<li>去Python官网下载最新的Python3，当前最新版本为3.7。</li>
-<li>双击Python3.7的安装包进行安装，设置安装路径为C:\Python\Python37，同时将Python路径加入系统Path变量中。</li>
-<li>使用如下命令安装ipython。加参数—trusted-host，否则会报错误：SSLError(SSLCertVerificationError(1, ‘[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed。加参数-i，制定国内pip源，显著提高下载速度。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install ipython -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2166,7 +2314,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">131</span>
+                    <span class="site-state-item-count">138</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2273,7 +2421,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">46</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

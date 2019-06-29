@@ -314,6 +314,1295 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/15/Emscripten教程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/15/Emscripten教程/" itemprop="url">
+                  Emscripten教程
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-15 17:00:04" itemprop="dateCreated datePublished" datetime="2018-07-15T17:00:04+08:00">2018-07-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-09-09 21:21:40" itemprop="dateModified" datetime="2018-09-09T21:21:40+08:00">2018-09-09</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Emscripten是一种基于LLVM的编译器，理论上能够将任何能够生成LLVM位码的代码编译成javascript的严格子集asm.js，实际上主要用于将C/C++代码编译成asm.js。本文主要介绍Emscripten的安装过程。</p>
+<h1 id="下载和安装"><a href="#下载和安装" class="headerlink" title="下载和安装"></a>下载和安装</h1><p>从源码编译安装十分麻烦，推荐安装核心的Emscripten SDK。以Windows为例，先使用如下命令下载emsdk。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Get the emsdk repo</span><br><span class="line">git clone https://github.com/juj/emsdk.git</span><br><span class="line"></span><br><span class="line"># Enter that directory</span><br><span class="line">cd emsdk</span><br></pre></td></tr></table></figure></p>
+<p>再使用如下命令安装配置Emscripten。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># Fetch the latest registry of available tools.</span><br><span class="line">.\emsdk.bat update</span><br><span class="line"></span><br><span class="line"># Download and install the latest SDK tools. Need install Python first. </span><br><span class="line">.\emsdk.bat install latest</span><br><span class="line"></span><br><span class="line"># Make the &quot;latest&quot; SDK &quot;active&quot; for the current user. (writes ~/.emscripten file)</span><br><span class="line">.\emsdk.bat activate latest</span><br><span class="line"></span><br><span class="line"># Activate PATH and other environment variables in the current terminal</span><br><span class="line">.\emsdk_env.bat</span><br></pre></td></tr></table></figure></p>
+<h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p>使用如下命令验证Emscripten是否安装配置正确。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Enter that directory</span><br><span class="line">cd emsdk</span><br><span class="line"></span><br><span class="line"># Activate PATH and other environment variables in the current terminal</span><br><span class="line">.\emsdk_env.bat</span><br><span class="line"></span><br><span class="line"># Verifying Emscripten</span><br><span class="line">emcc.bat -v</span><br></pre></td></tr></table></figure></p>
+<h1 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h1><p>如果验证通过，即可使用Emscripten编译C/C++代码到asm.js。</p>
+<p>创建名为helloWorld.cpp的文件，其内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">  printf(&quot;hello, world!\n&quot;);</span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用如下命令编译：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">emcc.bat helloWorld.cpp</span><br></pre></td></tr></table></figure></p>
+<p>编译后将生成a.out.js和a.out.wasm两个文件。后者是包含编译后代码的WebAssembly文件，前者是用于加载和执行后者的Javascipt文件。使用如下命令测试编译后生成的代码，将输出“hello,world!”。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node a.out.js</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://kripken.github.io/emscripten-site/docs/introducing_emscripten/about_emscripten.html" target="_blank" rel="noopener">http://kripken.github.io/emscripten-site/docs/introducing_emscripten/about_emscripten.html</a>. by kripken.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/10/浏览器中运行3D游戏的思考/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/10/浏览器中运行3D游戏的思考/" itemprop="url">
+                  浏览器中运行3D游戏的思考
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-10 21:02:56" itemprop="dateCreated datePublished" datetime="2018-07-10T21:02:56+08:00">2018-07-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-20 23:31:43" itemprop="dateModified" datetime="2018-11-20T23:31:43+08:00">2018-11-20</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Web技术突飞猛进，几乎无所不能，无所不在。然而在3D游戏领域，web技术乏善可陈，性能瓶颈问题制约其发展。但是开发者们没有放弃这个梦想，不断努力，孜孜不倦地改进和增强浏览器中运行3D游戏性能的方法和技术，目前已能看到一丝曙光。</p>
+<p>对C/S架构的3D游戏而言，渲染和计算通常都在客户端，服务器端负责用户状态的管理和分发。同样对B/S架构的运行在浏览器中的3D游戏，所有的渲染和计算也应该在浏览器端。如果渲染和计算放在服务器端，将导致可怕的延迟，并严重损害3D游戏的可伸缩性。</p>
+<p>当前很多3D游戏使用C/C++语言编写，如果能够将C/C++语言编译成JavaScript语言，可大大促进Web 3D游戏的开发。而编译器项目Emscripten正是一个这样的工具。它能将C/C++代码编译成一种叫做asm.js的Javascript变体。需要指出的是，Emscripten的输入，即C/C++代码最好是开放源代码的，因为Emscripten不支持闭源代码的编译。例如Emscripten不支持mfc程序的转换，因为mfc是闭源的<sup>[4]</sup>。</p>
+<p>asm.js是一个JavaScript的严格子集，它只提供32位带符号整数和64位带符号浮点数两种数据类型，其他Javascript类型如字符串、布尔值等以数值形式存在，保存在内存中，通过TypedArray调用。另外asm.js没有垃圾回收机制，所有内存操作都由程序员自己控制。asm.js是优化后的JavaScript，它在浏览器中的运行速度大约是原生代码的一倍左右<sup>[1]</sup>。</p>
+<p>asm.js虽然比原生javascript运行速度快了一倍左右，但是相比C/C++代码，运行速度还是有差距。幸运的是出现了名为WebAssembly的技术。WebAssembly或称wasm是一个实验性的低级编程语言，应用于浏览器内的客户端<sup>[5]</sup>。WebAssembly是便携式的抽象语法树，被设计来提供比JavaScript更快速的编译及运行。WebAssembly将让开发者能运用自己熟悉的编程语言（最初以C/C++作为实现目标）编译，再藉虚拟机引擎在浏览器内运行。WebAssembly的开发团队分别来自Mozilla、Google、Microsoft、Apple，代表着四大网络浏览器Firefox、Chrome、Microsoft Edge、Safari。2017年11月，所有以上四个浏览器都开始实验性的支持WebAssembly。目前，最新版本的Emscripten已支持将C/C++代码编译成wasm。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html</a>. by 阮一峰.</li>
+<li><a href="https://www.cnblogs.com/slly/p/6639173.html" target="_blank" rel="noopener">https://www.cnblogs.com/slly/p/6639173.html</a>. by 李某龙.</li>
+<li><a href="http://kripken.github.io/emscripten-site/" target="_blank" rel="noopener">http://kripken.github.io/emscripten-site/</a>. by emscripten.</li>
+<li><a href="https://github.com/kripken/emscripten/issues/941" target="_blank" rel="noopener">https://github.com/kripken/emscripten/issues/941</a>. by emscripten.</li>
+<li><a href="https://zh.wikipedia.org/wiki/WebAssembly" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/WebAssembly</a>. by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/08/Cookie-Session和Token会话知识整理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/08/Cookie-Session和Token会话知识整理/" itemprop="url">
+                  Cookie,Session和Token会话知识整理
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-08 10:50:44" itemprop="dateCreated datePublished" datetime="2018-07-08T10:50:44+08:00">2018-07-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-09-09 21:17:40" itemprop="dateModified" datetime="2018-09-09T21:17:40+08:00">2018-09-09</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>HTTP是一种无状态的协议，然而当服务器端需要判断用户能否访问某些资源，记录用户的购物车内容等场景时，就需要一种机制维护会话状态，这时候Cookie、Session和Token就派上了用场。</p>
+<h1 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h1><p>Cookie技术最早用于解决HTTP的会话问题， 它是 http 协议的一部分，它的处理分为如下几步：</p>
+<ul>
+<li>服务器向客户端发送 cookie。<ul>
+<li>通常使用 HTTP 协议规定的 set-cookie 头操作。</li>
+<li>规范规定 cookie 的格式为 name = value 格式，且必须包含这部分。</li>
+</ul>
+</li>
+<li>浏览器将 cookie 保存。</li>
+<li>每次请求浏览器都会将 cookie 发向服务器。</li>
+</ul>
+<h2 id="可选的Cookie参数"><a href="#可选的Cookie参数" class="headerlink" title="可选的Cookie参数"></a>可选的Cookie参数</h2><p>其他可选的 cookie 参数会影响将 cookie 发送给服务器端的过程，主要有以下几种：</p>
+<ul>
+<li>path：表示 cookie 影响到的路径，匹配该路径才发送这个 cookie。</li>
+<li>expires 和 maxAge：告诉浏览器这个 cookie 什么时候过期，expires 是 UTC 格式时间，maxAge 是 cookie 多久后过期的相对时间。当不设置这两个选项时，会产生 session cookie，session cookie 是 transient 的，当用户关闭浏览器时，就被清除。一般用来保存 session 的 session_id。</li>
+<li>secure：当 secure 值为 true 时，cookie 在 HTTP 中是无效，在 HTTPS 中才有效。</li>
+<li>httpOnly：浏览器不允许脚本操作 document.cookie 去更改 cookie。一般情况下都应该设置这个为 true，这样可以避免被 xss 攻击拿到 cookie。</li>
+</ul>
+<h2 id="常用场景"><a href="#常用场景" class="headerlink" title="常用场景"></a>常用场景</h2><p>当给Cookie设置expires和maxAge后，在未到期前，浏览器端的Cookie不会因为浏览器的关闭而消失。该特性常用于自动登录，记录用户浏览信息。例如很多购物网站常用该特性记录用户的喜好和购买的物品。</p>
+<h2 id="Cookie安全隐患"><a href="#Cookie安全隐患" class="headerlink" title="Cookie安全隐患"></a>Cookie安全隐患</h2><p>Cookie提供了一种手段使得HTTP请求可以附加当前状态， 大多数网站就是靠Cookie来标识用户的登录状态的，例如：</p>
+<ol>
+<li>用户提交用户名和密码的表单，这通常是一个POST HTTP请求。</li>
+<li>服务器验证用户名与密码，如果合法则返回200（OK）并设置Set-Cookie为authed=true。</li>
+<li>浏览器存储该Cookie。</li>
+<li>浏览器发送请求时，设置Cookie字段为authed=true。</li>
+<li>服务器收到第二次请求，从Cookie字段得知该用户已经登录。 按照已登录用户的权限来处理此次请求。</li>
+</ol>
+<p>上述认证流程存在安全隐患，因为Cookie是可以被篡改的。如果使用一些HTTP客户端软件，设置Cookie字段为authed=true并发送该HTTP请求，服务器就会被欺骗。</p>
+<h2 id="Cookie防篡改机制"><a href="#Cookie防篡改机制" class="headerlink" title="Cookie防篡改机制"></a>Cookie防篡改机制</h2><p>服务器为每个Cookie项生成签名，可有效地防止Cookie被篡改。因为用户篡改Cookie后无法生成对应的签名， 服务器便可得知用户对Cookie进行了篡改。一个简单的校验过程可能是这样的：</p>
+<ol>
+<li>在服务器中配置一个不为人知的字符串（我们叫它Secret），比如：x$sfz32。</li>
+<li>当服务器需要设置Cookie时（比如authed=false），不仅设置authed的值为false， 在值的后面进一步设置一个签名，最终设置的Cookie是authed=false|6hTiBl7lVpd1P。</li>
+<li>签名6hTiBl7lVpd1P是这样生成的：Hash(‘x$sfz32’+’false’)。 要设置的值与Secret相加再取哈希。</li>
+<li>用户收到HTTP响应并发现头字段Set-Cookie: authed=false|6hTiBl7lVpd1P。</li>
+<li>用户在发送HTTP请求时，篡改了authed值，设置头字段Cookie: authed=true|???。 因为用户不知道Secret，无法生成签名，只能随便填一个。</li>
+<li>服务器收到HTTP请求，发现Cookie: authed=true|???。服务器开始进行校验： Hash(‘true’+’x$sfz32’)，便会发现用户提供的签名不正确。</li>
+</ol>
+<p>通过给Cookie添加签名，使得服务器得以知道Cookie被篡改。然而故事并未结束。</p>
+<p>因为Cookie是明文传输的， 只要服务器设置过一次authed=true|xxxx我不就知道true的签名是xxxx了么， 以后就可以用这个签名来欺骗服务器了。因此Cookie中最好不要放敏感数据。 一般来讲Cookie中只会放一个Session Id，而Session存储在服务器端。</p>
+<h1 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h1><p>为了解决Cookie的安全隐患，Session机制应运而生。session机制是一种服务器端的机制，它存储在服务器端的，避免了在客户端Cookie中存储敏感数据。Session可以存储在HTTP服务器的内存中，也可以存在内存数据库（如redis）中， 对于重量级的应用甚至可以存储在数据库中。 </p>
+<p>客户端对服务端请求时,服务端会检查请求中是否包含一个session标识( 称为session id ).</p>
+<ul>
+<li>如果没有,那么服务端就生成一个随机的session以及和它匹配的session id,并将session id返回给客户端.</li>
+<li>如果有,那么服务器就在存储中根据session id 查找到对应的session.</li>
+</ul>
+<h2 id="基于Session的登录流程"><a href="#基于Session的登录流程" class="headerlink" title="基于Session的登录流程"></a>基于Session的登录流程</h2><p>一个简单的使用Session机制的登录流程可能是这样的：</p>
+<ol>
+<li>用户提交包含用户名和密码的表单，发送HTTP请求。</li>
+<li>服务器验证用户发来的用户名密码。</li>
+<li>如果正确则把当前用户名（通常是用户对象）存储到redis中，并生成它在redis中的ID。这个ID称为Session ID，通过Session ID可以从Redis中取出对应的用户对象， 敏感数据（比如authed=true）都存储在这个用户对象中。</li>
+<li>设置Cookie为sessionId=xxxxxx|checksum并发送HTTP响应， 仍然为每一项Cookie都设置签名。</li>
+<li>用户收到HTTP响应后，便看不到任何敏感数据了。在此后的请求中发送该Cookie给服务器。</li>
+<li>服务器收到此后的HTTP请求后，发现Cookie中有SessionID，进行放篡改验证。</li>
+<li>如果通过了验证，根据该ID从Redis中取出对应的用户对象， 查看该对象的状态并继续执行业务逻辑。</li>
+</ol>
+<h2 id="Session安全隐患"><a href="#Session安全隐患" class="headerlink" title="Session安全隐患"></a>Session安全隐患</h2><p>Session ID作为Cookie存储在浏览器端，因此存在被劫持的风险，尤其是开发者没有正确的关闭会话。用户关闭会话时，应删除传递 Session ID 的 Cookie，同时撤销服务器端的Session内容。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/* 普通用户登出 */</span><br><span class="line">router.post(&apos;/signout&apos;, function(req, res, next) &#123;</span><br><span class="line">    if (_.isEmpty(req.body) === false) &#123;</span><br><span class="line">        req.session.account = null; // 删除session</span><br><span class="line">        res.json(&#123;</span><br><span class="line">            message: &apos;登出成功！&apos;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        res.send(406, &#123; message: &apos;The params is not correct!&apos; &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h1 id="Token"><a href="#Token" class="headerlink" title="Token"></a>Token</h1><p>Token是用户的验证方式,最简单的token组成:uid(用户唯一的身份标识)、time(当前时间的时间戳)、sign(签名，由token的前几位+盐以哈希算法压缩成一定长的十六进制字符串，可以防止恶意第三方拼接token请求服务器)。</p>
+<h2 id="基于Token的身份验证流程"><a href="#基于Token的身份验证流程" class="headerlink" title="基于Token的身份验证流程"></a>基于Token的身份验证流程</h2><p>使用基于 Token 的身份验证方法，在服务端不需要存储用户的登录记录。大概的流程是这样的：</p>
+<ol>
+<li>客户端使用用户名跟密码请求登录</li>
+<li>服务端收到请求，去验证用户名与密码</li>
+<li>验证成功后，服务端会签发一个 Token，再把这个 Token 发送给客户端</li>
+<li>客户端收到 Token 以后可以把它存储起来，比如放在 Cookie 里或者 Local Storage 里</li>
+<li>客户端每次向服务端请求资源的时候需要带着服务端签发的 Token</li>
+<li>服务端收到请求，然后去验证客户端请求里面带着的 Token，如果验证成功，就向客户端返回请求的数据</li>
+</ol>
+<h2 id="基于Token方法的优势"><a href="#基于Token方法的优势" class="headerlink" title="基于Token方法的优势"></a>基于Token方法的优势</h2><ul>
+<li>JWT 方法允许我们进行AJAX调用任何服务器或域。由于HTTP头是用来传输用户信息的。</li>
+<li>没必要在服务器存储一个单独的session。JWT本身传达全部的信息。</li>
+<li>服务器端减少到只是一个API和可以通过CDN服务的静态资源（HTML，CSS，JS)。</li>
+<li>认证系统是手机兼容的，任何设备上可以生成令牌。</li>
+<li>由于已经消除了cookie的需要，也不再需要保护跨站请求。</li>
+<li>API密钥提供非此即彼的解决方案，然而JWT提供更颗粒度的控制，它可以用于任何调试目的的检查。</li>
+<li>API密钥依赖于中央存储和服务。JWT可以自发行或者外部服务在允许的范围和期限发布它。</li>
+</ul>
+<h2 id="JWT结构"><a href="#JWT结构" class="headerlink" title="JWT结构"></a>JWT结构</h2><p>Json web token (JWT), 是为了在网络应用环境间传递声明而执行的一种基于JSON的开放标准（(RFC 7519).该token被设计为紧凑且安全的，特别适用于分布式站点的单点登录（SSO）场景。JWT的声明一般被用来在身份提供者和服务提供者间传递被认证的用户身份信息，以便于从资源服务器获取资源，也可以增加一些额外的其它业务逻辑所必须的声明信息，该token也可直接被用于认证，也可被加密。</p>
+<p>一个JWT实际上就是一个字符串，它由三部分组成，头部、载荷与签名。</p>
+<h1 id="Cookie、Session和Token对比"><a href="#Cookie、Session和Token对比" class="headerlink" title="Cookie、Session和Token对比"></a>Cookie、Session和Token对比</h1><h2 id="cookie与session的区别"><a href="#cookie与session的区别" class="headerlink" title="cookie与session的区别"></a>cookie与session的区别</h2><ol>
+<li>cookie数据存放在客户端上，session数据放在服务器上。</li>
+<li>cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗。考虑到安全应当使用session。</li>
+<li>session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能。考虑到减轻服务器性能方面，应当使用COOKIE。</li>
+</ol>
+<h2 id="session与token的区别"><a href="#session与token的区别" class="headerlink" title="session与token的区别"></a>session与token的区别</h2><p>作为身份认证token安全性比session好，因为每个请求都有签名还能防止监听以及重放攻击。</p>
+<p>Session 是一种HTTP存储机制，目的是为无状态的HTTP提供的持久机制。Session 认证只是简单的把User 信息存储到Session 里，因为SID 的不可预测性，暂且认为是安全的。这是一种认证手段。 但是如果有了某个User的SID,就相当于拥有该User的全部权利.SID不应该共享给其他网站或第三方。</p>
+<p>Token, 如果指的是OAuth Token 或类似的机制的话，提供的是 认证 和 授权，认证是针对用户，授权是针对App。其目的是让某App有权利访问某用户的信息。这里的Token是唯一的。不可以转移到其它App上，也不可以转到其它用户上。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://wiki.jikexueyuan.com/project/node-lessons/cookie-session.html" target="_blank" rel="noopener">http://wiki.jikexueyuan.com/project/node-lessons/cookie-session.html</a>, by 极客学院.</li>
+<li><a href="https://harttle.land/2015/08/10/cookie-session.html" target="_blank" rel="noopener">https://harttle.land/2015/08/10/cookie-session.html</a>. by Harttle Land.</li>
+<li><a href="https://python.freelycode.com/contribution/detail/84" target="_blank" rel="noopener">https://python.freelycode.com/contribution/detail/84</a>. by Python部落.</li>
+<li><a href="https://www.jianshu.com/p/576dbf44b2ae" target="_blank" rel="noopener">https://www.jianshu.com/p/576dbf44b2ae</a>, by Dearmadman</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/02/兼容前后端多种JS模块规范的代码/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/02/兼容前后端多种JS模块规范的代码/" itemprop="url">
+                  兼容前后端多种JS模块规范的代码
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-02 22:11:23" itemprop="dateCreated datePublished" datetime="2018-07-02T22:11:23+08:00">2018-07-02</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-07-05 09:13:00" itemprop="dateModified" datetime="2018-07-05T09:13:00+08:00">2018-07-05</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近研究如何在前后端调用同一份js代码。该问题本质是如何兼容前后端各类JS模块规范。上网一搜，已经有很多详细的解决方案和JS模块规范介绍，在这里简单记录一下。</p>
+<h1 id="JS模块规范"><a href="#JS模块规范" class="headerlink" title="JS模块规范"></a>JS模块规范</h1><p>JS模块规范前端主要有AMD、CMD，后端主要有CommonJS。此外还有最新的ES2015模块规范。</p>
+<h2 id="AMD"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</h2><p>AMD（异步模块定义，Asynchronous Module Definition）格式总体的目标是为现在的开发者提供一个可用的模块化 JavaScript 的解决方案。它诞生于 Dojo 在使用 XHR+eval 时的实践经验，其支持者希望未来的解决方案都可以免受由于过去方案的缺陷所带来的麻烦。</p>
+<p>AMD风格模块定义通常包括：一个用来进行模块定义的 define 方法以及一个用来处理依赖项加载的 require 方法。define 根据如下的方法签名来定义具名或匿名的模块：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define(</span><br><span class="line">    module_id /*可选*/, </span><br><span class="line">    [dependencies] /*可选*/, </span><br><span class="line">    definition function /*用来初始化模块或对象的函数*/</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
+<h2 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h2><p>CMD(Common Module Definition)表示通用模块定义，该规范是国内发展出来的，由阿里的玉伯提出。就像AMD有个requireJS，CMD有个浏览器的实现SeaJS，SeaJS和requireJS一样，都是javascript的前端模块化解决方案。<br>CMD规范简单到只有一个API，即define函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define(function(require, exports, module) &#123;</span><br><span class="line"></span><br><span class="line">  // The module code goes here</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>CMD 与 AMD 挺相近，二者区别如下： </p>
+<ul>
+<li>对于依赖的模块 CMD 是延迟执行，而 AMD 是提前执行（不过 RequireJS 从 2.0 开始，也改成可以延迟执行。 ）</li>
+<li>CMD 推崇依赖就近，AMD 推崇依赖前置。</li>
+<li>AMD 的 api 默认是一个当多个用，CMD 严格的区分推崇职责单一，其每个 API 都简单纯粹。例如：AMD 里 require 分全局的和局部的。CMD 里面没有全局的 require，提供 seajs.use() 来实现模块系统的加载启动。</li>
+</ul>
+<h2 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h2><p>CommonJS是一个志愿性质的工作组，它致力于设计、规划并标准化 JavaScript API。至今为止他们已经尝试着认可了模块标准以及程序包标准。CommonJS 的模块提案为在服务器端声明模块指定了一个简单的 API。不像 AMD，它试图覆盖更宽泛的方面比如 IO、文件系统、promise 模式等等。CommonJS风格模块在nodejs中得到广泛的应用。</p>
+<p>CommonJS风格模块是一段可重用的 JavaScript，它导出一系列特定的对象给依赖它的代码调用——通常来说这样的模块外围没有函数包裹（所以你在这里的例子中不会看到 define）。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// package/lib 是我们须要的一个依赖项</span><br><span class="line">var lib = require(&apos;package/lib&apos;);</span><br><span class="line"> </span><br><span class="line">// 我们的模块的一些行为</span><br><span class="line">function foo()&#123;</span><br><span class="line">    lib.log(&apos;hello world!&apos;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">// 把 foo 导出（暴露）给其它模块</span><br><span class="line">exports.foo = foo;</span><br></pre></td></tr></table></figure></p>
+<h2 id="ES2015模块规范"><a href="#ES2015模块规范" class="headerlink" title="ES2015模块规范"></a>ES2015模块规范</h2><p>2015 年 6 月， ES2015（即 ECMAScript 6、ES6） 正式发布。ES2015 是该语言的一个显著更新，也是自 2009 年 ES5 标准确定后的第一个重大更新。</p>
+<p>ES2015的模块规范如下：</p>
+<ul>
+<li>一个模块就是一个独立的文件。该文件内部的所有变量，外部无法获取。</li>
+<li>export 命令用于规定模块的对外接口。</li>
+<li>import 命令用于输入其他模块提供的功能。</li>
+<li>ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量。</li>
+</ul>
+<p>ES2015模块示例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//circle.js</span><br><span class="line">//圆面积计算</span><br><span class="line">export function area(radius) &#123;</span><br><span class="line">  return Math.PI * radius * radius;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//main.js</span><br><span class="line">import &#123;area&#125; from &apos;./hangge&apos;;</span><br><span class="line">console.log(&apos;圆面积：&apos; + area(10));</span><br></pre></td></tr></table></figure></p>
+<h1 id="兼容多种模块规范"><a href="#兼容多种模块规范" class="headerlink" title="兼容多种模块规范"></a>兼容多种模块规范</h1><p>需要指出的是下面兼容多种JS模块规范的代码并不支持最新的ES2015模块规范。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">;(function (name, definition) &#123;</span><br><span class="line">  // 检测上下文环境是否为AMD或CMD</span><br><span class="line">  var hasDefine = typeof define === &apos;function&apos;,</span><br><span class="line">    // 检查上下文环境是否为Node</span><br><span class="line">    hasExports = typeof module !== &apos;undefined&apos; &amp;&amp; module.exports;</span><br><span class="line"></span><br><span class="line">  if (hasDefine) &#123;</span><br><span class="line">    // AMD环境或CMD环境</span><br><span class="line">    define(definition);</span><br><span class="line">  &#125; else if (hasExports) &#123;</span><br><span class="line">    // 定义为普通Node模块</span><br><span class="line">    module.exports = definition();</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // 将模块的执行结果挂在window变量中，在浏览器中this指向window对象</span><br><span class="line">    this[name] = definition();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)(&apos;hello&apos;, function () &#123;</span><br><span class="line">  var hello = function () &#123;&#125;;</span><br><span class="line">  return hello;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://i.jakeyu.top/2017/09/14/兼容前后端共用模块代码/" target="_blank" rel="noopener">https://i.jakeyu.top/2017/09/14/兼容前后端共用模块代码/</a>. by Jake.</li>
+<li><a href="https://segmentfault.com/a/1190000011633813" target="_blank" rel="noopener">https://segmentfault.com/a/1190000011633813</a>. by CodeMan.</li>
+<li><a href="http://justineo.github.io/singles/writing-modular-js/" target="_blank" rel="noopener">http://justineo.github.io/singles/writing-modular-js/</a>. by ADDY OSMANI.</li>
+<li><a href="http://www.hangge.com/blog/cache/detail_1686.html" target="_blank" rel="noopener">http://www.hangge.com/blog/cache/detail_1686.html</a>. by hangge.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/22/sequelize-cli使用经验总结/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/22/sequelize-cli使用经验总结/" itemprop="url">
+                  sequelize-cli使用经验总结
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-22 22:12:55" itemprop="dateCreated datePublished" datetime="2018-06-22T22:12:55+08:00">2018-06-22</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-06-23 10:42:08" itemprop="dateModified" datetime="2018-06-23T10:42:08+08:00">2018-06-23</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Sequelize 是一个基于 promise 的 Node.js ORM, 目前支持 Postgres, MySQL, SQLite 和 Microsoft SQL Server. 它具有强大的事务支持, 关联关系, 读取和复制等功能<sup>[2]</sup>. 下面主要介绍如何使用sequelize-cli工具快速构建nodejs的数据访问层。</p>
+<h1 id="基于express创建nodejs-web应用"><a href="#基于express创建nodejs-web应用" class="headerlink" title="基于express创建nodejs web应用"></a>基于express创建nodejs web应用</h1><p>基于express建立nodejs的web应用，在此基础上再使用sequlize建立数据访问层和数据库。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir myapp</span><br><span class="line">cd myapp</span><br><span class="line">express</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure></p>
+<h1 id="基于sequelize创建数据访问层和数据库"><a href="#基于sequelize创建数据访问层和数据库" class="headerlink" title="基于sequelize创建数据访问层和数据库"></a>基于sequelize创建数据访问层和数据库</h1><h2 id="安装sequlize"><a href="#安装sequlize" class="headerlink" title="安装sequlize"></a>安装sequlize</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save sequelize</span><br><span class="line">npm install --save mysql2</span><br></pre></td></tr></table></figure>
+<h2 id="安装sequelize-cli"><a href="#安装sequelize-cli" class="headerlink" title="安装sequelize-cli"></a>安装sequelize-cli</h2><p>首先应安装sequelize-cli工具，可以选择全局安装，也可以选择本地安装。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save sequelize-cli</span><br><span class="line">npm install -g sequelize-cli</span><br></pre></td></tr></table></figure></p>
+<h2 id="建立初始的ORM引导框架"><a href="#建立初始的ORM引导框架" class="headerlink" title="建立初始的ORM引导框架"></a>建立初始的ORM引导框架</h2><p>使用如下命令在Nodejs Web应用中建立初始的数据访问层。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir db</span><br><span class="line">cd db</span><br><span class="line">../node_modules/.bin/sequelize init</span><br></pre></td></tr></table></figure></p>
+<p>这将创建以下文件夹:</p>
+<ul>
+<li>config, 包含配置文件，它告诉CLI如何连接数据库</li>
+<li>models,包含您的项目的所有模型</li>
+<li>migrations, 包含所有迁移文件</li>
+<li>seeders, 包含所有种子文件</li>
+</ul>
+<h2 id="修改配置文件以连接到数据库管理系统，并创建数据库"><a href="#修改配置文件以连接到数据库管理系统，并创建数据库" class="headerlink" title="修改配置文件以连接到数据库管理系统，并创建数据库"></a>修改配置文件以连接到数据库管理系统，并创建数据库</h2><p>在建立模型之前，应先修改config/config.json，以告诉 CLI 如何连接到数据库。config/config.json内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;development&quot;: &#123;</span><br><span class="line">    &quot;username&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;password&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;database&quot;: &quot;database_development&quot;,</span><br><span class="line">    &quot;host&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;dialect&quot;: &quot;mysql&quot;,</span><br><span class="line">    &quot;pool&quot;:&#123;</span><br><span class="line">        &quot;max&quot;: 5,</span><br><span class="line">        &quot;min&quot;: 0,</span><br><span class="line">        &quot;idle&quot;: 10000</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;timezone&quot;: &quot;+08:00&quot;,</span><br><span class="line">    &quot;define&quot;:&#123;</span><br><span class="line">      &quot;charset&quot;: &quot;utf8&quot;,</span><br><span class="line">      &quot;dialectOptions&quot;:&#123;</span><br><span class="line">          &quot;collate&quot;: &quot;utf8_general_ci&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;test&quot;: &#123;</span><br><span class="line">    &quot;username&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;password&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;database&quot;: &quot;database_test&quot;,</span><br><span class="line">    &quot;host&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;dialect&quot;: &quot;mysql&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;production&quot;: &#123;</span><br><span class="line">    &quot;username&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;password&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;database&quot;: &quot;database_test&quot;,</span><br><span class="line">    &quot;host&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;dialect&quot;: &quot;mysql&quot;,</span><br><span class="line">    &quot;pool&quot;:&#123;</span><br><span class="line">        &quot;max&quot;: 5,</span><br><span class="line">        &quot;min&quot;: 0,</span><br><span class="line">        &quot;idle&quot;: 10000</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;timezone&quot;: &quot;+08:00&quot;,</span><br><span class="line">    &quot;define&quot;:&#123;</span><br><span class="line">      &quot;charset&quot;: &quot;utf8&quot;,</span><br><span class="line">      &quot;dialectOptions&quot;:&#123;</span><br><span class="line">          &quot;collate&quot;: &quot;utf8_general_ci&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上述配置修改了数据库的字符集，使之能支持中文。当然在创建数据库之前，应配置mysql数据库管理系，使其支持utf8字符集。可执行如下命令查看其支持的字符集，如果其不支持uft字符集，请按照参考链接[3]进行修改。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables like &apos;%char%&apos;;</span><br><span class="line">+--------------------------+---------------------------------------------------------+</span><br><span class="line">| Variable_name            | Value                                                   |</span><br><span class="line">+--------------------------+---------------------------------------------------------+</span><br><span class="line">| character_set_client     | utf8                                                    |</span><br><span class="line">| character_set_connection | utf8                                                    |</span><br><span class="line">| character_set_database   | utf8                                                    |</span><br><span class="line">| character_set_filesystem | binary                                                  |</span><br><span class="line">| character_set_results    | utf8                                                    |</span><br><span class="line">| character_set_server     | utf8                                                    |</span><br><span class="line">| character_set_system     | utf8                                                    |</span><br><span class="line">| character_sets_dir       | C:\Program Files\MySQL\MySQL Server 5.5\share\charsets\ |</span><br><span class="line">+--------------------------+---------------------------------------------------------+</span><br><span class="line">8 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>使用如下命令创建数据库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize db:create</span><br></pre></td></tr></table></figure></p>
+<h2 id="创建模型"><a href="#创建模型" class="headerlink" title="创建模型"></a>创建模型</h2><p>我们将使用 model:generate 命令。 此命令需要两个选项：</p>
+<ul>
+<li>name, 模型的名称</li>
+<li>attributes, 模型的属性列表</li>
+</ul>
+<p>创建一个名叫 User 的模型：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize model:generate --name User --attributes firstName:string,lastName:string,email:string</span><br></pre></td></tr></table></figure></p>
+<p>这将发生以下事情:</p>
+<ul>
+<li>在 models 文件夹中创建了一个 user 模型文件</li>
+<li>在 migrations 文件夹中创建了一个名字像 XXXXXXXXXXXXXX-create-user.js 的迁移文件</li>
+</ul>
+<p><b>注意:</b> _Sequelize 将只使用模型文件，它是表描述。另一边，迁移文件是该模型的更改，或更具体的是说 CLI 所使用的表。 处理迁移，如提交或日志，以进行数据库的某些更改。</p>
+<p>再创建一个名为Role的模型，它跟User是一对多的关系：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize model:generate --name Role --attributes roleName:string</span><br></pre></td></tr></table></figure></p>
+<h2 id="定义关系"><a href="#定义关系" class="headerlink" title="定义关系"></a>定义关系</h2><p>Role和User是一对多的关系，因此需要修改它们的模型定义。<br>修改migrations/20180622153726-create-role.js如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line">module.exports = (sequelize, DataTypes) =&gt; &#123;</span><br><span class="line">  var Role = sequelize.define(&apos;Role&apos;, &#123;</span><br><span class="line">    roleName: DataTypes.STRING</span><br><span class="line">  &#125;, &#123;&#125;);</span><br><span class="line">  Role.associate = function(models) &#123;</span><br><span class="line">    // associations can be defined here</span><br><span class="line">    Role.hasMany(models.User)</span><br><span class="line">  &#125;;</span><br><span class="line">  return Role;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>修改migrations/20180622153152-create-user.js如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line">module.exports = (sequelize, DataTypes) =&gt; &#123;</span><br><span class="line">  var User = sequelize.define(&apos;User&apos;, &#123;</span><br><span class="line">    firstName: DataTypes.STRING,</span><br><span class="line">    lastName: DataTypes.STRING,</span><br><span class="line">    email: DataTypes.STRING</span><br><span class="line">  &#125;, &#123;&#125;);</span><br><span class="line">  User.associate = function(models) &#123;</span><br><span class="line">    // associations can be defined here</span><br><span class="line">    User.belongsTo(models.Role, &#123;</span><br><span class="line">            onDelete: &quot;NULL&quot;,</span><br><span class="line">            foreignKey: &#123;</span><br><span class="line">                allowNull: false</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">  &#125;;</span><br><span class="line">  return User;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="修改和运行迁移"><a href="#修改和运行迁移" class="headerlink" title="修改和运行迁移"></a>修改和运行迁移</h2><p>Role和User是一对多的关系，因此需要修改User迁移文件的定义。<br>修改models/user.js如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line">module.exports = &#123;</span><br><span class="line">  up: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">    return queryInterface.createTable(&apos;Users&apos;, &#123;</span><br><span class="line">      id: &#123;</span><br><span class="line">        allowNull: false,</span><br><span class="line">        autoIncrement: true,</span><br><span class="line">        primaryKey: true,</span><br><span class="line">        type: Sequelize.INTEGER</span><br><span class="line">      &#125;,</span><br><span class="line">      roleId: &#123; // name of the key we&apos;re adding </span><br><span class="line">          type: Sequelize.INTEGER,</span><br><span class="line">          allowNull: false,</span><br><span class="line">          references: &#123;</span><br><span class="line">              model: &apos;Roles&apos;, // name of Target model</span><br><span class="line">              key: &apos;id&apos;, // key in Target model that we&apos;re referencing</span><br><span class="line">          &#125;,</span><br><span class="line">          onUpdate: &apos;CASCADE&apos;,</span><br><span class="line">          onDelete: &apos;CASCADE&apos;,</span><br><span class="line">      &#125;,</span><br><span class="line">      firstName: &#123;</span><br><span class="line">        type: Sequelize.STRING</span><br><span class="line">      &#125;,</span><br><span class="line">      lastName: &#123;</span><br><span class="line">        type: Sequelize.STRING</span><br><span class="line">      &#125;,</span><br><span class="line">      email: &#123;</span><br><span class="line">        type: Sequelize.STRING</span><br><span class="line">      &#125;,</span><br><span class="line">      createdAt: &#123;</span><br><span class="line">        allowNull: false,</span><br><span class="line">        type: Sequelize.DATE</span><br><span class="line">      &#125;,</span><br><span class="line">      updatedAt: &#123;</span><br><span class="line">        allowNull: false,</span><br><span class="line">        type: Sequelize.DATE</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">  down: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">    return queryInterface.dropTable(&apos;Users&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><b>注意：</b>这里主要给User添加了外键字段，外键字段命名有规则：通常为小写的模型名加Id，即驼峰风格。例如这里加了roleId的外键字段。</p>
+<p>直到目前为止，CLI没有将任何东西插入数据库。 刚刚为模型 User和Role创建了必需的模型和迁移文件。 现在要在数据库中实际创建该表，需要运行 db:migrate 命令。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize db:migrate</span><br></pre></td></tr></table></figure></p>
+<p>此命令将执行这些步骤：</p>
+<ul>
+<li>将在数据库中确保一个名为 SequelizeMeta 的表。 此表用于记录在当前数据库上运行的迁移</li>
+<li>开始寻找尚未运行的任何迁移文件。 这可以通过检查 SequelizeMeta 表。 在这个例子中，它将运行创建的 XXXXXXXXXXXXXX-create-role.js和XXXXXXXXXXXXXX-create-user.js 迁移。</li>
+<li>创建一个名为 Roles 的表，其中包含其迁移文件中指定的所有列。</li>
+<li>创建一个名为 Users 的表，其中包含其迁移文件中指定的所有列。</li>
+</ul>
+<h2 id="创建种子，生成测试数据"><a href="#创建种子，生成测试数据" class="headerlink" title="创建种子，生成测试数据"></a>创建种子，生成测试数据</h2><p>假设我们希望在默认情况下将一些数据插入到几个表中。 例如创建几个用户和角色：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize seed:generate --name demo-role</span><br><span class="line">../node_modules/.bin/sequelize seed:generate --name demo-user</span><br></pre></td></tr></table></figure></p>
+<p>这个命令将会在 seeders 文件夹中创建两个种子文件。文件名看起来像是 XXXXXXXXXXXXXX-demo-role.js和XXXXXXXXXXXXXX-demo-user.js，它遵循相同的 up/down 语义，如迁移文件。</p>
+<p>现在我们应该编辑这两个文件，将演示角色插入Role表,将演示用户插入User表。修改XXXXXXXXXXXXXX-demo-role.js如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  up: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">      return queryInterface.bulkInsert(&apos;Roles&apos;, [&#123;</span><br><span class="line">        roleName: &apos;管理员&apos;,</span><br><span class="line">        createdAt:new Date(),</span><br><span class="line">        updatedAt:new Date()</span><br><span class="line">      &#125;,&#123;</span><br><span class="line">        roleName: &apos;普通用户&apos;,</span><br><span class="line">        createdAt:new Date(),</span><br><span class="line">        updatedAt:new Date()</span><br><span class="line">      &#125;], &#123;&#125;);</span><br><span class="line"></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  down: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">      return queryInterface.bulkDelete(&apos;Roles&apos;, null, &#123;&#125;);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>修改XXXXXXXXXXXXXX-demo-user.js如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  up: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">      return queryInterface.bulkInsert(&apos;Users&apos;, [&#123;</span><br><span class="line">        roleId:1,</span><br><span class="line">        firstName: &apos;John&apos;,</span><br><span class="line">        lastName: &apos;Doe&apos;,</span><br><span class="line">        email: &apos;demo@demo.com&apos;,</span><br><span class="line">        createdAt:new Date(),</span><br><span class="line">        updatedAt:new Date()</span><br><span class="line">      &#125;,&#123;</span><br><span class="line">        roleId:1,</span><br><span class="line">        firstName: &apos;Jack&apos;,</span><br><span class="line">        lastName: &apos;Smith&apos;,</span><br><span class="line">        email: &apos;jack@demo.com&apos;,</span><br><span class="line">        createdAt:new Date(),</span><br><span class="line">        updatedAt:new Date()</span><br><span class="line">      &#125;], &#123;&#125;);</span><br><span class="line"></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  down: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">      return queryInterface.bulkDelete(&apos;Users&apos;, null, &#123;&#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>种子文件修改后，即可使用如下命令将演示数据插入数据库中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize db:seed:all</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://docs.sequelizejs.com/，by" target="_blank" rel="noopener">http://docs.sequelizejs.com/，by</a> sequelizejs</li>
+<li><a href="https://github.com/demopark/sequelize-docs-Zh-CN，by" target="_blank" rel="noopener">https://github.com/demopark/sequelize-docs-Zh-CN，by</a> demopark</li>
+<li><a href="https://www.jianshu.com/p/b85cc8a05e53" target="_blank" rel="noopener">https://www.jianshu.com/p/b85cc8a05e53</a>, by 最怕认真</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/21/Visual-Studio-Community-2017离线安装/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/21/Visual-Studio-Community-2017离线安装/" itemprop="url">
+                  Visual_Studio_Community_2017离线安装
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-21 09:54:01" itemprop="dateCreated datePublished" datetime="2018-06-21T09:54:01+08:00">2018-06-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-06-26 10:31:32" itemprop="dateModified" datetime="2018-06-26T10:31:32+08:00">2018-06-26</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Visual Studio 2017版本采用模块化安装方式，根据用户选择模块按需安装。这种方式在用户能够上网的情况下十分方便，但在离线情况下就无法使用。下面介绍在离线情况下如何打包安装Visual Studio community 2017的方法。</p>
+<h1 id="下载VS2017社区版安装包获取程序"><a href="#下载VS2017社区版安装包获取程序" class="headerlink" title="下载VS2017社区版安装包获取程序"></a>下载VS2017社区版安装包获取程序</h1><p>到官网下载最新版本的vs_community_xxxxxx.exe的下载器。</p>
+<h1 id="运行命令下载所需安装包"><a href="#运行命令下载所需安装包" class="headerlink" title="运行命令下载所需安装包"></a>运行命令下载所需安装包</h1><p>运行如下命令获取VS2017的工作负载：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.\vs_community__208176120.1522073957.exe --layout e:\vs2017_offline --lang zh-CN --add Microsoft.VisualStudio.Workload.CoreEditor --add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended --includeOptional</span><br></pre></td></tr></table></figure></p>
+<p>可从参考链接[2]中获取工作负载ID。如需更多语言包或者更多安装指令，请参考官方离线安装命令指南，即参考链接[3]。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://docs.microsoft.com/en-us/visualstudio/install/create-an-offline-installation-of-visual-studio" target="_blank" rel="noopener">https://docs.microsoft.com/en-us/visualstudio/install/create-an-offline-installation-of-visual-studio</a>, by microsoft</li>
+<li><a href="https://docs.microsoft.com/zh-cn/visualstudio/install/workload-component-id-vs-community" target="_blank" rel="noopener">https://docs.microsoft.com/zh-cn/visualstudio/install/workload-component-id-vs-community</a>, by microsoft</li>
+<li><a href="https://docs.microsoft.com/en-us/visualstudio/install/use-command-line-parameters-to-install-visual-studio" target="_blank" rel="noopener">https://docs.microsoft.com/en-us/visualstudio/install/use-command-line-parameters-to-install-visual-studio</a>, by microsoft</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/20/Node-Addon插件编写方法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/20/Node-Addon插件编写方法/" itemprop="url">
+                  Node_C++_Addon插件编写方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-20 21:34:38" itemprop="dateCreated datePublished" datetime="2018-06-20T21:34:38+08:00">2018-06-20</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-20 23:31:20" itemprop="dateModified" datetime="2018-11-20T23:31:20+08:00">2018-11-20</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近研究在Nodejs中调用DLL，上网搜索发现主要有两种方法：</p>
+<ul>
+<li>使用Nodeffi调用C风格接口的DLL，但是无法调用C++风格导出类的DLL。</li>
+<li>使用Nodejs C++ Addon 插件，该方法可直接与C++代码交互，理论上可以调用C++风格导出类的DLL。</li>
+</ul>
+<p>下面研究Nodejs Addon C++插件的编写方法。</p>
+<h1 id="什么是Nodejs-C-Addon"><a href="#什么是Nodejs-C-Addon" class="headerlink" title="什么是Nodejs C++ Addon"></a>什么是Nodejs C++ Addon</h1><p>Node.js插件（Addons）是C/C++编写的动态链接对象，这些对象可以被Node.js的require()函数引用，并可以像普通的Node.js模块一样使用。Addons主要用于提供一个Node.js中运行的JavaScript和C/C++库之间的接口。</p>
+<p>插件（Addons）是动态链接的共享对象，它提供了C/C++类库的调用能力。实现插件的方法比较复杂，涉及到以下元组件及API:</p>
+<ul>
+<li>V8：C++库，Node.js用于提供JavaScript执行环境。V8提供了对象创建、函数调用等执行机制，V8相关API包含在了v8.h头文件中（位于Node.js源码树的deps/v8/include/v8.h），也可以查看在线文档。</li>
+<li>libuv：C库，实现了Node.js中的事件循环、工作线程及在不同平台中异步行为的相关功能。也可以做为是一个跨平台的抽象库，提供了简单的、类POSIX的对主要操作系统的常见系统任务功能，如：与文件系统、套接字、计时器、系统事件的交互等。libuv还提供了一个类pthreads的线程池抽象对象，可用于更复杂的、超越标准事件循环的异步插件的控制功能。</li>
+<li>内部Node.js库：Node.js自身提供了一定义数量的C/C++API的插件可以使用 - 其中最重要的可能是node::ObjectWrap类</li>
+<li>Node.js静态链接库：Node.js自身还包含了一部分静态链接库，如OpenSSL。这些位于Node.js源码树的deps/目录下，只有V8和OpenSSL提供了符号出口，可以供Node.js和基它插件所使用。详见Node.js依赖链接</li>
+</ul>
+<h1 id="Node-Addon插件编写方法"><a href="#Node-Addon插件编写方法" class="headerlink" title="Node Addon插件编写方法"></a>Node Addon插件编写方法</h1><p>Node Addon插件的编写需要解决两个关键问题：</p>
+<ul>
+<li>当数据流向 javaScript -&gt; C++时，如何将javascript类型数据包装成C++类型数据，供C++代码使用。</li>
+<li>当数据流向 C++ -&gt; JavaScript时，如何将C++类型数据包装成JavaScript类型数据，供JavaScript代码使用。</li>
+</ul>
+<p>这两个关键问题的分析请参见淘宝前端团队成员发表的文章“Node.js 和 C++ 之间的类型转换<sup>[3]</sup>”。解决这两个关键问题后，Node Addon插件编写难度就不大了。</p>
+<h1 id="Node-Addon插件调用C-导出类DLL方法测试"><a href="#Node-Addon插件调用C-导出类DLL方法测试" class="headerlink" title="Node Addon插件调用C++导出类DLL方法测试"></a>Node Addon插件调用C++导出类DLL方法测试</h1><p>现有一个采用成熟方法导出类接口的DLL<sup>[4]</sup>，如何在Node Addon插件中调用该DLL呢?下面nodejs官网Node Addon插件例子Factory of wrapped objects为例进行讲解。</p>
+<p>Factory of wrapped objects例子在Addon插件中包装了一个MyObject类，现在就在MyObject类调用DLL导出类的接口方法。修改MyObject.h代码，增加DLL导出类接口方法，增加类接口成员变量IExport和DLL句柄变量hDll，如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">// myobject.h</span><br><span class="line">#ifndef MYOBJECT_H</span><br><span class="line">#define MYOBJECT_H</span><br><span class="line"></span><br><span class="line">#include &lt;node.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;node_object_wrap.h&gt;</span><br><span class="line">#include &quot;MatureApproach.h&quot;</span><br><span class="line"></span><br><span class="line">namespace demo &#123;</span><br><span class="line">typedef IExport*(*TYPE_fnCreateExportObj) (void);//定义函数指针  </span><br><span class="line">typedef void(*TYPE_fnDestroyExportObj) (IExport*);//定义函数指针  </span><br><span class="line"></span><br><span class="line">class MyObject : public node::ObjectWrap &#123;</span><br><span class="line"> public:</span><br><span class="line">  static void Init(v8::Isolate* isolate);</span><br><span class="line">  static void NewInstance(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line"></span><br><span class="line"> private:</span><br><span class="line">  explicit MyObject(double value = 0);</span><br><span class="line">  ~MyObject();</span><br><span class="line"></span><br><span class="line">  static void New(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static void PlusOne(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static void Hi(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static void Test(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static v8::Persistent&lt;v8::Function&gt; constructor;</span><br><span class="line">  HMODULE hDll;</span><br><span class="line">  IExport* pExport;</span><br><span class="line">  double value_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125;  // namespace demo</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure></p>
+<p>接下来将在MyObject类的构造函数中动态加载DLL，创建DLL导出类对象，在析构函数中析构DLL导出类对象，动态卸载DLL,在MyObject成员方法中调用DLL导出类方法，代码如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line">// myobject.cc</span><br><span class="line">#include &lt;node.h&gt;</span><br><span class="line">#include &quot;myobject.h&quot;</span><br><span class="line"></span><br><span class="line">namespace demo &#123;</span><br><span class="line"></span><br><span class="line">using v8::Context;</span><br><span class="line">using v8::Function;</span><br><span class="line">using v8::FunctionCallbackInfo;</span><br><span class="line">using v8::FunctionTemplate;</span><br><span class="line">using v8::Isolate;</span><br><span class="line">using v8::Local;</span><br><span class="line">using v8::Number;</span><br><span class="line">using v8::Object;</span><br><span class="line">using v8::Persistent;</span><br><span class="line">using v8::String;</span><br><span class="line">using v8::Value;</span><br><span class="line"></span><br><span class="line">Persistent&lt;Function&gt; MyObject::constructor;</span><br><span class="line"></span><br><span class="line">MyObject::MyObject(double value) : value_(value)&#123;</span><br><span class="line">	MyObject::hDll = LoadLibrary(&quot;MatureApproach.dll&quot;); //加载动态链接库DllDemo.dll文件；</span><br><span class="line">  TYPE_fnCreateExportObj fnCreateExportObj = (TYPE_fnCreateExportObj)GetProcAddress(MyObject::hDll, &quot;CreateExportObj&quot;);</span><br><span class="line">  MyObject::pExport = fnCreateExportObj();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MyObject::~MyObject() &#123;</span><br><span class="line">  TYPE_fnDestroyExportObj fnDestroyExportObj = (TYPE_fnDestroyExportObj)GetProcAddress(MyObject::hDll, &quot;DestroyExportObj&quot;);</span><br><span class="line">  fnDestroyExportObj(MyObject::pExport);</span><br><span class="line">  FreeLibrary(MyObject::hDll);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::Init(Isolate* isolate) &#123;</span><br><span class="line">  // Prepare constructor template</span><br><span class="line">  Local&lt;FunctionTemplate&gt; tpl = FunctionTemplate::New(isolate, New);</span><br><span class="line">  tpl-&gt;SetClassName(String::NewFromUtf8(isolate, &quot;MyObject&quot;));</span><br><span class="line">  tpl-&gt;InstanceTemplate()-&gt;SetInternalFieldCount(3);</span><br><span class="line"></span><br><span class="line">  // Prototype</span><br><span class="line">  NODE_SET_PROTOTYPE_METHOD(tpl, &quot;plusOne&quot;, PlusOne);</span><br><span class="line">  NODE_SET_PROTOTYPE_METHOD(tpl, &quot;hi&quot;, Hi);</span><br><span class="line">  NODE_SET_PROTOTYPE_METHOD(tpl, &quot;test&quot;, Test);</span><br><span class="line"></span><br><span class="line">  constructor.Reset(isolate, tpl-&gt;GetFunction());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::New(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  if (args.IsConstructCall()) &#123;</span><br><span class="line">    // Invoked as constructor: `new MyObject(...)`</span><br><span class="line">    double value = args[0]-&gt;IsUndefined() ? 0 : args[0]-&gt;NumberValue();</span><br><span class="line">    MyObject* obj = new MyObject(value);</span><br><span class="line">    obj-&gt;Wrap(args.This());</span><br><span class="line">    args.GetReturnValue().Set(args.This());</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // Invoked as plain function `MyObject(...)`, turn into construct call.</span><br><span class="line">    const int argc = 1;</span><br><span class="line">    Local&lt;Value&gt; argv[argc] = &#123; args[0] &#125;;</span><br><span class="line">    Local&lt;Function&gt; cons = Local&lt;Function&gt;::New(isolate, constructor);</span><br><span class="line">    Local&lt;Context&gt; context = isolate-&gt;GetCurrentContext();</span><br><span class="line">    Local&lt;Object&gt; instance =</span><br><span class="line">        cons-&gt;NewInstance(context, argc, argv).ToLocalChecked();</span><br><span class="line">    args.GetReturnValue().Set(instance);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::NewInstance(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  const unsigned argc = 1;</span><br><span class="line">  Local&lt;Value&gt; argv[argc] = &#123; args[0] &#125;;</span><br><span class="line">  Local&lt;Function&gt; cons = Local&lt;Function&gt;::New(isolate, constructor);</span><br><span class="line">  Local&lt;Context&gt; context = isolate-&gt;GetCurrentContext();</span><br><span class="line">  Local&lt;Object&gt; instance =</span><br><span class="line">      cons-&gt;NewInstance(context, argc, argv).ToLocalChecked();</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(instance);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::PlusOne(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  MyObject* obj = ObjectWrap::Unwrap&lt;MyObject&gt;(args.Holder());</span><br><span class="line">  obj-&gt;value_ += 1;</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(Number::New(isolate, obj-&gt;value_));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::Hi(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  MyObject* obj = ObjectWrap::Unwrap&lt;MyObject&gt;(args.Holder());</span><br><span class="line">  Local&lt;String&gt; str=v8::String::NewFromUtf8(isolate, obj-&gt;pExport-&gt;Hi().data());</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::Test(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  MyObject* obj = ObjectWrap::Unwrap&lt;MyObject&gt;(args.Holder());</span><br><span class="line">  Local&lt;String&gt; str=v8::String::NewFromUtf8(isolate, obj-&gt;pExport-&gt;Test().data());</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;  // namespace demo</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://itbilu.com/nodejs/core/4y4-Nrd5G.html，by" target="_blank" rel="noopener">https://itbilu.com/nodejs/core/4y4-Nrd5G.html，by</a> IT笔录</li>
+<li><a href="https://nodejs.org/dist/latest-v8.x/docs/api/addons.html，by" target="_blank" rel="noopener">https://nodejs.org/dist/latest-v8.x/docs/api/addons.html，by</a> nodejs</li>
+<li><a href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/，by" target="_blank" rel="noopener">http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/，by</a> 淘宝前端团队</li>
+<li><a href="https://huangwang.github.io/2018/06/15/DLL导出类和函数/,by">https://huangwang.github.io/2018/06/15/DLL导出类和函数/,by</a> jackhuang</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/18/如何在Vistual-Studio中调试Node-Addon-C-插件/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -898,1189 +2187,6 @@ console.log(y);
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/10/Cesium中飞行器姿态控制/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/10/Cesium中飞行器姿态控制/" itemprop="url">
-                  Cesium中飞行器姿态控制
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-10 21:52:42" itemprop="dateCreated datePublished" datetime="2018-06-10T21:52:42+08:00">2018-06-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-12-26 20:43:27" itemprop="dateModified" datetime="2018-12-26T20:43:27+08:00">2018-12-26</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="问题提出"><a href="#问题提出" class="headerlink" title="问题提出"></a>问题提出</h1><p>最近研究开源虚拟地球Cesium，遇到一个问题：在获取飞行器经度纬度高度偏航俯仰滚转六个参数的前提下，如何在Cesium中用CZML文件表示，从而完美实现飞行器姿态轨迹的复现。在CZML的position属性中使用cartographicDegrees表示飞行器的经度纬度高度，可以很好复现飞行器的轨迹。然而在CZML的orientation属性中使用unitQuaternion表示飞机自身姿态时，飞机姿态总是不对。</p>
-<h1 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h1><h2 id="基本知识"><a href="#基本知识" class="headerlink" title="基本知识"></a>基本知识</h2><p>在Cesium中存在两种常用坐标系：</p>
-<ol>
-<li>世界坐标系<br>世界坐标系统是以椭球中心为原点的笛卡尔空间直角坐标系。</li>
-<li>地理坐标系<br>地理坐标系即人们常用的使用经度、纬度、高度表示位置的坐标系。</li>
-<li>站心坐标系<br>又称为Earth-fixed coordinate system（站点坐标系、东-北-天坐标系ENU）。可分为站心直角坐标系和站心极坐标系。<br>常用的站心直角坐标系定义为：以站心（如GPS接收天线中心）为坐标系原点O，Z轴与椭球法线重合，向上为正（天向），y与椭球短半轴重合（北向），x轴与地球椭球的长半轴重合（东向）所构成的直角坐标系，称为当地东北天坐标系（ENU）。<br>飞行器的偏航、俯仰、滚转即是以站心直角坐标系为参考。</li>
-<li>模型坐标系<br>模型坐标系以物体的中心为坐标原点，物体旋转、平移等操作都是围绕局部坐标系进行的。这时当物体模型进行旋转、平移等操作时，局部坐标系也执行相应的旋转、平移等操作。<br>局部坐标系是一个假想的坐标系，该坐标系与物体的相对位置至始至终是不变的，假想出这个坐标系的目的主要是为了正向理解对三维场景中物体执行的平移和旋转操作。使用局部坐标系理解模型变换时，所有的变换操作直接作用与局部坐标系，由于局部坐标系与物体的相对位置不变，因此对局部坐标系进行平移、旋转和缩放时，物体在场景中位置和形状也会发生相应的变化。</li>
-</ol>
-<p>在Cesium中存在两种世界坐标系和地理坐标系之间坐标转换的方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 经纬度转换为世界坐标</span><br><span class="line">Cesium.Cartesian3.fromDegrees(longitude, latitude, height, ellipsoid, result) </span><br><span class="line"># 世界坐标转换为经纬度</span><br><span class="line">var ellipsoid=viewer.scene.globe.ellipsoid;</span><br><span class="line">var cartesian3=new Cesium.cartesian3(x,y,z);</span><br><span class="line">var cartographic=ellipsoid.cartesianToCartographic(cartesian3);</span><br><span class="line">var lat=Cesium.Math.toDegrees(cartograhphic.latitude);</span><br><span class="line">var lng=Cesium.Math.toDegrees(cartograhpinc.longitude);</span><br><span class="line">var alt=cartographic.height;</span><br></pre></td></tr></table></figure></p>
-<h2 id="CZML分析"><a href="#CZML分析" class="headerlink" title="CZML分析"></a>CZML分析</h2><p>CZML是一种用来描述动态场景的JSON架构的语言，主要用于Cesium在浏览器中的展示。它可以用来描述点、线、布告板、模型以及其他的图元，同时定义他们是怎样随时间变化的<sup>[3]</sup>。<br>CZML可使用model属性直接加载3D模型，由position属性决定模型在世界坐标系内的位置，由orientation决定模型在世界坐标系内的姿态，并最终由orientation的unitQuaternion表示。<br>unitQuaternion即单位四元数，可与偏航俯仰滚转相互转换，并避免偏航俯仰滚转的万向节锁定问题，但其本质上都是一个旋转矩阵，可决定模型在世界坐标系内的姿态。</p>
-<h2 id="获取正确的飞行器姿态"><a href="#获取正确的飞行器姿态" class="headerlink" title="获取正确的飞行器姿态"></a>获取正确的飞行器姿态</h2><p>首先计算飞行器模型坐标系对站点直角坐标系的旋转矩阵（在制作飞行器3D模型时，应使其中心在本地坐标系原点，机头机翼与轴平行，方便计算在站点直角坐标系内的旋转角度），再乘以由飞行器偏航俯仰滚转得到的旋转矩阵，再乘以站点直角坐标系对世界坐标系的旋转矩阵。将最终得到旋转矩阵转换为单位四元数，即得到正确的飞行器姿态。</p>
-<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>参考代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var lon=113,lat=34;//模型的站心经纬度</span><br><span class="line">var h1=0,p1=0,r1=0;//模型坐标系对站点坐标系的旋转角度</span><br><span class="line">var h2=0,p2=0,r2=0;//模型在站点坐标系的姿态</span><br><span class="line">var center = Cesium.Cartesian3.fromDegrees(lon, lat)</span><br><span class="line">var hpr = new Cesium.HeadingPitchRoll(h1+h2, p1+p2, r1+r2)</span><br><span class="line">var q1 = Cesium.Transforms.headingPitchRollQuaternion(center, hpr)</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://stackoverflow.com/questions/43389069/cesium-how-to-animate-an-aircraft-from-pitch-roll-heading" target="_blank" rel="noopener">https://stackoverflow.com/questions/43389069/cesium-how-to-animate-an-aircraft-from-pitch-roll-heading</a>, by stackoverflow.</li>
-<li><a href="https://blog.csdn.net/qq_34149805/article/details/78393540" target="_blank" rel="noopener">https://blog.csdn.net/qq_34149805/article/details/78393540</a>. by finalLi.</li>
-<li><a href="http://www.cnblogs.com/laixiangran/p/4997971.html" target="_blank" rel="noopener">http://www.cnblogs.com/laixiangran/p/4997971.html</a>. by laixiangran.</li>
-<li><a href="https://github.com/AnalyticalGraphicsInc/cesium/wiki/CZML-Structure" target="_blank" rel="noopener">https://github.com/AnalyticalGraphicsInc/cesium/wiki/CZML-Structure</a>. by AnalyticalGraphicsInc.</li>
-<li>3D坐标系.<a href="https://www.jianshu.com/p/8d483fa1acbd" target="_blank" rel="noopener">https://www.jianshu.com/p/8d483fa1acbd</a>. by S_H_C.</li>
-<li>3D空间的坐标系. <a href="https://blog.csdn.net/trojanpizza/article/details/6652533" target="_blank" rel="noopener">https://blog.csdn.net/trojanpizza/article/details/6652533</a>. by trojanpizza.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/09/春江花月夜/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/09/春江花月夜/" itemprop="url">
-                  春江花月夜
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-09 23:30:32 / 修改时间：23:32:38" itemprop="dateCreated datePublished" datetime="2018-06-09T23:30:32+08:00">2018-06-09</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <center>
-作者：张若虚
-春江潮水连海平，海上明月共潮生。
-滟滟随波千万里，何处春江无月明？
-江流宛转绕芳甸，月照花林皆似霰。
-空里流霜不觉飞，汀上白沙看不见。
-江天一色无纤尘，皎皎空中孤月轮。
-江畔何人初见月，江月何年初照人？
-人生代代无穷已，江月年年祇相似。
-不知江月待何人？但见长江送流水。
-白云一片去悠悠，青枫浦上不胜愁。
-谁家今夜扁舟子，何处相思明月楼？
-可怜楼上月徘徊，应照离人妆镜台。
-玉户帘中卷不去，捣衣砧上拂还来。
-此时相望不相闻，愿逐月华流照君。
-鸿雁长飞光不度，鱼龙潜跃水成文。
-昨夜闲潭梦落花，可怜春半不还家。
-江水流春去欲尽，江潭落月复西斜。
-斜月沉沉藏海雾，碣石潇湘无限路。
-不知乘月几人归，落月摇情满江树。
-</center>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/09/Cesium小部件animation和timeline的系统时间显示/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/09/Cesium小部件animation和timeline的系统时间显示/" itemprop="url">
-                  Cesium小部件animation和timeline的系统时间显示
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-09 22:50:22 / 修改时间：23:28:14" itemprop="dateCreated datePublished" datetime="2018-06-09T22:50:22+08:00">2018-06-09</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Cesium的小部件animation和timeline显示UTC系统时间，需要将其改为本地系统时间。修改方法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">this.viewer.animation.viewModel.dateFormatter = localeDateTimeFormatter</span><br><span class="line">this.viewer.animation.viewModel.timeFormatter = localeTimeFormatter</span><br><span class="line">this.viewer.timeline.makeLabel = function (time) &#123; return localeDateTimeFormatter(time) &#125;</span><br><span class="line"></span><br><span class="line">// Date formatting to a global form</span><br><span class="line">function localeDateTimeFormatter(datetime, viewModel, ignoredate) &#123;</span><br><span class="line">    var julianDT = new Cesium.JulianDate(); </span><br><span class="line">    Cesium.JulianDate.addHours(datetime,8,julianDT)</span><br><span class="line">    var gregorianDT= Cesium.JulianDate.toGregorianDate(julianDT)</span><br><span class="line">    var objDT;</span><br><span class="line">    if (ignoredate)</span><br><span class="line">        objDT = &apos;&apos;;</span><br><span class="line">    else &#123;</span><br><span class="line">        objDT = new Date(gregorianDT.year, gregorianDT.month - 1, gregorianDT.day);</span><br><span class="line">        objDT = gregorianDT.year  + &apos;年&apos; +objDT.toLocaleString(&quot;zh-cn&quot;, &#123; month: &quot;short&quot; &#125;)+ gregorianDT.day + &apos;日&apos; ;</span><br><span class="line">        if (viewModel || gregorianDT.hour + gregorianDT.minute === 0)</span><br><span class="line">        return objDT;</span><br><span class="line">        objDT += &apos; &apos;;</span><br><span class="line">    &#125;</span><br><span class="line">    return objDT + Cesium.sprintf(&quot;%02d:%02d:%02d&quot;, gregorianDT.hour, gregorianDT.minute, gregorianDT.second);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function localeTimeFormatter(time, viewModel) &#123;</span><br><span class="line">    return localeDateTimeFormatter(time, viewModel, true);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上述代码还存在一个问题，当timeline小部件不活动时，其仍然显示UTC标准系统时间。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/chienchia/article/details/29185479" target="_blank" rel="noopener">https://blog.csdn.net/chienchia/article/details/29185479</a>, by chienchia.</li>
-<li><a href="https://stackoverflow.com/questions/45875490/change-utc-timezone-to-sgt-timezone-in-cesiumjs" target="_blank" rel="noopener">https://stackoverflow.com/questions/45875490/change-utc-timezone-to-sgt-timezone-in-cesiumjs</a>, by stackoverflow.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/03/Matplotlib蜡烛图绘制教程/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/03/Matplotlib蜡烛图绘制教程/" itemprop="url">
-                  Matplotlib蜡烛图绘制教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-03 09:41:25 / 修改时间：11:30:52" itemprop="dateCreated datePublished" datetime="2018-06-03T09:41:25+08:00">2018-06-03</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>股票分析离不开各种图表的绘制，尤其是最常用的蜡烛图。下面介绍python中使用matplotlib绘制蜡烛图的过程。</p>
-<h1 id="环境及配置"><a href="#环境及配置" class="headerlink" title="环境及配置"></a>环境及配置</h1><p>使用的环境如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ python3 --version</span><br><span class="line">Python 3.6.5rc1</span><br><span class="line">$ ipython3</span><br><span class="line">In [1]: import matplotlib</span><br><span class="line">In [2]: matplotlib.__version__</span><br><span class="line">Out[2]: &apos;2.2.2&apos;</span><br><span class="line">In [3]: import tushare as ts</span><br><span class="line">In [4]: ts.__version__</span><br><span class="line">Out[4]: &apos;1.1.9&apos;</span><br><span class="line">In [5]: import talib</span><br><span class="line">In [6]: talib.__version__</span><br><span class="line">Out[6]: &apos;0.4.17&apos;</span><br></pre></td></tr></table></figure></p>
-<p>绘制蜡烛图通常使用matplotlib.finance库，但这个库在matplotlib 2.0后已经被废弃，并被移到一个名叫mpl_finance的库中。可使用如下命令安装mpl_finance。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install https://github.com/matplotlib/mpl_finance/archive/master.zip</span><br></pre></td></tr></table></figure></p>
-<p>mpl_finance使用雅虎接口获取股票数据，但是不稳定，因此推荐使用tushare库获取股票数据。另外使用talib计算股票各种技术分析指标，例如常用的均线数据。需要注意的是通过pip3按照的talib库是对C/C++版talib的包装，因此需先安装C/C++版talib。</p>
-<h1 id="蜡烛图绘制"><a href="#蜡烛图绘制" class="headerlink" title="蜡烛图绘制"></a>蜡烛图绘制</h1><h2 id="蜡烛图绘制函数简介"><a href="#蜡烛图绘制函数简介" class="headerlink" title="蜡烛图绘制函数简介"></a>蜡烛图绘制函数简介</h2><p>mpl_finance库中蜡烛图的绘制主要有以下四个函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">candlestick2_ochl(ax, opens, closes, highs, lows, width=4, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=0.75)</span><br><span class="line">candlestick2_ohlc(ax, opens, highs, lows, closes, width=4, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=0.75)</span><br><span class="line">candlestick_ochl(ax, quotes, width=0.2, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=1.0)</span><br><span class="line">candlestick_ohlc(ax, quotes, width=0.2, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=1.0)</span><br></pre></td></tr></table></figure></p>
-<p>在这四个函数的使用过程中需要注意的是：</p>
-<ul>
-<li>candlestick2_ohlc函数假定opens, highs, lows, closes中任意一个值不存在，则其他值也不存在。</li>
-<li>candlestick_ochl和candlestick_ohlc的输入参数quotes是(time, open, close, high, low, …)元组序列，其中time必须是浮点日期格式，具体参见date2num。</li>
-</ul>
-<p>蜡烛图绘制函数存在日线图的时间间隔问题（非交易日无法跳过，导致图像断裂）。常用解决方法是建议重新调整横坐标，被动地过滤掉非交易时间段<sup>[2]</sup>。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ax.set_xticks(range(0, len(data[&apos;date&apos;]), 10))</span><br><span class="line">ax.set_xticklabels(data[&apos;date&apos;][::10])</span><br></pre></td></tr></table></figure></p>
-<h2 id="蜡烛图的简单绘制"><a href="#蜡烛图的简单绘制" class="headerlink" title="蜡烛图的简单绘制"></a>蜡烛图的简单绘制</h2><p>蜡烛图的简单例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import talib</span><br><span class="line">import tushare as ts</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import mpl_finance as mpf</span><br><span class="line"> </span><br><span class="line">data = ts.get_k_data(&apos;002320&apos;)</span><br><span class="line">sma_10 = talib.SMA(np.array(data[&apos;close&apos;]), 10)</span><br><span class="line">sma_30 = talib.SMA(np.array(data[&apos;close&apos;]), 30)</span><br><span class="line">fig = plt.figure(figsize=(24, 8))</span><br><span class="line">ax = fig.add_subplot(1, 1, 1)</span><br><span class="line">ax.set_xticks(range(0, len(data[&apos;date&apos;]), 50))</span><br><span class="line">ax.set_xticklabels(data[&apos;date&apos;][::50])</span><br><span class="line">ax.plot(sma_10, label=&apos;10 日均线&apos;)</span><br><span class="line">ax.plot(sma_30, label=&apos;30 日均线&apos;)</span><br><span class="line">ax.legend(loc=&apos;upper left&apos;)</span><br><span class="line">mpf.candlestick2_ochl(ax, data[&apos;open&apos;], data[&apos;close&apos;], data[&apos;high&apos;], data[&apos;low&apos;],width=0.5, colorup=&apos;r&apos;, colordown=&apos;green&apos;,alpha=0.6)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://matplotlib.org/api/finance_api.html" target="_blank" rel="noopener">https://matplotlib.org/api/finance_api.html</a>, by matplotlib</li>
-<li><a href="https://ipreacher.github.io/2017/candlestick/" target="_blank" rel="noopener">https://ipreacher.github.io/2017/candlestick/</a>, by The North</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/26/matplotlib用法笔记/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/26/matplotlib用法笔记/" itemprop="url">
-                  matplotlib用法笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-26 23:42:59" itemprop="dateCreated datePublished" datetime="2018-05-26T23:42:59+08:00">2018-05-26</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-06-03 09:37:48" itemprop="dateModified" datetime="2018-06-03T09:37:48+08:00">2018-06-03</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>matplotlib 是Python编程语言及其数值数学扩展包 NumPy的可视化操作界面。它为利用通用的图形用户界面工具包，如Tkinter, wxPython, Qt或GTK+向应用程序嵌入式绘图提供了应用程序接口（API）。此外，matplotlib还有一个基于图像处理库（如开放图形库OpenGL）的pylab接口，其设计与MATLAB非常类似—尽管并不怎么好用。SciPy就是用matplotlib进行图形绘制。</p>
-<h1 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h1><p>使用plt.figure定义一个图像窗口。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line">x = np.linspace(-1, 1, 50)</span><br><span class="line">y = 2*x + 1</span><br><span class="line">plt.figure() </span><br><span class="line">plt.plot(x, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="设置坐标轴"><a href="#设置坐标轴" class="headerlink" title="设置坐标轴"></a>设置坐标轴</h2><p>使用plt.xlim设置x坐标轴范围：(-1, 2)； 使用plt.ylim设置y坐标轴范围：(-2, 3)；<br>使用plt.xlabel设置x坐标轴名称：’I am x’； 使用plt.ylabel设置y坐标轴名称：’I am y’；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line">plt.xlabel(&apos;I am x&apos;)</span><br><span class="line">plt.ylabel(&apos;I am y&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>使用np.linspace定义范围以及个数：范围是(-1,2);个数是5. 使用print打印出新定义的范围. 使用plt.xticks设置x轴刻度：范围是(-1,2);个数是5.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">new_ticks = np.linspace(-1, 2, 5)</span><br><span class="line">print(new_ticks)</span><br><span class="line">plt.xticks(new_ticks)</span><br></pre></td></tr></table></figure></p>
-<p>使用plt.yticks设置y轴刻度以及名称：刻度为[-2, -1.8, -1, 1.22, 3]；对应刻度的名称为[‘really bad’,’bad’,’normal’,’good’, ‘really good’]. 使用plt.show显示图像.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.yticks([-2, -1.8, -1, 1.22, 3],[r&apos;$really\ bad$&apos;, r&apos;$bad$&apos;, r&apos;$normal$&apos;, r&apos;$good$&apos;, r&apos;$really\ good$&apos;])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<p>使用plt.gca获取当前坐标轴信息. 使用.spines设置边框：右侧边框；使用.set_color设置边框颜色：默认白色； 使用.spines设置边框：上边框；使用.set_color设置边框颜色：默认白色；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax = plt.gca()</span><br><span class="line">ax.spines[&apos;right&apos;].set_color(&apos;none&apos;)</span><br><span class="line">ax.spines[&apos;top&apos;].set_color(&apos;none&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="调整坐标轴"><a href="#调整坐标轴" class="headerlink" title="调整坐标轴"></a>调整坐标轴</h2><p>使用.xaxis.set_ticks_position设置x坐标刻度数字或名称的位置：bottom.（所有位置：top，bottom，both，default，none）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ax.xaxis.set_ticks_position(&apos;bottom&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>使用.spines设置边框：x轴；使用.set_position设置边框位置：y=0的位置；（位置所有属性：outward，axes，data）<br>使用.yaxis.set_ticks_position设置y坐标刻度数字或名称的位置：left.（所有位置：left，right，both，default，none）<br>使用.spines设置边框：y轴；使用.set_position设置边框位置：x=0的位置；（位置所有属性：outward，axes，data） 使用plt.show显示图像.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax.spines[&apos;bottom&apos;].set_position((&apos;data&apos;, 0))</span><br><span class="line">ax.yaxis.set_ticks_position(&apos;left&apos;)</span><br><span class="line">ax.spines[&apos;left&apos;].set_position((&apos;data&apos;,0))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="legend图例"><a href="#legend图例" class="headerlink" title="legend图例"></a>legend图例</h2><h3 id="基本用法-1"><a href="#基本用法-1" class="headerlink" title="基本用法"></a>基本用法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">x = np.linspace(-3, 3, 50)</span><br><span class="line">y1 = 2*x + 1</span><br><span class="line">y2 = x**2</span><br><span class="line"></span><br><span class="line">plt.figure()</span><br><span class="line">#set x limits</span><br><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line"></span><br><span class="line"># set new sticks</span><br><span class="line">new_sticks = np.linspace(-1, 2, 5)</span><br><span class="line">plt.xticks(new_sticks)</span><br><span class="line"># set tick labels</span><br><span class="line">plt.yticks([-2, -1.8, -1, 1.22, 3],</span><br><span class="line">           [r&apos;$really\ bad$&apos;, r&apos;$bad$&apos;, r&apos;$normal$&apos;, r&apos;$good$&apos;, r&apos;$really\ good$&apos;])</span><br><span class="line"></span><br><span class="line"># set line syles</span><br><span class="line">l1, = plt.plot(x, y1, label=&apos;linear line&apos;)</span><br><span class="line">l2, = plt.plot(x, y2, color=&apos;red&apos;, linewidth=1.0, linestyle=&apos;--&apos;, label=&apos;square line&apos;)</span><br><span class="line"></span><br><span class="line">plt.legend(loc=&apos;upper right&apos;)</span><br></pre></td></tr></table></figure>
-<h3 id="调整位置和名称"><a href="#调整位置和名称" class="headerlink" title="调整位置和名称"></a>调整位置和名称</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.legend(handles=[l1, l2], labels=[&apos;up&apos;, &apos;down&apos;],  loc=&apos;best&apos;)</span><br></pre></td></tr></table></figure>
-<p>其中’loc’参数有多种，’best’表示自动分配最佳位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&apos;best&apos; : 0,          </span><br><span class="line">&apos;upper right&apos;  : 1,</span><br><span class="line">&apos;upper left&apos;   : 2,</span><br><span class="line">&apos;lower left&apos;   : 3,</span><br><span class="line">&apos;lower right&apos;  : 4,</span><br><span class="line">&apos;right&apos;        : 5,</span><br><span class="line">&apos;center left&apos;  : 6,</span><br><span class="line">&apos;center right&apos; : 7,</span><br><span class="line">&apos;lower center&apos; : 8,</span><br><span class="line">&apos;upper center&apos; : 9,</span><br><span class="line">&apos;center&apos;       : 10,</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Matplotlib" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Matplotlib</a>, by wikipedia</li>
-<li><a href="https://morvanzhou.github.io" target="_blank" rel="noopener">https://morvanzhou.github.io</a>, by morvanzhou</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/26/python3与python2的区别与兼容/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/26/python3与python2的区别与兼容/" itemprop="url">
-                  python3与python2的区别与兼容
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-26 18:58:07" itemprop="dateCreated datePublished" datetime="2018-05-26T18:58:07+08:00">2018-05-26</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-10-09 20:57:11" itemprop="dateModified" datetime="2018-10-09T20:57:11+08:00">2018-10-09</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python是一种广泛使用的高级编程语言，属于通用型编程语言，由吉多·范罗苏姆创造，第一版发布于1991年。可以视之为一种改良（加入一些其他编程语言的优点，如面向对象）的LISP。作为一种解释型语言，Python的设计哲学强调代码的可读性和简洁的语法（尤其是使用空格缩进划分代码块，而非使用大括号或者关键词）。相比于C++或Java，Python让开发者能够用更少的代码表达想法。不管是小型还是大型程序，该语言都试图让程序的结构清晰明了。</p>
-<p>与Scheme、Ruby、Perl、Tcl等动态类型编程语言一样，Python拥有动态类型系统和垃圾回收功能，能够自动管理内存使用，并且支持多种编程范式，包括面向对象、命令式、函数式和过程式编程。其本身拥有一个巨大而广泛的标准库。</p>
-<p>Python 解释器本身几乎可以在所有的操作系统中运行。Python的正式解释器CPython是用C语言编写的、是一个由社区驱动的自由软件，目前由Python软件基金会管理。</p>
-<h1 id="python3与python2区别"><a href="#python3与python2区别" class="headerlink" title="python3与python2区别"></a>python3与python2区别</h1><h2 id="print函数"><a href="#print函数" class="headerlink" title="print函数"></a>print函数</h2><p>Python 2 的 print 声明在Python 3中已经被 print() 函数取代<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">print &apos;Hello, World!&apos;</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">print(&apos;Hello, World!&apos;)</span><br></pre></td></tr></table></figure></p>
-<h2 id="整除"><a href="#整除" class="headerlink" title="整除"></a>整除</h2><p>/是精确除法，//是向下取整除法，%是求模。</p>
-<p>//和%运算符在2和3版本中一样，但是运算符/不一样。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">&gt;&gt;&gt; 3 / 2</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; 3 // 2</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; 3 / 2.0</span><br><span class="line">1.5</span><br><span class="line">&gt;&gt;&gt; 3 // 2.0</span><br><span class="line">1.0</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; 3 / 2</span><br><span class="line">1.5</span><br><span class="line">&gt;&gt;&gt; 3 // 2</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; 3 / 2.0</span><br><span class="line">1.5</span><br><span class="line">&gt;&gt;&gt; 3 // 2.0</span><br><span class="line">1.0</span><br></pre></td></tr></table></figure></p>
-<h2 id="Unicode"><a href="#Unicode" class="headerlink" title="Unicode"></a>Unicode</h2><p>由于历史遗留问题，Python 2.x版本虽然支持Unicode，但在语法上需要’xxx’和u’xxx’两种字符串表示方式。</p>
-<p>在Python 3.x版本中，把’xxx’和u’xxx’统一成Unicode编码，即写不写前缀u都是一样的，而以字节形式表示的字符串则必须加上b前缀：b’xxx’。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; 中国 = &apos;china&apos; </span><br><span class="line">&gt;&gt;&gt; print(中国)</span><br><span class="line">china</span><br></pre></td></tr></table></figure></p>
-<h2 id="xrange模块"><a href="#xrange模块" class="headerlink" title="xrange模块"></a>xrange模块</h2><p>在 Python 2 中 xrange() 创建迭代对象的用法是非常流行的。比如： for 循环或者是列表/集合/字典推导式。</p>
-<p>在 Python 3 中，range() 是像 xrange() 那样实现以至于一个专门的 xrange() 函数都不再存在（在 Python 3 中 xrange() 会抛出命名异常）。</p>
-<h2 id="不等运算符"><a href="#不等运算符" class="headerlink" title="不等运算符"></a>不等运算符</h2><p>Python 2.x中不等于有两种写法 != 和 &lt;&gt;</p>
-<p>Python 3.x中去掉了&lt;&gt;, 只有!=一种写法</p>
-<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ul>
-<li>Py3.X去除了long类型，现在只有一种整型——int，但它的行为就像2.X版本的long</li>
-<li>新增了bytes类型，对应于2.X版本的八位串</li>
-<li>dict的.keys()、.items 和.values()方法返回迭代器，而之前的iterkeys()等函数都被废弃。同时去掉的还有 dict.has_key()，用 in替代它吧 。</li>
-</ul>
-<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><ul>
-<li>在 Python 3 中处理异常也轻微的改变了，在 Python 3 中我们现在使用 as 作为关键词。</li>
-<li>捕获异常的语法由 except exc, var 改为 except exc as var。<br>使用语法except (exc1, exc2) as var可以同时捕获多种类别的异常。 Python 2.6已经支持这两种语法。</li>
-</ul>
-<h2 id="解析用户的输入"><a href="#解析用户的输入" class="headerlink" title="解析用户的输入"></a>解析用户的输入</h2><ul>
-<li><p>在python2.x中raw_input()和input()，两个函数都存在，其中区别为</p>
-<p>  raw_input()—-将所有输入作为字符串看待，返回字符串类型</p>
-<p>  input()——-只能接收“数字”的输入，在对待纯数字输入时具有自己的特性，它返回所输入的数字的类型（int, float）</p>
-</li>
-<li><p>在python3.x中raw_input()和input()进行了整合，去除了raw_input()，仅保留了input()函数，其接收任意任性输入，将所有输入默认为字符串处理，并返回字符串类型。</p>
-</li>
-</ul>
-<h2 id="返回可迭代对象，而不是列表"><a href="#返回可迭代对象，而不是列表" class="headerlink" title="返回可迭代对象，而不是列表"></a>返回可迭代对象，而不是列表</h2><p>如果在 xrange 章节看到的，现在在 Python 3 中一些方法和函数返回迭代对象 — 代替 Python 2 中的列表。</p>
-<p>因为我们通常那些遍历只有一次，我认为这个改变对节约内存很有意义。尽管如此，它也是可能的，相对于生成器 —- 如需要遍历多次。它是不那么高效的。</p>
-<p>而对于那些情况下，我们真正需要的是列表对象，我们可以通过 list() 函数简单的把迭代对象转换成一个列表。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">&gt;&gt;&gt; print range(3) </span><br><span class="line">[0, 1, 2]</span><br><span class="line">&gt;&gt;&gt; print type(range(3))</span><br><span class="line">&lt;type &apos;list&apos;&gt;</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; print(range(3))</span><br><span class="line">range(0, 3)</span><br><span class="line">&gt;&gt;&gt; print(type(range(3)))</span><br><span class="line">&lt;class &apos;range&apos;&gt;</span><br><span class="line">&gt;&gt;&gt; print(list(range(3)))</span><br><span class="line">[0, 1, 2]</span><br></pre></td></tr></table></figure></p>
-<h2 id="For循环变量和全局命名空间泄漏"><a href="#For循环变量和全局命名空间泄漏" class="headerlink" title="For循环变量和全局命名空间泄漏"></a>For循环变量和全局命名空间泄漏</h2><p>在 Python 3.x 中 for 循环变量不会再导致命名空间泄漏。</p>
-<p>在 Python 3.x 中做了一个改变，在 What’s New In Python 3.0 中有如下描述：<br>“列表推导不再支持 [… for var in item1, item2, …] 这样的语法。使用 [… for var in (item1, item2, …)] 代替。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">&gt;&gt;&gt; i = 1</span><br><span class="line">&gt;&gt;&gt; print &apos;before: i =&apos;, i</span><br><span class="line">before: i = 1</span><br><span class="line">&gt;&gt;&gt; print &apos;comprehension: &apos;, [i for i in range(5)]</span><br><span class="line">comprehension:  [0, 1, 2, 3, 4]</span><br><span class="line">&gt;&gt;&gt; print &apos;after: i =&apos;, i</span><br><span class="line">after: i = 4</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; i = 1</span><br><span class="line">&gt;&gt;&gt; print(&apos;before: i =&apos;, i)</span><br><span class="line">before: i = 1</span><br><span class="line">&gt;&gt;&gt; print(&apos;comprehension:&apos;, [i for i in range(5)])</span><br><span class="line">comprehension: [0, 1, 2, 3, 4]</span><br><span class="line">&gt;&gt;&gt; print(&apos;after: i =&apos;, i)</span><br><span class="line">after: i = 1</span><br></pre></td></tr></table></figure></p>
-<h1 id="兼容python3与python2"><a href="#兼容python3与python2" class="headerlink" title="兼容python3与python2"></a>兼容python3与python2</h1><p>当前python3的普及还不尽人意，因此编写的python程序能同时兼容python2与python3是十分必要的。下面介绍同时支持python2与python3的方法。</p>
-<ul>
-<li>放弃python 2.6之前的python版本</li>
-<li>使用 2to3 工具对代码检查</li>
-<li>使用python -3执行python程序</li>
-<li>from <strong>future</strong> import<br>  “from <strong>future</strong> import”后即可使使用python的未来特性了。python的完整future特性可见 <strong>future</strong> 。python3中所有字符都变成了unicode。在python2中unicode字符在定义时需要在字符前面加 u，但在3中则不需要家u，而且在加u后程序会无法编译通过。为了解决该问题可以 “from future import unicode_literals” ，这样python2中字符的行为将和python3中保持一致，python2中定义普通字符将自动识别为unicode。</li>
-<li><p>import问题<br>  python3中“少”了很多python2的包，在大多情况下这些包之是改了个名字而已。我们可以在import的时候对这些问题进行处理。</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">try:#python2</span><br><span class="line">    from UserDict import UserDict</span><br><span class="line">    #建议按照python3的名字进行import</span><br><span class="line">    from UserDict import DictMixin as MutableMapping</span><br><span class="line">except ImportError:#python3</span><br><span class="line">    from collections import UserDict</span><br><span class="line">    from collections import MutableMapping</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用python3的方式写程序</p>
-</li>
-<li><p>检查当前运行的python版本</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">if sys.version &gt; &apos;3&apos;:</span><br><span class="line">    PY3 = True</span><br><span class="line">else:</span><br><span class="line">    PY3 = False</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>six<br>不推荐使用six。</p>
-</li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Python" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Python</a>, by wikipedia</li>
-<li><a href="https://www.jianshu.com/p/85583e032eb8" target="_blank" rel="noopener">https://www.jianshu.com/p/85583e032eb8</a>, by EarthChen</li>
-<li><a href="http://python.jobbole.com/83987/" target="_blank" rel="noopener">http://python.jobbole.com/83987/</a>, by 天地一沙鸥</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/24/Git用法总结/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/24/Git用法总结/" itemprop="url">
-                  Git用法总结
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-24 08:32:03" itemprop="dateCreated datePublished" datetime="2018-05-24T08:32:03+08:00">2018-05-24</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-17 21:47:46" itemprop="dateModified" datetime="2019-01-17T21:47:46+08:00">2019-01-17</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>git是一个分布式版本控制软件，最初由林纳斯·托瓦兹（Linus Torvalds）创作，于2005年以GPL发布。最初目的是为更好地管理Linux内核开发而设计<sup>[1]</sup>。</p>
-<p align="center">
-    <img src="images/git_structure.png" width="90%" alt="git结构">
-</p>
-
-<h1 id="新建代码库"><a href="#新建代码库" class="headerlink" title="新建代码库"></a>新建代码库</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 在当前目录新建一个Git代码库</span><br><span class="line">$ git init</span><br><span class="line"></span><br><span class="line"># 新建一个目录，将其初始化为Git代码库</span><br><span class="line">$ git init [project-name]</span><br><span class="line"></span><br><span class="line"># 下载一个项目和它的整个代码历史</span><br><span class="line">$ git clone [url]</span><br></pre></td></tr></table></figure>
-<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 显示当前的Git配置</span><br><span class="line">$ git config --list</span><br><span class="line"></span><br><span class="line"># 编辑Git配置文件</span><br><span class="line">$ git config -e [--global]</span><br><span class="line"></span><br><span class="line"># 设置提交代码时的用户信息</span><br><span class="line">$ git config [--global] user.name &quot;[name]&quot;</span><br><span class="line">$ git config [--global] user.email &quot;[email address]&quot;</span><br></pre></td></tr></table></figure>
-<h1 id="代码提交"><a href="#代码提交" class="headerlink" title="代码提交"></a>代码提交</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># 提交暂存区到仓库区</span><br><span class="line">$ git commit -m [message]</span><br><span class="line"></span><br><span class="line"># 提交暂存区的指定文件到仓库区</span><br><span class="line">$ git commit [file1] [file2] ... -m [message]</span><br><span class="line"></span><br><span class="line"># 提交工作区自上次commit之后的变化，直接到仓库区</span><br><span class="line">$ git commit -a</span><br><span class="line"></span><br><span class="line"># 提交时显示所有diff信息</span><br><span class="line">$ git commit -v</span><br><span class="line"></span><br><span class="line"># 使用一次新的commit，替代上一次提交</span><br><span class="line"># 如果代码没有任何新变化，则用来改写上一次commit的提交信息</span><br><span class="line">$ git commit --amend -m [message]</span><br><span class="line"></span><br><span class="line"># 重做上一次commit，并包括指定文件的新变化</span><br><span class="line">$ git commit --amend [file1] [file2] ...</span><br></pre></td></tr></table></figure>
-<h1 id="查看信息"><a href="#查看信息" class="headerlink" title="查看信息"></a>查看信息</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"># 显示有变更的文件</span><br><span class="line">$ git status</span><br><span class="line"></span><br><span class="line"># 显示当前分支的版本历史</span><br><span class="line">$ git log</span><br><span class="line"></span><br><span class="line"># 显示commit历史，以及每次commit发生变更的文件</span><br><span class="line">$ git log --stat</span><br><span class="line"></span><br><span class="line"># 搜索提交历史，根据关键词</span><br><span class="line">$ git log -S [keyword]</span><br><span class="line"></span><br><span class="line"># 显示某个commit之后的所有变动，每个commit占据一行</span><br><span class="line">$ git log [tag] HEAD --pretty=format:%s</span><br><span class="line"></span><br><span class="line"># 显示某个commit之后的所有变动，其&quot;提交说明&quot;必须符合搜索条件</span><br><span class="line">$ git log [tag] HEAD --grep feature</span><br><span class="line"></span><br><span class="line"># 显示某个文件的版本历史，包括文件改名</span><br><span class="line">$ git log --follow [file]</span><br><span class="line">$ git whatchanged [file]</span><br><span class="line"></span><br><span class="line"># 显示指定文件相关的每一次diff</span><br><span class="line">$ git log -p [file]</span><br><span class="line"></span><br><span class="line"># 显示过去5次提交</span><br><span class="line">$ git log -5 --pretty --oneline</span><br><span class="line"></span><br><span class="line"># 显示所有提交过的用户，按提交次数排序</span><br><span class="line">$ git shortlog -sn</span><br><span class="line"></span><br><span class="line"># 显示指定文件是什么人在什么时间修改过</span><br><span class="line">$ git blame [file]</span><br><span class="line"></span><br><span class="line"># 显示暂存区和工作区的差异</span><br><span class="line">$ git diff</span><br><span class="line"></span><br><span class="line"># 显示暂存区和上一个commit的差异</span><br><span class="line">$ git diff --cached [file]</span><br><span class="line"></span><br><span class="line"># 显示工作区与当前分支最新commit之间的差异</span><br><span class="line">$ git diff HEAD</span><br><span class="line"></span><br><span class="line"># 显示两次提交之间的差异</span><br><span class="line">$ git diff [first-branch]...[second-branch]</span><br><span class="line"></span><br><span class="line"># 显示今天你写了多少行代码</span><br><span class="line">$ git diff --shortstat &quot;@&#123;0 day ago&#125;&quot;</span><br><span class="line"></span><br><span class="line"># 显示某次提交的元数据和内容变化</span><br><span class="line">$ git show [commit]</span><br><span class="line"></span><br><span class="line"># 显示某次提交发生变化的文件</span><br><span class="line">$ git show --name-only [commit]</span><br><span class="line"></span><br><span class="line"># 显示某次提交时，某个文件的内容</span><br><span class="line">$ git show [commit]:[filename]</span><br><span class="line"></span><br><span class="line"># 显示当前分支的最近几次提交</span><br><span class="line">$ git reflog</span><br></pre></td></tr></table></figure>
-<h1 id="不常用操作"><a href="#不常用操作" class="headerlink" title="不常用操作"></a>不常用操作</h1><ul>
-<li><p>查看代码仓库中标签</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>检出指定标签代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout tag_name</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>丢弃本地修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout .</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>打包导出仓库代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git archive --format zip --output ..\emsdk\zips\1.38.8.zip HEAD</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://zh.wikipedia.org/zh-hans/Git" target="_blank" rel="noopener">Git</a>, by wikipedia</li>
-<li><a href="http://yijiebuyi.com/blog/eacf4d053fad77affffae397d9af7172.html" target="_blank" rel="noopener">git 如何获取指定 tag 代码</a>, by 一介布衣</li>
-<li><a href="http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html" target="_blank" rel="noopener">常用 Git 命令清单</a>,by 阮一峰</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2128,7 +2234,7 @@ console.log(y);
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">131</span>
+                    <span class="site-state-item-count">138</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2235,7 +2341,11 @@ console.log(y);
                     
                       
                     
-                    <span class="site-state-item-count">46</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

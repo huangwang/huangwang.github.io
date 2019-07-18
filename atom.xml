@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-07-18T05:28:46.211Z</updated>
+  <updated>2019-07-18T11:29:48.798Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Vue.js开发入门简易教程</title>
+    <link href="https://huangwang.github.io/2019/07/18/Vue-js%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%E7%AE%80%E6%98%93%E6%95%99%E7%A8%8B/"/>
+    <id>https://huangwang.github.io/2019/07/18/Vue-js开发入门简易教程/</id>
+    <published>2019-07-18T10:41:32.000Z</published>
+    <updated>2019-07-18T11:29:48.798Z</updated>
+    
+    <content type="html"><![CDATA[<p>Vue.js（/vjuː/，或简称为Vue）是一个用于创建用户界面的开源JavaScript框架，也是一个创建单页应用的Web应用框架。Vue与React、Angular一起成为当前三大最流行的Web应用框架。下面简单介绍使用Vue CLI脚手架工具创建简单的Web应用。</p><h1 id="Vue-CLI简介"><a href="#Vue-CLI简介" class="headerlink" title="Vue CLI简介"></a>Vue CLI简介</h1><p>Vue CLI 是一个基于 Vue.js 进行快速开发的完整系统，提供：</p><ul><li>通过 @vue/cli 搭建交互式的项目脚手架。</li><li>通过 @vue/cli + @vue/cli-service-global 快速开始零配置原型开发。</li><li>一个运行时依赖 (@vue/cli-service)，该依赖：<ul><li>可升级；</li><li>基于 webpack 构建，并带有合理的默认配置；</li><li>可以通过项目内的配置文件进行配置；</li><li>可以通过插件进行扩展。</li></ul></li><li>一个丰富的官方插件集合，集成了前端生态中最好的工具。</li><li>一套完全图形化的创建和管理 Vue.js 项目的用户界面。</li></ul><p>Vue CLI 致力于将 Vue 生态中的工具基础标准化。它确保了各种构建工具能够基于智能的默认配置即可平稳衔接，这样你可以专注在撰写应用上，而不必花好几天去纠结配置的问题。与此同时，它也为每个工具提供了调整配置的灵活性，无需 eject。</p><p>Vue CLI 有几个独立的部分:</p><ul><li>CLI</li></ul><p>CLI (@vue/cli) 是一个全局安装的 npm 包，提供了终端里的 vue 命令。它可以通过 vue create 快速创建一个新项目的脚手架，或者直接通过 vue serve 构建新想法的原型。你也可以通过 vue ui 通过一套图形化界面管理你的所有项目。</p><ul><li>CLI 服务</li></ul><p>CLI 服务 (@vue/cli-service) 是一个开发环境依赖。它是一个 npm 包，局部安装在每个 @vue/cli 创建的项目中。</p><p>CLI 服务是构建于 webpack 和 webpack-dev-server 之上的。它包含了：</p><pre><code>* 加载其它 CLI 插件的核心服务；* 一个针对绝大部分应用优化过的内部的 webpack 配置；* 项目内部的 vue-cli-service 命令，提供 serve、build 和 inspect 命令。</code></pre><p>如果你熟悉 create-react-app 的话，@vue/cli-service 实际上大致等价于 react-scripts，尽管功能集合不一样。</p><ul><li>CLI 插件</li></ul><p>CLI 插件是向你的 Vue 项目提供可选功能的 npm 包，例如 Babel/TypeScript 转译、ESLint 集成、单元测试和 end-to-end 测试等。Vue CLI 插件的名字以 @vue/cli-plugin- (内建插件) 或 vue-cli-plugin- (社区插件) 开头，非常容易使用。</p><p>当你在项目内部运行 vue-cli-service 命令时，它会自动解析并加载 package.json 中列出的所有 CLI 插件。</p><p>插件可以作为项目创建过程的一部分，或在后期加入到项目中。它们也可以被归成一组可复用的 preset。</p><h1 id="Vue-CLI安装"><a href="#Vue-CLI安装" class="headerlink" title="Vue CLI安装"></a>Vue CLI安装</h1><blockquote><p>Vue CLI 需要 Node.js 8.9 或更高版本 (推荐 8.11.0+)。你可以使用 nvm 或 nvm-windows 在同一台电脑中管理多个 Node 版本。</p></blockquote><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g @vue/cli</span><br></pre></td></tr></table></figure><p>安装之后，你就可以在命令行中访问 vue 命令。你可以通过简单运行 vue，看看是否展示出了一份所有可用命令的帮助信息，来验证它是否安装成功。</p><h1 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h1><p>运行以下命令来创建一个新项目：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vue create hello-world</span><br></pre></td></tr></table></figure><h1 id="运行项目"><a href="#运行项目" class="headerlink" title="运行项目"></a>运行项目</h1><p>在一个 Vue CLI 项目中，@vue/cli-service 安装了一个名为 vue-cli-service 的命令。你可以在 npm scripts 中以 vue-cli-service、或者从终端中以 ./node_modules/.bin/vue-cli-service 访问这个命令。</p><p>这是你使用默认 preset 的项目的 package.json：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;serve&quot;: &quot;vue-cli-service serve&quot;,</span><br><span class="line">    &quot;build&quot;: &quot;vue-cli-service build&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p><p>你可以通过 npm 调用这些 script：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run serve</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://zh.wikipedia.org/wiki/Vue.js" target="_blank" rel="noopener">Vue.js</a>,by wikipedia.</li><li><a href="https://cli.vuejs.org/zh/" target="_blank" rel="noopener">vue cli</a>,by vuejs homepage.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Vue.js（/vjuː/，或简称为Vue）是一个用于创建用户界面的开源JavaScript框架，也是一个创建单页应用的Web应用框架。Vue与React、Angular一起成为当前三大最流行的Web应用框架。下面简单介绍使用Vue CLI脚手架工具创建简单的Web应用。&lt;
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="vuejs" scheme="https://huangwang.github.io/tags/vuejs/"/>
+    
+  </entry>
   
   <entry>
     <title>Expressjs框架的安装使用</title>
@@ -505,36 +530,6 @@
       
       
         &lt;p&gt;ROS（机器人操作系统，Robot Operating System），是专为机器人软件开发所设计出来的一套电脑操作系统架构。它是一个开源的元级操作系统（后操作系统），提供类似于操作系统的服务，包括硬件抽象描述、底层驱动程序管理、共用功能的执行、程序间消息传递、程序发行包管
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="ROS" scheme="https://huangwang.github.io/tags/ROS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ROS编译命令catkin简析</title>
-    <link href="https://huangwang.github.io/2019/06/06/ROS%E7%BC%96%E8%AF%91%E5%91%BD%E4%BB%A4catkin%E7%AE%80%E6%9E%90/"/>
-    <id>https://huangwang.github.io/2019/06/06/ROS编译命令catkin简析/</id>
-    <published>2019-06-06T13:47:21.000Z</published>
-    <updated>2019-06-06T14:04:41.817Z</updated>
-    
-    <content type="html"><![CDATA[<p>目前编译ROS的Package有两种方法：</p><ul><li>catkin_make</li><li>catkin build</li></ul><h1 id="catkin-make"><a href="#catkin-make" class="headerlink" title="catkin_make"></a>catkin_make</h1><p>catkin_make 是一个命令行工具，它简化了catkin的标准工作流程。你可以认为catkin_make是在CMake标准工作流程中依次调用了cmake 和 make。</p><p>使用方法如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 在catkin工作空间下</span><br><span class="line">$ catkin_make [make_targets] [-DCMAKE_VARIABLES=...]</span><br></pre></td></tr></table></figure><h1 id="catkin"><a href="#catkin" class="headerlink" title="catkin"></a>catkin</h1><p>catkin是一个用于处理catkin元构建系统和catkin工作区的命令行工具。其用法如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">`catkin VERB -h` for help on each verb listed below:</span><br><span class="line">  </span><br><span class="line">    buildBuilds a catkin workspace.</span><br><span class="line">    cleanDeletes various products of the build verb.</span><br><span class="line">    configConfigures a catkin workspace&apos;s context.</span><br><span class="line">    createCreates catkin workspace resources like packages.</span><br><span class="line">    env        Run an arbitrary command in a modified environment. </span><br><span class="line">    initInitializes a given folder as a catkin workspace.</span><br><span class="line">    listLists catkin packages in the workspace or other arbitray folders.</span><br><span class="line">    locateGet the paths to various locations in a workspace.</span><br><span class="line">    profileManage config profiles for a catkin workspace.</span><br></pre></td></tr></table></figure><p>同样可使用catkin build命令编译ROS的package。</p><h1 id="catkin-make与catkin-build的区别"><a href="#catkin-make与catkin-build的区别" class="headerlink" title="catkin_make与catkin build的区别"></a>catkin_make与catkin build的区别</h1><p>与catkin_make不同，catkin命令行工具不仅仅是围绕cmake和make命令的瘦包装器。 catkin build命令隔离地在工作空间的源空间中构建每个包，以防止构建时串扰。 因此，在其最简单的用法中，catkin构建的行为类似于catkin_make_isolated的并行化版本。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://catkin-tools.readthedocs.io/en/latest/migration.html" target="_blank" rel="noopener">Migrating from catkin_make</a>,by catkin_tools homepage.</li><li><a href="http://wiki.ros.org/cn/ROS/Tutorials/BuildingPackages" target="_blank" rel="noopener">编译ROS程序包</a>,by ros wiki.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;目前编译ROS的Package有两种方法：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;catkin_make&lt;/li&gt;
-&lt;li&gt;catkin build&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1 id=&quot;catkin-make&quot;&gt;&lt;a href=&quot;#catkin-make&quot; class=&quot;header
       
     
     </summary>

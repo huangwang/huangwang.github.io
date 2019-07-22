@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-07-19T14:26:16.770Z</updated>
+  <updated>2019-07-22T13:51:56.966Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>HTML_DOM文档对象模型简介</title>
+    <link href="https://huangwang.github.io/2019/07/22/HTML-DOM%E6%96%87%E6%A1%A3%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E7%AE%80%E4%BB%8B/"/>
+    <id>https://huangwang.github.io/2019/07/22/HTML-DOM文档对象模型简介/</id>
+    <published>2019-07-22T13:21:52.000Z</published>
+    <updated>2019-07-22T13:51:56.966Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近要写一些八股文，上网一搜，好多范例，正想下载下来借鉴以下，可惜不让复制粘贴。不过难不倒我，直接使用文档对象模型(Document Object Model，DOM)提供编程接口，将整篇文章下来。</p><h1 id="DOM概述"><a href="#DOM概述" class="headerlink" title="DOM概述"></a>DOM概述</h1><h2 id="DOM简介"><a href="#DOM简介" class="headerlink" title="DOM简介"></a>DOM简介</h2><p>文档对象模型 (DOM) 是HTML和XML文档的编程接口。它提供了对文档的结构化的表述，并定义了一种方式可以使从程序中对该结构进行访问，从而改变文档的结构，样式和内容。DOM 将文档解析为一个由节点和对象（包含属性和方法的对象）组成的结构集合。简言之，它会将web页面和脚本或程序语言连接起来。</p><p>一个web页面是一个文档。这个文档可以在浏览器窗口或作为HTML源码显示出来。但上述两个情况中都是同一份文档。文档对象模型（DOM）提供了对同一份文档的另一种表现，存储和操作的方式。 DOM是web页面的完全的面向对象表述，它能够使用如 JavaScript等脚本语言进行修改。</p><h2 id="DOM-和-JavaScript"><a href="#DOM-和-JavaScript" class="headerlink" title="DOM 和 JavaScript"></a>DOM 和 JavaScript</h2><p>开始的时候，JavaScript和DOM是交织在一起的，但它们最终演变成了两个独立的实体。JavaScript可以访问和操作存储在DOM中的内容，因此我们可以写成这个近似的等式：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">API (web 或 XML 页面) = DOM + JS (脚本语言)</span><br></pre></td></tr></table></figure><p>DOM 被设计成与特定编程语言相独立，使文档的结构化表述可以通过单一，一致的API获得。尽管通常使用JavaScript操作DOM， 但DOM 也可以使用其他的语言来实现。</p><h2 id="DOM访问"><a href="#DOM访问" class="headerlink" title="DOM访问"></a>DOM访问</h2><p>在使用DOM时，您不需要做任何其他特殊的操作。不同的浏览器都有对DOM不同的实现， 这些实现对当前的DOM标准而言，都会呈现出不同程度的一致性，每个web浏览器都会使用一些文档对象模型，从而使页面可以被脚本语言访问。</p><p>当您在创建一个脚本时-无论是使用内嵌 \<script\>元素或者使用在web页面脚本加载的方法— 您都可以使用 document或 window 元素的API来操作文档本身或获取文档的子类（web页面中的各种元素）。</script\></p><p>您的DOM编程代码可能会像下面例子一样非常简单，如使用 window对象的alert()函数显示一个警告信息，或者使用比较复杂的方法来创建一个新的内容，如下面内容较长的实例所示。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;body onload=&quot;window.alert(&apos;welcome to my home page!&apos;);&quot;&gt;</span><br></pre></td></tr></table></figure><h2 id="重要的数据类型"><a href="#重要的数据类型" class="headerlink" title="重要的数据类型"></a>重要的数据类型</h2><p>为简单起见，在API参考文档中的语法实例通常会使用element(s) 指代节点，使用nodeList（s）或 element(s)来指代节点数组，使用 attribute(s)来指代属性节点。</p><div class="table-container"><table><thead><tr><th>数据类型</th><th>解释</th></tr></thead><tbody><tr><td>document</td><td>当一个成员返回 document 对象 （例如，元素的 ownerDocument 属性返回它所属于 document ) ，这个对象就是root document 对象本身。 DOM document Reference 一章对 document 对象进行了描述。</td></tr><tr><td>element</td><td>element 是指由 DOM API 中成员返回的类型为 element 的一个元素或节点。 例如， document.createElement() 方法会返回一个 node 的对象引用，也就是说这个方法返回了在DOM中创建的 element。 element 对象实现了 DOM Element 接口以及更基本的 Node 接口，参考文档将两者都包含在内。</td></tr><tr><td>nodeList</td><td>nodeList 是一个元素的数组，如从 document.getElementsByTagName() 方法返回的就是这种类型。 nodeList 中的条目由通过下标有两种方式进行访问：list.item(1)和list[1]。两种方式是等价的，第一种方式中 item() 是 nodeList 对象中的单独方法。 后面的方式则使用了经典的数组语法来获取列表中的第二个条目。</td></tr><tr><td>attribute</td><td>当 attribute 通过成员函数 (例如，通过 createAttribute()方法) 返回时，它是一个为属性暴露出专门接口的对象引用。DOM中的属性也是节点，就像元素一样，只不过您可能会很少使用它。</td></tr><tr><td>namedNodeMap</td><td>namedNodeMap 和数组类似，但是条目是由name或index访问的，虽然后一种方式仅仅是为了枚举方便，因为在 list 中本来就没有特定的顺序。 出于这个目的，  namedNodeMap 有一个 item() 方法，你也可以从  namedNodeMap 添加或移除条目。</td></tr></tbody></table></div><p>DOM 的最小组成单位叫做节点（node）。文档的树形结构（DOM 树），就是由各种不同类型的节点组成。每个节点可以看作是文档树的一片叶子。</p><p>节点的类型有七种。</p><ul><li>Document：整个文档树的顶层节点</li><li>DocumentType：doctype标签（比如\&lt;!DOCTYPE html>）</li><li>Element：网页的各种HTML标签（比如\<body\>、\<a\>等）</a\></body\></li><li>Attribute：网页元素的属性（比如class=”right”）</li><li>Text：标签之间或标签包含的文本</li><li>Comment：注释</li><li>DocumentFragment：文档的片段</li></ul><p>浏览器提供一个原生的节点对象Node，上面这七种节点都继承了Node，因此具有一些共同的属性和方法。</p><h2 id="DOM中核心接口"><a href="#DOM中核心接口" class="headerlink" title="DOM中核心接口"></a>DOM中核心接口</h2><p>在DOM编程时，通常使用的最多的就是 Document 和 window 对象。简单的说， window 对象表示浏览器中的内容，而 document 对象是文档本身的根节点。Element 继承了通用的 Node 接口,  将这两个接口结合后就提供了许多方法和属性可以供单个元素使用。在处理这些元素所对应的不同类型的数据时，这些元素可能会有专用的接口，如上节中的  table  对象的例子。</p><p>下面是在web和XML页面脚本中使用DOM时，一些常用的API简要列表。</p><ul><li>document.getElementById(id)</li><li>document.getElementsByTagName(name)</li><li>document.createElement(name)</li><li>parentNode.appendChild(node)</li><li>element.innerHTML</li><li>element.style.left</li><li>element.setAttribute()</li><li>element.getAttribute()</li><li>element.addEventListener()</li><li>window.content</li><li>window.onload</li><li>window.dump()</li><li>window.scrollTo()</li></ul><h1 id="文档下载实战"><a href="#文档下载实战" class="headerlink" title="文档下载实战"></a>文档下载实战</h1><p>以<a href="http://www.gwyxiezuo.com/cailiao/pouxi/2018-11-23/486dbfad4cf89816bef7921d14a11311.html" target="_blank" rel="noopener">示例范文</a>为例，提取其中内容。</p><p>使用chrome打开该网页，在使用快捷键ctrl+shift+i，打开开发者工具，找到文档节点DIV的id为article，使用如下代码提取文章内容：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var node=document.getElementById(&apos;article&apos;)</span><br><span class="line">console.log(node.innerText)</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://javascript.ruanyifeng.com/dom/node.html" target="_blank" rel="noopener">DOM 模型概述</a>,by 阮一峰.</li><li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document_Object_Model/Introduction" target="_blank" rel="noopener">DOM概述</a>,by MDN web DOC.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;最近要写一些八股文，上网一搜，好多范例，正想下载下来借鉴以下，可惜不让复制粘贴。不过难不倒我，直接使用文档对象模型(Document Object Model，DOM)提供编程接口，将整篇文章下来。&lt;/p&gt;
+&lt;h1 id=&quot;DOM概述&quot;&gt;&lt;a href=&quot;#DOM概述&quot; c
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="前端" scheme="https://huangwang.github.io/tags/%E5%89%8D%E7%AB%AF/"/>
+    
+      <category term="html" scheme="https://huangwang.github.io/tags/html/"/>
+    
+  </entry>
   
   <entry>
     <title>Vue-cli-3集成jQWidgets</title>
@@ -427,9 +455,9 @@
     
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
-      <category term="计算机图形学" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/"/>
-    
       <category term="计算机视觉" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/"/>
+    
+      <category term="计算机图形学" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/"/>
     
   </entry>
   
@@ -511,32 +539,6 @@
       <category term="无人机" scheme="https://huangwang.github.io/tags/%E6%97%A0%E4%BA%BA%E6%9C%BA/"/>
     
       <category term="MAVLink" scheme="https://huangwang.github.io/tags/MAVLink/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>轨迹相似度度量方法总结</title>
-    <link href="https://huangwang.github.io/2019/06/10/%E8%BD%A8%E8%BF%B9%E7%9B%B8%E4%BC%BC%E5%BA%A6%E5%BA%A6%E9%87%8F%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/"/>
-    <id>https://huangwang.github.io/2019/06/10/轨迹相似度度量方法总结/</id>
-    <published>2019-06-10T14:39:26.000Z</published>
-    <updated>2019-06-11T13:53:37.249Z</updated>
-    
-    <content type="html"><![CDATA[<p>轨迹相似度度量有广泛的用途，如语音识别分类、模板匹配、信息检索等。下面介绍各种轨迹相似度度量方法。</p><h1 id="轨迹定义"><a href="#轨迹定义" class="headerlink" title="轨迹定义"></a>轨迹定义</h1><p>轨迹可由时间域到空间域的映射函数表示，如：</p><script type="math/tex; mode=display">t\stackrel{F}{\longrightarrow}R^d, d>1</script><h1 id="度量方法"><a href="#度量方法" class="headerlink" title="度量方法"></a>度量方法</h1><p>轨迹相似度度量方法主要有：</p><ul><li><p>基于点方法： EDR，LCSS，DTW等</p></li><li><p>基于形状的方法： Frechet， Hausdorff</p></li><li><p>基于分段的方法：One Way Distance, LIP distance</p></li><li><p>基于特定任务的方法：TRACLUS， Road Network，grid等</p></li></ul><h2 id="基于点的方法"><a href="#基于点的方法" class="headerlink" title="基于点的方法"></a>基于点的方法</h2><h3 id="DTW"><a href="#DTW" class="headerlink" title="DTW"></a>DTW</h3><p>DTW（Dynamic Time Warping, 动态时间规整）可以计算两个时间序列的相似度，尤其适用于不同长度、不同节奏的时间序列（比如不同的人读同一个词的音频序列）。DTW将自动warping扭曲 时间序列（即在时间轴上进行局部的缩放），使得两个序列的形态尽可能的一致，得到最大可能的相似度。</p><p>Dynamic Time Warping（DTW）诞生有一定的历史了（日本学者Itakura提出），它出现的目的也比较单纯，是一种衡量两个长度不同的时间序列的相似度的方法。应用也比较广，主要是在模板匹配中，比如说用在孤立词语音识别（识别两段语音是否表示同一个单词），手势识别，数据挖掘和信息检索等中。</p><p>设 $P=<p_1,p_2,...,p_m>$ 和 $Q=<q_1,q_2,...,q_n>$ 是两个时间序列，则 $P$ 和 $Q$的距离 $DTW(P,Q)$ 定义如下：</q_1,q_2,...,q_n></p_1,p_2,...,p_m></p><script type="math/tex; mode=display">DTW(P,Q)= \left\{\begin{array}{lcl}0     &   &if\ m=n=0\\\infty &   &if\ m=0\ or\ n=0\\dist(p_1,q_1)+min    \left\{    \begin{aligned}            DTW(Rest(P),Rest(Q))\\            DTW(Rest(P),Q)\\            DTW(P,Rest(Q))\\    \end{aligned}    \right\} & & otherwise\end{array}\right.</script><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://www.zhihu.com/question/27213170" target="_blank" rel="noopener">如何判断两条轨迹（或曲线）的相似度？</a>,by zhihu.</li><li><a href="https://zhuanlan.zhihu.com/p/43247215" target="_blank" rel="noopener">动态时间规整（DTW）算法简介</a>,by 文均.</li><li><a href="https://zhuanlan.zhihu.com/p/32849741" target="_blank" rel="noopener">DTW(Dynamic Time Warping)动态时间规整</a>,by X-猪.</li><li><a href="https://www.cnblogs.com/luxiaoxun/archive/2013/05/09/3069036.html" target="_blank" rel="noopener">Dynamic Time Warping 动态时间规整算法</a>,by 阿凡卢.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;轨迹相似度度量有广泛的用途，如语音识别分类、模板匹配、信息检索等。下面介绍各种轨迹相似度度量方法。&lt;/p&gt;
-&lt;h1 id=&quot;轨迹定义&quot;&gt;&lt;a href=&quot;#轨迹定义&quot; class=&quot;headerlink&quot; title=&quot;轨迹定义&quot;&gt;&lt;/a&gt;轨迹定义&lt;/h1&gt;&lt;p&gt;轨迹可由时
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="飞行仿真" scheme="https://huangwang.github.io/tags/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F/"/>
     
   </entry>
   

@@ -314,6 +314,179 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/04/PLY文件格式分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/04/PLY文件格式分析/" itemprop="url">
+                  PLY文件格式分析
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-04 19:20:26 / 修改时间：19:42:40" itemprop="dateCreated datePublished" datetime="2019-06-04T19:20:26+08:00">2019-06-04</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>PLY文件是一种存储3D模型的文件格式，全名为多边形档案（Polygon File Format）或 史丹佛三角形档案（Stanford Triangle Format）。</p>
+<p>该格式主要用以储存立体扫描结果的三维数值，透过多边形片面的集合描述三维物体，与其他格式相较之下这是较为简单的方法。它可以储存的资讯包含颜色、透明度、表面法向量、材质座标与资料可信度，并能对多边形的正反两面设定不同的属性。</p>
+<p>在档案内容的储存上PLY有两种版本，分别是纯文字（ASCII）版本与二元码（binary）版本，其差异在储存时是否以ASCII编码表示元素资讯。</p>
+<p>通过分析PLY文件格式，我们可以进而初窥存储3D模型的文件奥秘。</p>
+<h1 id="文件格式"><a href="#文件格式" class="headerlink" title="文件格式"></a>文件格式</h1><p>各种文件格式通常分成文件头和文件内容，PLY格式也不例外。</p>
+<p>每个PLY档都包含档头（header），用以设定网格模型的“元素”与“属性”，以及在档头下方接着一连串的元素“数值资料”。一般而言，网格模型的“元素”就是顶点（vertices）、面（faces），另外还可能包含有边（edges）、深度图样本（samples of range maps）与三角带（triangle strips）等元素。无论是纯文字与二元码的PLY档，档头资讯都是以ASCII编码编写，接续其后的数值资料才有编码之分。</p>
+<p>PLY档案以此行作为开头，以识别PLY格式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ply</span><br></pre></td></tr></table></figure>
+<p>接着第二行是版本资讯，目前有三种写法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">format ascii 1.0</span><br><span class="line">format binary_little_endian 1.0</span><br><span class="line">format binary_big_endian 1.0</span><br></pre></td></tr></table></figure>
+<p>其中ascii, binary_little_endian, binary_big_endian是档案储存的编码方式，而1.0是遵循的标准版本（现阶段仅有PLY 1.0版）。在档头中可使用’comment’作为一行的开头以编写注解，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">comment This is a comment!</span><br></pre></td></tr></table></figure>
+<p>描述元素及属性，必须使用’element’及’property’的关键字，一般的格式为element下方接着属性列表，例如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">element &lt;element name&gt; &lt;number in file&gt;</span><br><span class="line">property &lt;data_type&gt; &lt;property name 1&gt;</span><br><span class="line">property &lt;data_type&gt; &lt;property name 2&gt;</span><br><span class="line">property &lt;data_type&gt; &lt;property name 3&gt;</span><br></pre></td></tr></table></figure>
+<p>‘property’不仅定义了资料的型态，其出现顺序亦定义了资料的顺序。内定的资料形态有两种写法：一种是char uchar short ushort int uint float double,另外一种是具有位元长度的int8 uint8 int16 uint16 int32 uint32 float32 float64。 例如，描述一个包含12个顶点的物体，每个顶点使用3个单精度浮点数 (x,y,z）代表点的座标，使用3个unsigned char代表顶点颜色，颜色顺序为 (B, G, R),则档头的写法为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">element vertex 12</span><br><span class="line">property float x</span><br><span class="line">property float y</span><br><span class="line">property float z</span><br><span class="line">property uchar blue</span><br><span class="line">property uchar green</span><br><span class="line">property uchar red</span><br></pre></td></tr></table></figure>
+<p>其中vertex是内定的元素类型，接续的6行property描述构成vertex元素的数值字段顺序代表的意义，及其资料形态。</p>
+<p>另一个常使用的元素是面。由于一个面是由3个以上的顶点所组成，因此使用一个“顶点列表”即可描述一个面, PLY格式使用一个特殊关键字’property list’定义之。 例如，一个具有10个面的物体，其PLY档头可能包含：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">element face 10</span><br><span class="line">property list uchar int vertex_indices</span><br></pre></td></tr></table></figure>
+<p>‘property list’表示该元素face的特性是由一行的顶点列表来描述。列表开头以uchar型态的数值表示列表的项目数，后面接着资料型态为int的顶点索引值（vertex_indices），顶点索引值从0开始。</p>
+<p>最后，标头必须以此行结尾：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">end_header</span><br></pre></td></tr></table></figure>
+<p>档头后接着的是元素资料（端点座标、拓朴连结等）。在ASCII格式中各个端点与面的资讯都是以独立的一行描述，而二元编码格式则连续储存这些资料，载入时须以’element’定义的元素数目以及’property’中设定的资料形态计算各笔字段的长度。</p>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>一个典型的PLY文件结构分成三部分：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">文件头 (从ply开始到end_header）</span><br><span class="line">顶点元素列表</span><br><span class="line">面元素列表</span><br></pre></td></tr></table></figure>
+<p>其中的顶点元素列表一般以x y z方式排列，形态如文件头所定义；而面元素列表是以下列格式表示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;组成面的端点數N&gt; &lt;端点#1的索引&gt; &lt;端点#2的索引&gt; ... &lt;端点#N的索引&gt;</span><br></pre></td></tr></table></figure>
+<p>以存储一个立方体模型的PLY文件为例，其内容为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">ply</span><br><span class="line">format ascii 1.0</span><br><span class="line">comment made by anonymous</span><br><span class="line">comment this file is a cube</span><br><span class="line">element vertex 8</span><br><span class="line">property float32 x</span><br><span class="line">property float32 y</span><br><span class="line">property float32 z</span><br><span class="line">element face 12</span><br><span class="line">property list uint8 int32 vertex_index</span><br><span class="line">end_header</span><br><span class="line">0 0 0</span><br><span class="line">0 25.8 0</span><br><span class="line">18.9 0 0</span><br><span class="line">18.9 25.8 0</span><br><span class="line">0 0 7.5</span><br><span class="line">0 25.8 7.5</span><br><span class="line">18.9 0 7.5</span><br><span class="line">18.9 25.8 7.5</span><br><span class="line">3 5 1 0</span><br><span class="line">3 5 4 0</span><br><span class="line">3 4 0 2</span><br><span class="line">3 4 6 2</span><br><span class="line">3 7 5 4</span><br><span class="line">3 7 6 4</span><br><span class="line">3 3 2 1</span><br><span class="line">3 1 2 0</span><br><span class="line">3 5 7 1</span><br><span class="line">3 7 1 3</span><br><span class="line">3 7 6 3</span><br><span class="line">3 6 3 2</span><br></pre></td></tr></table></figure>
+<p>PLY文件可用blender软件打开。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/PLY" target="_blank" rel="noopener">PLY</a>,by wikipedia.</li>
+<li><a href="https://blog.csdn.net/sinat_20530977/article/details/44805107" target="_blank" rel="noopener">Opengl学习笔记：（一）.Ply文件文件格式和文件读取</a>,by  为何走到这里.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/02/图像特征检测与描述/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2100,235 +2273,6 @@ b_{3}
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/10/Ubuntu16-04安装MAVROS/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/10/Ubuntu16-04安装MAVROS/" itemprop="url">
-                  Ubuntu16.04安装MAVROS
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-05-10 18:28:50" itemprop="dateCreated datePublished" datetime="2019-05-10T18:28:50+08:00">2019-05-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-06-24 22:19:37" itemprop="dateModified" datetime="2019-06-24T22:19:37+08:00">2019-06-24</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>MAVROS包支持运行ROS的计算机、支持Mavlink的自驾仪、支持Mavlink的地面控制站之间使用Mavlink协议进行通信，如图1所示。</p>
-<p></p><p align="center">
-    <img src="images/px4_sitl_overview.png" width="90%" alt="px4软件在环仿真">
-</p><p></p>
-<center>图1  px4软件在环仿真</center>
-
-<p>为构建px4软件在环仿真环境，下面介绍在协同计算机上安装Ubuntu16.04、ROS和MAVROS的步骤。</p>
-<h1 id="安装ubuntu-16-04"><a href="#安装ubuntu-16-04" class="headerlink" title="安装ubuntu 16.04"></a>安装ubuntu 16.04</h1><p>安装ubuntu 16.04 LTS桌面板的教程请参考链接<a href="https://forum.ubuntu.org.cn/viewtopic.php?t=478527" target="_blank" rel="noopener">Ubuntu 16.04 安装基础入门教程（图文）</a>。</p>
-<h1 id="安装ROS"><a href="#安装ROS" class="headerlink" title="安装ROS"></a>安装ROS</h1><h2 id="ROS简介"><a href="#ROS简介" class="headerlink" title="ROS简介"></a>ROS简介</h2><p>ROS（机器人操作系统，Robot Operating System），是专为机器人软件开发所设计出来的一套电脑操作系统架构。它是一个开源的元级操作系统（后操作系统），提供类似于操作系统的服务，包括硬件抽象描述、底层驱动程序管理、共用功能的执行、程序间消息传递、程序发行包管理，它也提供一些工具和库用于获取、建立、编写和执行多机融合的程序。</p>
-<p>ROS的首要设计目标是在机器人研发领域提高代码复用率。ROS是一种分布式处理框架（又名Nodes）。这使可执行文件能被单独设计，并且在运行时松散耦合。这些过程可以封装到数据包（Packages）和堆栈（Stacks）中，以便于共享和分发。ROS还支持代码库的联合系统。使得协作亦能被分发。这种从文件系统级别到社区一级的设计让独立地决定发展和实施工作成为可能。上述所有功能都能由ROS的基础工具实现。</p>
-<p>ROS有三个层次的概念：分别为Filesystem level，Computation graph level， 以及Communication level。 以下内容具体的总结了这些层次及概念。除了这三个层次的概念， ROS也定义了两种名称— Package资源名称和Graph资源名称。</p>
-<h2 id="安装ROS-1"><a href="#安装ROS-1" class="headerlink" title="安装ROS"></a>安装ROS</h2><p>不建议在虚拟机中安装Ubuntu，再安装ROS。具体ROS安装步骤请参考<a href="https://www.cnblogs.com/liu-fa/p/5779206.html" target="_blank" rel="noopener">ROS 不能再详细的安装教程</a>和<a href="http://wiki.ros.org/kinetic/Installation/Ubuntu" target="_blank" rel="noopener">Ubuntu install of ROS Kinetic</a>。在此只简单记录Ubuntu 16.04 中安装ROS步骤：</p>
-<ul>
-<li>设置source.list</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sh -c &apos;echo &quot;deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main&quot; &gt; /etc/apt/sources.list.d/ros-latest.list&apos;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>设置公钥</li>
-</ul>
-<p>如何在连接服务器的过程中出现问题，可设置可选的hkp://pgp.mit.edu:80 或 hkp://keyserver.ubuntu.com:80</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116</span><br></pre></td></tr></table></figure>
-<ul>
-<li>安装</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install ros-kinetic-desktop-full</span><br></pre></td></tr></table></figure>
-<ul>
-<li>初始化rosdep</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo rosdep init</span><br><span class="line">rosdep update</span><br></pre></td></tr></table></figure>
-<ul>
-<li>环境配置</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;source /opt/ros/kinetic/setup.bash&quot; &gt;&gt; ~/.bashrc</span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
-<ul>
-<li>安装ros组件构建环境</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install python-catkin-tools python-rosinstall python-rosinstall-generator python-wstool build-essential -y</span><br></pre></td></tr></table></figure>
-<h2 id="运行ROS"><a href="#运行ROS" class="headerlink" title="运行ROS"></a>运行ROS</h2><p>在Ubuntu 16.04终端中运行如下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"># roscore will start up a ROS Master, a ROS Parameter Server and a rosout logging node</span><br><span class="line">$ roscore</span><br><span class="line"></span><br><span class="line"># rosnode is a command-line tool for printing information about ROS Nodes.</span><br><span class="line">$ rosnode list</span><br><span class="line"></span><br><span class="line"># rospack allows you to get information about packages. </span><br><span class="line"></span><br><span class="line">$ rospack list</span><br><span class="line"></span><br><span class="line"># rosrun will locate PACKAGE and try to find an executable named EXECUTABLE in the PACKAGE tree. If it finds it, it will run it with ARGS.</span><br><span class="line"># Usage: rosrun [--prefix cmd] [--debug] PACKAGE EXECUTABLE [ARGS]</span><br><span class="line">$ rosrun turtlesim turtlesim_node</span><br><span class="line">$ rosrun turtlesim turtle_teleop_key</span><br><span class="line"></span><br><span class="line"># record the message which published in the topic</span><br><span class="line">$ rosbag record /turtle1/cmd_vel</span><br><span class="line"></span><br><span class="line"># check what&apos;s happen in ros system</span><br><span class="line">$ rosrun rqt_graph rqt_graph</span><br><span class="line"></span><br><span class="line"># rqt_plot displays a scrolling time plot of the data published on topics</span><br><span class="line">$ rosrun rqt_plot rqt_plot</span><br><span class="line"></span><br><span class="line"># rostopic is a command-line tool for printing information about ROS Topics.</span><br><span class="line">$ rostopic list</span><br><span class="line"></span><br><span class="line"># rostopic echo shows the data published on a topic.</span><br><span class="line">$ rostopic echo /turtle1/cmd_vel</span><br><span class="line"></span><br><span class="line"># rostopic type returns the message type of any topic being published.</span><br><span class="line">$ rostopic type /turtle1/cmd_vel</span><br><span class="line"></span><br><span class="line"># rostopic pub publishes data on to a topic currently advertised.</span><br><span class="line">$ rostopic pub -1 /turtle1/cmd_vel geometry_msgs/Twist -- &apos;[2.0, 0.0, 0.0]&apos; &apos;[0.0, 0.0, 1.8]&apos;</span><br><span class="line"></span><br><span class="line"># rostopic hz reports the rate at which data is published.</span><br><span class="line">$ rostopic hz /turtle1/pose</span><br><span class="line"></span><br><span class="line"># check info of /turtlesim node</span><br><span class="line">$ rosnode info /turtlesim</span><br></pre></td></tr></table></figure></p>
-<h1 id="安装MAVROS"><a href="#安装MAVROS" class="headerlink" title="安装MAVROS"></a>安装MAVROS</h1><p>具体安装MAVROS的步骤请参考链接<a href="https://dev.px4.io/en/ros/mavros_installation.html" target="_blank" rel="noopener">MAVROS</a>。下面简单介绍Ubuntu 16.04下从源代码安装MAVROS的过程。</p>
-<ul>
-<li>创建catkin工作空间</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src</span><br><span class="line">cd ~/catkin_ws</span><br><span class="line">catkin init</span><br><span class="line">wstool init src</span><br></pre></td></tr></table></figure>
-<ul>
-<li>安装MAVLink</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosinstall_generator --rosdistro kinetic mavlink | tee /tmp/mavros.rosinstall</span><br></pre></td></tr></table></figure>
-<ul>
-<li>安装MAVROS</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosinstall_generator --upstream mavros | tee -a /tmp/mavros.rosinstall</span><br></pre></td></tr></table></figure>
-<ul>
-<li>创建工作空间和依赖</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wstool merge -t src /tmp/mavros.rosinstall</span><br><span class="line">wstool update -t src -j4</span><br><span class="line">rosdep install --from-paths src --ignore-src -y</span><br></pre></td></tr></table></figure>
-<ul>
-<li>安装GeographicLib数据集</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ./src/mavros/mavros/scripts/install_geographiclib_datasets.sh</span><br></pre></td></tr></table></figure>
-<ul>
-<li>构建源</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">catkin build</span><br></pre></td></tr></table></figure>
-<ul>
-<li>添加工作空间到ros环境</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Needed or rosrun can&apos;t find nodes from this workspace.</span><br><span class="line">$ source devel/setup.bash</span><br><span class="line"># Or write in .bashrc</span><br><span class="line">$ echo &quot;source ~/catkin_ws/devel/setup.bash&quot; &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://forum.ubuntu.org.cn/viewtopic.php?t=478527" target="_blank" rel="noopener">Ubuntu 16.04 安装基础入门教程（图文）</a>, by ubuntu中文论坛.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E6%A9%9F%E5%99%A8%E4%BA%BA%E4%BD%9C%E6%A5%AD%E7%B3%BB%E7%B5%B1" target="_blank" rel="noopener">机器人操作系统</a>,by wikipedia.</li>
-<li><a href="https://www.cnblogs.com/liu-fa/p/5779206.html" target="_blank" rel="noopener">ROS 不能再详细的安装教程</a>,by 小萌是个球.</li>
-<li><a href="http://wiki.ros.org/kinetic/Installation/Ubuntu" target="_blank" rel="noopener">Ubuntu install of ROS Kinetic</a>, by ROS.org.</li>
-<li><a href="http://wiki.ros.org/ROS/Tutorials" target="_blank" rel="noopener">ROS Tutorials</a>, by ROS.org.</li>
-<li><a href="https://dev.px4.io/en/ros/mavros_installation.html" target="_blank" rel="noopener">MAVROS</a>, by DroneCode.</li>
-<li><a href="https://blog.csdn.net/chishuideyu/article/details/53581013" target="_blank" rel="noopener">catkin 与 rosbuild解析及两者区别和联系</a>,by Xuefeng_BUPT.</li>
-<li><a href="http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment" target="_blank" rel="noopener">Installing and Configuring Your ROS Environment</a>, by ros.org.</li>
-<li><a href="http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment" target="_blank" rel="noopener">Installing and Configuring Your ROS Environment</a>,by ros.org.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2376,7 +2320,7 @@ b_{3}
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">151</span>
+                    <span class="site-state-item-count">152</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -3062,9 +3006,9 @@ b_{3}
       
     
       
-        
-      
     
+      
+        
       
     
       

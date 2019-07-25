@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-07-24T16:00:48.775Z</updated>
+  <updated>2019-07-25T05:14:40.541Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>express-jwt使用帮助</title>
+    <link href="https://huangwang.github.io/2019/07/25/express-jwt%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/"/>
+    <id>https://huangwang.github.io/2019/07/25/express-jwt使用帮助/</id>
+    <published>2019-07-25T02:42:14.000Z</published>
+    <updated>2019-07-25T05:14:40.541Z</updated>
+    
+    <content type="html"><![CDATA[<p>express-jwt是一个验证JsonWebTokens并设置req.user的connect/express中间件。此模块允许您使用Node.js应用程序中的JWT令牌验证HTTP请求。 JWT通常用于保护API端点，通常使用OpenID Connect发布。</p><h1 id="Json-web-token结构"><a href="#Json-web-token结构" class="headerlink" title="Json web token结构"></a>Json web token结构</h1><p>JWT 的三个部分依次如下：</p><ul><li>Header（头部）</li><li>Payload（负载）</li><li>Signature（签名）</li></ul><h2 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h2><p>Header 部分是一个 JSON 对象，描述 JWT 的元数据，通常是下面的样子。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;alg&quot;: &quot;HS256&quot;,</span><br><span class="line">  &quot;typ&quot;: &quot;JWT&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>上面代码中，alg属性表示签名的算法（algorithm），默认是 HMAC SHA256（写成 HS256）；typ属性表示这个令牌（token）的类型（type），JWT 令牌统一写为JWT。最后，将上面的 JSON 对象使用 Base64URL 算法转成字符串。</p><h2 id="Payload"><a href="#Payload" class="headerlink" title="Payload"></a>Payload</h2><p>Payload 部分也是一个 JSON 对象，用来存放实际需要传递的数据。JWT 规定了7个官方字段，供选用。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">iss (issuer)：签发人</span><br><span class="line">exp (expiration time)：过期时间</span><br><span class="line">sub (subject)：主题</span><br><span class="line">aud (audience)：受众</span><br><span class="line">nbf (Not Before)：生效时间</span><br><span class="line">iat (Issued At)：签发时间</span><br><span class="line">jti (JWT ID)：编号</span><br></pre></td></tr></table></figure><p>除了官方字段，你还可以在这个部分定义私有字段，下面就是一个例子。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;sub&quot;: &quot;1234567890&quot;,</span><br><span class="line">  &quot;name&quot;: &quot;John Doe&quot;,</span><br><span class="line">  &quot;admin&quot;: true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>注意，JWT 默认是不加密的，任何人都可以读到，所以不要把秘密信息放在这个部分。这个 JSON 对象也要使用 Base64URL 算法转成字符串。</p><h2 id="Signature"><a href="#Signature" class="headerlink" title="Signature"></a>Signature</h2><p>ignature 部分是对前两部分的签名，防止数据篡改。</p><p>首先，需要指定一个密钥（secret）。这个密钥只有服务器才知道，不能泄露给用户。然后，使用 Header 里面指定的签名算法（默认是 HMAC SHA256），按照下面的公式产生签名。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HMACSHA256(</span><br><span class="line">  base64UrlEncode(header) + &quot;.&quot; +</span><br><span class="line">  base64UrlEncode(payload),</span><br><span class="line">  secret)</span><br></pre></td></tr></table></figure><p>算出签名以后，把 Header、Payload、Signature 三个部分拼成一个字符串，每个部分之间用”点”（.）分隔，就可以返回给用户。</p><h1 id="基于JWT的身份验证流程"><a href="#基于JWT的身份验证流程" class="headerlink" title="基于JWT的身份验证流程"></a>基于JWT的身份验证流程</h1><p>使用基于 JWT 的身份验证方法，在服务端不需要存储用户的登录记录。大概的流程是这样的：</p><ol><li>客户端使用用户名跟密码请求登录</li><li>服务端收到请求，去验证用户名与密码</li><li>验证成功后，服务端会签发一个 Token，再把这个 Token 发送给客户端</li><li>客户端收到 Token 以后可以把它存储起来，比如放在 Cookie 里或者 Local Storage 里</li><li>客户端每次向服务端请求资源的时候需要带着服务端签发的 Token</li><li>服务端收到请求，然后去验证客户端请求里面带着的 Token，如果验证成功，就向客户端返回请求的数据</li></ol><h1 id="jsonwebtoken的使用"><a href="#jsonwebtoken的使用" class="headerlink" title="jsonwebtoken的使用"></a>jsonwebtoken的使用</h1><p>jsonwebtoken是JSON Web Tokens在Nodejs平台的实现。它可以与express-jwt模块配合，在expressjs中实现基于JWT的身份验证。</p><h2 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install jsonwebtoken --save</span><br></pre></td></tr></table></figure><h2 id="使用帮助"><a href="#使用帮助" class="headerlink" title="使用帮助"></a>使用帮助</h2><p>在expressjs中主要使用该模块生成JSON Web Tokens。其接口定义为：</p><ul><li>jwt.sign(payload, secretOrPrivateKey, [options, callback])</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var token = jwt.sign(&#123;</span><br><span class="line">    role: user.RoleId</span><br><span class="line">&#125;,appConfig.secretOrPrivateKey, &#123;</span><br><span class="line">    expiresIn:  60 * 60 * 6</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><ul><li>jwt.verify(token, secretOrPublicKey, [options, callback])</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// verify a token symmetric - synchronous</span><br><span class="line">var decoded = jwt.verify(token, &apos;shhhhh&apos;);</span><br><span class="line">console.log(decoded.foo) // bar</span><br><span class="line"></span><br><span class="line">// verify a token symmetric</span><br><span class="line">jwt.verify(token, &apos;shhhhh&apos;, function(err, decoded) &#123;</span><br><span class="line">  console.log(decoded.foo) // bar</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><ul><li>jwt.decode(token [, options])</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// get the decoded payload ignoring signature, no secretOrPrivateKey needed</span><br><span class="line">var decoded = jwt.decode(token);</span><br><span class="line"></span><br><span class="line">// get the decoded payload and header</span><br><span class="line">var decoded = jwt.decode(token, &#123;complete: true&#125;);</span><br><span class="line">console.log(decoded.header);</span><br><span class="line">console.log(decoded.payload)</span><br></pre></td></tr></table></figure><h1 id="express-jwt的使用"><a href="#express-jwt的使用" class="headerlink" title="express-jwt的使用"></a>express-jwt的使用</h1><h2 id="安装帮助"><a href="#安装帮助" class="headerlink" title="安装帮助"></a>安装帮助</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install express-jwt --save</span><br></pre></td></tr></table></figure><h2 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">app.use(expressJWT(&#123;</span><br><span class="line">    secret: appConfig.secretOrPrivateKey</span><br><span class="line">&#125;));</span><br><span class="line"></span><br><span class="line">app.use(function(err, req, res, next) &#123;</span><br><span class="line">    console.log(err);</span><br><span class="line">    if (err.name === &apos;UnauthorizedError&apos;) &#123;</span><br><span class="line">        res.status(err.status || 401).send(err.message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://www.jianshu.com/p/576dbf44b2ae" target="_blank" rel="noopener">什么是 JWT — JSON WEB TOKEN</a>, by Dearmadman</li><li><a href="http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html" target="_blank" rel="noopener">JSON Web Token 入门教程</a>,by 阮一峰.</li><li><a href="https://huangwang.github.io/2018/07/08/Cookie-Session%E5%92%8CToken%E4%BC%9A%E8%AF%9D%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/">Cookie,Session和Token会话知识整理</a>,by jack huang.</li><li><a href="https://github.com/auth0/node-jsonwebtoken" target="_blank" rel="noopener">node-jsonwebtoken</a>,by auth0.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;express-jwt是一个验证JsonWebTokens并设置req.user的connect/express中间件。此模块允许您使用Node.js应用程序中的JWT令牌验证HTTP请求。 JWT通常用于保护API端点，通常使用OpenID Connect发布。&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="nodejs" scheme="https://huangwang.github.io/tags/nodejs/"/>
+    
+  </entry>
   
   <entry>
     <title>Expressjs组件morgan保存日志到文件的方法</title>
@@ -512,31 +538,6 @@
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
       <category term="C/C++" scheme="https://huangwang.github.io/tags/C-C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>随机抽样一致</title>
-    <link href="https://huangwang.github.io/2019/06/23/%E9%9A%8F%E6%9C%BA%E6%8A%BD%E6%A0%B7%E4%B8%80%E8%87%B4/"/>
-    <id>https://huangwang.github.io/2019/06/23/随机抽样一致/</id>
-    <published>2019-06-23T01:26:08.000Z</published>
-    <updated>2019-06-23T03:23:28.719Z</updated>
-    
-    <content type="html"><![CDATA[<p>随机抽样一致算法（RANdom SAmple Consensus，RANSAC）。它采用迭代的方式从一组包含离群(outlier)的被观测数据中估算出数学模型的参数。 RANSAC是一个非确定性算法，在某种意义上说，它会产生一个在一定概率下合理的结果，而更多次的迭代会使这一概率增加。此RANSAC算法在1981年由Fischler和Bolles首次提出。</p><p>RANSAC的基本假设是</p><ul><li>“内群”(inlier)数据可以通过几组模型的参数来叙述其分布，而“离群”(outlier)数据则是不适合模型化的数据。</li><li>数据会受噪声影响，噪声指的是离群，例如从极端的噪声或错误解释有关数据的测量或不正确的假设。</li><li>RANSAC假定，给定一组（通常很小）的内群，存在一个程序，这个程序可以估算最佳解释或最适用于这一数据模型的参数。</li></ul><h1 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h1><p>这里用一个简单的例子来说明，在一组数据点中找到一条最适合的线。假设，此有一组集合包含了内群以及离群，其中内群为可以被拟合到线段上的点，而离群则是无法被拟合的点。如果我们用简单的最小二乘法来找此线，我们将无法得到一条适合于内群的线，因为最小二乘法会受离群影响而影响其结果。而RANSAC，可以只由内群来计算出模型，而且概率还够高。然而，RANSAC无法保证结果一定最好，所以必须小心选择参数，使其能有足够的概率。</p><div style="display:flex">    <div style="width: 45%;margin: 0 2.5%;">        <img display="block" src="images/255px-Line_with_outliers.svg.png" width="100%" alt="包含许多离群的一组数据">        <div>包含许多离群的一组数据，要找一条最适合的线。</div>    </div>    <div style="width: 45%;margin: 0 2.5%;">        <img display="block" src="images/255px-Fitted_line.svg.png" width="100%" alt="RANSAC找到的线">        <div>RANSAC找到的线，离群值对结果没影响（蓝色点为内群，红色点为离群）</div>    </div>   </div><h1 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h1><p>RANSAC算法是一个学习的技巧，通过使用观测数据的随机样本来估计模型参数。RANSAC使用投票机制来寻找优化的拟合结果。每个数据元被用来投票一或多个模型。投票机制基于两点假设：</p><ul><li><p>噪音大的特征并不能一直单独为某个模型投票</p></li><li><p>有足够多的特征来拟合一个好的模型</p></li></ul><p>一般RANSAC算法由两步骤迭代计算：</p><ul><li><p>一个样本子集，包含数据选取（随机选取）。通过使用这些数据得到一个拟合模型和相关的模型参数。样本子集的数量是最小充分的得到模型参数。</p></li><li><p>算法检查数据集中的哪些元素是一直在第一步估计到的模型当中的。如果在阈值（相对噪声的最大偏离度）外的话，该模型元素不能拟合估计到的模型便会被当做outlier。</p></li></ul><p>inliers的设置称作“一致性设置”RANSAC算法会一直迭代直到获得足够的inliers。</p><p>RANSAC的输入是一些观测数据和一些“可信度”参数，实现步骤：</p><ol><li>随机选择一些原始数据，叫作假设inliers子集</li><li>建立模型拟合</li><li>用其他数据来验证，根据模型特定的loss-function来计算是否符合该模型</li><li>如果足够的点都算是“一致性”设置里则该模型算是好模型</li><li>比较所有的“一致性”设置（就是建立的所有模型）看看哪个inliers多就是我们要的。</li></ol><h2 id="参数决定"><a href="#参数决定" class="headerlink" title="参数决定"></a>参数决定</h2><p>假设每个点是真正内群的几率是 $w$ :</p><script type="math/tex; mode=display">w = 真正內群的數目 / 數據總共的數量</script><p>通常我们不知道 $w$ 是多少, $w^n$ 是所选择的n个点都是内群的几率, $1-w^n$ 是所选择的n个点至少有一个不是内群的几率, $(1 − w^n)^k$ 是表示重复k次都没有全部的n个点都是内群的几率, 这边定算法跑k次以后成功的几率是p，那么,</p><script type="math/tex; mode=display">1 − p =(1 − w^n)^k</script><script type="math/tex; mode=display">p = 1 −(1 − w^n)^k</script><p>所以如果希望成功几率高，p = 0.99, 当n不变时，k越大,p越大, 当w不变时，n越大，所需的k就越大, 通常w未知，所以n选小一点比较好。</p><h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>RANSAC常被用在计算机视觉，例如，对应点问题和 估算立体摄影机双眼相对点的基本矩阵。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://zhuanlan.zhihu.com/p/36301702" target="_blank" rel="noopener">随机抽样一致RANSAC: Random Sample Consensus</a>,by 江知季.</li><li><a href="https://zh.wikipedia.org/wiki/%E9%9A%A8%E6%A9%9F%E6%8A%BD%E6%A8%A3%E4%B8%80%E8%87%B4" target="_blank" rel="noopener">随机抽样一致</a>,by wikipedia.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;随机抽样一致算法（RANdom SAmple Consensus，RANSAC）。它采用迭代的方式从一组包含离群(outlier)的被观测数据中估算出数学模型的参数。 RANSAC是一个非确定性算法，在某种意义上说，它会产生一个在一定概率下合理的结果，而更多次的迭代会使这一
-      
-    
-    </summary>
-    
-    
-      <category term="计算机视觉" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/"/>
-    
-      <category term="统计学" scheme="https://huangwang.github.io/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/"/>
     
   </entry>
   

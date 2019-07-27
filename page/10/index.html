@@ -314,6 +314,181 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/16/node-gyp使用帮助/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/16/node-gyp使用帮助/" itemprop="url">
+                  node-gyp使用帮助
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-16 13:27:18" itemprop="dateCreated datePublished" datetime="2018-12-16T13:27:18+08:00">2018-12-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-17 00:19:14" itemprop="dateModified" datetime="2018-12-17T00:19:14+08:00">2018-12-17</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>node-gyp是为了编译nodejs addon模块而构建的跨平台命令行工具。nodejs addon模块使用c++语言编写，在源代码级别进行分发，通过node-gyp实现跨平台的编译安装。</p>
+<h1 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h1><p>node-gyp源于gyp。gyp是一个用来生成项目文件的工具，刚开始设计给chromium项目使用的。它可以从平台无关的配置生成平台相关的Visual Studio、Xcode、Makefile的项目文件，然后调用 vsbuild、xcode、gcc等编译平台来编译。这就不需要花额外的时间处理每个平台不同的项目配置以及项目之间的依赖关系。</p>
+<p>nodejs addon模块采用源代码分发，安装需要根据不同平台采用合适的编译器编译安装，这就是node-gyp项目诞生的原由。</p>
+<h1 id="安装过程"><a href="#安装过程" class="headerlink" title="安装过程"></a>安装过程</h1><h2 id="安装node-gyp"><a href="#安装node-gyp" class="headerlink" title="安装node-gyp"></a>安装node-gyp</h2><p>在上线情况下，使用如下命令安装node-gyp：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g node-gyp</span><br></pre></td></tr></table></figure></p>
+<h2 id="安装C-编译器"><a href="#安装C-编译器" class="headerlink" title="安装C++编译器"></a>安装C++编译器</h2><p>根据操作系统平台的不同，需安装对应的编译器，以方便node-gyp调用。以Windows平台为例，安装VC++编译器有两种方法：</p>
+<ul>
+<li><p>直接安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 以管理员身份打开cmd或powershell</span><br><span class="line"></span><br><span class="line">npm install --global --production windows-build-tools</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>手动安装</p>
+<ul>
+<li>安装Visual C++构建环境： 使用Visual Studio Build Tools的Visual C++ build tools工作负载或者Visual Studio 2017 Community的Desktop development with C++工作负载。</li>
+<li>安装Python 2.7，不支持python3，然后运行npm config set python python2.7</li>
+<li>在cmd中运行npm config set msvs_version 2017</li>
+</ul>
+</li>
+</ul>
+<p>手动安装Visual C++构建环境的命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 使用Visual Studio Build Tools的Visual C++ build tools工作负载，确保安装win10sdk，编译nodejs源码时需要</span><br><span class="line"></span><br><span class="line">.\vs_buildtools__2041717674.1536666005.exe --layout d:\vc2017_offline --lang zh-CN --add Microsoft.VisualStudio.Workload.MSBuildTools --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended</span><br><span class="line"></span><br><span class="line"># 使用Visual Studio 2017 Community的Desktop development with C++工作负载</span><br><span class="line"></span><br><span class="line">.\vs_community__208176120.1522073957.exe --layout e:\vs2017_offline --lang zh-CN --add Microsoft.VisualStudio.Workload.CoreEditor --add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended</span><br></pre></td></tr></table></figure></p>
+<h2 id="node-gyp编译测试"><a href="#node-gyp编译测试" class="headerlink" title="node-gyp编译测试"></a>node-gyp编译测试</h2><p>以在Win10平台编译nodejs addon模块为例，在离线情况使用如下命令测试node-gyp是否工作正常：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">node-gyp configure --nodedir=d:\node-v8.11.3</span><br><span class="line"></span><br><span class="line">node-gyp build</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.zhihu.com/question/36291768" target="_blank" rel="noopener">node-gyp的作用是什么?</a>,by zhihu.</li>
+<li><a href="https://github.com/nodejs/node-gyp" target="_blank" rel="noopener">node-gyp</a>, by nodejs</li>
+<li><a href="https://github.com/felixrieseberg/windows-build-tools" target="_blank" rel="noopener">Windows-Build-Tools</a>, by felixrieseberg.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/15/树莓派使用lirc进行红外遥控测试/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2088,236 +2263,6 @@ v_{k+1}(s) &\overset{.}{=} \max_{a} \mathbb E_{\pi}[R_{t+1}+\gamma v _{k}(S_{t+1
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/24/wiringPi学习笔记/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/24/wiringPi学习笔记/" itemprop="url">
-                  wiringPi学习笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-24 20:26:31" itemprop="dateCreated datePublished" datetime="2018-11-24T20:26:31+08:00">2018-11-24</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-12-21 21:23:41" itemprop="dateModified" datetime="2018-12-21T21:23:41+08:00">2018-12-21</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>wiringPi 库是由 Gordon Henderson 所编写并维护的一个用 C 语言写成的类库。起初,主要是作为 BCM2835 芯片的 GPIO 库。而现在,已经非常丰富,除了 GPIO 库,还包括了I2C 库、SPI 库、UART 库和软件 PWM 库等。</p>
-<p>由于其与 Arduino 的“wiring”系统较为类似,故以此命名。它是采用 GNU LGPLv3许可证的,可以在 C 或 C++上使用,而且在其他编程语言上也有对应的扩展。</p>
-<p>wiringPi 库包含了一个命令行工具 gpio,它可以用来设置 GPIO 管脚,可以用来读写GPIO 管脚,甚至可以在 Shell 脚本中使用来达到控制 GPIO 管脚的目的。</p>
-<h1 id="下载、编译和测试wiringPi"><a href="#下载、编译和测试wiringPi" class="headerlink" title="下载、编译和测试wiringPi"></a>下载、编译和测试wiringPi</h1><ol>
-<li><p>下载并编译wiringPi</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone git://git.drogon.net/wiringPi</span><br><span class="line">cd wiringPi</span><br><span class="line">./build</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>测试wiringPi是否安装成功<br>打开命令终端，可以通过 gpio 命令来检查 wiringPi 是否安装成功，运行下面的命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gpio –v</span><br><span class="line">gpio readall</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>运行上述第二条命令将得到树莓派的 GPIO 接口之间的对应关系。</p>
-<p align="center">
-    <img src="images/gpio_map.png" width="100%" alt="gpio管脚定义">
-</p>
-
-<h1 id="使用wiringPi"><a href="#使用wiringPi" class="headerlink" title="使用wiringPi"></a>使用wiringPi</h1><p>在使用wiringPi之前，应首先对wiringPi进行设置。</p>
-<h2 id="wiringPi设置函数"><a href="#wiringPi设置函数" class="headerlink" title="wiringPi设置函数"></a>wiringPi设置函数</h2><p>wiringPi设置函数如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int wiringPiSetup (void) ;</span><br><span class="line">int wiringPiSetupGpio (void) ;</span><br><span class="line">int wiringPiSetupPhys (void) ;</span><br><span class="line">int wiringPiSetupSys (void) ;</span><br></pre></td></tr></table></figure></p>
-<h3 id="wiringPiSetup-void-函数"><a href="#wiringPiSetup-void-函数" class="headerlink" title="wiringPiSetup (void) 函数"></a>wiringPiSetup (void) 函数</h3><p>该函数初始化wiringPi，假定程序将使用wiringPi的管脚定义图。具体管脚映射，可以通过gpio readall命令来查看。该函数需要root权限。</p>
-<h3 id="wiringPiSetupGpio-void-函数"><a href="#wiringPiSetupGpio-void-函数" class="headerlink" title="wiringPiSetupGpio (void) 函数"></a>wiringPiSetupGpio (void) 函数</h3><p>该函数与wiringPiSetup函数类似，区别在于假定程序使用的是Broadcom的GPIO管脚定义，而没有重新映射。该函数需要root权限，需要注意v1和v2版本的树莓派是不同的。</p>
-<h3 id="wiringPiSetupPhys-void-函数"><a href="#wiringPiSetupPhys-void-函数" class="headerlink" title="wiringPiSetupPhys (void) 函数"></a>wiringPiSetupPhys (void) 函数</h3><p>该函数与wiringPiSetup函数类似，区别在于允许程序使用物理管脚定义，但仅支持P1接口。该函数需要root权限。</p>
-<h3 id="wiringPiSetupSys-void-函数"><a href="#wiringPiSetupSys-void-函数" class="headerlink" title="wiringPiSetupSys (void) 函数"></a>wiringPiSetupSys (void) 函数</h3><p>该函数初始化wiringPi，使用/sys/class/gpio接口，而不是直接通过操作硬件来实现。该函数可以使用非root权限用户，在此种模式下的管脚号是Broadcom的GPIO管脚号，不wiringPiSetupGpio函数类似，需要注意v1和v2板子的不同。</p>
-<p>在此种模式下，在运行程序前，您需要通过/sys/class/gpio接口导出要使用的管脚。你可以在一个独立的shell脚本中来导出将要使用的管脚，或者使用系统的system()函数来调用GPIO命令。</p>
-<h2 id="软件-PWM-库"><a href="#软件-PWM-库" class="headerlink" title="软件 PWM 库"></a>软件 PWM 库</h2><p>wiringPi 中包含了一个软件驱动的 PWM (Pulse Width Modulation, 脉冲宽度调节)处理库，可以在任意的树莓派 GPIO 上输出 PWM 信号。</p>
-<p>但是也有一些限制。为了维护较低的 CPU 使用率，最小的脉冲宽度是 100 微秒，结合默认的建议值为 100，那么最小的 PWM 频率是 100Hz。如果需要更高的频率，可以使用更低的数值。如果看脉冲宽度的驱动代码，你会发现低于 100 微秒，wiringPi 是在软件循环中实现的，这就意味着 CPU 使用率将会动态增加，从而使得控制其他管脚成为不可能。</p>
-<p>需要注意的是，当其他程序运行在更高的实时的优先级，Linux 可能会影响产生信号的精度。尽管有这些限制，控制 LED 或电机还是可以的。</p>
-<p>使用前,需要包含相应的文件:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;wiringPi.h&gt;</span><br><span class="line">#include &lt;softPwm.h&gt;</span><br></pre></td></tr></table></figure></p>
-<p>当编译程序时,必须加上 pthread 库,如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc –o myprog myprog.c –lwiringPi –lpthread</span><br></pre></td></tr></table></figure></p>
-<p>必须使用 wiringPiSetup()、 wiringPiSetupGpio()或者 wiringPiSetupPhys()函数来初始化 wiringPi。</p>
-<p>wiringPiSetupSys()是不够快的，因此，必须使用 sudo 命令来运行程序。</p>
-<h3 id="softPwmCreate-函数"><a href="#softPwmCreate-函数" class="headerlink" title="softPwmCreate 函数"></a>softPwmCreate 函数</h3><p>该函数的原型为：int softPwmCreate(int pin, int initialValue, int pwmRange);</p>
-<p>该函数将会创建一个软件控制的 PWM 管脚。可以使用任何一个 GPIO 管脚 , pwmRange 参数可以为 0(关)~100(全开)。</p>
-<p>返回值为 0，代表成功，其他值，代表失败。</p>
-<h3 id="softPwmWrite-函数"><a href="#softPwmWrite-函数" class="headerlink" title="softPwmWrite 函数"></a>softPwmWrite 函数</h3><p>该函数的原型为: void softPwmWrite(int pin, int value);</p>
-<p>该函数将会更新指定管脚的 PWM 值。value 参数的范围将会被检查,如果指定的管脚之前没有通过 softPwmCreate 初始化,将会被忽略。</p>
-<h2 id="wiringPi核心函数"><a href="#wiringPi核心函数" class="headerlink" title="wiringPi核心函数"></a>wiringPi核心函数</h2><h3 id="pinMode函数"><a href="#pinMode函数" class="headerlink" title="pinMode函数"></a>pinMode函数</h3><p>该函数的原型为: void pinMode(int pin, int mode);</p>
-<p>使用该函数可以将某个管脚讴置为 INPUT(输入)、 OUTPUT(输出)、 PWM_OUTPUT(脉冲输出)或者 GPIO_CLOCK(GPIO 时钟)。</p>
-<p>需要注意的是仅有管脚 1(BCM_GPIO 18)支持 PWM_OUTPUT 模式,仅有管脚 7(BCM_GPIO 4)支持 CLOCK 输出模式。</p>
-<p>在 Sys 模式下,返个函数没有影响。你可以通过调用 gpio 命令在 shell 脚本中来设置管脚的模式。</p>
-<h3 id="digitalWrite-函数"><a href="#digitalWrite-函数" class="headerlink" title="digitalWrite 函数"></a>digitalWrite 函数</h3><p>该函数的原型为: void digitalWrite(int pin, int value);</p>
-<p>使用该函数可以向指定的管脚写入 HIGH(高)或者 LOW(低),写入前,需要将管脚设置为输出模式。</p>
-<p>wiringPi 将任何的非 0 值作为 HIGH (高)来对待,因此, 0 是唯一能够代表 LOW (低)的数值。</p>
-<h3 id="digitalRead-函数"><a href="#digitalRead-函数" class="headerlink" title="digitalRead 函数"></a>digitalRead 函数</h3><p>该函数原型： digitalRead(int pin);</p>
-<p>使用该函数可以读取指定管脚的值，读取到的值为HIGH（1）或者LOW（0），该值取决于该管脚的逻辑电平的高低。</p>
-<h2 id="时间函数"><a href="#时间函数" class="headerlink" title="时间函数"></a>时间函数</h2><h3 id="delay-函数"><a href="#delay-函数" class="headerlink" title="delay 函数"></a>delay 函数</h3><p>该函数的原型为：void delay(unsigned int howLong);</p>
-<p>该函数将会中断程序执行至少 howLong 毫秒。因为 Linux 是多任务的原因，中断时间可能会更长。需要注意的是，最长的延迟值是一个无符号 32 位整数，其大约为 49 天。</p>
-<h3 id="delayMicroseconds-函数"><a href="#delayMicroseconds-函数" class="headerlink" title="delayMicroseconds 函数"></a>delayMicroseconds 函数</h3><p>该函数的原型为：void delayMicroseconds(unsigned int howLong);</p>
-<p>该函数将会中断程序执行至少 howLong 微秒。因为 Linux 是一个多任务的系统，因此中断时间可能会更长。需要注意的是，最长的延迟值是一个无符号 32 位整数，其大约为 71分钟。</p>
-<p>延迟低于100 微秒，将会使用硬件循环来实现；超过 100 微秒，将会使用系统的nanosleep()函数来实现。</p>
-<h2 id="优先级-时间-线程"><a href="#优先级-时间-线程" class="headerlink" title="优先级/时间/线程"></a>优先级/时间/线程</h2><h3 id="wiringPiISR-函数"><a href="#wiringPiISR-函数" class="headerlink" title="wiringPiISR 函数"></a>wiringPiISR 函数</h3><p>该函数的原型为：int wiringPiISR(int pin, int edgeType, void (*function)(void));</p>
-<p>该函数会在指定管脚注册一个中断事件的函数，当指定管脚发生中断事件时，会自动调用该函数。</p>
-<p>edgeType 参数可以为 INT_EDGE_FALLING（下降沿）、INT_EDGE_RISING（上升沿）、INT_EDGE_BOTH（上升沿或者下降沿）或者 INT_EDGE_SETUP。如果是INT_EDGE_SETUP，将不会初始化该管脚，因为它假定已经在别处设置过该管脚（比如使用 gpio 命令），但是，如果指定另外的类型，指定管脚将会被导出并初始化。完成此操作使用的是 gpio 命令，所以，必须保证 gpio 命令是可用的。</p>
-<p>注册函数在中断触发时，将会被调用。在调用注册函数前，中断事件将会从分配器中清除，所以，即使有后续的触发发生，在处理完成前，也不会错过此次触发。（当然，如果在正在处理触发时，有不止一个的中断发生，已经发生的中断将会被忽略）。</p>
-<h2 id="I2C库"><a href="#I2C库" class="headerlink" title="I2C库"></a>I2C库</h2><p>wiringPi 包含了一个 I2C 库，来让您能够更轻松的使用树莓派的板上 I2C 接口。在使用 I2C 接口之前，您可能需要使用 gpio 命令来加载 I2C 驱劢到内核中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gpio load i2c</span><br></pre></td></tr></table></figure></p>
-<p>如果你需要的波特率是 100Kbps，那么您可以使用如下命令设置波特率为1000Kbps：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gpio load i2c 1000</span><br></pre></td></tr></table></figure></p>
-<p>使用 I2C 库，需要包含 wiringPiI2C.h 文件。并且编译时，同样需要使用-lwiringPi 来连接到 wiringPi 库。</p>
-<p>您仍然可以使用标准的系统命令来检测 I2C 设备，如 i2cdetect 命令，需要注意的是，在 v1 版本的树莓派上是 0，v2 版本上是 1，如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls /dev/i2c-1</span><br><span class="line"># 注意i2c-1后面的编码1</span><br><span class="line">i2cdetect –y 1</span><br></pre></td></tr></table></figure>
-<p>当然，您也可以使用 gpio 命令来调用 i2cdetect 命令，从而检测 I2C 讴备，返样就不用在乎您的树莓派版本了，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gpio i2cdetect</span><br></pre></td></tr></table></figure></p>
-<h3 id="wiringPiI2CSetup-函数"><a href="#wiringPiI2CSetup-函数" class="headerlink" title="wiringPiI2CSetup 函数"></a>wiringPiI2CSetup 函数</h3><p>该函数的原型为：int wiringPiI2CSetup(int devId);</p>
-<p>该函数使用指定设备标示号来初始化 I2C 系统。参数 devId 是 I2C 设备的地址，可以通过 i2cdetect 命令可以查到该地址。该函数会获取树莓派的版本并依据此打开/dev 目录下对应的讴备。</p>
-<p>返回值是标准的 Linux 文件句柄，如果有错误，则返回-1。</p>
-<p>比如，流行的 MCP23017 GPIO 扩展器的设备 ID 是 0x20，所以，你需要将这个数值传递给 wiringPiI2CSetup()。</p>
-<h3 id="wiringPiI2CWrite-函数"><a href="#wiringPiI2CWrite-函数" class="headerlink" title="wiringPiI2CWrite 函数"></a>wiringPiI2CWrite 函数</h3><p>该函数的原型为：int wiringPiI2CWrite(int fd, int data)；</p>
-<p>简单的设备写操作。一些设备可以接受数据，而不需要发送任何内部寄存器地址。</p>
-<h3 id="wiringPiI2CRead-函数"><a href="#wiringPiI2CRead-函数" class="headerlink" title="wiringPiI2CRead 函数"></a>wiringPiI2CRead 函数</h3><p>该函数的原型为：int wiringPiI2CRead(int fd)；</p>
-<p>简单的设备读操作。一些设备可以直接读取，而不需要发送任何寄存器地址。</p>
-<h3 id="wiringPiI2CWriteReg8-和-wiringPiI2CWriteReg16-函数"><a href="#wiringPiI2CWriteReg8-和-wiringPiI2CWriteReg16-函数" class="headerlink" title="wiringPiI2CWriteReg8 和 wiringPiI2CWriteReg16 函数"></a>wiringPiI2CWriteReg8 和 wiringPiI2CWriteReg16 函数</h3><p>该函数的原型为：</p>
-<p>int wiringPiI2CWriteReg8(int fd, int reg, int data); int wiringPiI2CWriteReg16(int fd, int reg, int data);</p>
-<p>使用返两个函数，可以写一个 8 位或 16 位数值到指定的设备寄存器。</p>
-<h3 id="wiringPiI2CReadReg8-和-wiringPiI2CReadReg16-函数"><a href="#wiringPiI2CReadReg8-和-wiringPiI2CReadReg16-函数" class="headerlink" title="wiringPiI2CReadReg8 和 wiringPiI2CReadReg16 函数"></a>wiringPiI2CReadReg8 和 wiringPiI2CReadReg16 函数</h3><p>该函数的原型为：</p>
-<p>int wiringPiI2CReadReg8(int fd, int reg); int wiringPiI2CReadReg16(int fd, int reg);</p>
-<p>使用返两个函数，可以从指定的设备寄存器读取一个 8 位或 16 位的数值。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://blog.lxx1.com/树莓派-wiringpi-用户手册" target="_blank" rel="noopener">树莓派 wiringPi 用户手册
-</a>, by 科技爱好者博客</li>
-<li><a href="http://wiringpi.com/" target="_blank" rel="noopener">Wiring Pi</a></li>
-<li><a href="https://hanbingyan.github.io/2016/03/07/pthread_on_linux/" target="_blank" rel="noopener">Pthreads 入门教程</a>,by hanbingyan.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2365,7 +2310,7 @@ v_{k+1}(s) &\overset{.}{=} \max_{a} \mathbb E_{\pi}[R_{t+1}+\gamma v _{k}(S_{t+1
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">154</span>
+                    <span class="site-state-item-count">155</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -3049,9 +2994,9 @@ v_{k+1}(s) &\overset{.}{=} \max_{a} \mathbb E_{\pi}[R_{t+1}+\gamma v _{k}(S_{t+1
       
     
       
-        
-      
     
+      
+        
       
     
       

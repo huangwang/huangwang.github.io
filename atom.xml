@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-07-28T08:56:47.900Z</updated>
+  <updated>2019-07-28T15:50:03.303Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Mock数据</title>
+    <link href="https://huangwang.github.io/2019/07/28/Mock%E6%95%B0%E6%8D%AE/"/>
+    <id>https://huangwang.github.io/2019/07/28/Mock数据/</id>
+    <published>2019-07-28T15:38:30.000Z</published>
+    <updated>2019-07-28T15:50:03.303Z</updated>
+    
+    <content type="html"><![CDATA[<p>在实际开发中，最理想的前后端交互方式当然是后端先帮前端 mock 数据，然后前端开发，但现实很骨感，总会因为种种原因，前端需要自己来 mock 假数据。常用的伪造假数据的库有：Mockjs和easy-mock。这两个库有各自问题，因此需要一种新的 mock 假数据方案。</p><h1 id="Mockjs"><a href="#Mockjs" class="headerlink" title="Mockjs"></a>Mockjs</h1><p>原理是: 拦截了所有的请求并代理到本地，然后进行数据模拟，所以你会发现 network 中没有发出任何的请求。</p><p>但它的最大的问题是就是它的实现机制。它会重写浏览器的XMLHttpRequest对象，从而才能拦截所有请求，代理到本地。</p><p>大部分情况下用起来还是蛮方便的，但就因为它重写了XMLHttpRequest对象，所以比如progress方法，或者一些底层依赖XMLHttpRequest的库都会和它发生不兼容。</p><p>另外，因为是它是本地模拟数据，实际上不会走任何网络请求。所以本地调试起来很蛋疼，只能通过console.log来调试。</p><h1 id="easy-mock"><a href="#easy-mock" class="headerlink" title="easy-mock"></a>easy-mock</h1><p>天然支持跨域，还是支持MockJs的所有语法。但因为用的人多了，它的免费服务会经常的挂，可以说天天挂。官方的建议是自己搭建服务。如果你的公司整体搭建一个这样的 mock 服务的话也是一个不错的选择。但大部分人可能还是没有这个技术条件的。</p><h1 id="新的Mock假数据方案"><a href="#新的Mock假数据方案" class="headerlink" title="新的Mock假数据方案"></a>新的Mock假数据方案</h1><p>本地会启动一个mock-server来模拟数据，线上环境还是继续使用mockjs来进行模拟(因为本项目是一个纯前端项目，你也可以自己搭建一个线上 server 来提供数据)。不管是本地还是线上所以的数据模拟都是基于mockjs生成的，所以只要写一套 mock 数据，就可以在多环境中使用。</p><p>该方案的好处是，在保留 mockjs的优势的同时，解决之前的痛点。由于我们的 mock 是完全基于webpack-dev-serve来实现的，所以在你启动前端服务的同时，mock-server就会自动启动，这里还通过 chokidar 来观察 mock 文件夹内容的变化。在发生变化时会清除之前注册的mock-api接口，重新动态挂载新的接口，从而支持热更新。有兴趣的可以自己看一下代码 mock-server.js。由于是一个真正的server，所以你可以通过控制台中的network，清楚的知道接口返回的数据结构。并且同时解决了之前mockjs会重写 XMLHttpRequest对象，导致很多第三方库失效的问题。</p><p>vue.config.js中配置本地mock-server服务：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">proxy: &#123;</span><br><span class="line">      // xxx-api/login =&gt; mock/login</span><br><span class="line">      [process.env.VUE_APP_BASE_API]: &#123;</span><br><span class="line">        target: `http://localhost:$&#123;port&#125;/mock`,</span><br><span class="line">        changeOrigin: true,</span><br><span class="line">        pathRewrite: &#123;</span><br><span class="line">          [&apos;^&apos; + process.env.VUE_APP_BASE_API]: &apos;&apos;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://juejin.im/post/5c92ff94f265da6128275a85#heading-5" target="_blank" rel="noopener">手摸手，带你用vue撸后台 系列五(v4.0新版本)</a>,by 花裤衩.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;在实际开发中，最理想的前后端交互方式当然是后端先帮前端 mock 数据，然后前端开发，但现实很骨感，总会因为种种原因，前端需要自己来 mock 假数据。常用的伪造假数据的库有：Mockjs和easy-mock。这两个库有各自问题，因此需要一种新的 mock 假数据方案。&lt;/
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="前端" scheme="https://huangwang.github.io/tags/%E5%89%8D%E7%AB%AF/"/>
+    
+  </entry>
   
   <entry>
     <title>JavaScript最新语法学习笔记</title>
@@ -512,32 +537,6 @@
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
       <category term="计算机视觉" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>使用python3+PyQt5+PyCharm桌面GUI开发</title>
-    <link href="https://huangwang.github.io/2019/06/29/%E4%BD%BF%E7%94%A8python3-PyQt5-pycharm%E6%A1%8C%E9%9D%A2GUI%E5%BC%80%E5%8F%91/"/>
-    <id>https://huangwang.github.io/2019/06/29/使用python3-PyQt5-pycharm桌面GUI开发/</id>
-    <published>2019-06-29T13:18:34.000Z</published>
-    <updated>2019-06-29T13:32:59.309Z</updated>
-    
-    <content type="html"><![CDATA[<p>下面简单介绍基于Python3、PyQt5和PyCharm进行桌面GUI开发。</p><h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><h2 id="安装python3"><a href="#安装python3" class="headerlink" title="安装python3"></a>安装python3</h2><p>PyQt5所支持的python版本是从3.5开始的，因此安装的Python3版本必须大于3.5。</p><h2 id="安装PyQt5"><a href="#安装PyQt5" class="headerlink" title="安装PyQt5"></a>安装PyQt5</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip3 install PyQt5</span><br><span class="line">pip3 install PyQt5-tools</span><br></pre></td></tr></table></figure><h2 id="安装PyCharm"><a href="#安装PyCharm" class="headerlink" title="安装PyCharm"></a>安装PyCharm</h2><p>安装完PyCharm后，需要配置Qt Designer和PyUIC，前者用于设计UI，后者用于将UI转成Py文件。</p><p>具体步骤请参考<a href="https://www.cnblogs.com/zhoug2020/p/9039993.html" target="_blank" rel="noopener">程序员之路：python3+PyQt5+pycharm桌面GUI开发</a>。</p><h1 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line"># Form implementation generated from reading ui file &apos;clearWaterPrintGui.ui&apos;</span><br><span class="line">#</span><br><span class="line"># Created by: PyQt5 UI code generator 5.11.3</span><br><span class="line">#</span><br><span class="line"># WARNING! All changes made in this file will be lost!</span><br><span class="line"></span><br><span class="line">from PyQt5 import QtCore, QtGui, QtWidgets</span><br><span class="line"></span><br><span class="line">class Ui_Form(object):</span><br><span class="line">    def setupUi(self, Form):</span><br><span class="line">        Form.setObjectName(&quot;Form&quot;)</span><br><span class="line">        Form.resize(400, 300)</span><br><span class="line">        self.label_DirPath = QtWidgets.QLabel(Form)</span><br><span class="line">        self.label_DirPath.setGeometry(QtCore.QRect(16, 52, 72, 15))</span><br><span class="line">        self.label_DirPath.setObjectName(&quot;label_DirPath&quot;)</span><br><span class="line">        self.label_ExtName = QtWidgets.QLabel(Form)</span><br><span class="line">        self.label_ExtName.setGeometry(QtCore.QRect(31, 112, 72, 15))</span><br><span class="line">        self.label_ExtName.setObjectName(&quot;label_ExtName&quot;)</span><br><span class="line">        self.buttonBox = QtWidgets.QDialogButtonBox(Form)</span><br><span class="line">        self.buttonBox.setGeometry(QtCore.QRect(190, 260, 193, 28))</span><br><span class="line">        self.buttonBox.setInputMethodHints(QtCore.Qt.ImhNone)</span><br><span class="line">        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)</span><br><span class="line">        self.buttonBox.setObjectName(&quot;buttonBox&quot;)</span><br><span class="line">        self.lineEdit_DirPath = QtWidgets.QLineEdit(Form)</span><br><span class="line">        self.lineEdit_DirPath.setGeometry(QtCore.QRect(100, 50, 281, 21))</span><br><span class="line">        self.lineEdit_DirPath.setObjectName(&quot;lineEdit_DirPath&quot;)</span><br><span class="line">        self.lineEdit_ExtName = QtWidgets.QLineEdit(Form)</span><br><span class="line">        self.lineEdit_ExtName.setGeometry(QtCore.QRect(100, 112, 281, 21))</span><br><span class="line">        self.lineEdit_ExtName.setObjectName(&quot;lineEdit_ExtName&quot;)</span><br><span class="line"></span><br><span class="line">        self.retranslateUi(Form)</span><br><span class="line">        QtCore.QMetaObject.connectSlotsByName(Form)</span><br><span class="line"></span><br><span class="line">    def retranslateUi(self, Form):</span><br><span class="line">        _translate = QtCore.QCoreApplication.translate</span><br><span class="line">        Form.setWindowTitle(_translate(&quot;Form&quot;, &quot;Form&quot;))</span><br><span class="line">        self.label_DirPath.setText(_translate(&quot;Form&quot;, &quot;文件路径：&quot;))</span><br><span class="line">        self.label_ExtName.setText(_translate(&quot;Form&quot;, &quot;扩展名：&quot;))</span><br><span class="line"></span><br><span class="line"># 下面代码是手动添加的</span><br><span class="line">if __name__==&quot;__main__&quot;:</span><br><span class="line">    import sys</span><br><span class="line">    from PyQt5.QtGui import QIcon</span><br><span class="line">    app=QtWidgets.QApplication(sys.argv)</span><br><span class="line">    widget=QtWidgets.QWidget()</span><br><span class="line">    ui=Ui_Form()</span><br><span class="line">    ui.setupUi(widget)</span><br><span class="line">    # widget.setWindowIcon(QIcon(&apos;web.png&apos;))#增加icon图标，如果没有图片可以没有这句</span><br><span class="line">    widget.show()</span><br><span class="line">    sys.exit(app.exec_())</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://www.cnblogs.com/zhoug2020/p/9039993.html" target="_blank" rel="noopener">程序员之路：python3+PyQt5+pycharm桌面GUI开发</a>,by 莫水千流.</li><li><a href="http://www.futantan.com/2015/11/22/use-pyqt-develop-gui/" target="_blank" rel="noopener">使用PyQt快速开发GUI应用</a>,by Prayer.</li><li><a href="https://zh.wikipedia.org/wiki/PyQt" target="_blank" rel="noopener">PyQt</a>,by wikipedia.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;下面简单介绍基于Python3、PyQt5和PyCharm进行桌面GUI开发。&lt;/p&gt;
-&lt;h1 id=&quot;环境配置&quot;&gt;&lt;a href=&quot;#环境配置&quot; class=&quot;headerlink&quot; title=&quot;环境配置&quot;&gt;&lt;/a&gt;环境配置&lt;/h1&gt;&lt;h2 id=&quot;安装python3&quot;
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="python" scheme="https://huangwang.github.io/tags/python/"/>
     
   </entry>
   

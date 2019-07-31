@@ -110,7 +110,7 @@
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
 <meta property="og:description" content="express-jwt是一个验证JsonWebTokens并设置req.user的connect/express中间件。此模块允许您使用Node.js应用程序中的JWT令牌验证HTTP请求。 JWT通常用于保护API端点，通常使用OpenID Connect发布。 Json web token结构JWT 的三个部分依次如下：  Header（头部） Payload（负载） Signature（签名">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-25T05:14:40.541Z">
+<meta property="og:updated_time" content="2019-07-31T13:53:21.546Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="express-jwt使用帮助">
 <meta name="twitter:description" content="express-jwt是一个验证JsonWebTokens并设置req.user的connect/express中间件。此模块允许您使用Node.js应用程序中的JWT令牌验证HTTP请求。 JWT通常用于保护API端点，通常使用OpenID Connect发布。 Json web token结构JWT 的三个部分依次如下：  Header（头部） Payload（负载） Signature（签名">
@@ -359,12 +359,24 @@
                 
               
 
-              <time title="创建时间：2019-07-25 10:42:14 / 修改时间：13:14:40" itemprop="dateCreated datePublished" datetime="2019-07-25T10:42:14+08:00">2019-07-25</time>
+              <time title="创建时间：2019-07-25 10:42:14" itemprop="dateCreated datePublished" datetime="2019-07-25T10:42:14+08:00">2019-07-25</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-07-31 21:53:21" itemprop="dateModified" datetime="2019-07-31T21:53:21+08:00">2019-07-31</time>
               
             
           </span>
@@ -448,11 +460,11 @@
 <ul>
 <li>jwt.sign(payload, secretOrPrivateKey, [options, callback])</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var token = jwt.sign(&#123;</span><br><span class="line">    role: user.RoleId</span><br><span class="line">&#125;,appConfig.secretOrPrivateKey, &#123;</span><br><span class="line">    expiresIn:  60 * 60 * 6</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var token = jwt.sign(&#123;</span><br><span class="line">    userId: users[0].id</span><br><span class="line">  &#125;,</span><br><span class="line">  appConfig.secretOrPrivateKey, &#123;</span><br><span class="line">    expiresIn: 60 * 60 * 6</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <ul>
 <li>jwt.verify(token, secretOrPublicKey, [options, callback])</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// verify a token symmetric - synchronous</span><br><span class="line">var decoded = jwt.verify(token, &apos;shhhhh&apos;);</span><br><span class="line">console.log(decoded.foo) // bar</span><br><span class="line"></span><br><span class="line">// verify a token symmetric</span><br><span class="line">jwt.verify(token, &apos;shhhhh&apos;, function(err, decoded) &#123;</span><br><span class="line">  console.log(decoded.foo) // bar</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// verify a token symmetric - synchronous</span><br><span class="line">var decoded = jwt.verify(req.body.token.split(&apos; &apos;)[1], appConfig.secretOrPrivateKey);</span><br><span class="line">var user = await models.User.findByPk(decoded.userId);</span><br></pre></td></tr></table></figure>
 <ul>
 <li>jwt.decode(token [, options])</li>
 </ul>
@@ -593,7 +605,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">159</span>
+                    <span class="site-state-item-count">160</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-08-06T10:17:32.636Z</updated>
+  <updated>2019-08-06T15:17:11.106Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>UML类图中类之间关系</title>
+    <link href="https://huangwang.github.io/2019/08/06/UML%E7%B1%BB%E5%9B%BE%E4%B8%AD%E7%B1%BB%E4%B9%8B%E9%97%B4%E5%85%B3%E7%B3%BB/"/>
+    <id>https://huangwang.github.io/2019/08/06/UML类图中类之间关系/</id>
+    <published>2019-08-06T14:40:17.000Z</published>
+    <updated>2019-08-06T15:17:11.106Z</updated>
+    
+    <content type="html"><![CDATA[<p>UML类图中类之间的关系主要有六种：泛化、实现、聚合、组合、依赖、关联。如图1所示。</p><center>![UML类图](https://design-patterns.readthedocs.io/zh_CN/latest/_images/uml_class_struct.jpg "UML类图")</center><ul><li>车的类图结构为&lt;<abstract>&gt;，表示车是一个抽象类；</abstract></li><li>它有两个继承类：小汽车和自行车；它们之间的关系为实现关系，使用带空心箭头的虚线表示；</li><li>小汽车为与SUV之间也是继承关系，它们之间的关系为泛化关系，使用带空心箭头的实线表示；</li><li>小汽车与发动机之间是组合关系，使用带实心箭头的实线表示；</li><li>学生与班级之间是聚合关系，使用带空心箭头的实线表示；</li><li>学生与身份证之间为关联关系，使用一根实线表示；</li><li>学生上学需要用到自行车，与自行车是一种依赖关系，使用带箭头的虚线表示；</li></ul><p>熟悉这六种关系及其符号表示，有利于我们设计类图和同行之间交流。下面介绍这六种关系。</p><h1 id="泛化关系-generalization"><a href="#泛化关系-generalization" class="headerlink" title="泛化关系(generalization)"></a>泛化关系(generalization)</h1><p>类的继承结构表现在UML中为：泛化(generalize)与实现(realize)：</p><p>继承关系为 is-a的关系；两个对象之间如果可以用 is-a 来表示，就是继承关系：（..是..)</p><p>例如：自行车是车、猫是动物。</p><p>泛化关系用一条带空心箭头的直接表示；如下图表示；</p><center>![泛化关系](https://design-patterns.readthedocs.io/zh_CN/latest/_images/uml_generalize.jpg)</center><p>汽车在现实中有实现，可用汽车定义具体的对象；汽车与SUV之间为泛化关系；<strong>最终代码中，泛化关系表现为继承非抽象类；</strong></p><h1 id="实现关系-realize"><a href="#实现关系-realize" class="headerlink" title="实现关系(realize)"></a>实现关系(realize)</h1><p>实现关系用一条带空心箭头的虚线表示；</p><p>例如：”车”为一个抽象概念，在现实中并无法直接用来定义对象；只有指明具体的子类(汽车还是自行车)，才可以用来定义对象（”车”这个类在C++中用抽象类表示，在JAVA中有接口这个概念，更容易理解）</p><center>![实现关系](https://design-patterns.readthedocs.io/zh_CN/latest/_images/uml_realize.jpg)</center><p><strong>最终代码中，实现关系表现为继承抽象类；</strong></p><h1 id="聚合关系-aggregation"><a href="#聚合关系-aggregation" class="headerlink" title="聚合关系(aggregation)"></a>聚合关系(aggregation)</h1><p>聚合关系用一条带空心菱形箭头的直线表示，如下图表示A聚合到B上，或者说B由A组成；</p><center>![聚合关系](https://design-patterns.readthedocs.io/zh_CN/latest/_images/uml_aggregation.jpg)</center><p>聚合关系用于表示实体对象之间的关系，表示整体由部分构成的语义；例如一个部门由多个员工组成；</p><p>与组合关系不同的是，整体和部分不是强依赖的，即使整体不存在了，部分仍然存在；例如， 部门撤销了，人员不会消失，他们依然存在；</p><h1 id="组合关系-composition"><a href="#组合关系-composition" class="headerlink" title="组合关系(composition)"></a>组合关系(composition)</h1><p>组合关系用一条带实心菱形箭头直线表示，如下图表示A组成B，或者B由A组成；</p><center>![组合关系](https://design-patterns.readthedocs.io/zh_CN/latest/_images/uml_composition.jpg)</center><p>与聚合关系一样，组合关系同样表示整体由部分构成的语义；比如公司由多个部门组成；</p><p>但组合关系是一种强依赖的特殊聚合关系，如果整体不存在了，则部分也不存在了；例如， 公司不存在了，部门也将不存在了；</p><h1 id="关联关系-association"><a href="#关联关系-association" class="headerlink" title="关联关系(association)"></a>关联关系(association)</h1><p>关联关系是用一条直线表示的；它描述不同类的对象之间的结构关系；它是一种静态关系， 通常与运行状态无关，一般由常识等因素决定的；它一般用来定义对象之间静态的、天然的结构； 所以，关联关系是一种“强关联”的关系；</p><p>比如，乘车人和车票之间就是一种关联关系；学生和学校就是一种关联关系；</p><p>关联关系默认不强调方向，表示对象间相互知道；如果特别强调方向，如下图，表示A<br>知道B，但 B不知道A；</p><center>![关联关系](https://design-patterns.readthedocs.io/zh_CN/latest/_images/uml_association.jpg)</center><p><strong>在最终代码中，关联对象通常是以成员变量的形式实现的；</strong></p><h1 id="依赖关系-dependency"><a href="#依赖关系-dependency" class="headerlink" title="依赖关系(dependency)"></a>依赖关系(dependency)</h1><p>依赖关系是用一套带箭头的虚线表示的；如下图表示A依赖于B；他描述一个对象在运行期间会用到另一个对象的关系；</p><center>![依赖关系](https://design-patterns.readthedocs.io/zh_CN/latest/_images/uml_dependency.jpg)</center><p>与关联关系不同的是，它是一种临时性的关系，通常在运行期间产生，并且随着运行时的变化； 依赖关系也可能发生变化；</p><p>显然，依赖也有方向，双向依赖是一种非常糟糕的结构，我们总是应该保持单向依赖，杜绝双向依赖的产生；</p><p><strong>在最终代码中，依赖关系体现为类构造方法及类方法的传入参数，箭头的指向为调用关系；依赖关系除了临时知道对方外，还是“使用”对方的方法和属性；</strong></p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://design-patterns.readthedocs.io/zh_CN/latest/read_uml.html" target="_blank" rel="noopener">看懂UML类图和时序图</a>,by me115.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;UML类图中类之间的关系主要有六种：泛化、实现、聚合、组合、依赖、关联。如图1所示。&lt;/p&gt;
+&lt;center&gt;
+
+![UML类图](https://design-patterns.readthedocs.io/zh_CN/latest/_images/uml_class_s
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="软件工程" scheme="https://huangwang.github.io/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>提高效率的在线工具</title>
@@ -515,32 +543,6 @@
       <category term="语法" scheme="https://huangwang.github.io/tags/%E8%AF%AD%E6%B3%95/"/>
     
       <category term="VBA" scheme="https://huangwang.github.io/tags/VBA/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>小波变换学习笔记</title>
-    <link href="https://huangwang.github.io/2019/07/14/%E5%B0%8F%E6%B3%A2%E5%8F%98%E6%8D%A2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    <id>https://huangwang.github.io/2019/07/14/小波变换学习笔记/</id>
-    <published>2019-07-14T07:52:21.000Z</published>
-    <updated>2019-07-14T07:59:07.290Z</updated>
-    
-    <content type="html"><![CDATA[<p>小波分析（英语：wavelet analysis）或小波变换（英语：wavelet transform）是指用有限长或快速衰减的“母小波”（mother wavelet）的振荡波形来表示信号。该波形被缩放和平移以匹配输入的信号。</p><p>小波变化的发展，承袭Gabor transform的局部化思想，并且克服了傅里叶和Gabor transform的部分缺陷，小波变换提供了一个可以调变的时频窗口，窗口的宽度(width)随着频率变化，频率增高时，时间窗口的宽度就会变窄，以提高分辨率．小波在整个时间范围内的振幅平均值为0，具有有限的持续时间和突变的频率与震幅，可以是不规则，或不对称的信号。</p><p>小波变换分成两个大类：离散小波变换（DWT） 和连续小波变换（CWT）。两者的主要区别在于，连续变换在所有可能的缩放和平移上操作，而离散变换采用所有缩放和平移值的特定子集。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://www.zhihu.com/question/22864189" target="_blank" rel="noopener">能不能通俗的讲解下傅立叶分析和小波分析之间的关系？</a>,by zhihu.</li><li><a href="https://www.zhihu.com/question/278337954" target="_blank" rel="noopener">什么是线性平稳信号和非线性非平稳信号？</a>,by zhihu.</li><li><a href="https://zhuanlan.zhihu.com/p/22450818" target="_blank" rel="noopener">形象易懂讲解算法I——小波变换</a>,by 咚懂咚懂咚.</li><li><a href="https://zhuanlan.zhihu.com/p/66189212" target="_blank" rel="noopener">从傅里叶变换进阶到小波变换（一）</a>,by 1335.</li><li><a href="https://zhuanlan.zhihu.com/p/34989414" target="_blank" rel="noopener">信号频域分析方法的理解（频谱、能量谱、功率谱、倒频谱、小波分析）</a>,by Mr.括号.</li><li><a href="https://zh.wikipedia.org/wiki/%E5%B0%8F%E6%B3%A2%E5%88%86%E6%9E%90" target="_blank" rel="noopener">小波分析</a>,by wikipedia.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;小波分析（英语：wavelet analysis）或小波变换（英语：wavelet transform）是指用有限长或快速衰减的“母小波”（mother wavelet）的振荡波形来表示信号。该波形被缩放和平移以匹配输入的信号。&lt;/p&gt;
-&lt;p&gt;小波变化的发展，承袭Gabor
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="计算机视觉" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/"/>
     
   </entry>
   

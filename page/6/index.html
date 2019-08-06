@@ -314,6 +314,235 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/10/Ubuntu16-04安装MAVROS/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/10/Ubuntu16-04安装MAVROS/" itemprop="url">
+                  Ubuntu16.04安装MAVROS
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-10 18:28:50" itemprop="dateCreated datePublished" datetime="2019-05-10T18:28:50+08:00">2019-05-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-24 22:19:37" itemprop="dateModified" datetime="2019-06-24T22:19:37+08:00">2019-06-24</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MAVROS包支持运行ROS的计算机、支持Mavlink的自驾仪、支持Mavlink的地面控制站之间使用Mavlink协议进行通信，如图1所示。</p>
+<p></p><p align="center">
+    <img src="images/px4_sitl_overview.png" width="90%" alt="px4软件在环仿真">
+</p><p></p>
+<center>图1  px4软件在环仿真</center>
+
+<p>为构建px4软件在环仿真环境，下面介绍在协同计算机上安装Ubuntu16.04、ROS和MAVROS的步骤。</p>
+<h1 id="安装ubuntu-16-04"><a href="#安装ubuntu-16-04" class="headerlink" title="安装ubuntu 16.04"></a>安装ubuntu 16.04</h1><p>安装ubuntu 16.04 LTS桌面板的教程请参考链接<a href="https://forum.ubuntu.org.cn/viewtopic.php?t=478527" target="_blank" rel="noopener">Ubuntu 16.04 安装基础入门教程（图文）</a>。</p>
+<h1 id="安装ROS"><a href="#安装ROS" class="headerlink" title="安装ROS"></a>安装ROS</h1><h2 id="ROS简介"><a href="#ROS简介" class="headerlink" title="ROS简介"></a>ROS简介</h2><p>ROS（机器人操作系统，Robot Operating System），是专为机器人软件开发所设计出来的一套电脑操作系统架构。它是一个开源的元级操作系统（后操作系统），提供类似于操作系统的服务，包括硬件抽象描述、底层驱动程序管理、共用功能的执行、程序间消息传递、程序发行包管理，它也提供一些工具和库用于获取、建立、编写和执行多机融合的程序。</p>
+<p>ROS的首要设计目标是在机器人研发领域提高代码复用率。ROS是一种分布式处理框架（又名Nodes）。这使可执行文件能被单独设计，并且在运行时松散耦合。这些过程可以封装到数据包（Packages）和堆栈（Stacks）中，以便于共享和分发。ROS还支持代码库的联合系统。使得协作亦能被分发。这种从文件系统级别到社区一级的设计让独立地决定发展和实施工作成为可能。上述所有功能都能由ROS的基础工具实现。</p>
+<p>ROS有三个层次的概念：分别为Filesystem level，Computation graph level， 以及Communication level。 以下内容具体的总结了这些层次及概念。除了这三个层次的概念， ROS也定义了两种名称— Package资源名称和Graph资源名称。</p>
+<h2 id="安装ROS-1"><a href="#安装ROS-1" class="headerlink" title="安装ROS"></a>安装ROS</h2><p>不建议在虚拟机中安装Ubuntu，再安装ROS。具体ROS安装步骤请参考<a href="https://www.cnblogs.com/liu-fa/p/5779206.html" target="_blank" rel="noopener">ROS 不能再详细的安装教程</a>和<a href="http://wiki.ros.org/kinetic/Installation/Ubuntu" target="_blank" rel="noopener">Ubuntu install of ROS Kinetic</a>。在此只简单记录Ubuntu 16.04 中安装ROS步骤：</p>
+<ul>
+<li>设置source.list</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sh -c &apos;echo &quot;deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main&quot; &gt; /etc/apt/sources.list.d/ros-latest.list&apos;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>设置公钥</li>
+</ul>
+<p>如何在连接服务器的过程中出现问题，可设置可选的hkp://pgp.mit.edu:80 或 hkp://keyserver.ubuntu.com:80</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install ros-kinetic-desktop-full</span><br></pre></td></tr></table></figure>
+<ul>
+<li>初始化rosdep</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo rosdep init</span><br><span class="line">rosdep update</span><br></pre></td></tr></table></figure>
+<ul>
+<li>环境配置</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;source /opt/ros/kinetic/setup.bash&quot; &gt;&gt; ~/.bashrc</span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装ros组件构建环境</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install python-catkin-tools python-rosinstall python-rosinstall-generator python-wstool build-essential -y</span><br></pre></td></tr></table></figure>
+<h2 id="运行ROS"><a href="#运行ROS" class="headerlink" title="运行ROS"></a>运行ROS</h2><p>在Ubuntu 16.04终端中运行如下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"># roscore will start up a ROS Master, a ROS Parameter Server and a rosout logging node</span><br><span class="line">$ roscore</span><br><span class="line"></span><br><span class="line"># rosnode is a command-line tool for printing information about ROS Nodes.</span><br><span class="line">$ rosnode list</span><br><span class="line"></span><br><span class="line"># rospack allows you to get information about packages. </span><br><span class="line"></span><br><span class="line">$ rospack list</span><br><span class="line"></span><br><span class="line"># rosrun will locate PACKAGE and try to find an executable named EXECUTABLE in the PACKAGE tree. If it finds it, it will run it with ARGS.</span><br><span class="line"># Usage: rosrun [--prefix cmd] [--debug] PACKAGE EXECUTABLE [ARGS]</span><br><span class="line">$ rosrun turtlesim turtlesim_node</span><br><span class="line">$ rosrun turtlesim turtle_teleop_key</span><br><span class="line"></span><br><span class="line"># record the message which published in the topic</span><br><span class="line">$ rosbag record /turtle1/cmd_vel</span><br><span class="line"></span><br><span class="line"># check what&apos;s happen in ros system</span><br><span class="line">$ rosrun rqt_graph rqt_graph</span><br><span class="line"></span><br><span class="line"># rqt_plot displays a scrolling time plot of the data published on topics</span><br><span class="line">$ rosrun rqt_plot rqt_plot</span><br><span class="line"></span><br><span class="line"># rostopic is a command-line tool for printing information about ROS Topics.</span><br><span class="line">$ rostopic list</span><br><span class="line"></span><br><span class="line"># rostopic echo shows the data published on a topic.</span><br><span class="line">$ rostopic echo /turtle1/cmd_vel</span><br><span class="line"></span><br><span class="line"># rostopic type returns the message type of any topic being published.</span><br><span class="line">$ rostopic type /turtle1/cmd_vel</span><br><span class="line"></span><br><span class="line"># rostopic pub publishes data on to a topic currently advertised.</span><br><span class="line">$ rostopic pub -1 /turtle1/cmd_vel geometry_msgs/Twist -- &apos;[2.0, 0.0, 0.0]&apos; &apos;[0.0, 0.0, 1.8]&apos;</span><br><span class="line"></span><br><span class="line"># rostopic hz reports the rate at which data is published.</span><br><span class="line">$ rostopic hz /turtle1/pose</span><br><span class="line"></span><br><span class="line"># check info of /turtlesim node</span><br><span class="line">$ rosnode info /turtlesim</span><br></pre></td></tr></table></figure></p>
+<h1 id="安装MAVROS"><a href="#安装MAVROS" class="headerlink" title="安装MAVROS"></a>安装MAVROS</h1><p>具体安装MAVROS的步骤请参考链接<a href="https://dev.px4.io/en/ros/mavros_installation.html" target="_blank" rel="noopener">MAVROS</a>。下面简单介绍Ubuntu 16.04下从源代码安装MAVROS的过程。</p>
+<ul>
+<li>创建catkin工作空间</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src</span><br><span class="line">cd ~/catkin_ws</span><br><span class="line">catkin init</span><br><span class="line">wstool init src</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装MAVLink</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosinstall_generator --rosdistro kinetic mavlink | tee /tmp/mavros.rosinstall</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装MAVROS</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosinstall_generator --upstream mavros | tee -a /tmp/mavros.rosinstall</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建工作空间和依赖</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wstool merge -t src /tmp/mavros.rosinstall</span><br><span class="line">wstool update -t src -j4</span><br><span class="line">rosdep install --from-paths src --ignore-src -y</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装GeographicLib数据集</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ./src/mavros/mavros/scripts/install_geographiclib_datasets.sh</span><br></pre></td></tr></table></figure>
+<ul>
+<li>构建源</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">catkin build</span><br></pre></td></tr></table></figure>
+<ul>
+<li>添加工作空间到ros环境</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Needed or rosrun can&apos;t find nodes from this workspace.</span><br><span class="line">$ source devel/setup.bash</span><br><span class="line"># Or write in .bashrc</span><br><span class="line">$ echo &quot;source ~/catkin_ws/devel/setup.bash&quot; &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://forum.ubuntu.org.cn/viewtopic.php?t=478527" target="_blank" rel="noopener">Ubuntu 16.04 安装基础入门教程（图文）</a>, by ubuntu中文论坛.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%A9%9F%E5%99%A8%E4%BA%BA%E4%BD%9C%E6%A5%AD%E7%B3%BB%E7%B5%B1" target="_blank" rel="noopener">机器人操作系统</a>,by wikipedia.</li>
+<li><a href="https://www.cnblogs.com/liu-fa/p/5779206.html" target="_blank" rel="noopener">ROS 不能再详细的安装教程</a>,by 小萌是个球.</li>
+<li><a href="http://wiki.ros.org/kinetic/Installation/Ubuntu" target="_blank" rel="noopener">Ubuntu install of ROS Kinetic</a>, by ROS.org.</li>
+<li><a href="http://wiki.ros.org/ROS/Tutorials" target="_blank" rel="noopener">ROS Tutorials</a>, by ROS.org.</li>
+<li><a href="https://dev.px4.io/en/ros/mavros_installation.html" target="_blank" rel="noopener">MAVROS</a>, by DroneCode.</li>
+<li><a href="https://blog.csdn.net/chishuideyu/article/details/53581013" target="_blank" rel="noopener">catkin 与 rosbuild解析及两者区别和联系</a>,by Xuefeng_BUPT.</li>
+<li><a href="http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment" target="_blank" rel="noopener">Installing and Configuring Your ROS Environment</a>, by ros.org.</li>
+<li><a href="http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment" target="_blank" rel="noopener">Installing and Configuring Your ROS Environment</a>,by ros.org.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/05/计算机科学术语辨析/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1990,174 +2219,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/03/27/JSBSim编程实践之入门/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/27/JSBSim编程实践之入门/" itemprop="url">
-                  JSBSim编程实践之入门
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-03-27 15:32:05 / 修改时间：16:12:15" itemprop="dateCreated datePublished" datetime="2019-03-27T15:32:05+08:00">2019-03-27</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>JSBSim是一个开源跨平台的飞行动力学模型（FDM）软件库，用于模拟航空航天飞行器的飞行动力学。 该库已被纳入飞行模拟软件包FlightGear和OpenEaagles。JSBSim可以独立运行，通过命令行参数指定飞行器和初始状态，进行简单情境下的飞行动力学仿真，也可以将JSBSim作为代码库，编程实现飞行器模型加载，设置输入，获得输出。下面即介绍在Linux平台编程调用JSBSim库的方法和步骤。</p>
-<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="gcc与g"><a href="#gcc与g" class="headerlink" title="gcc与g++"></a>gcc与g++</h2><p>GNU编译器套装（英语：GNU Compiler Collection，缩写为GCC），指一套编程语言编译器，以GPL及LGPL许可证所发行的自由软件，也是GNU项目的关键部分，也是GNU工具链的主要组成部分之一。GCC（特别是其中的C语言编译器）也常被认为是跨平台编译器的事实标准。</p>
-<p>通常gcc用于编译链接c代码文件，而g++用于编译链接c++代码文件，但它们的使用方法很类似。下面介绍gcc和g++的常用选项。</p>
-<ul>
-<li>添加头文件搜索路径</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc foo.c -I /home/xiaowp/include -o foo</span><br></pre></td></tr></table></figure>
-<ul>
-<li>添加动态库搜索路径</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc foo.c -L /home/xiaowp/lib -lfoo -o foo</span><br></pre></td></tr></table></figure>
-<ul>
-<li>添加静态库搜索路径</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc foo.c -L /home/xiaowp/lib -static -lfoo -o foo</span><br></pre></td></tr></table></figure>
-<h1 id="编程实践"><a href="#编程实践" class="headerlink" title="编程实践"></a>编程实践</h1><h2 id="最简仿真"><a href="#最简仿真" class="headerlink" title="最简仿真"></a>最简仿真</h2><p>下面是JSBSim参考手册中的最简单实例，因JSBSim的不断开发，JSBSim参考手册中该编程实例有点过时，因此进行了少量修改。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;FGFDMExec.h&gt;</span><br><span class="line">#include &lt;sg_path.hxx&gt;</span><br><span class="line"> </span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main(int argc, char **argv)</span><br><span class="line">&#123;</span><br><span class="line">  JSBSim::FGFDMExec FDMExec;</span><br><span class="line">  bool result = true;</span><br><span class="line"> </span><br><span class="line">  FDMExec.LoadScript(SGPath::fromUtf8(argv[1]));</span><br><span class="line"> </span><br><span class="line">  while (result) result = FDMExec.Run();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>从上述代码可知，调用JSBSim的主要方法是利用FGFDMExec类，通过实例化一个FGFDMExec类，就相当于获得了一个运行JSBSim仿真的工具箱，通过这个工具箱就可以调用JSBSim的大部分功能，实现我们要的仿真目标。</p>
-<p>接下来对该实例进行编译链接，使用如下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># jsbsim_script.cpp是上述实例的代码文件</span><br><span class="line">g++ jsbsim_script.cpp -I ../jsbsim/src/ -I../jsbsim/src/simgear/misc  -L ../jsbsim/build/src/ -static -l JSBSim -o jsbsim_script</span><br></pre></td></tr></table></figure>
-<p>测试该实例，使用如下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># jsbsim是JSBSim项目文件夹</span><br><span class="line"># JSBSimTest是JSBSim测试实例所在文件夹</span><br><span class="line">cd jsbsim</span><br><span class="line">../JSBSimTest/jsbsim_script ./scripts/c1723.xml</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/yu_lei_/article/details/81916143" target="_blank" rel="noopener">JSBSim编程实践</a>,by 32768.</li>
-<li><a href="https://huangwang.github.io/2019/03/20/Linux平台编译安装测试JSBSim/">Linux平台编译安装测试JSBSim</a>,by jack huang.</li>
-<li><a href="http://jsbsim.sourceforge.net/documentation.html" target="_blank" rel="noopener">JSBSim Reference Manual </a>,by jsbsim.</li>
-<li><a href="https://www.cnblogs.com/zxouxuewei/p/7263568.html" target="_blank" rel="noopener">gcc和g++头文件和库路径的寻找和添加</a>,by 周学伟.</li>
-<li><a href="https://zh.wikipedia.org/wiki/GCC" target="_blank" rel="noopener">GCC</a>,by wikipedia.</li>
-<li><a href="https://www.freelancinggig.com/blog/2017/11/10/difference-gcc-g/" target="_blank" rel="noopener">WHAT IS THE DIFFERENCE BETWEEN GCC AND G++</a>,by KITTY GUPTA.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2205,7 +2266,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">161</span>
+                    <span class="site-state-item-count">162</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

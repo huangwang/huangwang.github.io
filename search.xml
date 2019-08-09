@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Mockjs入门简介]]></title>
+    <url>%2F2019%2F08%2F09%2FMockjs%E5%85%A5%E9%97%A8%E7%AE%80%E4%BB%8B%2F</url>
+    <content type="text"><![CDATA[Mock.js可生成随机数据，拦截Ajax请求，实现前后端分离的目的。Mockjs支持生成随机的文本、数字、布尔值、日期、邮箱、链接、图片、颜色等数据类型，增加了单元测试的真实性，具有用法简单，方便扩展和开发无侵入的特点。下面简单介绍Mockjs的用法。 开始 &amp; 安装Node (CommonJS)12# 安装npm install mockjs 1234567891011// 使用 Mockvar Mock = require(&apos;mockjs&apos;)var data = Mock.mock(&#123; // 属性 list 的值是一个数组，其中含有 1 到 10 个元素 &apos;list|1-10&apos;: [&#123; // 属性 id 是一个自增数，起始值为 1，每次增 1 &apos;id|+1&apos;: 1 &#125;]&#125;)// 输出结果console.log(JSON.stringify(data, null, 4)) 语法规范Mock.js 的语法规范包括两部分： 数据模板定义规范（Data Template Definition，DTD） 数据占位符定义规范（Data Placeholder Definition，DPD） 数据模板定义规范 DTD数据模板中的每个属性由 3 部分构成：属性名、生成规则、属性值： 1234// 属性名 name// 生成规则 rule// 属性值 value&apos;name|rule&apos;: value 注意： 属性名 和 生成规则 之间用竖线 | 分隔。 生成规则 是可选的。 生成规则 有 7 种格式： ‘name|min-max’: value ‘name|count’: value ‘name|min-max.dmin-dmax’: value ‘name|min-max.dcount’: value ‘name|count.dmin-dmax’: value ‘name|count.dcount’: value ‘name|+step’: value 生成规则 的 含义 需要依赖 属性值的类型 才能确定。 属性值 中可以含有 @占位符。 属性值 还指定了最终值的初始值和类型。 数据占位符定义规范 DPD占位符 只是在属性值字符串中占个位置，并不出现在最终的属性值中。 占位符 的格式为： 12@占位符@占位符(参数 [, 参数]) 注意： 用 @ 来标识其后的字符串是 占位符。 占位符 引用的是 Mock.Random 中的方法。 通过 Mock.Random.extend() 来扩展自定义占位符。 占位符 也可以引用 数据模板 中的属性。 占位符 会优先引用 数据模板 中的属性。 占位符 支持 相对路径 和 绝对路径。 Mock.RandomMock.Random 是一个工具类，用于生成各种随机数据。 Mock.Random 的方法在数据模板中称为『占位符』，书写格式为 @占位符(参数 [, 参数]) 。 1234567var Random = Mock.RandomRandom.email()// =&gt; &quot;n.clark@miller.io&quot;Mock.mock(&apos;@email&apos;)// =&gt; &quot;y.lee@lewis.org&quot;Mock.mock( &#123; email: &apos;@email&apos; &#125; )// =&gt; &#123; email: &quot;v.lewis@hall.gov&quot; &#125; 参考链接 Mockjs,by nuysoft. Mockjs语法规范,by nuysoft. Mock.Random,by nuysoft.]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>前端</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[软件设计模式简介]]></title>
     <url>%2F2019%2F08%2F06%2F%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AE%80%E4%BB%8B%2F</url>
     <content type="text"><![CDATA[软件模式是将模式的一般概念应用于软件开发领域，即软件开发的 总体指导思路或参照样板。软件模式并非仅限于设计模式，还包括 架构模式、分析模式和过程模式等，实际上，在软件生存期的每一个阶段都存在着一些被认同的模式。下面重点介绍各种经典的设计模式。 创建型模式 简单工厂模式( Simple Factory Pattern ) 工厂方法模式(Factory Method Pattern) 抽象工厂模式(Abstract Factory) 建造者模式 单例模式 结构型模式 适配器模式 桥接模式 装饰模式 外观模式 享元模式 代理模式 行为型模式 命令模式 中介者模式 观察者模式 状态模式 策略模式 参考链接 图说设计模式,by me115.]]></content>

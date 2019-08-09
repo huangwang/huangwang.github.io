@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-08-06T15:28:44.745Z</updated>
+  <updated>2019-08-09T03:27:51.231Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Mockjs入门简介</title>
+    <link href="https://huangwang.github.io/2019/08/09/Mockjs%E5%85%A5%E9%97%A8%E7%AE%80%E4%BB%8B/"/>
+    <id>https://huangwang.github.io/2019/08/09/Mockjs入门简介/</id>
+    <published>2019-08-09T03:14:04.000Z</published>
+    <updated>2019-08-09T03:27:51.231Z</updated>
+    
+    <content type="html"><![CDATA[<p>Mock.js可生成随机数据，拦截Ajax请求，实现前后端分离的目的。Mockjs支持生成随机的文本、数字、布尔值、日期、邮箱、链接、图片、颜色等数据类型，增加了单元测试的真实性，具有用法简单，方便扩展和开发无侵入的特点。下面简单介绍Mockjs的用法。</p><h1 id="开始-amp-安装"><a href="#开始-amp-安装" class="headerlink" title="开始 &amp; 安装"></a>开始 &amp; 安装</h1><h2 id="Node-CommonJS"><a href="#Node-CommonJS" class="headerlink" title="Node (CommonJS)"></a>Node (CommonJS)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 安装</span><br><span class="line">npm install mockjs</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 使用 Mock</span><br><span class="line">var Mock = require(&apos;mockjs&apos;)</span><br><span class="line">var data = Mock.mock(&#123;</span><br><span class="line">    // 属性 list 的值是一个数组，其中含有 1 到 10 个元素</span><br><span class="line">    &apos;list|1-10&apos;: [&#123;</span><br><span class="line">        // 属性 id 是一个自增数，起始值为 1，每次增 1</span><br><span class="line">        &apos;id|+1&apos;: 1</span><br><span class="line">    &#125;]</span><br><span class="line">&#125;)</span><br><span class="line">// 输出结果</span><br><span class="line">console.log(JSON.stringify(data, null, 4))</span><br></pre></td></tr></table></figure><h1 id="语法规范"><a href="#语法规范" class="headerlink" title="语法规范"></a>语法规范</h1><p>Mock.js 的语法规范包括两部分：</p><ul><li>数据模板定义规范（Data Template Definition，DTD）</li><li>数据占位符定义规范（Data Placeholder Definition，DPD）</li></ul><h2 id="数据模板定义规范-DTD"><a href="#数据模板定义规范-DTD" class="headerlink" title="数据模板定义规范 DTD"></a>数据模板定义规范 DTD</h2><p>数据模板中的每个属性由 3 部分构成：属性名、生成规则、属性值：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 属性名   name</span><br><span class="line">// 生成规则 rule</span><br><span class="line">// 属性值   value</span><br><span class="line">&apos;name|rule&apos;: value</span><br></pre></td></tr></table></figure><p>注意：</p><ul><li>属性名 和 生成规则 之间用竖线 | 分隔。</li><li>生成规则 是可选的。</li><li>生成规则 有 7 种格式：<ul><li>‘name|min-max’: value</li><li>‘name|count’: value</li><li>‘name|min-max.dmin-dmax’: value</li><li>‘name|min-max.dcount’: value</li><li>‘name|count.dmin-dmax’: value</li><li>‘name|count.dcount’: value</li><li>‘name|+step’: value</li></ul></li><li>生成规则 的 含义 需要依赖 属性值的类型 才能确定。</li><li>属性值 中可以含有 @占位符。</li><li>属性值 还指定了最终值的初始值和类型。</li></ul><h2 id="数据占位符定义规范-DPD"><a href="#数据占位符定义规范-DPD" class="headerlink" title="数据占位符定义规范 DPD"></a>数据占位符定义规范 DPD</h2><p>占位符 只是在属性值字符串中占个位置，并不出现在最终的属性值中。</p><p>占位符 的格式为：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@占位符</span><br><span class="line">@占位符(参数 [, 参数])</span><br></pre></td></tr></table></figure><p>注意：</p><ul><li>用 @ 来标识其后的字符串是 占位符。</li><li>占位符 引用的是 Mock.Random 中的方法。</li><li>通过 Mock.Random.extend() 来扩展自定义占位符。</li><li>占位符 也可以引用 数据模板 中的属性。</li><li>占位符 会优先引用 数据模板 中的属性。</li><li>占位符 支持 相对路径 和 绝对路径。</li></ul><h1 id="Mock-Random"><a href="#Mock-Random" class="headerlink" title="Mock.Random"></a>Mock.Random</h1><p>Mock.Random 是一个工具类，用于生成各种随机数据。</p><p><strong>Mock.Random 的方法在数据模板中称为『占位符』，书写格式为 @占位符(参数 [, 参数]) 。</strong></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var Random = Mock.Random</span><br><span class="line">Random.email()</span><br><span class="line">// =&gt; &quot;n.clark@miller.io&quot;</span><br><span class="line">Mock.mock(&apos;@email&apos;)</span><br><span class="line">// =&gt; &quot;y.lee@lewis.org&quot;</span><br><span class="line">Mock.mock( &#123; email: &apos;@email&apos; &#125; )</span><br><span class="line">// =&gt; &#123; email: &quot;v.lewis@hall.gov&quot; &#125;</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://github.com/nuysoft/Mock" target="_blank" rel="noopener">Mockjs</a>,by nuysoft.</li><li><a href="https://github.com/nuysoft/Mock/wiki/Syntax-Specification" target="_blank" rel="noopener">Mockjs语法规范</a>,by nuysoft.</li><li><a href="https://github.com/nuysoft/Mock/wiki/Mock.Random" target="_blank" rel="noopener">Mock.Random</a>,by nuysoft.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Mock.js可生成随机数据，拦截Ajax请求，实现前后端分离的目的。Mockjs支持生成随机的文本、数字、布尔值、日期、邮箱、链接、图片、颜色等数据类型，增加了单元测试的真实性，具有用法简单，方便扩展和开发无侵入的特点。下面简单介绍Mockjs的用法。&lt;/p&gt;
+&lt;h1 i
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="前端" scheme="https://huangwang.github.io/tags/%E5%89%8D%E7%AB%AF/"/>
+    
+  </entry>
   
   <entry>
     <title>软件设计模式简介</title>
@@ -516,32 +542,6 @@
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
       <category term="vuejs" scheme="https://huangwang.github.io/tags/vuejs/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Expressjs框架的安装使用</title>
-    <link href="https://huangwang.github.io/2019/07/18/Expressjs%E6%A1%86%E6%9E%B6%E7%9A%84%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8/"/>
-    <id>https://huangwang.github.io/2019/07/18/Expressjs框架的安装使用/</id>
-    <published>2019-07-18T05:18:54.000Z</published>
-    <updated>2019-07-18T05:28:46.211Z</updated>
-    
-    <content type="html"><![CDATA[<p>Express是高度包容、快速而极简的 Node.js Web 框架。下面简单介绍Express框架的安装和使用。</p><h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="安装最新Nodejs长期支持版"><a href="#安装最新Nodejs长期支持版" class="headerlink" title="安装最新Nodejs长期支持版"></a>安装最新Nodejs长期支持版</h2><p>前往<a href="https://nodejs.org/zh-cn/" target="_blank" rel="noopener">nodejs官方网站</a>下载其最新长期支持版，并安装。</p><h2 id="安装Express生成器"><a href="#安装Express生成器" class="headerlink" title="安装Express生成器"></a>安装Express生成器</h2><p>Express生成器是一个脚手架工具，能够快速生成标准的Express Web框架，简化开发过程。具体安装方法如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g express-generator@4</span><br></pre></td></tr></table></figure><p>创建APP：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ express /tmp/foo &amp;&amp; cd /tmp/foo</span><br></pre></td></tr></table></figure><p>安装依赖：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></table></figure><p>启动Web服务器：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 直接启动</span><br><span class="line">npm start</span><br><span class="line"># 调试启动</span><br><span class="line">SET DEBUG=server:* &amp; npm start</span><br></pre></td></tr></table></figure><p>访问网站： <a href="http://localhost:3000" target="_blank" rel="noopener">http://localhost:3000</a></p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://expressjs.com/zh-cn/" target="_blank" rel="noopener">Express</a>,by Express homepage.</li><li><a href="https://github.com/expressjs/express" target="_blank" rel="noopener">Express github</a>,by Express github.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;Express是高度包容、快速而极简的 Node.js Web 框架。下面简单介绍Express框架的安装和使用。&lt;/p&gt;
-&lt;h1 id=&quot;安装&quot;&gt;&lt;a href=&quot;#安装&quot; class=&quot;headerlink&quot; title=&quot;安装&quot;&gt;&lt;/a&gt;安装&lt;/h1&gt;&lt;h2 id=&quot;
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="nodejs" scheme="https://huangwang.github.io/tags/nodejs/"/>
     
   </entry>
   

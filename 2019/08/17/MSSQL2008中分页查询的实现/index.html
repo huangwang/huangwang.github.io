@@ -102,18 +102,18 @@
 
 
 
-  <meta name="description" content="在后台管理中，涉及分页操作，需要数据库支持limit和offset选项，但在MSSQL2008中这两个选项不支持，不过可以用ROW_NUMBER函数在SQL语句中实现数据分页效果。SQL代码示例如下： 1SELECT * FROM  (SELECT Users.id as id,name,sign,account,audit,roleName,RoleId, Users.deleteFlag as">
+  <meta name="description" content="在后台管理中，涉及分页操作，需要数据库支持limit和offset选项，但在MSSQL2008中这两个选项不支持，不过可以用ROW_NUMBER函数在SQL语句中实现数据分页效果。SQL代码示例如下： 123456SELECT * FROM  (SELECT Users.id as id,name,sign,account,audit,roleName,RoleId, Users.deleteFl">
 <meta name="keywords" content="笔记本,数据库">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MSSQL2008中分页查询的实现">
 <meta property="og:url" content="https://huangwang.github.io/2019/08/17/MSSQL2008中分页查询的实现/index.html">
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
-<meta property="og:description" content="在后台管理中，涉及分页操作，需要数据库支持limit和offset选项，但在MSSQL2008中这两个选项不支持，不过可以用ROW_NUMBER函数在SQL语句中实现数据分页效果。SQL代码示例如下： 1SELECT * FROM  (SELECT Users.id as id,name,sign,account,audit,roleName,RoleId, Users.deleteFlag as">
+<meta property="og:description" content="在后台管理中，涉及分页操作，需要数据库支持limit和offset选项，但在MSSQL2008中这两个选项不支持，不过可以用ROW_NUMBER函数在SQL语句中实现数据分页效果。SQL代码示例如下： 123456SELECT * FROM  (SELECT Users.id as id,name,sign,account,audit,roleName,RoleId, Users.deleteFl">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-17T12:06:52.054Z">
+<meta property="og:updated_time" content="2019-08-17T14:04:42.404Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MSSQL2008中分页查询的实现">
-<meta name="twitter:description" content="在后台管理中，涉及分页操作，需要数据库支持limit和offset选项，但在MSSQL2008中这两个选项不支持，不过可以用ROW_NUMBER函数在SQL语句中实现数据分页效果。SQL代码示例如下： 1SELECT * FROM  (SELECT Users.id as id,name,sign,account,audit,roleName,RoleId, Users.deleteFlag as">
+<meta name="twitter:description" content="在后台管理中，涉及分页操作，需要数据库支持limit和offset选项，但在MSSQL2008中这两个选项不支持，不过可以用ROW_NUMBER函数在SQL语句中实现数据分页效果。SQL代码示例如下： 123456SELECT * FROM  (SELECT Users.id as id,name,sign,account,audit,roleName,RoleId, Users.deleteFl">
 
 
 
@@ -359,7 +359,7 @@
                 
               
 
-              <time title="创建时间：2019-08-17 18:22:02 / 修改时间：20:06:52" itemprop="dateCreated datePublished" datetime="2019-08-17T18:22:02+08:00">2019-08-17</time>
+              <time title="创建时间：2019-08-17 18:22:02 / 修改时间：22:04:42" itemprop="dateCreated datePublished" datetime="2019-08-17T18:22:02+08:00">2019-08-17</time>
             
 
             
@@ -415,7 +415,7 @@
 
       
         <p>在后台管理中，涉及分页操作，需要数据库支持limit和offset选项，但在MSSQL2008中这两个选项不支持，不过可以用ROW_NUMBER函数在SQL语句中实现数据分页效果。SQL代码示例如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM  (SELECT Users.id as id,name,sign,account,audit,roleName,RoleId, Users.deleteFlag as deleteFlag,ROW_NUMBER() OVER (ORDER BY Users.createdAt) AS Seq FROM Users LEFT JOIN Roles ON Users.RoleId=Roles.id)Users Where deleteFlag=0 and Seq &gt; :offset_num and Seq&lt;= :offset_num+:limit_num</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM  </span><br><span class="line">(SELECT Users.id as id,name,sign,account,audit,roleName,RoleId, Users.deleteFlag as deleteFlag,</span><br><span class="line">ROW_NUMBER() OVER (ORDER BY Users.createdAt) AS Seq </span><br><span class="line">FROM Users LEFT JOIN Roles ON Users.RoleId=Roles.id)Users </span><br><span class="line">Where deleteFlag=0 and </span><br><span class="line">Seq &gt; :offset_num and Seq&lt;= :offset_num+:limit_num</span><br></pre></td></tr></table></figure>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://social.msdn.microsoft.com/Forums/sqlserver/en-US/f24c0a3d-e8e9-4041-aca5-590a6e1a2e81/how-to-use-offset-fetch-next-in-sql-server-2008-r2?forum=databasedesign" target="_blank" rel="noopener">How to use Offset . . .Fetch Next in SQL SERVER 2008 R2</a>,by microsoft msdn.</li>
 </ol>

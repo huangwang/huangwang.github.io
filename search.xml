@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[MSSQL2008中分页查询的实现]]></title>
     <url>%2F2019%2F08%2F17%2FMSSQL2008%E4%B8%AD%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E7%8E%B0%2F</url>
-    <content type="text"><![CDATA[在后台管理中，涉及分页操作，需要数据库支持limit和offset选项，但在MSSQL2008中这两个选项不支持，不过可以用ROW_NUMBER函数在SQL语句中实现数据分页效果。SQL代码示例如下： 1SELECT * FROM (SELECT Users.id as id,name,sign,account,audit,roleName,RoleId, Users.deleteFlag as deleteFlag,ROW_NUMBER() OVER (ORDER BY Users.createdAt) AS Seq FROM Users LEFT JOIN Roles ON Users.RoleId=Roles.id)Users Where deleteFlag=0 and Seq &gt; :offset_num and Seq&lt;= :offset_num+:limit_num 参考链接 How to use Offset . . .Fetch Next in SQL SERVER 2008 R2,by microsoft msdn.]]></content>
+    <content type="text"><![CDATA[在后台管理中，涉及分页操作，需要数据库支持limit和offset选项，但在MSSQL2008中这两个选项不支持，不过可以用ROW_NUMBER函数在SQL语句中实现数据分页效果。SQL代码示例如下： 123456SELECT * FROM (SELECT Users.id as id,name,sign,account,audit,roleName,RoleId, Users.deleteFlag as deleteFlag,ROW_NUMBER() OVER (ORDER BY Users.createdAt) AS Seq FROM Users LEFT JOIN Roles ON Users.RoleId=Roles.id)Users Where deleteFlag=0 and Seq &gt; :offset_num and Seq&lt;= :offset_num+:limit_num 参考链接 How to use Offset . . .Fetch Next in SQL SERVER 2008 R2,by microsoft msdn.]]></content>
       <tags>
         <tag>笔记本</tag>
         <tag>数据库</tag>

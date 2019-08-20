@@ -314,6 +314,242 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/28/JavaScript最新语法学习笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/28/JavaScript最新语法学习笔记/" itemprop="url">
+                  JavaScript最新语法学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-28 16:33:13" itemprop="dateCreated datePublished" datetime="2019-07-28T16:33:13+08:00">2019-07-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-07-31 22:00:43" itemprop="dateModified" datetime="2019-07-31T22:00:43+08:00">2019-07-31</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>JavaScript目前发展很快，明年都会出一些新的语法特性。为了便于学习，本文对一些遇到的JavaScript语法特性做一些笔记。</p>
+<h1 id="JavaScript版本简介"><a href="#JavaScript版本简介" class="headerlink" title="JavaScript版本简介"></a>JavaScript版本简介</h1><p>JavaScript 由 Brendan Eich 于 1995 年发明，并于 1997 年成为 ECMA 标准。</p>
+<p>ECMAScript 是该语言的官方名称。</p>
+<p>从 2015 年起，ECMAScript 按年命名（ECMAScript 2015）。</p>
+<center>ECMAScript 版本</center>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>官方名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>ECMAScript 1 (1997)</td>
+<td>第一版。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>ECMAScript 2 (1998)</td>
+<td>只改变编辑方式。</td>
+</tr>
+<tr>
+<td>3</td>
+<td>ECMAScript 3 (1999)</td>
+<td>添加了正则表达式。添加了 try/catch。</td>
+</tr>
+<tr>
+<td>4</td>
+<td>ECMAScript 4</td>
+<td>从未发布过。</td>
+</tr>
+<tr>
+<td>5</td>
+<td>ECMAScript 5 (2009)</td>
+<td>添加了“严格模式”。添加了 JSON 支持。添加了 String.trim()。添加了 Array.isArray()。添加了数组迭代方法。</td>
+</tr>
+<tr>
+<td>5.1</td>
+<td>ECMAScript 5.1 (2011)</td>
+<td>编辑改变。</td>
+</tr>
+<tr>
+<td>6</td>
+<td>ECMAScript 2015</td>
+<td>添加了 let 和 const。添加了默认参数值。添加了 Array.find()。添加了 Array.findIndex()</td>
+</tr>
+<tr>
+<td>7</td>
+<td>ECMAScript 2016</td>
+<td>添加了指数运算符（**）。添加了 Array.prototype.includes。</td>
+</tr>
+<tr>
+<td>8</td>
+<td>ECMAScript 2017</td>
+<td>添加了字符串填充。添加了新的 Object 属性。添加了异步功能。添加了共享内存。</td>
+</tr>
+<tr>
+<td>9</td>
+<td>ECMAScript 2018</td>
+<td>添加了 rest / spread 属性。添加了异步迭代。添加了 Promise.finally()。增加 RegExp。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="JavaScript新语法特性"><a href="#JavaScript新语法特性" class="headerlink" title="JavaScript新语法特性"></a>JavaScript新语法特性</h1><h2 id="…运算符"><a href="#…运算符" class="headerlink" title="…运算符"></a>…运算符</h2><p>es6中引入扩展运算符（…），它用于把一个数组转化为用逗号分隔的参数序列，它常用在不定参数个数时的函数调用，数组合并等情形。</p>
+<ul>
+<li>将实现了 Iterator 接口的对象转为数组</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var nodeList = document.querySelectorAll(&apos;div&apos;);  </span><br><span class="line">var array = [...nodeList];</span><br></pre></td></tr></table></figure>
+<h2 id="解构赋值"><a href="#解构赋值" class="headerlink" title="解构赋值"></a>解构赋值</h2><p>解构赋值语法是一种 Javascript 表达式。通过解构赋值, 可以将属性/值从对象/数组中取出,赋值给其他变量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let &#123;a, b, ...rest&#125; = &#123;a: 10, b: 20, c: 30, d: 40&#125;</span><br><span class="line">a; // 10 </span><br><span class="line">b; // 20 </span><br><span class="line">rest; // &#123; c: 30, d: 40 &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="async函数"><a href="#async函数" class="headerlink" title="async函数"></a>async函数</h2><p>async函数是最新的javascript异步操作方式，初始定义于ES2017。async函数声明用于定义一个返回 AsyncFunction 对象的异步函数。异步函数是指通过事件循环异步执行的函数，它会通过一个隐式的 Promise 返回其结果。但是如果你的代码使用了异步函数，它的语法和结构会更像是标准的同步函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">/* 获取用户信息 */</span><br><span class="line">async function userInfoRoute(req, res, next) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        var decoded = jwt.verify(req.body.token.split(&apos; &apos;)[1], appConfig.secretOrPrivateKey);</span><br><span class="line">        var user = await models.User.findByPk(decoded.userId);</span><br><span class="line">        res.json(&#123;</span><br><span class="line">            code: 20000,</span><br><span class="line">            data: user</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125; catch (err) &#123;</span><br><span class="line">        res.send(406, &#123;</span><br><span class="line">            message: &apos;Account and password are incorrect.&apos;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/* 获取用户信息 */</span><br><span class="line">router.post(&apos;/user_info&apos;, userInfoRoute);</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.w3school.com.cn/js/js_versions.asp" target="_blank" rel="noopener">JavaScript 版本</a>,by w3school.</li>
+<li><a href="https://www.jianshu.com/p/86cbabeda999" target="_blank" rel="noopener">ES6 扩展运算符 三个点（…）</a>,by ten5743.</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment" target="_blank" rel="noopener">解构赋值</a>,by MDN web docs.</li>
+<li><a href="http://www.ruanyifeng.com/blog/2015/05/async.html" target="_blank" rel="noopener">async 函数的含义和用法</a>,by 阮一峰.</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/async_function" target="_blank" rel="noopener">async function</a>,by MDN web docs.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/28/Vuejs调试入门/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1829,245 +2065,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/22/HTML-DOM文档对象模型简介/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/22/HTML-DOM文档对象模型简介/" itemprop="url">
-                  HTML_DOM文档对象模型简介
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-07-22 21:21:52" itemprop="dateCreated datePublished" datetime="2019-07-22T21:21:52+08:00">2019-07-22</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-07-23 08:18:02" itemprop="dateModified" datetime="2019-07-23T08:18:02+08:00">2019-07-23</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近要写一些八股文，上网一搜，好多范例，正想下载下来借鉴以下，可惜不让复制粘贴。不过难不倒我，直接使用文档对象模型(Document Object Model，DOM)提供编程接口，将整篇文章下来。</p>
-<h1 id="DOM概述"><a href="#DOM概述" class="headerlink" title="DOM概述"></a>DOM概述</h1><h2 id="DOM简介"><a href="#DOM简介" class="headerlink" title="DOM简介"></a>DOM简介</h2><p>文档对象模型 (DOM) 是HTML和XML文档的编程接口。它提供了对文档的结构化的表述，并定义了一种方式可以使从程序中对该结构进行访问，从而改变文档的结构，样式和内容。DOM 将文档解析为一个由节点和对象（包含属性和方法的对象）组成的结构集合。简言之，它会将web页面和脚本或程序语言连接起来。</p>
-<p>一个web页面是一个文档。这个文档可以在浏览器窗口或作为HTML源码显示出来。但上述两个情况中都是同一份文档。文档对象模型（DOM）提供了对同一份文档的另一种表现，存储和操作的方式。 DOM是web页面的完全的面向对象表述，它能够使用如 JavaScript等脚本语言进行修改。</p>
-<h2 id="DOM-和-JavaScript"><a href="#DOM-和-JavaScript" class="headerlink" title="DOM 和 JavaScript"></a>DOM 和 JavaScript</h2><p>开始的时候，JavaScript和DOM是交织在一起的，但它们最终演变成了两个独立的实体。JavaScript可以访问和操作存储在DOM中的内容，因此我们可以写成这个近似的等式：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">API (web 或 XML 页面) = DOM + JS (脚本语言)</span><br></pre></td></tr></table></figure>
-<p>DOM 被设计成与特定编程语言相独立，使文档的结构化表述可以通过单一，一致的API获得。尽管通常使用JavaScript操作DOM， 但DOM 也可以使用其他的语言来实现。</p>
-<h2 id="DOM访问"><a href="#DOM访问" class="headerlink" title="DOM访问"></a>DOM访问</h2><p>在使用DOM时，您不需要做任何其他特殊的操作。不同的浏览器都有对DOM不同的实现， 这些实现对当前的DOM标准而言，都会呈现出不同程度的一致性，每个web浏览器都会使用一些文档对象模型，从而使页面可以被脚本语言访问。</p>
-<p>当您在创建一个脚本时-无论是使用内嵌 \<script\>元素或者使用在web页面脚本加载的方法— 您都可以使用 document或 window 元素的API来操作文档本身或获取文档的子类（web页面中的各种元素）。</script\></p>
-<p>您的DOM编程代码可能会像下面例子一样非常简单，如使用 window对象的alert()函数显示一个警告信息，或者使用比较复杂的方法来创建一个新的内容，如下面内容较长的实例所示。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;body onload=&quot;window.alert(&apos;welcome to my home page!&apos;);&quot;&gt;</span><br></pre></td></tr></table></figure>
-<h2 id="重要的数据类型"><a href="#重要的数据类型" class="headerlink" title="重要的数据类型"></a>重要的数据类型</h2><p>为简单起见，在API参考文档中的语法实例通常会使用element(s) 指代节点，使用nodeList（s）或 element(s)来指代节点数组，使用 attribute(s)来指代属性节点。</p>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th>数据类型</th>
-<th>解释</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>document</td>
-<td>当一个成员返回 document 对象 （例如，元素的 ownerDocument 属性返回它所属于 document ) ，这个对象就是root document 对象本身。 DOM document Reference 一章对 document 对象进行了描述。</td>
-</tr>
-<tr>
-<td>element</td>
-<td>element 是指由 DOM API 中成员返回的类型为 element 的一个元素或节点。 例如， document.createElement() 方法会返回一个 node 的对象引用，也就是说这个方法返回了在DOM中创建的 element。 element 对象实现了 DOM Element 接口以及更基本的 Node 接口，参考文档将两者都包含在内。</td>
-</tr>
-<tr>
-<td>nodeList</td>
-<td>nodeList 是一个元素的数组，如从 document.getElementsByTagName() 方法返回的就是这种类型。 nodeList 中的条目由通过下标有两种方式进行访问：list.item(1)和list[1]。两种方式是等价的，第一种方式中 item() 是 nodeList 对象中的单独方法。 后面的方式则使用了经典的数组语法来获取列表中的第二个条目。</td>
-</tr>
-<tr>
-<td>attribute</td>
-<td>当 attribute 通过成员函数 (例如，通过 createAttribute()方法) 返回时，它是一个为属性暴露出专门接口的对象引用。DOM中的属性也是节点，就像元素一样，只不过您可能会很少使用它。</td>
-</tr>
-<tr>
-<td>namedNodeMap</td>
-<td>namedNodeMap 和数组类似，但是条目是由name或index访问的，虽然后一种方式仅仅是为了枚举方便，因为在 list 中本来就没有特定的顺序。 出于这个目的，  namedNodeMap 有一个 item() 方法，你也可以从  namedNodeMap 添加或移除条目。</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>DOM 的最小组成单位叫做节点（node）。文档的树形结构（DOM 树），就是由各种不同类型的节点组成。每个节点可以看作是文档树的一片叶子。</p>
-<p>节点的类型有七种。</p>
-<ul>
-<li>Document：整个文档树的顶层节点</li>
-<li>DocumentType：doctype标签（比如\&lt;!DOCTYPE html>）</li>
-<li>Element：网页的各种HTML标签（比如\<body\>、\<a\>等）</a\></body\></li>
-<li>Attribute：网页元素的属性（比如class=”right”）</li>
-<li>Text：标签之间或标签包含的文本</li>
-<li>Comment：注释</li>
-<li>DocumentFragment：文档的片段</li>
-</ul>
-<p>浏览器提供一个原生的节点对象Node，上面这七种节点都继承了Node，因此具有一些共同的属性和方法。</p>
-<h2 id="DOM中核心接口"><a href="#DOM中核心接口" class="headerlink" title="DOM中核心接口"></a>DOM中核心接口</h2><p>在DOM编程时，通常使用的最多的就是 Document 和 window 对象。简单的说， window 对象表示浏览器中的内容，而 document 对象是文档本身的根节点。Element 继承了通用的 Node 接口,  将这两个接口结合后就提供了许多方法和属性可以供单个元素使用。在处理这些元素所对应的不同类型的数据时，这些元素可能会有专用的接口，如上节中的  table  对象的例子。</p>
-<p>下面是在web和XML页面脚本中使用DOM时，一些常用的API简要列表。</p>
-<ul>
-<li>document.getElementById(id)</li>
-<li>document.getElementsByTagName(name)</li>
-<li>document.createElement(name)</li>
-<li>parentNode.appendChild(node)</li>
-<li>element.innerHTML</li>
-<li>element.style.left</li>
-<li>element.setAttribute()</li>
-<li>element.getAttribute()</li>
-<li>element.addEventListener()</li>
-<li>window.content</li>
-<li>window.onload</li>
-<li>window.dump()</li>
-<li>window.scrollTo()</li>
-</ul>
-<h1 id="文档下载实战"><a href="#文档下载实战" class="headerlink" title="文档下载实战"></a>文档下载实战</h1><p>以<a href="http://www.gwyxiezuo.com/cailiao/pouxi/2018-11-23/486dbfad4cf89816bef7921d14a11311.html" target="_blank" rel="noopener">示例范文</a>为例，提取其中内容。</p>
-<h2 id="禁止复制粘贴的原理"><a href="#禁止复制粘贴的原理" class="headerlink" title="禁止复制粘贴的原理"></a>禁止复制粘贴的原理</h2><ul>
-<li>阻止默认的事件响应</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">// 禁止右键菜单</span><br><span class="line">document.oncontextmenu = function()&#123; return false; &#125;;</span><br><span class="line">// 禁止文字选择</span><br><span class="line">document.onselectstart = function()&#123; return false; &#125;;</span><br><span class="line">// 禁止复制</span><br><span class="line">document.oncopy = function()&#123; return false; &#125;;</span><br><span class="line">// 禁止剪切</span><br><span class="line">document.oncut = function()&#123; return false; &#125;;</span><br><span class="line">// 禁止粘贴</span><br><span class="line">document.onpaste = function()&#123; return false; &#125;;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>CSS阻止用户选择</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">element.style &#123;</span><br><span class="line">    user-select: none;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="破解禁止复制粘贴"><a href="#破解禁止复制粘贴" class="headerlink" title="破解禁止复制粘贴"></a>破解禁止复制粘贴</h2><p>使用chrome打开该网页，在使用快捷键ctrl+shift+i，打开开发者工具，找到文档节点DIV的id为article，使用如下代码提取文章内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var node=document.getElementById(&apos;article&apos;)</span><br><span class="line">console.log(node.innerText)</span><br></pre></td></tr></table></figure>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://javascript.ruanyifeng.com/dom/node.html" target="_blank" rel="noopener">DOM 模型概述</a>,by 阮一峰.</li>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document_Object_Model/Introduction" target="_blank" rel="noopener">DOM概述</a>,by MDN web DOC.</li>
-<li><a href="http://blog.haoji.me/disable-html-copy-and-paste.html?from=xa" target="_blank" rel="noopener">网页上如何实现禁止复制粘贴以及如何破解</a>,by 小茗同学.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2115,7 +2112,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">167</span>
+                    <span class="site-state-item-count">168</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

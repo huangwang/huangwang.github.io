@@ -314,6 +314,258 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/02/01/分布式系统架构入门/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/01/分布式系统架构入门/" itemprop="url">
+                  分布式系统架构入门
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-01 17:59:25 / 修改时间：21:21:07" itemprop="dateCreated datePublished" datetime="2019-02-01T17:59:25+08:00">2019-02-01</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>随着互联网高速公路的不断发展，以往的单机应用系统逐渐没落，分布式系统逐渐成为主流。</p>
+<h1 id="分布式系统定义"><a href="#分布式系统定义" class="headerlink" title="分布式系统定义"></a>分布式系统定义</h1><p>分布式系统是其组件分布正在连网的计算机上，组件之间通过传递消息进行通信和动作协调的系统<sup>[1]</sup>。通过该定义可知，分布式系统具有以下重要特征：组件的并发性、缺乏全局时钟、组件故障的独立性。</p>
+<p>现代分布式系统的例子有：</p>
+<ul>
+<li>Web搜索</li>
+<li>大型多人在线游戏</li>
+<li>金融交易</li>
+</ul>
+<h1 id="分布式系统架构演变"><a href="#分布式系统架构演变" class="headerlink" title="分布式系统架构演变"></a>分布式系统架构演变</h1><p>大多数的开发者最开始接触的是单机系统架构，即所有的数据和程序都在一台计算机上，这是分布式系统架构演变的起点。随着用户规模的不断增长和用户需求的不断变化，分布式系统架构开始不断演变。</p>
+<h2 id="系统架构演化历程-初始阶段架构"><a href="#系统架构演化历程-初始阶段架构" class="headerlink" title="系统架构演化历程-初始阶段架构"></a>系统架构演化历程-初始阶段架构</h2><p align="center">
+    <img src="images/dsa1.png" width="90%" alt="系统架构演化历程-初始阶段架构">
+</p>
+
+<p>初始阶段的小型系统中应用程序、数据库、文件等所有的资源都在一台服务器上。随着业务量的增长，小型系统的负载将越来越重。但如果没有达到单台机器的性能瓶颈，则根本没必要进行分布式架构，可以考虑机器升级，提高机器配置解决问题。或者考虑技术升级，更换更加高效或者场景适合的技术。</p>
+<h2 id="系统架构演化历程-应用服务和数据服务分离"><a href="#系统架构演化历程-应用服务和数据服务分离" class="headerlink" title="系统架构演化历程-应用服务和数据服务分离"></a>系统架构演化历程-应用服务和数据服务分离</h2><p align="center">
+    <img src="images/dsa2.png" width="90%" alt="系统架构演化历程-应用服务和数据服务分离">
+</p>
+
+<p>数据量增加，单台服务器性能及存储空间不足，需要将应用和数据分离，并发处理能力和数据存储空间得到了很大改善。</p>
+<h2 id="系统架构演化历程-使用缓存改善性能"><a href="#系统架构演化历程-使用缓存改善性能" class="headerlink" title="系统架构演化历程-使用缓存改善性能"></a>系统架构演化历程-使用缓存改善性能</h2><p align="center">
+    <img src="images/dsa3.jpg" width="90%" alt="系统架构演化历程-使用缓存改善性能">
+</p>
+
+<p>系统访问特点遵循二八定律，即80%的业务访问集中在20%的数据上。缓存分为本地缓存和远程分布式缓存，本地缓存访问速度更快但缓存数据量有限，同时存在与应用程序争用内存的情况。</p>
+<h2 id="系统架构演化历程-使用应用服务器集群"><a href="#系统架构演化历程-使用应用服务器集群" class="headerlink" title="系统架构演化历程-使用应用服务器集群"></a>系统架构演化历程-使用应用服务器集群</h2><p align="center">
+    <img src="images/dsa4.jpg" width="90%" alt="系统架构演化历程-使用应用服务器集群">
+</p>
+
+<p>使用集群是系统解决高并发、海量数据问题的常用手段。通过向集群中追加资源，提升系统的并发处理能力，使得服务器的负载压力不再成为整个系统的瓶颈。</p>
+<h2 id="系统架构演化历程-数据库读写分离"><a href="#系统架构演化历程-数据库读写分离" class="headerlink" title="系统架构演化历程-数据库读写分离"></a>系统架构演化历程-数据库读写分离</h2><p align="center">
+    <img src="images/dsa5.jpg" width="90%" alt="系统架构演化历程-数据库读写分离">
+</p>
+
+<p>数据库访问通常是读多写少。针对这个情况，就是写一个主库，但是主库挂多个从库，然后从多个从库来读，以支撑更高的读并发压力。</p>
+<h2 id="系统架构演化历程-反向代理和CDN加速"><a href="#系统架构演化历程-反向代理和CDN加速" class="headerlink" title="系统架构演化历程-反向代理和CDN加速"></a>系统架构演化历程-反向代理和CDN加速</h2><p align="center">
+    <img src="images/dsa6.jpg" width="90%" alt="系统架构演化历程-反向代理和CDN加速">
+</p>
+
+<p>为了应付复杂的网络环境和不同地区用户的访问，通过CDN和反向代理加快用户访问的速度，同时减轻后端服务器的负载压力。CDN与反向代理的基本原理都是缓存。</p>
+<h2 id="系统架构演化历程-分布式文件系统和分布式数据库"><a href="#系统架构演化历程-分布式文件系统和分布式数据库" class="headerlink" title="系统架构演化历程-分布式文件系统和分布式数据库"></a>系统架构演化历程-分布式文件系统和分布式数据库</h2><p align="center">
+    <img src="images/dsa7.jpg" width="90%" alt="系统架构演化历程-分布式文件系统和分布式数据库">
+</p>
+
+<p>任何强大的单一服务器都满足不了大型系统持续增长的业务需求，数据库读写分离随着业务的发展最终也将无法满足需求，需要使用分布式数据库及分布式文件系统来支撑。分布式数据库是系统数据库拆分的最后方法，只有在单表数据规模非常庞大的时候才使用，更常用的数据库拆分手段是业务分库，将不同的业务数据库部署在不同的物理服务器上。</p>
+<h2 id="系统架构演化历程-使用NoSQL和搜索引擎"><a href="#系统架构演化历程-使用NoSQL和搜索引擎" class="headerlink" title="系统架构演化历程-使用NoSQL和搜索引擎"></a>系统架构演化历程-使用NoSQL和搜索引擎</h2><p align="center">
+    <img src="images/dsa8.jpg" width="90%" alt="系统架构演化历程-使用NoSQL和搜索引擎">
+</p>
+
+<p>随着业务越来越复杂，对数据存储和检索的需求也越来越复杂，系统需要采用一些非关系型数据库如NoSQL和分数据库查询技术如搜索引擎。应用服务器通过统一数据访问模块访问各种数据，减轻应用程序管理诸多数据源的麻烦。</p>
+<h2 id="系统架构演化历程-业务拆分"><a href="#系统架构演化历程-业务拆分" class="headerlink" title="系统架构演化历程-业务拆分"></a>系统架构演化历程-业务拆分</h2><p align="center">
+    <img src="images/dsa9.jpg" width="90%" alt="系统架构演化历程-业务拆分">
+</p>
+
+<p>为了应对日益复杂的业务场景，通常使用分而治之的手段将整个系统业务分成不同的产品线，应用之间通过超链接建立关系，也可以通过消息队列进行数据分发，当然更多的还是通过访问同一个数据存储系统来构成一个关联的完整系统。</p>
+<ul>
+<li><p>纵向拆分：将一个大应用拆分为多个小应用，如果新业务较为独立，那么就直接将其设计部署为一个独立的Web应用系统纵向拆分相对较为简单，通过梳理业务，将较少相关的业务剥离即可。</p>
+</li>
+<li><p>横向拆分：将复用的业务拆分出来，独立部署为分布式服务，新增业务只需要调用这些分布式服务横向拆分需要识别可复用的业务，设计服务接口，规范服务依赖关系。</p>
+</li>
+</ul>
+<h2 id="系统架构演化历程-分布式服务"><a href="#系统架构演化历程-分布式服务" class="headerlink" title="系统架构演化历程-分布式服务"></a>系统架构演化历程-分布式服务</h2><p align="center">
+    <img src="images/dsa10.jpg" width="90%" alt="系统架构演化历程-分布式服务">
+</p>
+
+<h1 id="分布式服务关键技术"><a href="#分布式服务关键技术" class="headerlink" title="分布式服务关键技术"></a>分布式服务关键技术</h1><p>分布式服务应用将会面临以下问题：</p>
+<ul>
+<li>当服务越来越多时，服务URL配置管理变得非常困难，硬件负载均衡器的单点压力也越来越大。</li>
+<li>当进一步发展，服务间依赖关系变得错踪复杂，甚至分不清哪个应用要在哪个应用之前启动，架构师都不能完整的描述应用的架构关系。</li>
+<li>接着，服务的调用量越来越大，服务的容量问题就暴露出来，这个服务需要多少机器支撑？什么时候该加机器？</li>
+<li>服务多了，沟通成本也开始上升，调某个服务失败该找谁？服务的参数都有什么约定？ </li>
+<li>一个服务有多个业务消费者，如何确保服务质量？</li>
+<li>随着服务的不停升级，总有些意想不到的事发生，比如cache写错了导致内存溢出，故障不可避免，每次核心服务一挂，影响一大片，人心慌慌，如何控制故障的影响面？服务是否可以功能降级？或者资源劣化？</li>
+</ul>
+<p>为解决上述问题，可采用以下关键技术。</p>
+<h2 id="消息队列架构"><a href="#消息队列架构" class="headerlink" title="消息队列架构"></a>消息队列架构</h2><p>消息对列通过消息对象分解系统耦合性，不同子系统处理同一个消息。</p>
+<p align="center">
+    <img src="images/msgQueue.jpg" width="90%" alt="消息队列原理">
+</p>
+
+<h2 id="面向服务架构"><a href="#面向服务架构" class="headerlink" title="面向服务架构"></a>面向服务架构</h2><p>服务框架通过接口分解系统耦合性，不同子系统通过相同的接口描述进行服务启用服务框架是一个点对点模型服务框架面向同构系统适合：移动应用、互联网应用、外部系统。</p>
+<p align="center">
+    <img src="images/SOA.jpg" width="90%" alt="面向服务架构原理">
+</p>
+
+<h2 id="服务总线架构"><a href="#服务总线架构" class="headerlink" title="服务总线架构"></a>服务总线架构</h2><p>服务总线架构同面向服务架构一样，均是通过接口分解系统耦合性，不同子系统通过相同的接口描述进行服务启用。服务总线架构是一个总线式的架构模型。</p>
+<p align="center">
+    <img src="images/ESB.png" width="90%" alt="服务总线架构原理">
+</p>
+
+<h1 id="分布式系统交互的通信模式"><a href="#分布式系统交互的通信模式" class="headerlink" title="分布式系统交互的通信模式"></a>分布式系统交互的通信模式</h1><p>分布式系统交互的通信模式共有五种：</p>
+<ul>
+<li>request/response模式（同步模式）：客户端发起请求一直阻塞到服务端返回请求为止。</li>
+<li>Callback（异步模式）：客户端发送一个RPC请求给服务器，服务端处理后再发送一个消息给消息发送端提供的callback端点，此类情况非常合适以下场景：A组件发送RPC请求给B，B处理完成后，需要通知A组件做后续处理。</li>
+<li>Future模式：客户端发送完请求后，继续做自己的事情，返回一个包含消息结果的Future对象。客户端需要使用返回结果时，使用Future对象的.get(),如果此时没有结果返回的话，会一直阻塞到有结果返回为止。</li>
+<li>Oneway模式：客户端调用完继续执行，不管接收端是否成功。</li>
+<li>Reliable模式：为保证通信可靠，将借助于消息中心来实现消息的可靠送达，请求将做持久化存储，在接收方在线时做送达，并由消息中心保证异常重试。</li>
+</ul>
+<h1 id="常用的分布式服务框架"><a href="#常用的分布式服务框架" class="headerlink" title="常用的分布式服务框架"></a>常用的分布式服务框架</h1><p>现在业界比较成熟的服务框架有很多，比如：Hessian、CXF、Dubbo、Dubbox、Spring Cloud、gRPC、thrift等技术实现，都可以进行远程调用。</p>
+<ul>
+<li>Spring Cloud：Spring全家桶，用起来很舒服，只有你想不到，没有它做不到。可惜因为发布的比较晚，国内还没出现比较成功的案例，大部分都是试水，不过毕竟有Spring作背书，还是比较看好。</li>
+<li>Dubbox：相对于Dubbo支持了REST，估计是很多公司选择Dubbox的一个重要原因之一，但如果使用Dubbo的RPC调用方式，服务间仍然会存在API强依赖，各有利弊，懂的取舍吧。</li>
+<li>Thrift：如果你比较高冷，完全可以基于Thrift自己搞一套抽象的自定义框架吧。</li>
+<li>Montan：可能因为出来的比较晚，目前除了新浪微博16年初发布的，</li>
+<li>Hessian：如果是初创公司或系统数量还没有超过5个，推荐选择这个，毕竟在开发速度、运维成本、上手难度等都是比较轻量、简单的，即使在以后迁移至SOA，也是无缝迁移。</li>
+<li>rpcx/gRPC：在服务没有出现严重性能的问题下，或技术栈没有变更的情况下，可能一直不会引入，即使引入也只是小部分模块优化使用。</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li>George Coulouris, Jean Dollimore， Tim Kindberg，Gordon Blair，金蓓弘，马应龙，等译. 分布式系统概念与设计[M].2013.</li>
+<li><a href="http://zhuanlan.51cto.com/art/201712/561516.htm" target="_blank" rel="noopener">聊聊分布式系统的架构套路</a>,by 大蕉.</li>
+<li><a href="https://www.jianshu.com/p/ab35b6d74fed" target="_blank" rel="noopener">分布式架构的演进</a>,by 稳稳的幸福y.</li>
+<li><a href="https://github.com/doocs/advanced-java" target="_blank" rel="noopener">互联网 Java 工程师进阶知识完全扫盲</a>,by dooc.</li>
+<li><a href="https://juejin.im/post/5a5ee63d518825732914748c" target="_blank" rel="noopener">聊聊Dubbo（一）：为何选择</a>, by 猿码道.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/27/元强化学习研究笔记/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1999,163 +2251,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/07/开源跨平台下载利器Aria2/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/07/开源跨平台下载利器Aria2/" itemprop="url">
-                  开源跨平台下载利器Aria2
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-07 19:39:12 / 修改时间：19:56:24" itemprop="dateCreated datePublished" datetime="2019-01-07T19:39:12+08:00">2019-01-07</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>长期以来，迅雷一直是我在Windows平台上首选的下载工具。但是随着迅雷软件升级更新后的下载限速和广告推销的愈演愈烈，我终于下定决心卸载了它。下面我推荐一款开源跨平台的下载利器Aria2。</p>
-<h1 id="Aria2简介"><a href="#Aria2简介" class="headerlink" title="Aria2简介"></a>Aria2简介</h1><p>Aria2是一款自由、跨平台命令行界面的下载管理器，该软件根据GPLv2许可证进行分发。支持的下载协议有：HTTP、HTTPS、FTP、Bittorrent和Metalink。</p>
-<p>不同于Wget这样的的命令行界面下载器，Aria2不仅支持BitTorrent，还能够从各种来源多路检索所请求的文件。包括HTTP，HTTPS，FTP和BitTorrent协议。aria2使用Metalink数据块的校验和自动查验BitTorrent下载的数据部分。</p>
-<h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><p>从<a href="https://aria2.github.io/" target="_blank" rel="noopener">Aria2官网</a>下载最新Aria2安装包，当前Aria2最新的版本为1.34.0。</p>
-<p>将下载的Aria2安装包aria2-1.34.0-win-64bit-build1解压到C盘目录，并将Aria2安装目录添加到Windows环境变量PATH。</p>
-<p>重启后，打开Windows终端，即可在命令行中使用Aria2下载文件。</p>
-<h1 id="使用帮助"><a href="#使用帮助" class="headerlink" title="使用帮助"></a>使用帮助</h1><p>从Web中下载文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c http://example.org/mylinux.iso</span><br></pre></td></tr></table></figure>
-<p>从2个源下载文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c http://a/f.iso ftp://b/f.iso</span><br></pre></td></tr></table></figure>
-<p>使用2个连接下载文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c -x2 http://a/f.iso</span><br></pre></td></tr></table></figure></p>
-<p>BitTorrent下载：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c http://example.org/mylinux.torrent</span><br></pre></td></tr></table></figure></p>
-<p>BitTorrent Magnet URI下载：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c &apos;magnet:?xt=urn:btih:248D0A1CD08284299DE78D5C1ED359BB46717D8C&apos;</span><br></pre></td></tr></table></figure></p>
-<p>按照txt中给出的URI下载：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c -i uris.txt</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Aria2" target="_blank" rel="noopener">Aria2</a>,by wikipedia.</li>
-<li><a href="https://aria2.github.io/" target="_blank" rel="noopener">Aria2 Homepage</a>,by Aria2.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2203,7 +2298,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">167</span>
+                    <span class="site-state-item-count">168</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2893,9 +2988,9 @@
       
     
       
-        
-      
     
+      
+        
       
     
       

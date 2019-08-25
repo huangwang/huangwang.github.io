@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-08-20T14:13:52.095Z</updated>
+  <updated>2019-08-25T09:33:42.439Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何使用图标icon</title>
+    <link href="https://huangwang.github.io/2019/08/25/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E5%9B%BE%E6%A0%87icon/"/>
+    <id>https://huangwang.github.io/2019/08/25/如何使用图标icon/</id>
+    <published>2019-08-25T08:46:07.000Z</published>
+    <updated>2019-08-25T09:33:42.439Z</updated>
+    
+    <content type="html"><![CDATA[<p>在前端网页的世界里，Icon是最基本的元素之一。使用Icon已成为前端开发者最基本的技能。下面将主要介绍利用SVG Sprites技术在前端中使用Icon的方法。</p><h1 id="Icon的演化史"><a href="#Icon的演化史" class="headerlink" title="Icon的演化史"></a>Icon的演化史</h1><p>Icon最早用img实现，后为了提高效率，减少img请求，出现image sprite技术，实现将多个图片合成一个图片，然后利用 css 的 background-position 定位显示不同的 icon 图标。但该技术维护困难。</p><p>随后出现了<strong>font库</strong>实现页面图标，例如<a href="https://fontawesome.com/" target="_blank" rel="noopener"> Font Awesome</a>。目前最常用的是<a href="https://www.iconfont.cn/" target="_blank" rel="noopener">iconfont</a>，里面图标应有尽有，且开源。</p><h1 id="iconfont的使用方法"><a href="#iconfont的使用方法" class="headerlink" title="iconfont的使用方法"></a>iconfont的使用方法</h1><h2 id="unicode"><a href="#unicode" class="headerlink" title="unicode"></a>unicode</h2><p>优势：</p><ul><li>兼容性最好，支持ie6+</li><li>支持按字体的方式去动态调整图标大小，颜色等等</li></ul><p>劣势:</p><ul><li>不支持多色图标</li><li>在不同的设备浏览器字体的渲染会略有差别</li></ul><p>具体使用方法参考<a href="https://juejin.im/post/59bb864b5188257e7a427c09" target="_blank" rel="noopener">手摸手，带你优雅的使用 icon</a>，不建议使用。</p><h2 id="font-class"><a href="#font-class" class="headerlink" title="font-class"></a>font-class</h2><p>与unicode使用方式相比，具有如下特点：</p><ul><li>兼容性良好，支持ie8+</li><li>相比于unicode语意明确，书写更直观。可以很容易分辨这个icon是什么。</li></ul><h2 id="symbol"><a href="#symbol" class="headerlink" title="symbol"></a>symbol</h2><p>随着IE浏览器逐渐淡出历史舞台，svg-icon 使用形式慢慢成为主流和推荐的方法，请参考<a href="https://www.zhangxinxu.com/wordpress/2014/07/introduce-svg-sprite-technology/?spm=a313x.7781069.1998910419.50" target="_blank" rel="noopener">未来必热：SVG Sprites技术介绍</a>。其优点有：</p><ul><li>支持多色图标了，不再受单色限制。</li><li>支持像字体那样通过font-size,color来调整样式。</li><li>支持 ie9+</li><li>可利用CSS实现动画。</li><li>减少HTTP请求。</li><li>矢量，缩放不失真</li><li>可以很精细的控制SVG图标的每一部分</li></ul><p>具体使用方法如下：</p><ul><li>使用SVG Sprite生成SVG雪碧图</li></ul><p><img src="https://user-gold-cdn.xitu.io/2017/10/19/9dae2c582c3d2d3d62e9b5079b82348a?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="SVG雪碧图"></p><ul><li>加入通用css代码（引入一次就行）</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;style type=&quot;text/css&quot;&gt;</span><br><span class="line">    .icon &#123;</span><br><span class="line">       width: 1em; height: 1em;</span><br><span class="line">       vertical-align: -0.15em;</span><br><span class="line">       fill: currentColor;</span><br><span class="line">       overflow: hidden;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure><ul><li>挑选相应图标并获取类名，应用于页面</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;svg class=&quot;icon&quot; aria-hidden=&quot;true&quot;&gt;</span><br><span class="line">    &lt;use xlink:href=&quot;#icon-xxx&quot;&gt;&lt;/use&gt;</span><br><span class="line">&lt;/svg&gt;</span><br></pre></td></tr></table></figure><p>使用svg-icon的好处是再也不用发送woff|eot|ttf| 这些很多个字体库请求了，所有的svg都可以内联在html内。且svg 是一个真正的矢量，不管再怎么的放缩它都不会失真模糊，而且svg可以控制的属性也更加的丰富，也能做出更加生动和复杂的图标。</p><h1 id="生成SVG-sprite的方法"><a href="#生成SVG-sprite的方法" class="headerlink" title="生成SVG sprite的方法"></a>生成SVG sprite的方法</h1><p>推荐使用<a href="https://github.com/kisenka/svg-sprite-loader" target="_blank" rel="noopener">svg-sprite-loader </a>,它是一个Webpack loader。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import &apos;@/src/icons/qq.svg; //引入图标</span><br><span class="line">&lt;svg&gt;&lt;use xlink:href=&quot;#qq&quot; /&gt;&lt;/svg&gt;  //使用图标</span><br></pre></td></tr></table></figure><h1 id="自动导入多个SVG"><a href="#自动导入多个SVG" class="headerlink" title="自动导入多个SVG"></a>自动导入多个SVG</h1><p>使用 webpack 的 <a href="https://webpack.js.org/guides/dependency-management/#require-context" target="_blank" rel="noopener">require.context</a> 实现自动导入多个SVG Icon，避免手动一个个引入。</p><p>require.context有三个参数：</p><ul><li>directory：说明需要检索的目录</li><li>useSubdirectories：是否检索子目录</li><li>regExp: 匹配文件的正则表达式</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const requireAll = requireContext =&gt; requireContext.keys().map(requireContext)</span><br><span class="line">const req = require.context(&apos;./svg&apos;, false, /\.svg$/)</span><br><span class="line">requireAll(req)</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://juejin.im/post/59bb864b5188257e7a427c09" target="_blank" rel="noopener">手摸手，带你优雅的使用 icon</a>,by 花裤衩.</li><li><a href="https://www.zhangxinxu.com/wordpress/2014/07/introduce-svg-sprite-technology/?spm=a313x.7781069.1998910419.50" target="_blank" rel="noopener">未来必热：SVG Sprites技术介绍</a>,by 张鑫旭.</li><li><a href="https://juejin.im/post/5c049a28f265da61273d2317" target="_blank" rel="noopener">如何在vue项目中优雅的使用SVG</a>,by SilentLove.</li><li><a href="https://juejin.im/post/5c10dbcbf265da61441fe8e2" target="_blank" rel="noopener">关于webpack的require.context</a>,by yeyan1996.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;在前端网页的世界里，Icon是最基本的元素之一。使用Icon已成为前端开发者最基本的技能。下面将主要介绍利用SVG Sprites技术在前端中使用Icon的方法。&lt;/p&gt;
+&lt;h1 id=&quot;Icon的演化史&quot;&gt;&lt;a href=&quot;#Icon的演化史&quot; class=&quot;header
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="前端" scheme="https://huangwang.github.io/tags/%E5%89%8D%E7%AB%AF/"/>
+    
+      <category term="vuejs" scheme="https://huangwang.github.io/tags/vuejs/"/>
+    
+  </entry>
   
   <entry>
     <title>USB供电能力简介</title>
@@ -513,35 +541,6 @@
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
       <category term="nodejs" scheme="https://huangwang.github.io/tags/nodejs/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>RESTful_API设计及测试入门</title>
-    <link href="https://huangwang.github.io/2019/07/23/RESTful-API%E8%AE%BE%E8%AE%A1%E5%8F%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/"/>
-    <id>https://huangwang.github.io/2019/07/23/RESTful-API设计及测试入门/</id>
-    <published>2019-07-23T09:01:34.000Z</published>
-    <updated>2019-07-24T14:27:50.164Z</updated>
-    
-    <content type="html"><![CDATA[<p>RESTful API是目前比较成熟的一套互联网应用程序的API设计理论，提供了一种统一的机制，方便不同的前端设备与后端进行通信，以应对前端设备层出不穷（手机、平板、桌面电脑、其他专用设备……）的状况。同时对开发人员而言，提供了一种规范，方便协作开发，降低了API接口设计的难度。</p><h1 id="RESTful-API设计规范"><a href="#RESTful-API设计规范" class="headerlink" title="RESTful API设计规范"></a>RESTful API设计规范</h1><p>请参考阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html" target="_blank" rel="noopener">RESTful API 设计指南</a>。</p><h1 id="RESTful-API的测试方法"><a href="#RESTful-API的测试方法" class="headerlink" title="RESTful API的测试方法"></a>RESTful API的测试方法</h1><p>RESTful API设计好了之后，需要测试其可用性。常用的API测试工具有Postman。简单入门可参考<a href="https://www.cnblogs.com/mafly/p/postman.html" target="_blank" rel="noopener">Postman 安装及使用入门教程</a>。</p><p>Postman中使用HTTP POST方法测试RESTful API时，需要了解POST提交数据的方法。</p><h2 id="POST提交数据的方法"><a href="#POST提交数据的方法" class="headerlink" title="POST提交数据的方法"></a>POST提交数据的方法</h2><p>POST 几种请求主要包括 application/x-www-form-urlencoded、 multipart/form-data、 application/json、text/xml 四种的方法。</p><p>服务端通常是根据请求头（Request Headers）中的 Content-Type 字段来获知请求中的消息主体是用何种方式编码，再对主体进行解析。<br>POST 提交数据方案，包含了 Content-Type 和消息主体编码方式两部分。</p><ul><li>application/x-www-form-urlencoded (默认常用)</li></ul><p>这是最常见的 POST 提交数据的方式。浏览器的原生表单，如果不设置Content-type属性，就会默认该方式提交数据，并且提交的数据按照 key1=val1&amp;key2=val2 的方式进行编码，key 和 val 都进行了 URL 转码。</p><ul><li>multipart/form-data</li></ul><p>这是另一个常见的 POST 数据提交的方式。我们使用表单上传文件时，必须让表单的enctyped等于 multipart/form-data。</p><ul><li>application/json</li></ul><p>application/json 这种方案，可以方便的提交复杂的结构化数据，这种POST提交方式越来越多，用来告诉服务端消息主体是序列化后的 JSON 字符串。</p><p>由于JSON规范的流行，出了低版本的IE之外，各大浏览器都支持 JSON.stringify 将JSON数据字符串化（编码）传到服务器，还可以通过  JSON.parse 将字符串转化（解码）为JSON数据供前端渲染或者其他处理。</p><ul><li>text/xml</li></ul><p>现在基本不用。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html" target="_blank" rel="noopener">RESTful API 设计指南</a>,by 阮一峰.</li><li><a href="https://juejin.im/entry/59e460c951882542f578f2f0" target="_blank" rel="noopener">RESTful API 设计最佳实践</a>,by Philipp Hauer.</li><li><a href="https://github.com/aisuhua/restful-api-design-references" target="_blank" rel="noopener">restful-api-design-references</a>,by aisuhua.</li><li><a href="https://learning.getpostman.com/docs/postman/launching_postman/installation_and_updates/" target="_blank" rel="noopener">Postman Doc</a>,by postman homepage.</li><li><a href="https://www.cnblogs.com/mafly/p/postman.html" target="_blank" rel="noopener">Postman 安装及使用入门教程</a>,by Mafly.</li><li><a href="https://imququ.com/post/four-ways-to-post-data-in-http.html" target="_blank" rel="noopener">四种常见的 POST 提交数据方式</a>,by Jerry Qu.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;RESTful API是目前比较成熟的一套互联网应用程序的API设计理论，提供了一种统一的机制，方便不同的前端设备与后端进行通信，以应对前端设备层出不穷（手机、平板、桌面电脑、其他专用设备……）的状况。同时对开发人员而言，提供了一种规范，方便协作开发，降低了API接口设计的
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="前端" scheme="https://huangwang.github.io/tags/%E5%89%8D%E7%AB%AF/"/>
-    
-      <category term="nodejs" scheme="https://huangwang.github.io/tags/nodejs/"/>
-    
-      <category term="软件工程" scheme="https://huangwang.github.io/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/"/>
     
   </entry>
   

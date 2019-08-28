@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-08-25T10:01:35.303Z</updated>
+  <updated>2019-08-27T23:55:36.571Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>客户端使用JS导出CSV文件及中文乱码问题解决方案</title>
+    <link href="https://huangwang.github.io/2019/08/27/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8JS%E5%AF%BC%E5%87%BACSV%E6%96%87%E4%BB%B6%E5%8F%8A%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/"/>
+    <id>https://huangwang.github.io/2019/08/27/客户端使用JS导出CSV文件及中文乱码问题解决方案/</id>
+    <published>2019-08-27T09:29:11.000Z</published>
+    <updated>2019-08-27T23:55:36.571Z</updated>
+    
+    <content type="html"><![CDATA[<p>在浏览器端无需服务器端支持，直接将JS Array数据导出成CSV文件并下载，是一个常见的开发需求。具体方法如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var csvContent= this.$refs.flightInfoGrid.exportdata(&apos;csv&apos;)</span><br><span class="line">var link = document.createElement(&apos;a&apos;);</span><br><span class="line">// &quot;\ufeff&quot;是为了解决CSV中文乱码问题</span><br><span class="line">var blob = new Blob([&quot;\ufeff&quot; +csvContent],&#123;type: &apos;text/csv;charset=utf-8;&apos;&#125;);</span><br><span class="line">var url = URL.createObjectURL(blob);</span><br><span class="line">link.href = url;</span><br><span class="line">link.setAttribute(&apos;download&apos;, &apos;FlightInfo.csv&apos;);</span><br><span class="line">link.click();</span><br><span class="line">document.body.removeChild(link);</span><br></pre></td></tr></table></figure><h1 id="中文乱码问题分析"><a href="#中文乱码问题分析" class="headerlink" title="中文乱码问题分析"></a>中文乱码问题分析</h1><p>utf-8保存的csv格式要让Excel正常打开的话，必须加入在文件最前面加入BOM(Byte order mark)。</p><p>ANSI的话是可以做到正常显示和保存，但是这是有前提的，就是必须在你的电脑（区域和语言设置）把对非Unicode字符处理设置为Chinese，如果是English的话，显示照样是乱码。</p><p>Unicode的csv，Excel就根本不支持，打开虽然可以显示不乱码，但是已经不是按逗号显示在不同的单元格里面了，而是按行显示在第一个单元格里面。</p><p> BOM（byte-order mark），即字节顺序标记，它是插入到以UTF-8、UTF16或UTF-32编码Unicode文件开头的特殊标记，用来识别Unicode文件的编码类型。具体编码如下表：</p><div class="table-container"><table><thead><tr><th>BOM</th><th>Encoding</th></tr></thead><tbody><tr><td>EF BB BF</td><td>UTF-8</td></tr><tr><td>FE FF</td><td>UTF-16 (big-endian)</td></tr><tr><td>FF FE</td><td>UTF-16 (little-endian)</td></tr><tr><td>00 00 FE FF</td><td>UTF-32 (big-endian)</td></tr><tr><td>FF FE 00 00</td><td>UTF-32 (little-endian)</td></tr></tbody></table></div><p>微软建议所有的 Unicode 文件应该以 ZERO WIDTH NOBREAK SPACE（U+FEFF）字符开头。这作为一个“特征符”来识别文件中使用的编码和字节顺序。BOM的本意不错，但它并不是一个通用标准，从而导致了很多不兼容的问题。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://blog.csdn.net/oyi319/article/details/6406506" target="_blank" rel="noopener">Excel 2007 打开 UTF-8 编码 CSV 文件的BUG</a>,by oyi319.</li><li><a href="https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side" target="_blank" rel="noopener">How to export JavaScript array info to csv (on client side)?</a>,by stackoverflow.</li><li><a href="https://my.oschina.net/dawd/blog/801323" target="_blank" rel="noopener">blob 导出csv 用execl打开出现乱码</a>,by 黑魔法.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;在浏览器端无需服务器端支持，直接将JS Array数据导出成CSV文件并下载，是一个常见的开发需求。具体方法如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span cl
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="前端" scheme="https://huangwang.github.io/tags/%E5%89%8D%E7%AB%AF/"/>
+    
+      <category term="Javascript" scheme="https://huangwang.github.io/tags/Javascript/"/>
+    
+  </entry>
   
   <entry>
     <title>如何使用图标icon</title>
@@ -507,32 +535,6 @@
       
         &lt;p&gt;在nodejs+expressjs+vuejs的解决方案中，服务器端应用开发和前端应用的开发是独立的。不过前端应用调用服务器端应用的RESTful API时涉及跨域资源访问，因此需要添加expressjs的cors模块。下面简要介绍cors模块的使用方法。&lt;/p&gt;
 &lt;h1 
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="nodejs" scheme="https://huangwang.github.io/tags/nodejs/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>nodemon入门简介</title>
-    <link href="https://huangwang.github.io/2019/07/23/nodemon%E5%85%A5%E9%97%A8%E7%AE%80%E4%BB%8B/"/>
-    <id>https://huangwang.github.io/2019/07/23/nodemon入门简介/</id>
-    <published>2019-07-23T13:43:14.000Z</published>
-    <updated>2019-07-23T13:49:39.066Z</updated>
-    
-    <content type="html"><![CDATA[<p>Nodemon是一个用于nodejs开发的工具程序，它将监视nodejs源中的任何更改并自动重新启动服务器。</p><p>nodemon不需要对代码或开发方法进行任何其他更改。 nodemon是node的替换包装器，在执行脚本时使用nodemon替换命令行上的单词node即可。</p><h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g nodemon</span><br></pre></td></tr></table></figure><h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nodemon [your node app]</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://github.com/remy/nodemon" target="_blank" rel="noopener">nodemon</a>,by remy.</li><li><a href="https://bubkoo.com/2014/12/02/use-nodemon-with-node-applications/" target="_blank" rel="noopener">在 Express 开发中使用 nodemon</a>,by bubkoo.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;Nodemon是一个用于nodejs开发的工具程序，它将监视nodejs源中的任何更改并自动重新启动服务器。&lt;/p&gt;
-&lt;p&gt;nodemon不需要对代码或开发方法进行任何其他更改。 nodemon是node的替换包装器，在执行脚本时使用nodemon替换命令行上的单词node
       
     
     </summary>

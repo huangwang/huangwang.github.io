@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[vuejs组件间通信的方法]]></title>
+    <url>%2F2019%2F09%2F02%2Fvuejs%E7%BB%84%E4%BB%B6%E9%97%B4%E9%80%9A%E4%BF%A1%E7%9A%84%E6%96%B9%E6%B3%95%2F</url>
+    <content type="text"><![CDATA[Vuejs一个吸引人的地方是可以进行组件化开发，避免了前端开发的无序状态。组件无法单独工作，必然会跟父子组件或兄弟组件之间进行通信，以合作实现某种功能。下面即简单介绍Vuejs组件之间的各种通信方式。 方法一、props/$emit方法二、$emit/$on方法三、vuex方法四、$attrs/$listeners方法五、provide/inject方法六、$parent / $children与 ref参考链接 Vue 组件间通信六种方式（完整版）,by浪里行舟.]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>vuejs</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[客户端使用JS导出CSV文件及中文乱码问题解决方案]]></title>
     <url>%2F2019%2F08%2F27%2F%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8JS%E5%AF%BC%E5%87%BACSV%E6%96%87%E4%BB%B6%E5%8F%8A%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%2F</url>
     <content type="text"><![CDATA[在浏览器端无需服务器端支持，直接将JS Array数据导出成CSV文件并下载，是一个常见的开发需求。具体方法如下： 123456789var csvContent= this.$refs.flightInfoGrid.exportdata(&apos;csv&apos;)var link = document.createElement(&apos;a&apos;);// &quot;\ufeff&quot;是为了解决CSV中文乱码问题var blob = new Blob([&quot;\ufeff&quot; +csvContent],&#123;type: &apos;text/csv;charset=utf-8;&apos;&#125;);var url = URL.createObjectURL(blob);link.href = url;link.setAttribute(&apos;download&apos;, &apos;FlightInfo.csv&apos;);link.click();document.body.removeChild(link); 中文乱码问题分析utf-8保存的csv格式要让Excel正常打开的话，必须加入在文件最前面加入BOM(Byte order mark)。 ANSI的话是可以做到正常显示和保存，但是这是有前提的，就是必须在你的电脑（区域和语言设置）把对非Unicode字符处理设置为Chinese，如果是English的话，显示照样是乱码。 Unicode的csv，Excel就根本不支持，打开虽然可以显示不乱码，但是已经不是按逗号显示在不同的单元格里面了，而是按行显示在第一个单元格里面。 BOM（byte-order mark），即字节顺序标记，它是插入到以UTF-8、UTF16或UTF-32编码Unicode文件开头的特殊标记，用来识别Unicode文件的编码类型。具体编码如下表： BOM Encoding EF BB BF UTF-8 FE FF UTF-16 (big-endian) FF FE UTF-16 (little-endian) 00 00 FE FF UTF-32 (big-endian) FF FE 00 00 UTF-32 (little-endian) 微软建议所有的 Unicode 文件应该以 ZERO WIDTH NOBREAK SPACE（U+FEFF）字符开头。这作为一个“特征符”来识别文件中使用的编码和字节顺序。BOM的本意不错，但它并不是一个通用标准，从而导致了很多不兼容的问题。 参考链接 Excel 2007 打开 UTF-8 编码 CSV 文件的BUG,by oyi319. How to export JavaScript array info to csv (on client side)?,by stackoverflow. blob 导出csv 用execl打开出现乱码,by 黑魔法.]]></content>

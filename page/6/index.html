@@ -314,6 +314,223 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/02/图像特征检测与描述/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/02/图像特征检测与描述/" itemprop="url">
+                  图像特征检测与描述
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-02 10:09:38 / 修改时间：13:53:37" itemprop="dateCreated datePublished" datetime="2019-06-02T10:09:38+08:00">2019-06-02</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>特征检测（英语：Feature detection）是计算机视觉和图像处理中的一个概念。它指的是使用计算机提取图像信息，决定每个图像的点是否属于一个图像特征。特征检测的结果是把图像上的点分为不同的子集，这些子集往往属于孤立的点、连续的曲线或者连续的区域。</p>
+<h1 id="图像特征分类"><a href="#图像特征分类" class="headerlink" title="图像特征分类"></a>图像特征分类</h1><p>特征的精确定义往往由问题或者应用类型决定。特征是一个数字图像中“有趣”的部分，它是许多计算机图像分析算法的起点。因此一个算法是否成功往往由它使用和定义的特征决定。因此特征检测最重要的一个特性是“可重复性”：同一场景的不同图像所提取的特征应该是相同的。</p>
+<p>特征检测是图象处理中的一个初级运算，也就是说它是对一个图像进行的第一个运算处理。它检查每个像素来确定该像素是否代表一个特征。假如它是一个更大的算法的一部分，那么这个算法一般只检查图像的特征区域。作为特征检测的一个前提运算，输入图像一般通过高斯模糊核在尺度空间中被平滑。此后通过局部导数运算来计算图像的一个或多个特征。</p>
+<p>常用的图像特征分成以下四类：</p>
+<ul>
+<li>边缘</li>
+</ul>
+<p>边缘指组成两个图像区域之间边界（或边缘）的像素。一般一个边缘的形状可以是任意的，还可能包括交叉点。在实践中边缘一般被定义为图像中拥有大的梯度的点组成的子集。一些常用的算法还会把梯度高的点联系起来来构成一个更完善的边缘的描写。</p>
+<ul>
+<li>角</li>
+</ul>
+<p>角指图像中点似的特征，在局部它有两维结构。早期的算法首先进行边缘检测，然后分析边缘的走向来寻找边缘突然转向（角）。后来发展的算法不再需要边缘检测这个步骤，而是可以直接在图像梯度中寻找高度曲率。</p>
+<ul>
+<li>区域</li>
+</ul>
+<p>与角不同的是区域描写一个图像中的一个区域性的结构，但是区域也可能仅由一个像素组成，因此许多区域检测也可以用来监测角。一个区域监测器检测图像中一个对于角监测器来说太平滑的区域。</p>
+<p>区域检测可以被想象为把一张图像缩小，然后在缩小的图像上进行角检测。</p>
+<ul>
+<li>脊</li>
+</ul>
+<p>长条形的物体被称为脊。在实践中脊可以被看作是代表对称轴的一维曲线，此外局部针对于每个脊像素有一个脊宽度。从灰梯度图像中提取脊要比提取边缘、角和区域困难。在空中摄影中往往使用脊检测来分辨道路，在医学图像中它被用来分辨血管。</p>
+<h1 id="边缘检测"><a href="#边缘检测" class="headerlink" title="边缘检测"></a>边缘检测</h1><p>边缘检测（英语：Edge detection）是图像处理和计算机视觉中的基本问题，边缘检测的目的是标识数字图像中亮度变化明显的点。图像属性中的显著变化通常反映了属性的重要事件和变化。这些包括（i）深度上的不连续、（ii）表面方向不连续、（iii）物质属性变化和（iv）场景照明变化。 边缘检测是图像处理和计算机视觉中，尤其是特征检测中的一个研究领域。</p>
+<p>图像边缘检测大幅度地减少了数据量，并且剔除了可以认为不相关的信息，保留了图像重要的结构属性。有许多方法用于边缘检测，它们的绝大部分可以划分为两类：基于查找一类和基于零穿越的一类。基于查找的方法通过寻找图像一阶导数中的最大和最小值来检测边界，通常是将边界定位在梯度最大的方向。基于零穿越的方法通过寻找图像二阶导数零穿越来寻找边界，通常是Laplacian过零点或者非线性差分表示的过零点。</p>
+<h2 id="边缘检测的方法"><a href="#边缘检测的方法" class="headerlink" title="边缘检测的方法"></a>边缘检测的方法</h2><p>有许多用于边缘检测的方法，他们大致可分为两类：</p>
+<ul>
+<li>基于搜索的边缘检测</li>
+</ul>
+<p>基于搜索的边缘检测方法首先计算边缘强度，通常用一阶导数表示，例如梯度模;然后，用计算估计边缘的局部方向，通常采用梯度的方向，并利用此方向找到局部梯度模的最大值.</p>
+<ul>
+<li>基于零交叉的边缘检测</li>
+</ul>
+<p>基于零交叉的方法找到由图像得到的二阶导数的零交叉点来定位边缘.通常用拉普拉斯算子或非线性微分方程的零交叉点，我们将在后面的小节中描述.</p>
+<p>滤波做为边缘检测的预处理通常是必要的，通常采用高斯滤波.</p>
+<p>已发表的边缘检测方法应用计算边界强度的度量，这与平滑滤波有本质的不同.正如许多边缘检测方法依赖于图像梯度的计算，他们用不同种类的滤波器来估计x-方向和y-方向的梯度.</p>
+<h1 id="角检测"><a href="#角检测" class="headerlink" title="角检测"></a>角检测</h1><p>角检测（英语：Corner detection）或兴趣点检测（interest point detection），是计算机视觉系统中用来提取特征以及推测图像内容的一种方法.角检测的应用很广，经常用在运动检测，跟踪，图像镶嵌（image mosaicing），全景图缝合（panorama stiching），三维建模以及物体识别中.</p>
+<h2 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h2><p>两条边的交点形成一个角（点）。而图像的要点（也称为受关注点）是指图像中具有代表性以及稳健性（即指该点能够在有噪声干扰的情况下也能稳定的被定位，在大陆亦被称为：鲁棒性）的点。也就是说，要点可以是角（点），也可以不是，例如局部亮点或暗点，线段终点，或者曲线上的曲率最大值点。在实际应用中，很多所谓的（角）点检测算法其实是检测要点，而不仅仅是角（点）。所以，如果我们只想检测角的话，还需要对检测出的要点进一步分析。</p>
+<h2 id="角检测的方法"><a href="#角检测的方法" class="headerlink" title="角检测的方法"></a>角检测的方法</h2><p>在现实世界中，角点对应于物体的拐角，道路的十字路口、丁字路口等。从图像分析的角度来定义角点可以有以下两种定义：</p>
+<ul>
+<li>角点可以是两个边缘的角点；</li>
+<li>角点是邻域内具有两个主方向的特征点；</li>
+<li>前者往往需要对图像边缘进行编码，这在很大程度上依赖于图像的分割与边缘提取，具有相当大的难度和计算量，且一旦待检测目标局部发生变化，很可能导致操作的失败。早期主要有Rosenfeld和Freeman等人的方法，后期有CSS等方法。</li>
+</ul>
+<p>基于图像灰度的方法通过计算点的曲率及梯度来检测角点，避免了第一类方法存在的缺陷，此类方法主要有Moravec算子、Forstner算子、Harris算子、SUSAN算子等。</p>
+<p></p><p align="center">
+    <img src="images/cornerCheck.jpg" width="90%" alt="角检测方法发展历程">
+</p><p></p>
+<center>图1  角检测方法发展历程</center>
+
+<h3 id="Harris算法"><a href="#Harris算法" class="headerlink" title="Harris算法"></a>Harris算法</h3><p>Harris角点检测基本原理如图2所示。人眼对角点的识别通常是在一个局部的小区域或小窗口完成的。如果在各个方向上移动这个特征的小窗口，窗口内区域的灰度发生了较大的变化，那么就认为在窗口内遇到了角点。如果这个特定的窗口在图像各个方向上移动时，窗口内图像的灰度没有发生变化，那么窗口内就不存在角点；如果窗口在某一个方向移动时，窗口内图像的灰度发生了较大的变化，而在另一些方向上没有发生变化，那么，窗口内的图像可能就是一条直线的线段。</p>
+<p></p><p align="center">
+    <img src="images/harris.png" width="90%" alt="Harris角点检测基本原理">
+</p><p></p>
+<center>图2  Harris角点检测基本原理</center>
+
+<h3 id="SIFT算法"><a href="#SIFT算法" class="headerlink" title="SIFT算法"></a>SIFT算法</h3><p>SIFT(Scale-invariant features transform, 尺度不变特征变换)是一种检测局部特征的算法，该算法通过求一幅图中的特征点（interest points,or corner points）及其有关scale 和 orientation 的描述子得到特征并进行图像特征点匹配，获得了良好效果。SIFT特征不只具有尺度不变性，即使改变旋转角度，图像亮度或拍摄视角，仍然能够得到好的检测效果。该算法由 David Lowe在1999年所发表，2004年完善总结。</p>
+<p>SIFT算子是把图像中检测到的特征点用一个128维的特征向量进行描述，因此一幅图像经过SIFT算法后表示为一个128维的特征向量集，该特征向量集具有对图像缩放，平移，旋转不变的特征，对于光照、仿射和投影变换也有一定的不变性，是一种非常优秀的局部特征描述算法。</p>
+<p>SIFT算法的流程分别为：</p>
+<ol>
+<li>尺度空间极点检测</li>
+<li>关键点精确定位</li>
+<li>关键点的方向确定</li>
+<li>特征向量的生成</li>
+</ol>
+<h3 id="ORB算法"><a href="#ORB算法" class="headerlink" title="ORB算法"></a>ORB算法</h3><p>ORB的全称是ORiented Brief，是文章ORB: an efficient alternative to SIFT or SURF中提出的一种新的角点检测与特征描述算法。实际上，ORB算法是将FAST角点检测与BRIEF特征描述结合并进行了改进。</p>
+<p>ORB特征由关键点和描述子两部分组成。它的关键点称为“Oriented Fast”，是一种改进的FAST角点。描述子称为“BRIEF(Binary Robust Independent Elementary Feature)”。因此提取ORB特征分为如下两个步骤：</p>
+<ul>
+<li>提取FAST角点(相较于原版FAST角点，ORB中计算了特征点的主方向，为后续的BRIEF描述子增加了旋转不变性)</li>
+<li>计算BRIEF描述子</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/%E7%89%B9%E5%BE%81%E6%A3%80%E6%B5%8B" target="_blank" rel="noopener">特征检测</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B" target="_blank" rel="noopener">边缘检测</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E8%A7%92%E6%A3%80%E6%B5%8B" target="_blank" rel="noopener">角检测</a>,by wikipedia.</li>
+<li><a href="https://www.cnblogs.com/ronny/p/4009425.html" target="_blank" rel="noopener">Harris角点</a>,by Ronny.</li>
+<li><a href="https://blog.csdn.net/lhanchao/article/details/52345845" target="_blank" rel="noopener">特征点匹配——SIFT算法详解</a>,by lhanchao.</li>
+<li><a href="http://zhaoxuhui.top/blog/2018/01/29/ORB%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96-%E5%8C%B9%E9%85%8D%E5%8F%8A%E5%AE%9E%E7%8E%B0.html" target="_blank" rel="noopener">ORB特征提取、匹配及实现</a>,by zhaoxuhui.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/52140541" target="_blank" rel="noopener">传统计算机视觉中图像特征匹配方法的原理介绍（SIFT 和 ORB）</a>,by Zhang Bin.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/29/相机位姿估计入门/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2112,187 +2329,11 @@ b_{3}
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/05/计算机科学术语辨析/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/05/计算机科学术语辨析/" itemprop="url">
-                  计算机科学术语辨析
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-05-05 09:16:04 / 修改时间：17:42:56" itemprop="dateCreated datePublished" datetime="2019-05-05T09:16:04+08:00">2019-05-05</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>计算机科学中的一些术语是同行之间进行交流的工具，但是这些术语约定俗成，缺乏权威定义，在不同的语境下有不同的涵义，不同的人有不同的理解，由此造成很多分歧。本文记录常用计算机科学术语，通过规范和校正其内涵和外延，避免分歧，提高效率。</p>
-<h1 id="常用术语"><a href="#常用术语" class="headerlink" title="常用术语"></a>常用术语</h1><h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>软件架构是有关软件整体结构与组件的抽象描述，用于指导大型软件系统各个方面的设计。</p>
-<p>软件架构是一个系统的草图，抽象层次高。软件架构描述的对象是直接构成系统的抽象组件。各个组件之间的连接则明确和相对细致地描述组件之间的通讯。在实现阶段，这些抽象组件被细化为实际的组件，比如具体某个类或者对象。在面向对象领域中，组件之间的连接通常用接口来实现。</p>
-<h2 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h2><p>在软件工程中，设计模式（design pattern）是对软件设计中普遍存在（反复出现）的各种问题，所提出的解决方案。这个术语是由埃里希·伽玛（Erich Gamma）等人在1990年代从建筑设计领域引入到计算机科学的。</p>
-<p>设计模式并不直接用来完成代码的编写，而是描述在各种不同情况下，要怎么解决问题的一种方案。面向对象设计模式通常以类别或对象来描述其中的关系和相互作用，但不涉及用来完成应用程序的特定类别或对象。设计模式能使不稳定依赖于相对稳定、具体依赖于相对抽象，避免会引起麻烦的紧耦合，以增强软件设计面对并适应变化的能力。</p>
-<p>《设计模式》一书原先把设计模式分为创建型模式、结构型模式、行为型模式，把它们通过授权、聚合、诊断的概念来描述。</p>
-<h2 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h2><p>模块，module，模块是一个通用概念，可能从功能或其他目的来区分。模块可以是子系统子领域，主要取决于上下文环境的用法。</p>
-<p>通常我们会说程序模块，功能模块，这实际上是在按照不同的标准对模块的内容和范围的不同定义。</p>
-<p>通常我们说的程序模块，是指的一段能够实现某个有价值目标的的成员代码段，这样的东西，我们还有另一个称呼：例程，而例程有两种，即函数和过程，它们都能实现一个有价值的目标供其它的模块使用。</p>
-<p>而功能模块的说法一般在分析和设计阶段出现得比较频繁，通常我们用一个功能模块来说明一个功能所包含的系统行为，当我们觉得分析的颗粒度可能更大一些的时候我们可以用一个功能模块来表示一组功能的集合，这似乎让我们觉得，模块这个词的概念和“子系统”这个词的概念有些模糊，是的，事实上，有些大的模块会慢慢的让我们觉得称呼他们子系统更合适，或者一个子系统，我们会慢慢发现你还包含着一些模块。</p>
-<p>但是无论怎样，定义模块的原则应该是：高内聚和低耦合。</p>
-<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><p>软件组件，定义为自包含的、可编程的、可重用的、与语言无关的软件单元。</p>
-<h2 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h2><p>根据对组件和模块的分析，插件属于组件，而且还是一个程序模块，也是一个功能模块。插件是一种电脑程序，通过和应用程序的互动，来替应用程式增加一些特定的功能。 插件必须依赖于应用程序才能发挥自身功能，仅靠插件是无法正常运行的。</p>
-<p>使用方法：满足一定接口规范的具有一定功能的程序模块。开发者可以在自己软件系统中设计相应的接口以匹配某个插件，也可以设计一定的接口规范，来让别人开发插件。插件和程序之间通过接口进行交互。</p>
-<h2 id="控件"><a href="#控件" class="headerlink" title="控件"></a>控件</h2><p>可视化的组件。</p>
-<h2 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h2><p>中间件是提供系统软件和应用软件之间连接的软件，以便于软件各部件之间的沟通。</p>
-<h1 id="术语辨析"><a href="#术语辨析" class="headerlink" title="术语辨析"></a>术语辨析</h1><h2 id="面向对象编程-VS-面向过程编程-VS-面向切面编程"><a href="#面向对象编程-VS-面向过程编程-VS-面向切面编程" class="headerlink" title="面向对象编程 VS 面向过程编程 VS 面向切面编程"></a>面向对象编程 VS 面向过程编程 VS 面向切面编程</h2><p>面向过程(Procedure Oriented)是一种以过程为中心的编程思想。这些都是以什么正在发生为主要目标进行编程，不同于面向对象的是谁在受影响。与面向对象明显的不同就是封装、继承、类。</p>
-<p>面向对象编程（Object Oriented Programming，OOP，面向对象程序设计）是一种计算机编程架构。OOP 的一条基本原则是计算机程序是由单个能够起到子程序作用的单元或对象组合而成。OOP 达到了软件工程的三个主要目标：重用性、灵活性和扩展性。为了实现整体运算，每个对象都能够接收信息、处理数据和向其它对象发送信息。</p>
-<p>面向切面编程（Aspect Oriented Programming(AOP)），是一个比较热门的话题。AOP主要实现的目的是针对业务处理过程中的切面进行提取，它所面对的是处理过程中的某个步骤或阶段，以获得逻辑过程中各部分之间低耦合性的隔离效果。</p>
-<p>面向过程编程围绕行为组织事物，面向对象编程围绕事物组织行为，有没有类、有没有继承并不是两种编程方法差异的关键；</p>
-<p>面向切面编程是横跨流程的，实现某个特定位置的功能，面向功能进行抽象。具体流程只需做引用即可，而不至于不同流程中冗余很多类似代码。</p>
-<h2 id="组件化开发-VS-模块化开发"><a href="#组件化开发-VS-模块化开发" class="headerlink" title="组件化开发 VS 模块化开发"></a>组件化开发 VS 模块化开发</h2><p>组件化和模块化的中心思想都是分而治之。目的都是将一个庞大的系统拆分成多个组件或者说是模块。</p>
-<p>模块化就是将一个程序按照其功能做拆分，分成相互独立的模块，以便于每个模块只包含与其功能相关的内容。模块我们相对熟悉,比如登录功能可以是一个模块,搜索功能可以是一个模块,汽车的发送机也可是一个模块.</p>
-<p>组件化就是基于可重用的目的，将一个大的软件系统按照分离关注点的形式，拆分成多个独立的组件，主要目的就是减少耦合.</p>
-<p>一个独立的组件可以是一个软件包、web服务、web资源或者是封装了一些函数的模块。比如汽车的发动机是一个模块,也是一个组件,再或者前端中的一个日历控件是一个模块,也一个组件.这样，独立出来的组件可以单独维护和升级而不会影响到其他的组件.</p>
-<p>组件和模块是一对容易混淆的名词,也常常被用来相互替换,两者是否有差异往往取决于专业背景、所在领域、以及视角。从设计上来看,组件强调复用,模块强调职责(内聚、分离),或者说组件是达到可复用要求的模块</p>
-<p>模块化强调的是拆分，无论是从业务角度还是从架构、技术角度，模块化首先意味着将代码、数据等内容按照其职责不同分离，使其变得更加容易维护、迭代，使开发人员可以分而治之。</p>
-<p>组件化则着重于可重用性，不管是界面上反复使用的用户头像按钮，还是处理数据的流程中的某个部件，只要可以被反复使用，并且进行了高度封装，只能通过接口访问，就可以称其为“组件”。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/28614088" target="_blank" rel="noopener">面向对象 vs 类与继承 vs 面向组件</a>, by 龙腾道默默地.</li>
-<li><a href="https://zh.wikipedia.org/wiki/软件架构" target="_blank" rel="noopener">软件架构</a>,by wikipedia.</li>
-<li><a href="http://www.ruanyifeng.com/blog/2016/09/software-architecture.html" target="_blank" rel="noopener">软件架构入门</a>,by 阮一峰.</li>
-<li><a href="https://zh.wikipedia.org/wiki/设计模式_(计算机" target="_blank" rel="noopener">设计模式</a>),by wikipedia.</li>
-<li><a href="https://www.cnblogs.com/doit8791/p/6129963.html" target="_blank" rel="noopener">软件架构、框架、模式、模块、组件、插件概念汇总</a>,by 时间的朋友.</li>
-<li><a href="https://gaodaxiu0406.github.io/2017/09/09/模块化与组件化/" target="_blank" rel="noopener">模块化与组件化</a>,by 滴答.</li>
-<li><a href="https://blog.csdn.net/qq_29422251/article/details/76618460" target="_blank" rel="noopener">面向过程编程，面向对象编程和面向切面编程理解</a>, by 枫叶千言.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -2335,7 +2376,7 @@ b_{3}
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">170</span>
+                    <span class="site-state-item-count">171</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -3025,9 +3066,9 @@ b_{3}
       
     
       
-        
-      
     
+      
+        
       
     
       

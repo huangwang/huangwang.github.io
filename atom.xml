@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-09-17T01:21:52.374Z</updated>
+  <updated>2019-09-20T14:04:05.527Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>数据库表主键设计方法</title>
+    <link href="https://huangwang.github.io/2019/09/20/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E4%B8%BB%E9%94%AE%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/"/>
+    <id>https://huangwang.github.io/2019/09/20/数据库表主键设计方法/</id>
+    <published>2019-09-20T13:17:43.000Z</published>
+    <updated>2019-09-20T14:04:05.527Z</updated>
+    
+    <content type="html"><![CDATA[<p>数据库表主键使用自增整型字段还是使用GUID字段，这是一个问题。下面详细分析它们的优劣。</p><h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="数据库设计范式"><a href="#数据库设计范式" class="headerlink" title="数据库设计范式"></a>数据库设计范式</h2><ul><li><p>第一范式（1NF）：强调的是列的原子性，即列不能够再分成其他几列。简而言之，第一范式就是无重复的列</p></li><li><p>第二范式（2NF）：首先要满足它是1NF，另外还需要包含两部分内容：一是表必须有一个主键；二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。简而言之，第二范式就是非主属性非部分依赖于主关键字</p></li><li><p>第三范式（3NF）：首先是 2NF，另外非主键列必须直接依赖于主键，不能存在传递依赖。即不能存在：非主键列 A 依赖于非主键列 B，非主键列 B 依赖于主键的情况。简而言之，第三范式（3NF）要求一个数据库表中不包含已在其它表中已包含的非主关键字信息。</p></li></ul><h2 id="反范式主键的设计原则"><a href="#反范式主键的设计原则" class="headerlink" title="反范式主键的设计原则"></a>反范式主键的设计原则</h2><ul><li>主键应当是对用户没有意义的。业务上的‘主键’可以通过唯一键（Unique Key）或唯一索引（Unique Index）和其它约束条件实现</li><li>主键应该是单列的，以便提高连接和筛选操作的效率</li><li>不要更新主键。实际上，因为主键除了惟一地标识一行之外再没有其他的用途了，所以也就没有理由去对它更新。</li><li>主键不应包含动态变化的数据，如时间戳、创建时间列、修改时间列等</li><li>主键应当由计算机自动生成。</li></ul><h1 id="数据库表主键设计方法"><a href="#数据库表主键设计方法" class="headerlink" title="数据库表主键设计方法"></a>数据库表主键设计方法</h1><p>数据库表主键设计主要有自增整型字段和使用GUID字段两种方法。</p><h2 id="自增整型字段作为主键"><a href="#自增整型字段作为主键" class="headerlink" title="自增整型字段作为主键"></a>自增整型字段作为主键</h2><p>最常用的主键设计方法。例如《阿里 Java 开发手册》中规定有以下 MySQL 建表规约：</p><blockquote><p>表必备三字段：id, gmt_create, gmt_modified。 说明：其中id必为主键，类型为unsigned bigint、单表时自增、步长为1。gmt_create, gmt_modified的类型均为date_time类型。</p></blockquote><p>该方法优点是：数据库自动编号，速度快，而且是增量增长，聚集型主键按顺序存放，对于检索非常有利;数字型的，占用空间小，易排序，在程序中传递也方便;如果通过非系统增加记录(比如手动录入，或是用其他工具直接在表里插入新记录，或老系统数据导入)时，非常方便，不用担心主键重复问题。</p><p>该方法缺点是：因为自动增长，在手动要插入指定ID的记录时会显得麻烦，尤其是当系统与其他系统集成时，需要数据导入时，很难保证原系统的ID不发生主键冲突。</p><h2 id="GUID字符串作为主键"><a href="#GUID字符串作为主键" class="headerlink" title="GUID字符串作为主键"></a>GUID字符串作为主键</h2><p>Guid:指在一台机器上生成的数字，它保证对在同一时空中的所有机器都是唯一的，其算法是通过以太网卡地址、纳秒级时间、芯片ID码和许多可能的数字生成。其格式为:04755396-9A29-4B8C-A38D-00042C1B9028。</p><p>GUID字符串作为主键的优点如下：</p><ul><li><p>在扩展数据库的时候，当你有多个数据库包含同一段（片）数据时，比如一个顾客集，使用 GUID 意味着该 ID 在所有的数据库中是唯一标识的，而不是仅仅本数据库唯一。这保障了跨数据库迁移数据的安全。又比如，我曾在项目中把多个数据库分片合并到一个 Hadoop 集群中，也没有产生键的冲突。</p></li><li><p>在插入数据之前，你就能知道这个主键的值，这避免了一轮的数据查找，并且简化了事务的逻辑，即在你插入子记录之前，因为需要使用这个主键作为一个外键，你必须要知道这个主键的值。</p></li><li><p>GUID 不会透露数据的信息，因此被用在 URL 中也比自增整数更安全。比如，我是编号 12345678 号顾客，那么人们就会猜测编号为 12345677 和 12345679 的顾客的存在，这就提供了一种攻击向量。（但是后面我们会看到一个更好的替代品）</p></li></ul><p>GUID字符串作为主键的缺点如下：</p><ul><li>GUID 值较长，不容易记忆和输入，而且这个值是随机、无顺序的。</li><li>GUID 的值有 16 个字节，与其它那些诸如 4 字节的整数相比要相对大一些。这意味着如果在数据库中使用 uniqueidentifier 键，可能会带来两方面的消极影响：存储空间增大;索引时间较慢。</li></ul><h1 id="主流数据库中GUID实现"><a href="#主流数据库中GUID实现" class="headerlink" title="主流数据库中GUID实现"></a>主流数据库中GUID实现</h1><h2 id="MSSQL"><a href="#MSSQL" class="headerlink" title="MSSQL"></a>MSSQL</h2><p>在MS Sql 数据库中可以在建立表结构是指定字段类型为uniqueidentifier,并且其默认值可以使用NewID()来生成唯一的Guid(全局唯一标识符).</p><p>使用NewID生成的比较随机,如果是SQL 2005可以使用NewSequentialid()来顺序生成,在此为了兼顾使用SQL 2000使用了NewID().</p><h2 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h2><p>MySQL中使用UUID()函数生成主键，UUID()函数将生成格式为xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx (8-4-4-4-12)的字符串，包含32个16进制数字，以连字号分为五段。示例：550e8400-e29b-41d4-a716-446655440000。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://blog.csdn.net/kleguan/article/details/74502330" target="_blank" rel="noopener">数据库表主键设计原则</a>,by 乐哉悠哉.</li><li><a href="https://blog.csdn.net/linzhiqiang0316/article/details/52881151" target="_blank" rel="noopener">[MySQL]数据库主键设计之思考</a>,by 林老师带你学编程.</li><li><a href="http://www.nowamagic.net/librarys/veda/detail/383" target="_blank" rel="noopener">如何设计数据库的主键</a>,by Veda 原型.</li><li><a href="https://juejin.im/post/59561e5b6fb9a06bbf6fdf16" target="_blank" rel="noopener">[译] 把 UUID 或者 GUID 作为主键？你得小心啦！</a>,by zaraguo.</li><li><a href="https://blog.csdn.net/shiyong1949/article/details/78411509" target="_blank" rel="noopener">MySQL中使用UUID()函数生成主键</a>,by shiyonghm.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;数据库表主键使用自增整型字段还是使用GUID字段，这是一个问题。下面详细分析它们的优劣。&lt;/p&gt;
+&lt;h1 id=&quot;基础知识&quot;&gt;&lt;a href=&quot;#基础知识&quot; class=&quot;headerlink&quot; title=&quot;基础知识&quot;&gt;&lt;/a&gt;基础知识&lt;/h1&gt;&lt;h2 id=&quot;数据库设计
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="数据库" scheme="https://huangwang.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
   
   <entry>
     <title>游戏引擎与物理引擎</title>
@@ -514,32 +540,6 @@
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
       <category term="JavaScript" scheme="https://huangwang.github.io/tags/JavaScript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Vuejs调试入门</title>
-    <link href="https://huangwang.github.io/2019/07/28/Vuejs%E8%B0%83%E8%AF%95%E5%85%A5%E9%97%A8/"/>
-    <id>https://huangwang.github.io/2019/07/28/Vuejs调试入门/</id>
-    <published>2019-07-28T04:54:03.000Z</published>
-    <updated>2019-07-28T07:54:37.011Z</updated>
-    
-    <content type="html"><![CDATA[<p>每个应用，不论大小，都需要理解程序是如何运行失败的。下面将探讨调试浏览器中运行的通过 Vue CLI 生成的 Vue.js 应用程序。</p><h1 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h1><ul><li>Chrome </li><li>Vue CLI</li><li>Vue Devtools</li></ul><h1 id="浏览器中展示源代码"><a href="#浏览器中展示源代码" class="headerlink" title="浏览器中展示源代码"></a>浏览器中展示源代码</h1><p>在可以从 VS Code 调试你的 Vue 组件之前，你需要更新 webpack 配置以构建 source map。做了这件事之后，我们的调试器就有机会将一个被压缩的文件中的代码对应回其源文件相应的位置。这会确保你可以在一个应用中调试，即便你的资源已经被 webpack 优化过了也没关系。</p><p>打开 config/index.js 并找到 devtool 属性。将其更新为：</p><p>如果你使用的是 Vue CLI 2，请设置并更新 config/index.js 内的 devtool 属性：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">devtool: &apos;source-map&apos;,</span><br></pre></td></tr></table></figure><p>如果你使用的是 Vue CLI 3，请设置并更新 vue.config.js 内的 devtool 属性：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  configureWebpack: &#123;</span><br><span class="line">    devtool: &apos;source-map&apos;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h1 id="调试方法"><a href="#调试方法" class="headerlink" title="调试方法"></a>调试方法</h1><h2 id="在Chrome浏览器中调试"><a href="#在Chrome浏览器中调试" class="headerlink" title="在Chrome浏览器中调试"></a>在Chrome浏览器中调试</h2><p>利用Chrome浏览器的开发工具，在Vuejs应用源代码中设置断点，进行调试。</p><p></p><p align="center">    <img src="images/debug.jpg" width="100%" alt="在Chrome浏览器中调试"></p><p></p><center>图1 在Chrome浏览器中调试</center><h2 id="简单的-debugger-语句"><a href="#简单的-debugger-语句" class="headerlink" title="简单的 debugger 语句"></a>简单的 debugger 语句</h2><p>可以直接在代码中使用原生的 debugger 语句。如果你选择了这种方式，请千万记得当你调试完毕之后把这个语句移除。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  data() &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      message: &apos;&apos;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted() &#123;</span><br><span class="line">    const hello = &apos;Hello World!&apos;</span><br><span class="line">    debugger</span><br><span class="line">    this.message = hello</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://cn.vuejs.org/v2/cookbook/debugging-in-vscode.html" target="_blank" rel="noopener">在 VS Code 中调试</a>,by vuejs.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;每个应用，不论大小，都需要理解程序是如何运行失败的。下面将探讨调试浏览器中运行的通过 Vue CLI 生成的 Vue.js 应用程序。&lt;/p&gt;
-&lt;h1 id=&quot;前提条件&quot;&gt;&lt;a href=&quot;#前提条件&quot; class=&quot;headerlink&quot; title=&quot;前提条件&quot;&gt;&lt;/a
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="vuejs" scheme="https://huangwang.github.io/tags/vuejs/"/>
     
   </entry>
   

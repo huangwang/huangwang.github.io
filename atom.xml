@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-09-21T21:34:46.776Z</updated>
+  <updated>2019-09-24T10:33:52.478Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>JS如何从ArrayBuffer中解码字符串</title>
+    <link href="https://huangwang.github.io/2019/09/24/JS%E5%A6%82%E4%BD%95%E4%BB%8EArrayBuffer%E4%B8%AD%E8%A7%A3%E7%A0%81%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
+    <id>https://huangwang.github.io/2019/09/24/JS如何从ArrayBuffer中解码字符串/</id>
+    <published>2019-09-24T09:37:25.000Z</published>
+    <updated>2019-09-24T10:33:52.478Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近遇到一个问题，拿到一个ArrayBuffer，知道它是以gb2312编码的文档，那么如何使用javascript从中解码出字符串。下面介绍常用的解决方案。</p><h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="字符编码"><a href="#字符编码" class="headerlink" title="字符编码"></a>字符编码</h2><p>字符编码（英语：Character encoding）、字集码是把字符集中的字符编码为指定集合中某一对象（例如：比特模式、自然数序列、8位组或者电脉冲），以便文本在计算机中存储和通过通信网络的传递。常见的例子包括将拉丁字母表编码成摩斯电码和ASCII。其中，ASCII将字母、数字和其它符号编号，并用7比特的二进制来表示这个整数。通常会额外使用一个扩充的比特，以便于以1个字节的方式存储。</p><p>因此，如果不知道字符存储的编码方案，那么只能得到一堆无意义的数字，无法从中解码出正确的字符信息。</p><h2 id="ArrayBuffer"><a href="#ArrayBuffer" class="headerlink" title="ArrayBuffer"></a>ArrayBuffer</h2><p>ArrayBuffer对象、TypedArray对象、DataView对象是JavaScript操作二进制数据的一个接口。这些对象早就存在，属于独立的规格，ES6将它们纳入了ECMAScript规格，并且增加了新的方法。</p><p>这些对象原始的设计目的，与WebGL项目有关。所谓WebGL，就是指浏览器与显卡之间的通信接口，为了满足JavaScript与显卡之间大量的、实时的数据交换，它们之间的数据通信必须是二进制的，而不能是传统的文本格式。文本格式传递一个32位整数，两端的JavaScript脚本与显卡都要进行格式转化，将非常耗时。这时要是存在一种机制，可以像C语言那样，直接操作字节，将4个字节的32位整数，以二进制形式原封不动地送入显卡，脚本的性能就会大幅提升。</p><p>二进制数组就是在这种背景下诞生的。它很像C语言的数组，允许开发者以数组下标的形式，直接操作内存，大大增强了JavaScript处理二进制数据的能力，使得开发者有可能通过JavaScript与操作系统的原生接口进行二进制通信。</p><p>二进制数组由三个对象组成。</p><ul><li><p>ArrayBuffer对象：代表内存之中的一段二进制数据，可以通过“视图”进行操作。“视图”部署了数组接口，这意味着，可以用数组的方法操作内存。</p></li><li><p>TypedArray对象：用来生成内存的视图，通过9个构造函数，可以生成9种数据格式的视图，比如Uint8Array（无符号8位整数）数组视图, Int16Array（16位整数）数组视图, Float32Array（32位浮点数）数组视图等等。</p></li><li><p>DataView对象：用来生成内存的视图，可以自定义格式和字节序，比如第一个字节是Uint8（无符号8位整数）、第二个字节是Int16（16位整数）、第三个字节是Float32（32位浮点数）等等。</p></li></ul><p>简单说，ArrayBuffer对象代表原始的二进制数据，TypedArray对象代表确定类型的二进制数据，DataView对象代表不确定类型的二进制数据。它们支持的数据类型一共有9种（DataView对象支持除Uint8C以外的其他8种）。</p><h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><h2 id="UTF-16的编码解码"><a href="#UTF-16的编码解码" class="headerlink" title="UTF-16的编码解码"></a>UTF-16的编码解码</h2><p>下面的解决方案只能解码UTF-16编码的字符串，而且当ArrayBuffer的长度过大时，会报“ Maximum call stack size exceeded”的错误。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function ab2str(buf) &#123;</span><br><span class="line">  return String.fromCharCode.apply(null, new Uint16Array(buf));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function str2ab(str) &#123;</span><br><span class="line">  var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char</span><br><span class="line">  var bufView = new Uint16Array(buf);</span><br><span class="line">  for (var i=0, strLen=str.length; i &lt; strLen; i++) &#123;</span><br><span class="line">    bufView[i] = str.charCodeAt(i);</span><br><span class="line">  &#125;</span><br><span class="line">  return buf;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="gb2312解码"><a href="#gb2312解码" class="headerlink" title="gb2312解码"></a>gb2312解码</h2><p>下面的解决方案能解码指定编码的字符串，包括utf-8，utf-16, iso-8859-2, koi8, cp1261, and gbk等。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function ab2str(arrayBuf, encodeType) &#123;</span><br><span class="line">  var decoder = new TextDecoder(encodeType)</span><br><span class="line">  var u8arr = new Uint8Array(arrayBuf)</span><br><span class="line">  return decoder.decode(u8arr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String" target="_blank" rel="noopener">How to convert ArrayBuffer to and from String</a>,by Renato Mangini.</li><li><a href="https://zh.wikipedia.org/wiki/%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81" target="_blank" rel="noopener">字符编码</a>,by wikipedia.</li><li><a href="https://stackoverflow.com/questions/38432611/converting-arraybuffer-to-string-maximum-call-stack-size-exceeded" target="_blank" rel="noopener">Converting arraybuffer to string : Maximum call stack size exceeded</a>,by stackoverflow.</li><li><a href="https://stackoverflow.com/questions/22123769/rangeerror-maximum-call-stack-size-exceeded-why" target="_blank" rel="noopener">“RangeError: Maximum call stack size exceeded” Why?</a>,by stackoverflow.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder" target="_blank" rel="noopener">TextDecoder</a>,by mozilla.</li><li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode" target="_blank" rel="noopener">String.fromCharCode()</a>,by mozilla.</li><li><a href="https://javascript.ruanyifeng.com/stdlib/arraybuffer.html" target="_blank" rel="noopener">二进制数组</a>,by 阮一峰.</li><li><a href="http://es6.ruanyifeng.com/#docs/arraybuffer" target="_blank" rel="noopener">ArrayBuffer</a>,by 阮一峰.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;最近遇到一个问题，拿到一个ArrayBuffer，知道它是以gb2312编码的文档，那么如何使用javascript从中解码出字符串。下面介绍常用的解决方案。&lt;/p&gt;
+&lt;h1 id=&quot;基础知识&quot;&gt;&lt;a href=&quot;#基础知识&quot; class=&quot;headerlink&quot; titl
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="前端" scheme="https://huangwang.github.io/tags/%E5%89%8D%E7%AB%AF/"/>
+    
+      <category term="Javascript" scheme="https://huangwang.github.io/tags/Javascript/"/>
+    
+  </entry>
   
   <entry>
     <title>netcat使用方法简介</title>
@@ -514,31 +542,6 @@
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
       <category term="nodejs" scheme="https://huangwang.github.io/tags/nodejs/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Mock数据</title>
-    <link href="https://huangwang.github.io/2019/07/28/Mock%E6%95%B0%E6%8D%AE/"/>
-    <id>https://huangwang.github.io/2019/07/28/Mock数据/</id>
-    <published>2019-07-28T15:38:30.000Z</published>
-    <updated>2019-08-08T12:56:08.391Z</updated>
-    
-    <content type="html"><![CDATA[<p>在实际开发中，最理想的前后端交互方式当然是后端先帮前端 mock 数据，然后前端开发，但现实很骨感，总会因为种种原因，前端需要自己来 mock 假数据。常用的伪造假数据的库有：Mockjs和easy-mock。这两个库有各自问题，因此需要一种新的 mock 假数据方案。</p><h1 id="Mockjs"><a href="#Mockjs" class="headerlink" title="Mockjs"></a>Mockjs</h1><p>原理是: 拦截了所有的请求并代理到本地，然后进行数据模拟，所以你会发现 network 中没有发出任何的请求。</p><p>但它的最大的问题是就是它的实现机制。它会重写浏览器的XMLHttpRequest对象，从而才能拦截所有请求，代理到本地。</p><p>大部分情况下用起来还是蛮方便的，但就因为它重写了XMLHttpRequest对象，所以比如progress方法，或者一些底层依赖XMLHttpRequest的库都会和它发生不兼容。</p><p>另外，因为是它是本地模拟数据，实际上不会走任何网络请求。所以本地调试起来很蛋疼，只能通过console.log来调试。</p><h1 id="easy-mock"><a href="#easy-mock" class="headerlink" title="easy-mock"></a>easy-mock</h1><p>天然支持跨域，还是支持MockJs的所有语法。但因为用的人多了，它的免费服务会经常的挂，可以说天天挂。官方的建议是自己搭建服务。如果你的公司整体搭建一个这样的 mock 服务的话也是一个不错的选择。但大部分人可能还是没有这个技术条件的。</p><h1 id="新的Mock假数据方案"><a href="#新的Mock假数据方案" class="headerlink" title="新的Mock假数据方案"></a>新的Mock假数据方案</h1><p>本地会启动一个mock-server来模拟数据，线上环境还是继续使用mockjs来进行模拟(因为本项目是一个纯前端项目，你也可以自己搭建一个线上 server 来提供数据)。不管是本地还是线上所以的数据模拟都是基于mockjs生成的，所以只要写一套 mock 数据，就可以在多环境中使用。</p><p>该方案的好处是，在保留 mockjs 的优势的同时，解决之前的痛点。由于我们的 mock 是完全基于webpack-dev-serve来实现的，所以在你启动前端服务的同时，mock-server就会自动启动，这里还通过 chokidar 来观察 mock 文件夹内容的变化。在发生变化时会清除之前注册的mock-api接口，重新动态挂载新的接口，从而支持热更新。有兴趣的可以自己看一下代码 mock-server.js。由于是一个真正的server，所以你可以通过控制台中的network，清楚的知道接口返回的数据结构。并且同时解决了之前mockjs会重写 XMLHttpRequest对象，导致很多第三方库失效的问题。</p><p>vue.config.js中配置本地mock-server服务：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">    port: port,</span><br><span class="line">    open: true,</span><br><span class="line">    overlay: &#123;</span><br><span class="line">      warnings: false,</span><br><span class="line">      errors: true</span><br><span class="line">    &#125;,</span><br><span class="line">    proxy: &#123;</span><br><span class="line">      // change xxx-api/login =&gt; mock/login</span><br><span class="line">      // detail: https://cli.vuejs.org/config/#devserver-proxy</span><br><span class="line">      [process.env.VUE_APP_BASE_API]: &#123;</span><br><span class="line">        target: `http://127.0.0.1:$&#123;port&#125;/mock`,</span><br><span class="line">        changeOrigin: true,</span><br><span class="line">        pathRewrite: &#123;</span><br><span class="line">          [&apos;^&apos; + process.env.VUE_APP_BASE_API]: &apos;&apos;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    // 输入app为exress实例，即var app = express();</span><br><span class="line">    // after: function(app, server) &#123;</span><br><span class="line">       // do fancy stuff</span><br><span class="line">    // &#125;</span><br><span class="line">    after: require(&apos;./mock/mock-server.js&apos;)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://juejin.im/post/5c92ff94f265da6128275a85#heading-5" target="_blank" rel="noopener">手摸手，带你用vue撸后台 系列五(v4.0新版本)</a>,by 花裤衩.</li><li><a href="https://github.com/nuysoft/Mock/wiki/Getting-Started" target="_blank" rel="noopener">Getting Started</a>,by mockjs.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;在实际开发中，最理想的前后端交互方式当然是后端先帮前端 mock 数据，然后前端开发，但现实很骨感，总会因为种种原因，前端需要自己来 mock 假数据。常用的伪造假数据的库有：Mockjs和easy-mock。这两个库有各自问题，因此需要一种新的 mock 假数据方案。&lt;/
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="前端" scheme="https://huangwang.github.io/tags/%E5%89%8D%E7%AB%AF/"/>
     
   </entry>
   

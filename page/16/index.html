@@ -1315,7 +1315,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-07-05 09:13:00" itemprop="dateModified" datetime="2018-07-05T09:13:00+08:00">2018-07-05</time>
+                <time title="修改时间：2019-09-25 12:55:45" itemprop="dateModified" datetime="2019-09-25T12:55:45+08:00">2019-09-25</time>
               
             
           </span>
@@ -1374,11 +1374,18 @@
 <p>ES2015模块示例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//circle.js</span><br><span class="line">//圆面积计算</span><br><span class="line">export function area(radius) &#123;</span><br><span class="line">  return Math.PI * radius * radius;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//main.js</span><br><span class="line">import &#123;area&#125; from &apos;./hangge&apos;;</span><br><span class="line">console.log(&apos;圆面积：&apos; + area(10));</span><br></pre></td></tr></table></figure></p>
 <h1 id="兼容多种模块规范"><a href="#兼容多种模块规范" class="headerlink" title="兼容多种模块规范"></a>兼容多种模块规范</h1><p>需要指出的是下面兼容多种JS模块规范的代码并不支持最新的ES2015模块规范。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">;(function (name, definition) &#123;</span><br><span class="line">  // 检测上下文环境是否为AMD或CMD</span><br><span class="line">  var hasDefine = typeof define === &apos;function&apos;,</span><br><span class="line">    // 检查上下文环境是否为Node</span><br><span class="line">    hasExports = typeof module !== &apos;undefined&apos; &amp;&amp; module.exports;</span><br><span class="line"></span><br><span class="line">  if (hasDefine) &#123;</span><br><span class="line">    // AMD环境或CMD环境</span><br><span class="line">    define(definition);</span><br><span class="line">  &#125; else if (hasExports) &#123;</span><br><span class="line">    // 定义为普通Node模块</span><br><span class="line">    module.exports = definition();</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // 将模块的执行结果挂在window变量中，在浏览器中this指向window对象</span><br><span class="line">    this[name] = definition();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)(&apos;hello&apos;, function () &#123;</span><br><span class="line">  var hello = function () &#123;&#125;;</span><br><span class="line">  return hello;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="Webpack兼容所有JS模块规范"><a href="#Webpack兼容所有JS模块规范" class="headerlink" title="Webpack兼容所有JS模块规范"></a>Webpack兼容所有JS模块规范</h1><p>webpack根据webpack.config.js中的入口文件，在入口文件里识别模块依赖，不管这里的模块依赖是用CommonJS写的，还是ES6 Module规范写的，webpack会自动进行分析，并通过转换、编译代码，打包成最终的文件。最终文件中的模块实现是基于webpack自己实现的webpack_require（es5代码），所以打包后的文件可以跑在浏览器上。</p>
+<p>同时以上意味着在webapck环境下，你可以只使用ES6 模块语法书写代码（通常我们都是这么做的），也可以使用CommonJS模块语法，甚至可以两者混合使用。因为从webpack2开始，内置了对ES6、CommonJS、AMD 模块化语句的支持，webpack会对各种模块进行语法分析，并做转换编译。</p>
+<p>具体Webpack兼容所有JS模块规范的原理分析参见<a href="https://juejin.im/post/5c94a2f36fb9a070fc623df4" target="_blank" rel="noopener">Webpack 模块打包原理</a>。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://i.jakeyu.top/2017/09/14/兼容前后端共用模块代码/" target="_blank" rel="noopener">https://i.jakeyu.top/2017/09/14/兼容前后端共用模块代码/</a>. by Jake.</li>
-<li><a href="https://segmentfault.com/a/1190000011633813" target="_blank" rel="noopener">https://segmentfault.com/a/1190000011633813</a>. by CodeMan.</li>
-<li><a href="http://justineo.github.io/singles/writing-modular-js/" target="_blank" rel="noopener">http://justineo.github.io/singles/writing-modular-js/</a>. by ADDY OSMANI.</li>
-<li><a href="http://www.hangge.com/blog/cache/detail_1686.html" target="_blank" rel="noopener">http://www.hangge.com/blog/cache/detail_1686.html</a>. by hangge.</li>
+<li><a href="https://i.jakeyu.top/2017/09/14/兼容前后端共用模块代码/" target="_blank" rel="noopener">兼容前后端共用模块代码(摘自《深入浅出Node.js》)</a>, by Jake.</li>
+<li><a href="https://segmentfault.com/a/1190000011633813" target="_blank" rel="noopener">兼容多种模块规范(AMD,CMD,Node)的代码</a>, by CodeMan.</li>
+<li><a href="http://justineo.github.io/singles/writing-modular-js/" target="_blank" rel="noopener">使用 AMD、CommonJS 及 ES Harmony 编写模块化的 JavaScript</a>, by ADDY OSMANI.</li>
+<li><a href="http://www.hangge.com/blog/cache/detail_1686.html" target="_blank" rel="noopener">JS - CommonJS、ES2015、AMD、CMD模块规范对比与介绍（附样例）</a>,by hangge.</li>
+<li><a href="https://babeljs.io/docs/en/" target="_blank" rel="noopener">What is Babel?</a>,by Babel.</li>
+<li><a href="https://webpack.js.org/concepts/" target="_blank" rel="noopener">Webpack Concepts</a>,by webpack.</li>
+<li><a href="https://segmentfault.com/a/1190000012386576" target="_blank" rel="noopener">import、require、export、module.exports 混合使用详解</a>,by lv_DaDa.</li>
+<li><a href="https://juejin.im/post/5c94a2f36fb9a070fc623df4" target="_blank" rel="noopener">Webpack 模块打包原理</a>,by lq782655835.</li>
 </ol>
 
           

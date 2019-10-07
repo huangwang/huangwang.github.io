@@ -1922,7 +1922,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-09-22 12:04:02" itemprop="dateModified" datetime="2019-09-22T12:04:02+08:00">2019-09-22</time>
+                <time title="修改时间：2019-10-07 21:24:42" itemprop="dateModified" datetime="2019-10-07T21:24:42+08:00">2019-10-07</time>
               
             
           </span>
@@ -1979,7 +1979,7 @@
 <p>每一帧我们都计算花费的真实时间（elapsed），而这条根据真实时间测量的时间线被称为全局时间线，所有的游戏内部 update() 逻辑都是基于这条全局时间线。update() 函数内部的处理逻辑会根据传入的时间间隔来驱动所有物体的动态效果，每个物体都有自己的局部时间线，这个局部时间线和全局时间线之间存在着一定的比例关系。例如游戏中存在一个飞行的子弹，子弹的飞行距离 = 子弹的飞行速度 * 子弹的飞行时间。这里的飞行时间并不一定是上面提到的全局时间线，可能是它的1/2或者2倍都是可以的，具体的快慢比例完全取决于你的游戏配置，这条和全局时间线比例不同的时间线也就是局部时间线。</p>
 <p>游戏中渲染通常并不会被时间所影响，因为渲染引擎只是单纯的渲染某一时刻的数据逻辑，一般和时间没有关系。受影响的主要是游戏的逻辑更新部分，为了保证不会出现不同硬件的游戏效果不一致，我们可以固定游戏逻辑的更新时间间隔，确保更新频率保持一致。这样做虽然可能导致在配置好的机器上相同的逻辑被渲染多次，但是这显然并不会影响游戏逻辑。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">double previous = getCurrentTime();</span><br><span class="line">double lag = 0.0; </span><br><span class="line">while (true) &#123; </span><br><span class="line">	double current = getCurrentTime(); </span><br><span class="line">	double elapsed = current - previous; </span><br><span class="line">	previous = current; </span><br><span class="line">	lag += elapsed;</span><br><span class="line"></span><br><span class="line">	processInput();</span><br><span class="line">	while (lag &gt;= MS_PER_UPDATE)</span><br><span class="line">	&#123;</span><br><span class="line">		update();</span><br><span class="line">		lag -= MS_PER_UPDATE;</span><br><span class="line">	&#125;</span><br><span class="line">    render();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>现在游戏渲染时间线和游戏的更新时间线已经分离，代码中保持游戏的更新时间线以固定的时间间隔推进，这个时间间隔越短，update() 更新的频率越快，越慢更新的频率越低，过慢的更新频率会导致游戏产生抖动现象，不过因为时间步长和硬件不相关，这种现象只会出现在低端机器上。</p>
+<p>现在<strong>游戏渲染时间线和游戏的更新时间线</strong>已经分离，代码中保持游戏的更新时间线以固定的时间间隔推进，这个时间间隔越短，update() 更新的频率越快，越慢更新的频率越低，过慢的更新频率会导致游戏产生抖动现象，不过因为时间步长和硬件不相关，这种现象只会出现在低端机器上。</p>
 <p>通过上面的代码基本上已经可以解决游戏循环的大部分问题了，但是还会出现一种现象，就是当一次循环消耗过长的时间，在下一次游戏渲染的时候，渲染的数据仍然是上一个时间点的数据，而不是真实时间点的数据，这听起来不太容易理解，可以看下面的示意图：</p>
 <p></p><p align="center">
     <img src="images/game-loop-timeline.png" width="100%" alt="游戏更新与渲染">

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-10-09T04:40:41.253Z</updated>
+  <updated>2019-10-10T13:37:32.701Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -17,13 +17,101 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>JavaScript对象深度克隆</title>
+    <link href="https://huangwang.github.io/2019/10/10/JavaScript%E5%AF%B9%E8%B1%A1%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86/"/>
+    <id>https://huangwang.github.io/2019/10/10/JavaScript对象深度克隆/</id>
+    <published>2019-10-10T13:10:21.000Z</published>
+    <updated>2019-10-10T13:37:32.701Z</updated>
+    
+    <content type="html"><![CDATA[<p>JavaScript并没有提供对象的复制方法，只能借助第三方库或自己实现对象的深度克隆。具体方法如下：</p><h1 id="第三方库实现"><a href="#第三方库实现" class="headerlink" title="第三方库实现"></a>第三方库实现</h1><p>实现JavaScript库的深度克隆的第三方库主要有：</p><ul><li>Underscore —— _.clone()</li><li>jQuery —— $.clone() / $.extend()</li><li>lodash —— <em>.clone() / </em>.cloneDeep()</li><li>借助 JSON 全局对象</li></ul><h2 id="Underscore-——-clone"><a href="#Underscore-——-clone" class="headerlink" title="Underscore —— _.clone()"></a>Underscore —— _.clone()</h2><p>在 Underscore 中有这样一个方法：_.clone()，这个方法实际上是一种浅复制 (shallow-copy)，所有嵌套的对象和数组都是直接复制引用而并没有进行深复制。其代码如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// Create a (shallow-cloned) duplicate of an object.</span><br><span class="line">_.clone = function(obj) &#123;</span><br><span class="line">  if (!_.isObject(obj)) return obj;</span><br><span class="line">  return _.isArray(obj) ? obj.slice() : _.extend(&#123;&#125;, obj);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><h2 id="jQuery-——-clone-extend"><a href="#jQuery-——-clone-extend" class="headerlink" title="jQuery —— $.clone() / $.extend()"></a>jQuery —— $.clone() / $.extend()</h2><p>在 jQuery 中也有这么一个叫 $.clone() 的方法，可是它并不是用于一般的 JS 对象的深复制，而是用于 DOM 对象。与 Underscore 类似，可以通过 $.extend() 方法来完成深复制。值得庆幸的是，在 jQuery 中可以通过添加一个参数来实现递归extend。调用$.extend(true, {}, …)就可以实现深复制。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var x = &#123;</span><br><span class="line">    a: 1,</span><br><span class="line">    b: &#123; f: &#123; g: 1 &#125; &#125;,</span><br><span class="line">    c: [ 1, 2, 3 ]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var y = $.extend(&#123;&#125;, x),          //shallow copy</span><br><span class="line">    z = $.extend(true, &#123;&#125;, x);    //deep copy</span><br><span class="line"></span><br><span class="line">y.b.f === x.b.f       // true</span><br><span class="line">z.b.f === x.b.f       // false</span><br></pre></td></tr></table></figure><h2 id="lodash-——-clone-cloneDeep"><a href="#lodash-——-clone-cloneDeep" class="headerlink" title="lodash —— .clone() / .cloneDeep()"></a>lodash —— <em>.clone() / </em>.cloneDeep()</h2><p>在lodash中关于复制的方法有两个，分别是<em>.clone()和</em>.cloneDeep()。其中<em>.clone(obj, true)等价于</em>.cloneDeep(obj)。</p><h2 id="借助-JSON-全局对象"><a href="#借助-JSON-全局对象" class="headerlink" title="借助 JSON 全局对象"></a>借助 JSON 全局对象</h2><p>针对纯 JSON 数据对象的深复制，使用 JSON 全局对象的 parse 和 stringify 方法来实现深复制也算是一个简单讨巧的方法，但它能正确处理的对象只有 Number, String, Boolean, Array, 扁平对象，即那些能够被 json 直接表示的数据结构。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function jsonClone(obj) &#123;</span><br><span class="line">    return JSON.parse(JSON.stringify(obj));</span><br><span class="line">&#125;</span><br><span class="line">var clone = jsonClone(&#123; a:1 &#125;);</span><br></pre></td></tr></table></figure><h1 id="递归实现"><a href="#递归实现" class="headerlink" title="递归实现"></a>递归实现</h1><p>下面是递归实现对象深度克隆的可用方法。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">function clone(obj) &#123;</span><br><span class="line">  // Handle the 3 simple types, and null or undefined</span><br><span class="line">  if (null == obj || &quot;object&quot; != typeof obj) return obj;</span><br><span class="line"> </span><br><span class="line">  // Handle Date</span><br><span class="line">  if (obj instanceof Date) &#123;</span><br><span class="line">    var copy = new Date();</span><br><span class="line">    copy.setTime(obj.getTime());</span><br><span class="line">    return copy;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  // Handle Array</span><br><span class="line">  if (obj instanceof Array) &#123;</span><br><span class="line">    var copy = [];</span><br><span class="line">    for (var i = 0, var len = obj.length; i &lt; len; ++i) &#123;</span><br><span class="line">      copy[i] = clone(obj[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    return copy;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  // Handle Object</span><br><span class="line">  if (obj instanceof Object) &#123;</span><br><span class="line">    var copy = &#123;&#125;;</span><br><span class="line">    for (var attr in obj) &#123;</span><br><span class="line">      if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);</span><br><span class="line">    &#125;</span><br><span class="line">    return copy;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  throw new Error(&quot;Unable to copy obj! Its type isn&apos;t supported.&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://jerryzou.com/posts/dive-into-deep-clone-in-javascript/" target="_blank" rel="noopener">深入剖析 JavaScript 的深复制</a>,by 咀嚼之味.</li><li><a href="https://www.jb51.net/article/84541.htm" target="_blank" rel="noopener">深入理解JavaScript中的对象复制(Object Clone)</a>,by jingxian.</li><li><a href="https://book.douban.com/subject/11874748/" target="_blank" rel="noopener">JavaScript语言精粹（修订版）</a>,by Douglas Crockford著.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;JavaScript并没有提供对象的复制方法，只能借助第三方库或自己实现对象的深度克隆。具体方法如下：&lt;/p&gt;
+&lt;h1 id=&quot;第三方库实现&quot;&gt;&lt;a href=&quot;#第三方库实现&quot; class=&quot;headerlink&quot; title=&quot;第三方库实现&quot;&gt;&lt;/a&gt;第三方库实现&lt;/h
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="前端" scheme="https://huangwang.github.io/tags/%E5%89%8D%E7%AB%AF/"/>
+    
+      <category term="JavaScript" scheme="https://huangwang.github.io/tags/JavaScript/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>图片或多媒体大文件的存储与管理</title>
+    <link href="https://huangwang.github.io/2019/10/10/%E5%9B%BE%E7%89%87%E6%88%96%E5%A4%9A%E5%AA%92%E4%BD%93%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E5%AD%98%E5%82%A8%E4%B8%8E%E7%AE%A1%E7%90%86/"/>
+    <id>https://huangwang.github.io/2019/10/10/图片或多媒体大文件的存储与管理/</id>
+    <published>2019-10-10T00:45:27.000Z</published>
+    <updated>2019-10-10T14:49:33.817Z</updated>
+    
+    <content type="html"><![CDATA[<p>图片、声音、视频等大文件在后台数据库中的存储管理方式通常有两种:</p><ul><li>文件存储到数据库中</li><li>文件存储到文件系统中,数据库中保存文件路径</li></ul><p>这两种文件存储管理方式有各自优缺点, 选择哪种方法存储大文件应根据具体情况而定。</p><h1 id="文件系统存储管理方式"><a href="#文件系统存储管理方式" class="headerlink" title="文件系统存储管理方式"></a>文件系统存储管理方式</h1><p>文件系统存储管理方式将文件存储到磁盘中，在数据库中使用varchar类型记录文件路径。该方法的缺点主要有：</p><ul><li>文件不支持DELETE</li></ul><p>当删除文件路径时，不支持自动删除对应文件。</p><ul><li>文件不支持事务隔离</li></ul><p>如果改变文件内容或删除文件，这些操作将立刻被其他客户端看到。</p><ul><li>文件不支持回滚</li></ul><p>数据库记录能够恢复，但文件删除不能。</p><ul><li><p>文件不支持数据库的备份工具</p></li><li><p>文件不支持SQL的访问权限设置</p></li><li><p>文件不是SQL数据类型</p></li></ul><p>数据库不会验证文件路径是否有效。当文件移动、重命名、删除时，数据不会自动更新路径。</p><h1 id="数据库中存储文件"><a href="#数据库中存储文件" class="headerlink" title="数据库中存储文件"></a>数据库中存储文件</h1><p>数据库通常支持BLOB类型，可用于存储任何二进制数据。数据库中存储文件，其优点对应文件系统管理存储方式的缺点。同样，数据库中存储文件也存在一些缺点：</p><ul><li>对数据库的读/写的速度永远都赶不上文件系统处理的速度</li><li>数据库备份变的巨大，越来越耗时间</li><li>对文件的访问需要穿越你的应用层和数据库层</li></ul><h1 id="多媒体大文件存储建议"><a href="#多媒体大文件存储建议" class="headerlink" title="多媒体大文件存储建议"></a>多媒体大文件存储建议</h1><p>当只涉及较小规模图片、音频的存储时，建议直接存放到数据库中。当涉及视频大文件存储时，建议还是用文件系统存储。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://gitee.com/jkxqj/java_wiki/blob/master/SQL%E5%8F%8D%E6%A8%A1%E5%BC%8F.pdf" target="_blank" rel="noopener">SQL反模式</a>,by Bill karwin著, 谭振林, Push Chen译.</li><li><a href="https://www.cnblogs.com/hellojesson/p/6295797.html" target="_blank" rel="noopener">特殊格式文件(视频、声音等) 在数据库中的存储方式</a>,by Jesson.</li><li><a href="https://www.cnblogs.com/wangtao_20/p/3440570.html" target="_blank" rel="noopener">关于图片或者文件在数据库的存储方式归纳</a>,by 王滔.</li><li><a href="https://www.cnblogs.com/studyzy/archive/2009/02/23/1396712.html" target="_blank" rel="noopener">SQL Server 2008新特性——FILESTREAM</a>,by 曾毅.</li><li><a href="https://www.iteye.com/blog/lxy2330-961266" target="_blank" rel="noopener">oracle对大对象类型操作：blob，clob，nclob，bfile</a>,by lxy2330.</li><li><a href="https://www.zhihu.com/question/22128674" target="_blank" rel="noopener">类似优酷土豆视频网站的视频源文件一般是存储在什么样系统上？</a>,by zhihu.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;图片、声音、视频等大文件在后台数据库中的存储管理方式通常有两种:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;文件存储到数据库中&lt;/li&gt;
+&lt;li&gt;文件存储到文件系统中,数据库中保存文件路径&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这两种文件存储管理方式有各自优缺点, 选择哪种方法存储大文件应根据具体情
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="数据库" scheme="https://huangwang.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+      <category term="软件工程" scheme="https://huangwang.github.io/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Windows下QT与OSG开发环境配置</title>
+    <link href="https://huangwang.github.io/2019/10/10/Windows%E4%B8%8BQT%E4%B8%8EOSG%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"/>
+    <id>https://huangwang.github.io/2019/10/10/Windows下QT与OSG开发环境配置/</id>
+    <published>2019-10-10T00:18:23.000Z</published>
+    <updated>2019-10-10T00:26:26.655Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://dlonng.com/posts/qt-osg" target="_blank" rel="noopener">QT - OSG 开发环境配置</a>,by 程序小哥.</li><li><a href="https://huangwang.github.io/2019/10/07/Qt5%E9%85%8D%E7%BD%AE%E5%BC%80%E6%BA%90GSL%E6%95%B0%E5%AD%A6%E5%BA%93/">Qt5配置开源GSL数学库</a>,by jackhuang.</li><li><a href="https://huangwang.github.io/2019/09/14/Ubuntu16-04%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85OSG/">Ubuntu16.04编译安装OSG</a>,by jackhuang.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;参考链接&quot;&gt;&lt;a href=&quot;#参考链接&quot; class=&quot;headerlink&quot; title=&quot;参考链接&quot;&gt;&lt;/a&gt;参考链接&lt;/h1&gt;&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https://dlonng.com/posts/qt-osg&quot; target=&quot;_blank
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="3D" scheme="https://huangwang.github.io/tags/3D/"/>
+    
+      <category term="计算机图形学" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Windows忘记密码无法登录的解决方案</title>
     <link href="https://huangwang.github.io/2019/10/09/Windows%E5%BF%98%E8%AE%B0%E5%AF%86%E7%A0%81%E6%97%A0%E6%B3%95%E7%99%BB%E5%BD%95%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/"/>
     <id>https://huangwang.github.io/2019/10/09/Windows忘记密码无法登录的解决方案/</id>
     <published>2019-10-09T04:09:44.000Z</published>
-    <updated>2019-10-09T04:40:41.253Z</updated>
+    <updated>2019-10-10T00:25:02.437Z</updated>
     
-    <content type="html"><![CDATA[<p>突然需要在一台很久不用的Win7计算机上差一点资料，可忘记了登录密码，只能重置密码。过程记录如下：</p><h1 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h1><p>借助手头的一张linux live cd，从光盘启动，进入linux系统，然后找到windows系统盘分区，在C:\Windows\System32下，将cmd.exe重命名为Magnify.exe，然后系统重启，登录Windows操作系统，在登录界面中，调用辅助工具放大镜，即打开命令提示符，输入如下命令重置Windows账户密码：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 查看Windows账户</span><br><span class="line">net user</span><br><span class="line">// 修改Windows账户密码</span><br><span class="line">net user Administrator 123456</span><br><span class="line">// 重启系统用Administrator账户登录</span><br><span class="line">shutdown -r -t 00</span><br></pre></td></tr></table></figure><p>或者采用如下命令新建登录账户：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 创建用户</span><br><span class="line">net user test 123456 /add</span><br><span class="line">// 用户提权，加入管理员组</span><br><span class="line">net localgroup Administrators test /add</span><br><span class="line">// 使用完删除用户</span><br><span class="line">net user test /delete</span><br></pre></td></tr></table></figure></p>]]></content>
+    <content type="html"><![CDATA[<p>突然需要在一台很久不用的Win7计算机上差一点资料，可忘记了登录密码，只能重置密码。过程记录如下：</p><h1 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h1><p>借助手头的一张linux live cd，从光盘启动，进入linux系统，然后找到windows系统盘分区，在C:\Windows\System32下，将cmd.exe重命名为Magnify.exe，然后系统重启，登录Windows操作系统，在登录界面中，调用辅助工具放大镜，即打开命令提示符，输入如下命令重置Windows账户密码：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 查看Windows账户</span><br><span class="line">net user</span><br><span class="line">// 修改Windows账户密码</span><br><span class="line">net user Administrator 123456</span><br><span class="line">// 重启系统用Administrator账户登录</span><br><span class="line">shutdown -r -t 00</span><br></pre></td></tr></table></figure><p>或者采用如下命令新建登录账户：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 创建用户</span><br><span class="line">net user test 123456 /add</span><br><span class="line">// 用户提权，加入管理员组</span><br><span class="line">net localgroup Administrators test /add</span><br><span class="line">// 使用完删除用户</span><br><span class="line">net user test /delete</span><br></pre></td></tr></table></figure></p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://blog.csdn.net/cx1990820/article/details/72628241" target="_blank" rel="noopener">关闭windows默认共享</a>,by Blue_sky90.</li></ol>]]></content>
     
     <summary type="html">
     
@@ -461,83 +549,6 @@
       <category term="vuejs" scheme="https://huangwang.github.io/tags/vuejs/"/>
     
       <category term="前端" scheme="https://huangwang.github.io/tags/%E5%89%8D%E7%AB%AF/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>USB供电能力简介</title>
-    <link href="https://huangwang.github.io/2019/08/20/USB%E4%BE%9B%E7%94%B5%E8%83%BD%E5%8A%9B%E7%AE%80%E4%BB%8B/"/>
-    <id>https://huangwang.github.io/2019/08/20/USB供电能力简介/</id>
-    <published>2019-08-20T13:43:22.000Z</published>
-    <updated>2019-08-20T14:13:52.095Z</updated>
-    
-    <content type="html"><![CDATA[<p>最近买了个行车记录仪，它通过USB接口供电，要求电源输入为5V2A，即要求电源的输出功率要达到10W。不想直接安装到车上，想插在电脑的USB接口上，测试行车记录仪的功能。那么电脑USB接口的供电能力足够吗？</p><h1 id="USB标准供电能力"><a href="#USB标准供电能力" class="headerlink" title="USB标准供电能力"></a>USB标准供电能力</h1><p>USB有多个标准，供电能力各不相同：</p><ul><li>USB1.1 传输速率最高12Mbps; 电源供应 5V 500mA</li><li>USB2.0 传输速率最高480Mbps; 电源供应 5V 500mA</li><li>USB3.0 传输速率最高5Gbps; 电源供应 5V 900mA</li></ul><p>最新的USB3.0标准输出电压为5V，输出电流最大为900mA，如果超过可能会因发热造成线路损坏。，因此电脑上的标准USB接口无法支持行车记录仪的正常使用。</p><p><strong>注意: 输出电压由电源输出决定，但输出电流大小由负载决定。</strong></p><h1 id="USB快充技术"><a href="#USB快充技术" class="headerlink" title="USB快充技术"></a>USB快充技术</h1><p>目前的快充技术基本有三种：USB-IF组织的USB PD、高通QC、联发科PEP/PE，其他手机厂商的快充方案大多来自这三个。</p><ul><li><p>USB PD（快充标准）目前基本绑定在USB3.0（数据传输标准）和USB Type-C（接头物理标准）上了，也得到谷歌和苹果两大巨头的支持，非常有希望成为未来的统一标准。</p></li><li><p>高通Quick Charge技术则是实际上被中高端智能手机采用最多的，小米、华硕、LG、乐视、中兴、HTC等最近两年的旗舰都是这个标准，三星FastCharge是QC的马甲，索尼也用QC。 由于硬件端和软件端都被强硬规定， 高通最新的QC 4.0已经使用了USB PD协议，成为了USB PD的一个分支。</p></li><li><p>联发科PEP技术推广成本最低，广泛用于中低端手机，魅族mCharge也是基于PEP。 不过联发科的PE3.0有可能被苹果采用。</p></li></ul><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://www.ednchina.com/news/20180228.html" target="_blank" rel="noopener">关于USB快充你不得不知的几点问题</a>,by EDN.</li><li><a href="https://www.zhihu.com/question/20275311" target="_blank" rel="noopener">手机充电是用电脑 USB 快还是用插座快？</a>,by zhihu.</li><li><a href="https://zh.wikipedia.org/wiki/%E7%93%A6%E7%89%B9" target="_blank" rel="noopener">瓦特</a>,by wikipedia.</li><li><a href="https://www.zhihu.com/question/50528184" target="_blank" rel="noopener">手机快充是跟数据线有关还是跟充电器有关？</a>,by zhihu.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;最近买了个行车记录仪，它通过USB接口供电，要求电源输入为5V2A，即要求电源的输出功率要达到10W。不想直接安装到车上，想插在电脑的USB接口上，测试行车记录仪的功能。那么电脑USB接口的供电能力足够吗？&lt;/p&gt;
-&lt;h1 id=&quot;USB标准供电能力&quot;&gt;&lt;a href=&quot;#
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="硬件" scheme="https://huangwang.github.io/tags/%E7%A1%AC%E4%BB%B6/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MSSQL2008中分页查询的实现</title>
-    <link href="https://huangwang.github.io/2019/08/17/MSSQL2008%E4%B8%AD%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E7%8E%B0/"/>
-    <id>https://huangwang.github.io/2019/08/17/MSSQL2008中分页查询的实现/</id>
-    <published>2019-08-17T10:22:02.000Z</published>
-    <updated>2019-08-17T14:04:42.404Z</updated>
-    
-    <content type="html"><![CDATA[<p>在后台管理中，涉及分页操作，需要数据库支持limit和offset选项，但在MSSQL2008中这两个选项不支持，不过可以用ROW_NUMBER函数在SQL语句中实现数据分页效果。SQL代码示例如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM  </span><br><span class="line">(SELECT Users.id as id,name,sign,account,audit,roleName,RoleId, Users.deleteFlag as deleteFlag,</span><br><span class="line">ROW_NUMBER() OVER (ORDER BY Users.createdAt) AS Seq </span><br><span class="line">FROM Users LEFT JOIN Roles ON Users.RoleId=Roles.id)Users </span><br><span class="line">Where deleteFlag=0 and </span><br><span class="line">Seq &gt; :offset_num and Seq&lt;= :offset_num+:limit_num</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://social.msdn.microsoft.com/Forums/sqlserver/en-US/f24c0a3d-e8e9-4041-aca5-590a6e1a2e81/how-to-use-offset-fetch-next-in-sql-server-2008-r2?forum=databasedesign" target="_blank" rel="noopener">How to use Offset . . .Fetch Next in SQL SERVER 2008 R2</a>,by microsoft msdn.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;在后台管理中，涉及分页操作，需要数据库支持limit和offset选项，但在MSSQL2008中这两个选项不支持，不过可以用ROW_NUMBER函数在SQL语句中实现数据分页效果。SQL代码示例如下：&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="数据库" scheme="https://huangwang.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>关系数据库中存储树结构及前端还原的方法</title>
-    <link href="https://huangwang.github.io/2019/08/17/%E5%85%B3%E7%B3%BB%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E5%AD%98%E5%82%A8%E6%A0%91%E7%BB%93%E6%9E%84%E5%8F%8A%E5%89%8D%E7%AB%AF%E8%BF%98%E5%8E%9F%E7%9A%84%E6%96%B9%E6%B3%95/"/>
-    <id>https://huangwang.github.io/2019/08/17/关系数据库中存储树结构及前端还原的方法/</id>
-    <published>2019-08-17T00:04:48.000Z</published>
-    <updated>2019-08-17T10:12:58.853Z</updated>
-    
-    <content type="html"><![CDATA[<p>树形结构很常见，例如组织结构图、线性化讨论等。树形结构中，实例被称为节点（node），每个节点有多个子节点和一个父节点。最上层的节点叫根（root）节点，它没有父节点。最底层的节点叫叶（leaf）节点，它没有子节点。本文主要介绍如何在关系数据库中存储树结构，以及如何从关系数据库中恢复树结构。</p><h1 id="关系数据库中存储树结构的方法"><a href="#关系数据库中存储树结构的方法" class="headerlink" title="关系数据库中存储树结构的方法"></a>关系数据库中存储树结构的方法</h1><h2 id="层级数据设计方案"><a href="#层级数据设计方案" class="headerlink" title="层级数据设计方案"></a>层级数据设计方案</h2><p>在关系数据库中存储树结构主要有以下几种方案：</p><ul><li>邻接表模型</li></ul><p>最常见的解决方案，在数据库表中添加parent_id字段，再引用同一张表中的其他记录的id。可通过一个外键约束维护这种关系。</p><p>优点：增加叶节点、修改节点或子树位置很方便。</p><p>缺点：查询节点的所有后代、删除子树很困难。</p><ul><li>路径枚举</li></ul><p>路径枚举是一个由连续的直接层级关系组成的完整路径。例如/usr/local/lib。</p><p>优点：查询节点所有后代、插入新节点很方便。<br>缺点：依赖应用程序逻辑代码维护路径字符串，验证字符串正确性开销大。受限于字符串长度，树结构无法无限扩展。</p><ul><li>嵌套集</li></ul><p>嵌套集解决方案是存储子孙节点的相关信息，而不是节点的直接祖先。通常使用两个数字nsleft和nsright编码每个节点，以表示子孙节点信息。</p><p>nsleft的数值小于该节点所有后代的ID，同时nsright的值大于该节点所有后代的ID。</p><p>确定这三个值（nsleft，ID，nsright）的简单方法是对树进行一次深度优先遍历，在逐层深入过程中依次递增地分配nsleft的值，并在返回时依次递增地分配nsright的值。</p><p>优点：查询给定节点祖先和后代很容易，删除非叶子节点，其后代会自动代替被删除节点成为其祖先节点的直接后代。</p><p>缺点：不易理解，插入和移动节点复杂。</p><ul><li>闭包表</li></ul><p>闭包表通过额外的数据库表记录树中节点间父子的关系，包括直接的父子关系、间接的父子关系和指向自己的关系。</p><h2 id="层级数据设计比较"><a href="#层级数据设计比较" class="headerlink" title="层级数据设计比较"></a>层级数据设计比较</h2><center>层级数据设计比较</center><div class="table-container"><table><thead><tr><th>设计</th><th>表</th><th>查询子</th><th>查询树</th><th>插入</th><th>删除</th><th>引用完整性</th></tr></thead><tbody><tr><td>邻接表</td><td>1</td><td>简单</td><td>困难</td><td>简单</td><td>简单</td><td>是</td></tr><tr><td>邻接表+递归查询</td><td>1</td><td>简单</td><td>简单</td><td>简单</td><td>简单</td><td>否</td></tr><tr><td>路径枚举</td><td>1</td><td>简单</td><td>简单</td><td>简单</td><td>简单</td><td>否</td></tr><tr><td>嵌套集</td><td>1</td><td>困难</td><td>简单</td><td>困难</td><td>困难</td><td>否</td></tr><tr><td>闭包集</td><td>2</td><td>简单</td><td>简单</td><td>简单</td><td>简单</td><td>是</td></tr></tbody></table></div><ul><li>邻接表设计最简单，如果使用的数据库支持WITH或CONNECT BY PRIOR的递归查询，将使得邻接表查询更为高效。</li></ul><h1 id="前端从关系数据库中还原树结构"><a href="#前端从关系数据库中还原树结构" class="headerlink" title="前端从关系数据库中还原树结构"></a>前端从关系数据库中还原树结构</h1><p>表结构，使用sequelize的对象表示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;;</span><br><span class="line">module.exports = (sequelize, DataTypes) =&gt; &#123;</span><br><span class="line">  const Role = sequelize.define(&apos;Role&apos;, &#123;</span><br><span class="line">    id: &#123;</span><br><span class="line">      type: DataTypes.STRING(50),</span><br><span class="line">      primaryKey: true</span><br><span class="line">    &#125;,</span><br><span class="line">    roleName: &#123;</span><br><span class="line">      type: DataTypes.STRING(128),</span><br><span class="line">      allowNull: false</span><br><span class="line">    &#125;,</span><br><span class="line">    path: &#123;</span><br><span class="line">      type: DataTypes.STRING(512),</span><br><span class="line">      allowNull: false,</span><br><span class="line">      unique: true,</span><br><span class="line">      comment: &apos;角色路径唯一！&apos;</span><br><span class="line">    &#125;,</span><br><span class="line">    deleteFlag:&#123;</span><br><span class="line">      type: DataTypes.BOOLEAN,</span><br><span class="line">      defaultValue: false</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, &#123;&#125;);</span><br><span class="line">  Role.associate = function(models) &#123;</span><br><span class="line">    // associations can be defined here</span><br><span class="line">    Role.hasMany(models.User)</span><br><span class="line">  &#125;;</span><br><span class="line">  return Role;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p><p>递归生成角色树：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">// 获取第一层节点</span><br><span class="line">function getFirstLevel(recordList)&#123;</span><br><span class="line">    var firstLevelList=[];</span><br><span class="line">    for(let i=0;i&lt; recordList.length;i++)&#123;</span><br><span class="line">        let record=recordList[i]</span><br><span class="line">        if (record.path.length === 2 &amp;&amp; record.path.split(&apos;&apos;)[1] === &apos;/&apos; &amp;&amp; parseInt(record.path.split(&apos;&apos;)[0])&gt;=0)&#123;</span><br><span class="line">            record.label=record.roleName</span><br><span class="line">            firstLevelList.push(record)</span><br><span class="line">        &#125;        </span><br><span class="line">    &#125;</span><br><span class="line">    return firstLevelList</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 指定根节点，递归生成角色树</span><br><span class="line">function recursiveTree(parentRecord,recordList)&#123;</span><br><span class="line">    for (let i = 0; i &lt; recordList.length; i++)&#123;</span><br><span class="line">        let record = recordList[i]</span><br><span class="line">        if(parentRecord.path==record.path.slice(0,-2))&#123;</span><br><span class="line">            record=recursiveTree(record,recordList)</span><br><span class="line">            if (parentRecord.children==undefined)&#123;</span><br><span class="line">                parentRecord.children=[]</span><br><span class="line">            &#125;</span><br><span class="line">            parentRecord.children.push(record)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    parentRecord.label = parentRecord.roleName</span><br><span class="line">    return parentRecord</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 生成角色树</span><br><span class="line">export function parseRoleTree(recordList)&#123;</span><br><span class="line">    var result = getFirstLevel(recordList);</span><br><span class="line"></span><br><span class="line">    for (let i=0;i&lt;result.length;i++)&#123;</span><br><span class="line">        parent = result[i]</span><br><span class="line">        parent = recursiveTree(parent, recordList)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://blog.csdn.net/LDY1016/article/details/85784001" target="_blank" rel="noopener">java递归生成树形结构菜单</a>,by 伊宇紫.</li><li>Bill Karwin著,谭振林,Push Chen译. SQL反模式[M].人民邮电出版社.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;树形结构很常见，例如组织结构图、线性化讨论等。树形结构中，实例被称为节点（node），每个节点有多个子节点和一个父节点。最上层的节点叫根（root）节点，它没有父节点。最底层的节点叫叶（leaf）节点，它没有子节点。本文主要介绍如何在关系数据库中存储树结构，以及如何从关系数
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="数据库" scheme="https://huangwang.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
   </entry>
   

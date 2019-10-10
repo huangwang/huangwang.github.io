@@ -1,9 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[JavaScript对象深度克隆]]></title>
+    <url>%2F2019%2F10%2F10%2FJavaScript%E5%AF%B9%E8%B1%A1%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86%2F</url>
+    <content type="text"><![CDATA[JavaScript并没有提供对象的复制方法，只能借助第三方库或自己实现对象的深度克隆。具体方法如下： 第三方库实现实现JavaScript库的深度克隆的第三方库主要有： Underscore —— _.clone() jQuery —— $.clone() / $.extend() lodash —— .clone() / .cloneDeep() 借助 JSON 全局对象 Underscore —— _.clone()在 Underscore 中有这样一个方法：_.clone()，这个方法实际上是一种浅复制 (shallow-copy)，所有嵌套的对象和数组都是直接复制引用而并没有进行深复制。其代码如下： 12345// Create a (shallow-cloned) duplicate of an object._.clone = function(obj) &#123; if (!_.isObject(obj)) return obj; return _.isArray(obj) ? obj.slice() : _.extend(&#123;&#125;, obj);&#125;; jQuery —— $.clone() / $.extend()在 jQuery 中也有这么一个叫 $.clone() 的方法，可是它并不是用于一般的 JS 对象的深复制，而是用于 DOM 对象。与 Underscore 类似，可以通过 $.extend() 方法来完成深复制。值得庆幸的是，在 jQuery 中可以通过添加一个参数来实现递归extend。调用$.extend(true, {}, …)就可以实现深复制。 1234567891011var x = &#123; a: 1, b: &#123; f: &#123; g: 1 &#125; &#125;, c: [ 1, 2, 3 ]&#125;;var y = $.extend(&#123;&#125;, x), //shallow copy z = $.extend(true, &#123;&#125;, x); //deep copyy.b.f === x.b.f // truez.b.f === x.b.f // false lodash —— .clone() / .cloneDeep()在lodash中关于复制的方法有两个，分别是.clone()和.cloneDeep()。其中.clone(obj, true)等价于.cloneDeep(obj)。 借助 JSON 全局对象针对纯 JSON 数据对象的深复制，使用 JSON 全局对象的 parse 和 stringify 方法来实现深复制也算是一个简单讨巧的方法，但它能正确处理的对象只有 Number, String, Boolean, Array, 扁平对象，即那些能够被 json 直接表示的数据结构。 1234function jsonClone(obj) &#123; return JSON.parse(JSON.stringify(obj));&#125;var clone = jsonClone(&#123; a:1 &#125;); 递归实现下面是递归实现对象深度克隆的可用方法。 12345678910111213141516171819202122232425262728293031function clone(obj) &#123; // Handle the 3 simple types, and null or undefined if (null == obj || &quot;object&quot; != typeof obj) return obj; // Handle Date if (obj instanceof Date) &#123; var copy = new Date(); copy.setTime(obj.getTime()); return copy; &#125; // Handle Array if (obj instanceof Array) &#123; var copy = []; for (var i = 0, var len = obj.length; i &lt; len; ++i) &#123; copy[i] = clone(obj[i]); &#125; return copy; &#125; // Handle Object if (obj instanceof Object) &#123; var copy = &#123;&#125;; for (var attr in obj) &#123; if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]); &#125; return copy; &#125; throw new Error(&quot;Unable to copy obj! Its type isn&apos;t supported.&quot;);&#125; 参考链接 深入剖析 JavaScript 的深复制,by 咀嚼之味. 深入理解JavaScript中的对象复制(Object Clone),by jingxian. JavaScript语言精粹（修订版）,by Douglas Crockford著.]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>前端</tag>
+        <tag>JavaScript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[图片或多媒体大文件的存储与管理]]></title>
+    <url>%2F2019%2F10%2F10%2F%E5%9B%BE%E7%89%87%E6%88%96%E5%A4%9A%E5%AA%92%E4%BD%93%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E5%AD%98%E5%82%A8%E4%B8%8E%E7%AE%A1%E7%90%86%2F</url>
+    <content type="text"><![CDATA[图片、声音、视频等大文件在后台数据库中的存储管理方式通常有两种: 文件存储到数据库中 文件存储到文件系统中,数据库中保存文件路径 这两种文件存储管理方式有各自优缺点, 选择哪种方法存储大文件应根据具体情况而定。 文件系统存储管理方式文件系统存储管理方式将文件存储到磁盘中，在数据库中使用varchar类型记录文件路径。该方法的缺点主要有： 文件不支持DELETE 当删除文件路径时，不支持自动删除对应文件。 文件不支持事务隔离 如果改变文件内容或删除文件，这些操作将立刻被其他客户端看到。 文件不支持回滚 数据库记录能够恢复，但文件删除不能。 文件不支持数据库的备份工具 文件不支持SQL的访问权限设置 文件不是SQL数据类型 数据库不会验证文件路径是否有效。当文件移动、重命名、删除时，数据不会自动更新路径。 数据库中存储文件数据库通常支持BLOB类型，可用于存储任何二进制数据。数据库中存储文件，其优点对应文件系统管理存储方式的缺点。同样，数据库中存储文件也存在一些缺点： 对数据库的读/写的速度永远都赶不上文件系统处理的速度 数据库备份变的巨大，越来越耗时间 对文件的访问需要穿越你的应用层和数据库层 多媒体大文件存储建议当只涉及较小规模图片、音频的存储时，建议直接存放到数据库中。当涉及视频大文件存储时，建议还是用文件系统存储。 参考链接 SQL反模式,by Bill karwin著, 谭振林, Push Chen译. 特殊格式文件(视频、声音等) 在数据库中的存储方式,by Jesson. 关于图片或者文件在数据库的存储方式归纳,by 王滔. SQL Server 2008新特性——FILESTREAM,by 曾毅. oracle对大对象类型操作：blob，clob，nclob，bfile,by lxy2330. 类似优酷土豆视频网站的视频源文件一般是存储在什么样系统上？,by zhihu.]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>数据库</tag>
+        <tag>软件工程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Windows下QT与OSG开发环境配置]]></title>
+    <url>%2F2019%2F10%2F10%2FWindows%E4%B8%8BQT%E4%B8%8EOSG%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%2F</url>
+    <content type="text"><![CDATA[参考链接 QT - OSG 开发环境配置,by 程序小哥. Qt5配置开源GSL数学库,by jackhuang. Ubuntu16.04编译安装OSG,by jackhuang.]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>3D</tag>
+        <tag>计算机图形学</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Windows忘记密码无法登录的解决方案]]></title>
     <url>%2F2019%2F10%2F09%2FWindows%E5%BF%98%E8%AE%B0%E5%AF%86%E7%A0%81%E6%97%A0%E6%B3%95%E7%99%BB%E5%BD%95%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%2F</url>
-    <content type="text"><![CDATA[突然需要在一台很久不用的Win7计算机上差一点资料，可忘记了登录密码，只能重置密码。过程记录如下： 解决思路借助手头的一张linux live cd，从光盘启动，进入linux系统，然后找到windows系统盘分区，在C:\Windows\System32下，将cmd.exe重命名为Magnify.exe，然后系统重启，登录Windows操作系统，在登录界面中，调用辅助工具放大镜，即打开命令提示符，输入如下命令重置Windows账户密码： 123456// 查看Windows账户net user// 修改Windows账户密码net user Administrator 123456// 重启系统用Administrator账户登录shutdown -r -t 00 或者采用如下命令新建登录账户：123456// 创建用户net user test 123456 /add// 用户提权，加入管理员组net localgroup Administrators test /add// 使用完删除用户net user test /delete]]></content>
+    <content type="text"><![CDATA[突然需要在一台很久不用的Win7计算机上差一点资料，可忘记了登录密码，只能重置密码。过程记录如下： 解决思路借助手头的一张linux live cd，从光盘启动，进入linux系统，然后找到windows系统盘分区，在C:\Windows\System32下，将cmd.exe重命名为Magnify.exe，然后系统重启，登录Windows操作系统，在登录界面中，调用辅助工具放大镜，即打开命令提示符，输入如下命令重置Windows账户密码： 123456// 查看Windows账户net user// 修改Windows账户密码net user Administrator 123456// 重启系统用Administrator账户登录shutdown -r -t 00 或者采用如下命令新建登录账户：123456// 创建用户net user test 123456 /add// 用户提权，加入管理员组net localgroup Administrators test /add// 使用完删除用户net user test /delete 参考链接 关闭windows默认共享,by Blue_sky90.]]></content>
       <tags>
         <tag>笔记本</tag>
         <tag>计算机安全</tag>

@@ -314,6 +314,607 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/29/Python程序打包成exe/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/29/Python程序打包成exe/" itemprop="url">
+                  Python程序打包成exe
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-29 11:18:51 / 修改时间：11:38:29" itemprop="dateCreated datePublished" datetime="2019-06-29T11:18:51+08:00">2019-06-29</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>大部分人是普通人，不知道如何运行Python脚本程序，因此有必要将Python脚本程序打包成可执行文件，免去安装Python环境，提高Python脚本程序的可用性。</p>
+<h1 id="打包方法"><a href="#打包方法" class="headerlink" title="打包方法"></a>打包方法</h1><p>Python脚本程序的发布有三种方法：</p>
+<ul>
+<li>.py文件：对于开源项目或者源码没那么重要的，直接提供源码，需要使用者自行安装Python并且安装依赖的各种库。</li>
+<li>.pyc文件：有些公司或个人因为机密或者各种原因，不愿意源码被运行者看到，可以使用pyc文件发布，pyc文件是Python解释器可以识别的二进制码，故发布后也是跨平台的，需要使用者安装相应版本的Python和依赖库。</li>
+<li>可执行文件：对于非码农用户，最简单的方式就是提供一个可执行文件，只需要把用法告诉他即可。比较麻烦的是需要针对不同平台需要打包不同的可执行文件（Windows, Linux, Mac,…）。</li>
+</ul>
+<p>下面介绍将Python脚本程序打包成可执行程序的各种工具。</p>
+<center>表1 各种打包工具的对比</center>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Solution</th>
+<th>Windows</th>
+<th>Linux</th>
+<th>OS X</th>
+<th>Python 3</th>
+<th>One file mode</th>
+<th>Zipfile import</th>
+<th>Eggs</th>
+<th>pkg_resources support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bbFreeze</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>py2exe</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+</tr>
+<tr>
+<td>pyInstaller</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr>
+<td>cx_Freeze</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr>
+<td>py2app</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>从上述对Python脚本程序打包工具对比可知，推荐使用pyInstaller。</p>
+<h1 id="PyInstaller打包示例"><a href="#PyInstaller打包示例" class="headerlink" title="PyInstaller打包示例"></a>PyInstaller打包示例</h1><h2 id="安装PyInstaller"><a href="#安装PyInstaller" class="headerlink" title="安装PyInstaller"></a>安装PyInstaller</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pyinstaller</span><br></pre></td></tr></table></figure>
+<h2 id="打包Python脚本"><a href="#打包Python脚本" class="headerlink" title="打包Python脚本"></a>打包Python脚本</h2><p>打包Python脚本成单独的 .exe 文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller -F yourprogram.py</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/45288707" target="_blank" rel="noopener">如何将 Python 程序打包成 .exe 文件？</a>,by 刘哈哈.</li>
+<li><a href="https://blog.csdn.net/zengxiantao1994/article/details/76578421" target="_blank" rel="noopener">Python程序打包成exe可执行文件</a>,by 知行流浪.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/29/Python命令行参数解析示例/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/29/Python命令行参数解析示例/" itemprop="url">
+                  Python命令行参数解析示例
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-29 09:03:23 / 修改时间：19:06:28" itemprop="dateCreated datePublished" datetime="2019-06-29T09:03:23+08:00">2019-06-29</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最新需要一个小程序实现解析命令行参数、遍历指定文件夹，处理指定扩展名的文件。于是简单用python实现一下。</p>
+<h1 id="库选择"><a href="#库选择" class="headerlink" title="库选择"></a>库选择</h1><h2 id="参数解析"><a href="#参数解析" class="headerlink" title="参数解析"></a>参数解析</h2><h3 id="sys-argv"><a href="#sys-argv" class="headerlink" title="sys.argv"></a>sys.argv</h3><p>解析Python中命令行参数的最传统的方法是通过sys.argv。但这种方法比较古老，灵活性很差，同时解析出来的参数都是str类型。但在编写简单脚本，参数较少且固定时比较方便。</p>
+<h3 id="getopt模块"><a href="#getopt模块" class="headerlink" title="getopt模块"></a>getopt模块</h3><p>getopt模块是专门处理命令行参数的模块，用于获取命令行选项和参数，也就是sys.argv。命令行选项使得程序的参数更加灵活。支持短选项模式（-）和长选项模式（—）。</p>
+<h3 id="optparse模块"><a href="#optparse模块" class="headerlink" title="optparse模块"></a>optparse模块</h3><p>optparse，功能强大，易于使用，可以方便地生成标准的、符合Unix/Posix 规范的命令行说明。但在Python2.7后就已经弃用不再维护。</p>
+<h3 id="argparse模块"><a href="#argparse模块" class="headerlink" title="argparse模块"></a>argparse模块</h3><p>argparse模块是Python内置的参数解析模块，使用起来比较简单且功能强大。</p>
+<p>ArgumentParser类创建时的参数如下：</p>
+<ul>
+<li>prog - 程序的名字（默认：sys.argv[0]）</li>
+<li>usage - 描述程序用法的字符串（默认：从解析器的参数生成）</li>
+<li>description - 参数帮助信息之前的文本（默认：空）</li>
+<li>epilog - 参数帮助信息之后的文本（默认：空）</li>
+<li>parents - ArgumentParser 对象的一个列表，这些对象的参数应该包括进去</li>
+<li>formatter_class - 定制化帮助信息的类</li>
+<li>prefix_chars - 可选参数的前缀字符集（默认：‘-‘）</li>
+<li>fromfile_prefix_chars - 额外的参数应该读取的文件的前缀字符集（默认：None）</li>
+<li>argument_default - 参数的全局默认值（默认：None）</li>
+<li>conflict_handler - 解决冲突的可选参数的策略（通常没有必要）</li>
+<li>add_help - 给解析器添加-h/–help 选项（默认：True）</li>
+</ul>
+<p>add_argument函数的参数如下：</p>
+<ul>
+<li>name or flags - 选项字符串的名字或者列表，例如foo 或者-f, –foo。</li>
+<li>action - 在命令行遇到该参数时采取的基本动作类型。</li>
+<li>nargs - 应该读取的命令行参数数目。</li>
+<li>const - 某些action和nargs选项要求的常数值。</li>
+<li>default - 如果命令行中没有出现该参数时的默认值。</li>
+<li>type - 命令行参数应该被转换成的类型。</li>
+<li>choices - 参数可允许的值的一个容器。</li>
+<li>required - 该命令行选项是否可以省略（只针对可选参数）。</li>
+<li>help - 参数的简短描述。</li>
+<li>metavar - 参数在帮助信息中的名字。</li>
+<li>dest - 给parse_args()返回的对象要添加的属性名称。</li>
+</ul>
+<h3 id="参数解析模块比较"><a href="#参数解析模块比较" class="headerlink" title="参数解析模块比较"></a>参数解析模块比较</h3><ul>
+<li>getopt，只能简单的处理命令行参数，无法解析一个参数多个值的情况，如 —file file1 file2 file3。</li>
+<li>optparse，功能强大，易于使用，可以方便地生成标准的、符合Unix/Posix 规范的命令行说明。但在Python2.7后就已经弃用不再维护。</li>
+<li>argparse，使其更加容易的编写用户友好的命令行接口。它所需的程序进程了参数定义，argparse将更好的解析sys.argv。同时argparse模块还能自动生成帮助及用户输入错误参数时的提示信息。</li>
+</ul>
+<h2 id="文件夹遍历"><a href="#文件夹遍历" class="headerlink" title="文件夹遍历"></a>文件夹遍历</h2><p>文件夹遍历有两种方法：</p>
+<ul>
+<li>使用os.walk</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*- </span><br><span class="line">import os </span><br><span class="line">def Test1(rootDir): </span><br><span class="line">    list_dirs = os.walk(rootDir) </span><br><span class="line">    for root, dirs, files in list_dirs: </span><br><span class="line">        for d in dirs: </span><br><span class="line">            print os.path.join(root, d)      </span><br><span class="line">        for f in files: </span><br><span class="line">            print os.path.join(root, f)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用os.listdir</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*- </span><br><span class="line">import os </span><br><span class="line">def Test2(rootDir): </span><br><span class="line">    for lists in os.listdir(rootDir): </span><br><span class="line">        path = os.path.join(rootDir, lists) </span><br><span class="line">        print path </span><br><span class="line">        if os.path.isdir(path): </span><br><span class="line">            Test2(path)</span><br></pre></td></tr></table></figure>
+<h2 id="文件处理"><a href="#文件处理" class="headerlink" title="文件处理"></a>文件处理</h2><p>Python内置了读写文件的函数，用法和C是兼容的。本节介绍内容大致有：文件的打开/关闭、文件对象、文件的读写等。</p>
+<h1 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h1><p>示例代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*- </span><br><span class="line"></span><br><span class="line">import os </span><br><span class="line">import argparse</span><br><span class="line"></span><br><span class="line"># 遍历文件夹</span><br><span class="line">def traverse(pathName,extName):</span><br><span class="line">    extNameList=extName.split(&apos; &apos;) </span><br><span class="line">    print(extNameList)</span><br><span class="line">    list_dirs = os.walk(pathName) </span><br><span class="line">    for root, dirs, files in list_dirs:   </span><br><span class="line">        for f in files:</span><br><span class="line">            targetExt=os.path.splitext(f)[-1]</span><br><span class="line">            if targetExt.lower() in extNameList:</span><br><span class="line">                clearWaterPrint(os.path.join(root, f))</span><br><span class="line"></span><br><span class="line">def clearWaterPrint(fileName):</span><br><span class="line">    print(fileName)</span><br><span class="line">    fileOrgin=open(fileName,&apos;rb&apos;)</span><br><span class="line">    fileTarget=open(fileName+&apos;.exe&apos;,&apos;wb&apos;)</span><br><span class="line">    fileTarget.write(fileOrgin.read())</span><br><span class="line">    fileOrgin.close()</span><br><span class="line">    os.remove(fileName)</span><br><span class="line">    fileTarget.close()</span><br><span class="line">    os.rename(fileName+&apos;.exe&apos;,fileName)</span><br><span class="line">  </span><br><span class="line"># Driver Code </span><br><span class="line">if __name__ == &apos;__main__&apos;: </span><br><span class="line">    # 首先创建一个ArgumentParser对象</span><br><span class="line">    parser = argparse.ArgumentParser(description=&apos;Process the water print!&apos;)   </span><br><span class="line">    # 添加--path设置文件目录</span><br><span class="line">    parser.add_argument(&apos;-p&apos;,&apos;--path&apos;, type = str,dest=&apos;pathName&apos;, help=&apos;give the path of directory&apos;,</span><br><span class="line">    default = &apos;./&apos;)    </span><br><span class="line">    # 添加--ext设置文件目录</span><br><span class="line">    parser.add_argument(&apos;-e&apos;,&apos;--ext&apos;, type = str,dest=&apos;extName&apos;, help=&apos;give the extension name of file&apos;,</span><br><span class="line">    default = &apos;.doc .docx .wav .txt .xml .dot .html .jpg .png&apos;,nargs = &apos;*&apos;)    </span><br><span class="line">    #返回一个命名空间,如果想要使用变量,可用args.attr</span><br><span class="line">    args = parser.parse_args()</span><br><span class="line"></span><br><span class="line">    # Calling traverse() function </span><br><span class="line">    traverse(args.pathName,args.extName)</span><br></pre></td></tr></table></figure>
+<p>使用方法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python3 clearWaterPrint.py -h</span><br><span class="line">python3 clearWaterPrint.py -p /home/test -e .doc .ppt</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://noahsnail.com/2017/09/13/2017-09-13-Python%E7%9A%84%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90/" target="_blank" rel="noopener">Python的命令行参数解析</a>,by Tyan.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/56961708" target="_blank" rel="noopener">Python中最好用的命令行参数解析工具</a>,by Mingle Wong.</li>
+<li><a href="https://blog.51cto.com/laocao/525140" target="_blank" rel="noopener">Python遍历文件夹的两种方法比较</a>,by likecao.</li>
+<li><a href="https://python3-cookbook.readthedocs.io/zh_CN/latest/c05/p04_read_write_binary_data.html" target="_blank" rel="noopener">读写字节数据</a>,by python3-cookbook.</li>
+<li><a href="http://funhacks.net/explore-python/File-Directory/binary_file_io.html" target="_blank" rel="noopener">读写二进制文件</a>,by funhacks.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/26/CPlusPlus标准演化简介/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/26/CPlusPlus标准演化简介/" itemprop="url">
+                  C++标准演化简介
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-26 19:45:12 / 修改时间：20:36:16" itemprop="dateCreated datePublished" datetime="2019-06-26T19:45:12+08:00">2019-06-26</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近阅读采用C++编写的MAVROS源码，遇到很多C++语言的新特性，理解起来很费劲，因此，特地分析一下C++标准演变过程，学习其进化过程中引入的新特性，提高C++源码阅读效率。</p>
+<h1 id="C-标准演变"><a href="#C-标准演变" class="headerlink" title="C++标准演变"></a>C++标准演变</h1><p>2017年12月05日，ISO C++ 委员会正式发布了 C++ 17 标准，官方名称为 ISO/IEC 14882:2017。之前发布的C++标准有C++14、C++11、C++03、C++98。</p>
+<h2 id="C-98"><a href="#C-98" class="headerlink" title="C++98"></a>C++98</h2><p>C++98是第一个C++标准。它分为两个部分：核心语言和C++标准程序库；后者包含了大部分标准模板库和C标准程序库的稍加修改版本。存在许多不属于标准部分的C++程序库，且使用外部链接，程序库甚至可以用C撰写。</p>
+<p>C++标准程序库充分吸收了C标准程序库，并佐以少许的修改，使其与C++良好的运作。另一个大型的程序库部分，是以标准模板库（STL）为基础，STL于1994年2月正式成为ANSI/ISO C++。它提供了实用的工具，如容器类（如：Array和Vector），迭代器（广义指针）提供容器以类似数组的访问方式，以及泛型算法进行搜索和排序的运算。此外还提供了(multi)map和(multi)set，它们都共享相似的成员函数。因此，以下成为可能，使用模板撰写泛型算法，它可以和任何容器或在任何以迭代器定义的序列上运作。如同C，使用#include指令包含标准表头，即可访问程序库里的功能。C++提供69个标准表头，其中19个不再赞成使用。</p>
+<p>使用标准模板库（例如：使用std::vector或std::string来取代C风格的数组或字符数组）有助于导向更安全和更灵活的软件。</p>
+<p>在STL在纳入C++标准以前，是来自HP和后来的SGI的第三方程式库，标准中并未称之为“STL”，它只是标准库中的一部分，但仍有许多人使用这个名称，以别于其它的标准库（输入／输出流、国际化、诊断、C程序库子集，等等）。 另外，如std::basic_string此类标准委员会添加的接口，有时也被误认为STL；实际上它们并不存在于原始的SGI STL中，在标准化后SGI STL才从标准库吸收加入其中。</p>
+<h2 id="C-03"><a href="#C-03" class="headerlink" title="C++03"></a>C++03</h2><p>C++03 是 C++ 语言国际标准的一个版本，正式名称是 ISO/IEC 14882:2003。该标准由国际标准化组织（ISO）和国际电工委员会（IEC）共同制定。</p>
+<p>C++03 取代了 C++ 标准的前一个版本 C++98，后被 C++11 所取代。C++03 主要是在前一个版本的基础上针对实现方的一些问题进行了修复，从而在各个实现间达到一致、保持了可移植性。该版本共涉及 92 项核心语言缺陷报告、125 项库缺陷报告，所提供的新特性只有一项：值初始化（英语：value initialization）。</p>
+<p>C++03 的第 69 号库缺陷报告非常值得一提，为了解决该问题，标准中加入了“std::vector 中的元素必须连续存储”的要求。</p>
+<h2 id="C-11"><a href="#C-11" class="headerlink" title="C++11"></a>C++11</h2><p>C++11，先前被称作C++0x，即ISO/IEC 14882:2011，是C++编程语言的一个标准。它取代第二版标准ISO/IEC 14882:2003（第一版ISO/IEC 14882:1998公开于1998年，第二版于2003年更新，分别通称C++98以及C++03，两者差异很小），且已被C++14取代。相比于C++03，C++11标准包含核心语言的新机能，而且扩展C++标准程序库，并入了大部分的C++ Technical Report 1程序库（数学的特殊函数除外）。 ISO／IEC JTC1/SC22/WG21 C++标准委员会计划在2010年8月之前完成对最终委员会草案的投票，以及于2011年3月召开的标准会议完成国际标准的最终草案。然而，WG21预期ISO将要花费六个月到一年的时间才能正式发布新的C++标准。为了能够如期完成，委员会决定致力于直至2006年为止的提案，忽略新的提案。最终于2011年8月12日公布，并于2011年9月出版。</p>
+<p>2012年2月28日的国际标准草案是最接近于C++11标准的草案，差异仅有编辑上的修正。</p>
+<p>像C++这样的编程语言，透过一种演化的的过程来发展其定义。这个过程不可避免地将引发与现有代码的兼容问题，在C++的发展过程中偶尔会发生。不过根据比雅尼·斯特劳斯特鲁普（C++的创始人并且是委员会的一员）表示，新的标准将几乎100%兼容于现有标准。</p>
+<h2 id="C-14"><a href="#C-14" class="headerlink" title="C++14"></a>C++14</h2><p>C++14是C++的现行标准的非正式名称，正式名称为”International Standard ISO/IEC 14882:2014(E) Programming Language C++”。C++14旨在作为C++11的一个小扩展，主要提供漏洞修复和小的改进。C++14标准的委员会草案（Committee Draft）N3690于2013年5月15日发表。工作草案（Working Draft）N3936已于2014年3月2日完成。最终的投票期结束于2014年8月15日，结果（一致通过）已于8月18日公布。</p>
+<h2 id="C-17"><a href="#C-17" class="headerlink" title="C++17"></a>C++17</h2><p>C++17又称C++1z，是C++的现行标准的非正式名称，正式名称为”International Standard ISO/IEC Programming Language C++”。C++17旨在作为大型扩展，最终的投票期将于2017年结束。</p>
+<p>当前不少著名C++编译器已支持C++17仍未定案的草案（draft），例如最新的GCC6已支持C++ concept的C++事务型内存（Transactional Memory），Visual Studio与Clang当前都提供了modules。</p>
+<h1 id="C-新语言特性"><a href="#C-新语言特性" class="headerlink" title="C++新语言特性"></a>C++新语言特性</h1><h2 id="Lambda函数与表示式"><a href="#Lambda函数与表示式" class="headerlink" title="Lambda函数与表示式"></a>Lambda函数与表示式</h2><p>在标准C++，特别是当使用C++标准程序库算法函数诸如sort和find，用户经常希望能够在算法函数调用的附近定义一个临时的述部函数（又称谓词函数，predicate function）。由于语言本身允许在函数内部定义类别，可以考虑使用函数对象，然而这通常既麻烦又冗赘，也阻碍了代码的流程。此外，标准C++不允许定义于函数内部的类别被用于模板，所以前述的作法是不可行的。</p>
+<p><strong>C++11对lambda（即匿名函数）的支持可以解决上述问题</strong>。</p>
+<p>一个lambda函数可以用如下的方式定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[](int x, int y) &#123; return x + y; &#125;</span><br></pre></td></tr></table></figure>
+<p>这个不具名函数的回返类型是decltype(x+y)。只有在lambda函数匹配”return expression”的形式下，它的回返类型才能被忽略。在前述的情况下，lambda函数仅能为一个述句。</p>
+<p>在一个更为复杂的例子中，回返类型可以被明确的指定如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[](int x, int y) -&gt; int &#123; int z = x + y; return z + x; &#125;</span><br></pre></td></tr></table></figure>
+<p>本例中，一个临时的参数z被创建用来存储中间结果。如同一般的函数，z的值不会保留到下一次该不具名函数再次被调用时。</p>
+<p>如果lambda函数没有传回值（例如void），其回返类型可被完全忽略。</p>
+<p>定义在与lambda函数相同作用域的参数引用也可以被使用。这种的参数集合一般被称作closure（闭包）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[]      // 沒有定义任何变量。使用未定义变量会引发错误。</span><br><span class="line">[x, &amp;y] // x以传值方式传入（默认），y以引用方式传入。</span><br><span class="line">[&amp;]     // 任何被使用到的外部变量都隐式地以引用方式加以引用。</span><br><span class="line">[=]     // 任何被使用到的外部变量都隐式地以传值方式加以引用。</span><br><span class="line">[&amp;, x]  // x显式地以传值方式加以引用。其余变量以引用方式加以引用。</span><br><span class="line">[=, &amp;z] // z显式地以引用方式加以引用。其余变量以传值方式加以引用。</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B" target="_blank" rel="noopener">C++</a>,by wikipedia.</li>
+<li><a href="https://zh.cppreference.com/w/cpp/language/history" target="_blank" rel="noopener">C++ 的历史</a>,by cppreference.</li>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B03" target="_blank" rel="noopener">C++03</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B11" target="_blank" rel="noopener">C++11</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B14" target="_blank" rel="noopener">C++14</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B17" target="_blank" rel="noopener">C++17</a>,by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/23/有趣的数学游戏/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1655,538 +2256,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/10/轨迹相似度度量方法总结/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/10/轨迹相似度度量方法总结/" itemprop="url">
-                  轨迹相似度度量方法总结
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-10 22:39:26" itemprop="dateCreated datePublished" datetime="2019-06-10T22:39:26+08:00">2019-06-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-06-11 21:53:37" itemprop="dateModified" datetime="2019-06-11T21:53:37+08:00">2019-06-11</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>轨迹相似度度量有广泛的用途，如语音识别分类、模板匹配、信息检索等。下面介绍各种轨迹相似度度量方法。</p>
-<h1 id="轨迹定义"><a href="#轨迹定义" class="headerlink" title="轨迹定义"></a>轨迹定义</h1><p>轨迹可由时间域到空间域的映射函数表示，如：</p>
-<script type="math/tex; mode=display">t\stackrel{F}{\longrightarrow}R^d, d>1</script><h1 id="度量方法"><a href="#度量方法" class="headerlink" title="度量方法"></a>度量方法</h1><p>轨迹相似度度量方法主要有：</p>
-<ul>
-<li><p>基于点方法： EDR，LCSS，DTW等</p>
-</li>
-<li><p>基于形状的方法： Frechet， Hausdorff</p>
-</li>
-<li><p>基于分段的方法：One Way Distance, LIP distance</p>
-</li>
-<li><p>基于特定任务的方法：TRACLUS， Road Network，grid等</p>
-</li>
-</ul>
-<h2 id="基于点的方法"><a href="#基于点的方法" class="headerlink" title="基于点的方法"></a>基于点的方法</h2><h3 id="DTW"><a href="#DTW" class="headerlink" title="DTW"></a>DTW</h3><p>DTW（Dynamic Time Warping, 动态时间规整）可以计算两个时间序列的相似度，尤其适用于不同长度、不同节奏的时间序列（比如不同的人读同一个词的音频序列）。DTW将自动warping扭曲 时间序列（即在时间轴上进行局部的缩放），使得两个序列的形态尽可能的一致，得到最大可能的相似度。</p>
-<p>Dynamic Time Warping（DTW）诞生有一定的历史了（日本学者Itakura提出），它出现的目的也比较单纯，是一种衡量两个长度不同的时间序列的相似度的方法。应用也比较广，主要是在模板匹配中，比如说用在孤立词语音识别（识别两段语音是否表示同一个单词），手势识别，数据挖掘和信息检索等中。</p>
-<p>设 $P=<p_1,p_2,...,p_m>$ 和 $Q=<q_1,q_2,...,q_n>$ 是两个时间序列，则 $P$ 和 $Q$的距离 $DTW(P,Q)$ 定义如下：</q_1,q_2,...,q_n></p_1,p_2,...,p_m></p>
-<script type="math/tex; mode=display">DTW(P,Q)= \left\{
-\begin{array}{lcl}
-0     &   &if\ m=n=0\\
-\infty &   &if\ m=0\ or\ n=0\\
-dist(p_1,q_1)+min
-    \left\{
-    \begin{aligned}
-            DTW(Rest(P),Rest(Q))\\
-            DTW(Rest(P),Q)\\
-            DTW(P,Rest(Q))\\
-    \end{aligned}
-    \right\} & & otherwise
-\end{array}
-\right.</script><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.zhihu.com/question/27213170" target="_blank" rel="noopener">如何判断两条轨迹（或曲线）的相似度？</a>,by zhihu.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/43247215" target="_blank" rel="noopener">动态时间规整（DTW）算法简介</a>,by 文均.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/32849741" target="_blank" rel="noopener">DTW(Dynamic Time Warping)动态时间规整</a>,by X-猪.</li>
-<li><a href="https://www.cnblogs.com/luxiaoxun/archive/2013/05/09/3069036.html" target="_blank" rel="noopener">Dynamic Time Warping 动态时间规整算法</a>,by 阿凡卢.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/09/经典控制与现代控制理论的区别与联系/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/09/经典控制与现代控制理论的区别与联系/" itemprop="url">
-                  经典控制与现代控制理论的区别与联系
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-09 16:28:08 / 修改时间：17:21:52" itemprop="dateCreated datePublished" datetime="2019-06-09T16:28:08+08:00">2019-06-09</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>控制理论是工程学与数学的跨领域分支，主要处理在有输入信号的动力系统的行为。系统的外部输入称为“参考值”，系统中的一个或多个变量需随着参考值变化，控制器处理系统的输入，使系统输出得到预期的效果。</p>
-<p>控制理论一般的目的是借由控制器的动作让系统稳定，也就是系统维持在设定值，而且不会在设定值附近晃动。</p>
-<h1 id="控制论简介"><a href="#控制论简介" class="headerlink" title="控制论简介"></a>控制论简介</h1><p>控制理论是</p>
-<ul>
-<li>一个研究如何调整动态系统特性的理论。</li>
-<li>科学中跨学科的领域，起源于工程及数学，逐渐的应用在许多社会科学中，例如心理学、社会学（社会学中的控制理论）、犯罪学及金融系统。</li>
-</ul>
-<p>控制系统可以视为具有四种机能的系统：<strong>量测、比较、计算及修正</strong>。这四个机能可以用五种元素来实现：<strong>感测器、换能器、发送器、控制器及最终控制元件</strong>。量测机能是由感测器、换能器及发送器执行，在实务应用上，这三个元素会整合在一个单体内，像是电阻温度计。比较和计算的机能是由控制器执行，可能是电子式的比例控制（P控制）、PI控制、PID控制、双稳态的迟滞控制，也可能是可编程逻辑控制器（PLC）。早期的控制器也可能是机械式的，像是离心式调速器或是化油器。修正机能是由最终控制元件执行，最终控制元件改变系统的输出，因此影响操纵或控制的变量。</p>
-<h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><p>车辆的巡航定速系统是让车辆维持在由驾驶者设定的固定参考速度。此时控制器为巡航定速系统，车辆为受控体（plant），而系统是由控制器和车辆所组成，而控制变量是引擎节流阀的位置．会决定引擎可以产生的功率。</p>
-<p>一种最单纯的作法是当驾驶者启动巡航定速系统时，固定引擎节流阀的位置。但是若驾驶者在平坦的路面启动巡航定速系统，车辆在上坡时速度会较慢，车辆在下坡时速度又会较快。这种的控制器称为开环控制器，因为没有去量测系统输出（车辆速度）并且影响控制变量（节流阀位置），因此此系统无法去针对车辆遇到的变化（像路面坡度的变动）去进行调整。</p>
-<p>在闭环控制系统中，利用感测器量测系统输出（车辆速度），并将资料送入控制器中，控制器依资料调整控制变量（节流阀位置），来达到维持理想系统输出（使车辆速度和驾驶者设定的参考速度一致）。此时若车辆在上坡时，感测器会量到车辆的速度变慢，因此会调整节流阀位置，加大引擎输出功率，使马达加速。因为有量测车辆速度的回授，因此控制器可以配合车辆速度的变化进行动态调整。因此产生了控制系统中的“环”范式：控制变量影响系统输出，而再根据量测到的系统输出去调整控制变量。</p>
-<h1 id="经典控制理论"><a href="#经典控制理论" class="headerlink" title="经典控制理论"></a>经典控制理论</h1><p>为了克服开环控制器的限制，在控制理论中导入了反馈。闭环的控制器利用回授来控制动态系统的状态或输出。其名称来自系统中的讯息路径：程序输入（例如马达的电压）影响程序输出（例如马达的电流或转矩），利用感测器量测输出，再将量测资料送到控制器中处理，结果送回控制器作为输入信号之一，因此成为一闭环。</p>
-<p>相对于开环控制器，闭环控制器有以下的优点：</p>
-<ul>
-<li>噪声抑制能力（像巡航定速中的路面坡度）。</li>
-<li>即使在数学模型有一些不确定性的情形下（如模型结构和实际系统不是完全符合，或是模型参数和实际数值不是完全一致），仍有一定程度的性能。</li>
-<li>可以稳定不稳定的系统</li>
-<li>减少对于参数变动的灵敏度</li>
-<li>提升命令追随（命令变化时，系统配合命令变化）的性能</li>
-<li>有些系统中，同时出现开环及闭环的控制，此时的开环会称为前馈，目的是为了提升命令追随的性能。</li>
-</ul>
-<p>PID控制器是常见的闭回路控制器架构。</p>
-<h2 id="闭环传递函数"><a href="#闭环传递函数" class="headerlink" title="闭环传递函数"></a>闭环传递函数</h2><p>系统的输出y(t)借由感测器F量测后，和参考值r(t)相减，控制器C根据参考值和输出值的误差e调整受控体P的输入u，如图1所示，这类的控制器称为闭环控制器。</p>
-<p>由于只有一个输入和输出，此系统会称为SISO（单一输入单一输出）控制系统。MIMO（多重输入多重输出）控制系统是指输入或输出不只一个，在实际应用上也很常见，其输入变量和输出变量会用向量表示，而不是单一数值的标量。在分布参量系统中，向量可能是无限维的，即一般的函数。</p>
-<p></p><p align="center">
-    <img src="images/control_loop.png" width="50%" alt="闭环传递函数示意图">
-</p><p></p>
-<center>图1  闭环传递函数示意图</center>
-
-<p>若假设控制器C、受控体P及感测器F都是线性及非时变的（各模组输入和输出的关系不随时间改变），可以将上述系统用拉普拉斯转换来分析，因此可以得到以下的关系：</p>
-<script type="math/tex; mode=display">Y(s)=P(s)U(s)\,\!</script><script type="math/tex; mode=display">U(s)=C(s)E(s)\,\!</script><script type="math/tex; mode=display">E(s)=R(s)-F(s)Y(s)\,\!</script><p>其中 s为拉普拉斯转换中的复变量，若要求解Y(s)用R(s)表示，可得：</p>
-<script type="math/tex; mode=display">Y(s)=\left({\frac  {P(s)C(s)}{1+F(s)P(s)C(s)}}\right)R(s)=H(s)R(s)\,\!</script><p>表示式 $H(s)={\frac {P(s)C(s)}{1+F(s)P(s)C(s)}}\,!$即为系统的闭环传递函数，分子是从r到y的前馈（开环）增益，分母是1加上经过反馈环的增益．即闭环增益，若$|P(s)C(s)|\gg 1\,!$，，也就是说在各s下，其范数都很大，且 $|F(s)|\approx 1\,!$，则Y(s)近似于R(s)，此时输出会紧密的追随参考输入。</p>
-<h2 id="PID"><a href="#PID" class="headerlink" title="PID"></a>PID</h2><p>请参考链接[4]。</p>
-<h1 id="现代控制理论"><a href="#现代控制理论" class="headerlink" title="现代控制理论"></a>现代控制理论</h1><p>经典控制理论以频域分析为主，而现代控制理论利用时域的状态空间表示法，将系统中的输入、输出及状态变量之间的关系用一阶的微分方程表示。为了抽象化输入、输出及状态变量的数量，这些变量一般会用向量来表示，而微分方程或代数方程（当系统是线性时）则会以矩阵形式表示。状态空间表示法也称为时域分析，提供一个方便且简洁的方式针对多重输入及输出的系统建模及分析，在有输入和输出时，也可以利用拉氏转换，将系统所有的资料包括在其中。现代控制理论不同于频域分析，可以分析非线性或不是零初始条件的系统。状态空间就是指坐标轴为状态变量的空间，系统的状态可以表示为状态空间中的一个向量。</p>
-<h1 id="控制理论主题"><a href="#控制理论主题" class="headerlink" title="控制理论主题"></a>控制理论主题</h1><h2 id="稳定性"><a href="#稳定性" class="headerlink" title="稳定性"></a>稳定性</h2><p>在控制理论中的稳定性是指控制系统的状态在特定条件下，可以维持在一定的范围内，不会发散，而在什么范围内才算是稳定则依系统种类而不同。</p>
-<ul>
-<li>没有输入信号的动力系统，其稳定性是用李雅普诺夫稳定性来描述，也就是任何初始条件在 $x<em>{0}$ 附近的轨迹均能维持在 $x</em>{0}$ 附近</li>
-<li>有输入信号的线性系统，其稳定性是用有界输入有界输出稳定性（BIBO 稳定性）来描述，针对任何有界的输入信号，其输出也是有界。</li>
-<li>有输入信号的非线性系统，其稳定性是用输入-状态稳定性（input-to-state stability），结合了李雅普诺夫稳定性及类似有界输入有界输出稳定性的表示方式。</li>
-</ul>
-<h2 id="可控制性及可观测性"><a href="#可控制性及可观测性" class="headerlink" title="可控制性及可观测性"></a>可控制性及可观测性</h2><p>可控制性和可观测性分别是输入和状态，输出和状态之间的性质。是在分析控制系统，决定控制策略或判断是否可以使系统稳定时所需要的重要性质。</p>
-<p>可控制性是指是可以用适当的控制信号作为输入，使特定状态变量的数值变成０，和利用输入调整状态变量的能力有关，若一个状态变量是不可控制的，表示没有输入可以调整这一个状态，若一系统中所有不可控制的状态变量，其动态特性都是稳定的，则此系统称为可稳定的（stabilizable）。</p>
-<p>可观测性是指可以用输出的量测及计算得到状态变量的值，若一个状态变量是不可观测的，表示无法确认此一状态是否稳定，也就无法用此状态来稳定整个系统。若一系统中所有不可控制的观测变量都是稳定的，则此系统称为可检测的（detectable）。</p>
-<h2 id="控制规格"><a href="#控制规格" class="headerlink" title="控制规格"></a>控制规格</h2><p>在控制原理的基础下，已发展出许多不同的控制策略，从非常通用的（PID控制器），到针对特殊系统的控制，尤其是机器人或是航空器的巡航定速控制。</p>
-<p>一个控制问题会有许多的规格，其中稳定性是必要条件的，不论系统开环稳定性如何，控制器需确保在闭环下是稳定的。性能不佳或是调整不当的控制器可能使系统变的不稳定，甚至可能比开环还要不稳定，这是应尽量要避免的。</p>
-<h2 id="模型识别及鲁棒性"><a href="#模型识别及鲁棒性" class="headerlink" title="模型识别及鲁棒性"></a>模型识别及鲁棒性</h2><p>控制系统一定会有一定程度的鲁棒性。控制器一般是依照一个假设的受控系统模组再进行设计，鲁棒性是指一控制器配合的受控系统和原来假设的系统有一点不同，控制器的特性不会有太大的变化。这个规格在实际的控制器中相当重要，因为很少实际系统会完全符合描述它的微分方程，在选择系统数学模型时，一般会进行简化，否则数学模型会非常复杂，甚至无法求得一个完整的模型。</p>
-<h1 id="系统分类"><a href="#系统分类" class="headerlink" title="系统分类"></a>系统分类</h1><h2 id="线性系统控制"><a href="#线性系统控制" class="headerlink" title="线性系统控制"></a>线性系统控制</h2><p>针对MIMO的系统，极点的指定可以用开环系统的状态空间，再将极点放在指定位置，计算对应的回授矩阵。若在复杂的系统中，上述的程序需要用电脑辅助计算才能达到，而且不保证其鲁棒性。而且一般而言无法量到所有的系统状态，在极点指定的设计时需加入观测器（observer）的设计。</p>
-<h2 id="非线性系统控制"><a href="#非线性系统控制" class="headerlink" title="非线性系统控制"></a>非线性系统控制</h2><p>像机器人学及航天产业中的程序一般都有高度非线性的动态，在控制理论中有时可以用线性化的方式转换为线性系统，再依线性系统的方式控制。但有时需要用一些可以配合非线性系统使用的非线性控制理论，例如回授线性化、反推控制、滑动模式控制等。轨迹线性化控制一般利用李亚普诺夫稳定性的基础。微分几何用做为一数学工具，将许多广为人知的线性控制概念扩展到非线性控制中，但其中又有其微妙之处，因此变成一个更有挑战性的问题。</p>
-<h2 id="分散式系统"><a href="#分散式系统" class="headerlink" title="分散式系统"></a>分散式系统</h2><p>分散控制系统是指一个系统由多个控制器来控制。分散控制有几个好处，例如可以控制一个位在广大地理区域的系统，各控制器之间可以用通讯网络彼此交换资料，并协调彼此的行动。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA" target="_blank" rel="noopener">控制理论</a>,by wikipedia.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/34908368" target="_blank" rel="noopener">「珂学原理」精选：经典控制和现代控制理论有何本质区别？</a>,by 王珂.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E6%8B%89%E6%99%AE%E6%8B%89%E6%96%AF%E5%8F%98%E6%8D%A2" target="_blank" rel="noopener">拉普拉斯变换</a>,by wikipedia.</li>
-<li><a href="https://huangwang.github.io/2019/02/09/PID%E6%8E%A7%E5%88%B6%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">PID控制算法原理分析</a>,by jackhuang.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/08/ROS中Package安装方法/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/08/ROS中Package安装方法/" itemprop="url">
-                  ROS中Package安装方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-08 21:41:08 / 修改时间：21:50:37" itemprop="dateCreated datePublished" datetime="2019-06-08T21:41:08+08:00">2019-06-08</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>ROS（机器人操作系统，Robot Operating System），是专为机器人软件开发所设计出来的一套电脑操作系统架构。它是一个开源的元级操作系统（后操作系统），提供类似于操作系统的服务，包括硬件抽象描述、底层驱动程序管理、共用功能的执行、程序间消息传递、程序发行包管理，它也提供一些工具和库用于获取、建立、编写和执行多机融合的程序。</p>
-<p>ROS的Package资源非常丰富，官方库中就有两千多Package，这对扩充ROS的功能十分重要。下面即介绍ROS中Package的安装方法，主要分成两种方法：</p>
-<h1 id="Deb安装方式"><a href="#Deb安装方式" class="headerlink" title="Deb安装方式"></a>Deb安装方式</h1><p>deb方式安装方法十分简单，根据ROS版本，直接运行apt-get命令，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install ros-kinetic-camera-calibration</span><br></pre></td></tr></table></figure>
-<h1 id="源码安装方式"><a href="#源码安装方式" class="headerlink" title="源码安装方式"></a>源码安装方式</h1><p>源码安装方式稍微复杂，安装方法如下：</p>
-<ol>
-<li>创建catkin工作空间</li>
-<li>在catkin工作空间的src文件夹下，下载ROS的Package源代码</li>
-<li>使用catkin build命令编译安装</li>
-</ol>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.zybuluo.com/ferstar/note/214495" target="_blank" rel="noopener">安装ROS软件包</a>,by ferstar.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2234,7 +2303,7 @@ dist(p_1,q_1)+min
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">185</span>
+                    <span class="site-state-item-count">188</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -112,7 +112,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://huangwang.github.io/2018/06/13/Cesium卫星地图和高程数据切片经验总结/images/墨卡托投影示意图.jpg">
 <meta property="og:image" content="https://huangwang.github.io/2018/06/13/Cesium卫星地图和高程数据切片经验总结/images/瓦片金字塔.jpg">
-<meta property="og:updated_time" content="2019-07-16T13:25:58.895Z">
+<meta property="og:updated_time" content="2019-10-15T09:31:01.255Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cesium卫星地图和高程数据切片经验总结">
 <meta name="twitter:description" content="最近研究在Cesium中调用自定义的图像和地形，不借助任何GIS系统（如Arcgis、天地图等），方便在网络不好或离线的情况下使用。下面对整个过程进行总结。 基础知识地图服务提供方法目前互联网地图服务商提供的地图服务分成两种[3]：    图像瓦片地图服务这种方法目前最常见，其提供的是图片格式的瓦片，在客户端将拼接成真正的地图。 矢量瓦片地图服务这种方法正在发展，其提供矢量的瓦片数据，然后在客户端">
@@ -379,7 +379,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-07-16 21:25:58" itemprop="dateModified" datetime="2019-07-16T21:25:58+08:00">2019-07-16</time>
+                <time title="修改时间：2019-10-15 17:31:01" itemprop="dateModified" datetime="2019-10-15T17:31:01+08:00">2019-10-15</time>
               
             
           </span>
@@ -447,7 +447,9 @@
 各大地图服务商大都采用了Web Mercator进行投影，瓦片坐标系的不同主要是投影截取的地球范围不同、瓦片坐标起点不同<sup>[3]</sup>。
 
 ## 瓦片切割和瓦片坐标
+
 对于经过墨卡托投影为平面的世界地图，在不同的地图分辨率(整个世界地图的像素大小)下，通过切割的方式将世界地图划分为像素为256px/256px的地图单元，划分成的每一块地图单元称为地图瓦片。其特定如下：
+
 * 具有唯一的瓦片等级（Level）和瓦片坐标编号（tileX, tileY）。
 * 瓦片分辨率为256*256。
 * 最小的地图等级是0，此时世界地图只由一张瓦片组成。
@@ -458,8 +460,11 @@
     <img src="images/瓦片金字塔.jpg" width="50%" alt="瓦片金字塔">
 </p>
 
-<h1 id="过程总结"><a href="#过程总结" class="headerlink" title="过程总结"></a>过程总结</h1><p>将自定义图像和地形以Web形式发布后，在cesium中调用自定义图像和地形很简单，代码如下，关键是图像和地形的获取和处理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var tmsImageryProvider=Cesium.createTileMapServiceImageryProvider(&#123;</span><br><span class="line">    url:&apos;http://localhost:8080/test_tms_tiles&apos;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">var terrainProvider=new Cesium.CesiumTerrainProvider(&#123;</span><br><span class="line">    url:&apos;http://localhost:8080/terrain_tiles&apos;</span><br><span class="line">&#125;);</span><br><span class="line">var viewer = new Cesium.Viewer(&apos;cesiumContainer&apos;, &#123;</span><br><span class="line">    imageryProvider : tmsImageryProvider,</span><br><span class="line">    terrainProvider: terrainProvider,</span><br><span class="line">    baseLayerPicker: false,</span><br><span class="line">    geocoder: false,</span><br><span class="line">    shadows: false,</span><br><span class="line">    shouldAnimate: true</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
-<h2 id="卫星图像的获取和处理"><a href="#卫星图像的获取和处理" class="headerlink" title="卫星图像的获取和处理"></a>卫星图像的获取和处理</h2><p>卫星图像获取可以使用一些相关软件，如水经注等。其原理通常是从一些地图服务商下载地图瓦片后重新拼接，再分割成对应格式的瓦片。拼接的图像最好输出为tif格式，因为tif格式可以在头部包含一些信息，例如地理坐标等信息，以方便后续的瓦片切割，以及被GIS系统直接识别导入。为使切割后的瓦片能够被Cesium直接调用，应采用标准TMS方式。<br>通常卫星图像下载软件提供多种瓦片分割方式，如果能直接进行标准TMS瓦片分割最好不过，如果不可以进行标准TMS分割，则可使用GDAL。<br>GDAL是地理空间数据抽象库的简称，是一个地理空间数据的格式转换及处理工具。文章最后将详细介绍其安装使用方法。使用GDAL进行卫星图像瓦片分割主要使用gdal2tiles.py工具。具体步骤如下：</p>
+<h1 id="过程总结"><a href="#过程总结" class="headerlink" title="过程总结"></a>过程总结</h1><p>将自定义图像和地形以Web形式发布后，在cesium中调用自定义图像和地形很简单，代码如下，关键是图像和地形的获取和处理。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var tmsImageryProvider=Cesium.createTileMapServiceImageryProvider(&#123;</span><br><span class="line">    url:&apos;http://localhost:8080/test_tms_tiles&apos;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">var terrainProvider=new Cesium.CesiumTerrainProvider(&#123;</span><br><span class="line">    url:&apos;http://localhost:8080/terrain_tiles&apos;</span><br><span class="line">&#125;);</span><br><span class="line">var viewer = new Cesium.Viewer(&apos;cesiumContainer&apos;, &#123;</span><br><span class="line">    imageryProvider : tmsImageryProvider,</span><br><span class="line">    terrainProvider: terrainProvider,</span><br><span class="line">    baseLayerPicker: false,</span><br><span class="line">    geocoder: false,</span><br><span class="line">    shadows: false,</span><br><span class="line">    shouldAnimate: true</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="卫星图像的获取和处理"><a href="#卫星图像的获取和处理" class="headerlink" title="卫星图像的获取和处理"></a>卫星图像的获取和处理</h2><p>卫星图像获取可以使用一些相关软件，如水经注等。其原理通常是从一些地图服务商下载地图瓦片后重新拼接，再分割成对应格式的瓦片。拼接的图像最好输出为<strong>tif格式</strong>，因为tif格式可以在头部包含一些信息，例如地理坐标等信息，以方便后续的瓦片切割，以及被GIS系统直接识别导入。为使切割后的瓦片能够被Cesium直接调用，应采用<strong>标准TMS方式</strong>。</p>
+<p>通常卫星图像下载软件提供多种瓦片分割方式，如果能直接进行标准TMS瓦片分割最好不过，如果不可以进行标准TMS分割，则可使用GDAL。</p>
+<p>GDAL是地理空间数据抽象库的简称，是一个地理空间数据的格式转换及处理工具。文章最后将详细介绍其安装使用方法。使用GDAL进行卫星图像瓦片分割主要使用gdal2tiles.py工具。具体步骤如下：</p>
 <ol>
 <li>选取之前下载拼接的最大分辨率的tif卫星图像</li>
 <li>使用如下命令切割卫星图片,将自动生成瓦片金字塔。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdal2tiles.py &lt;image&gt; &lt;tilesdir&gt;</span><br></pre></td></tr></table></figure>
@@ -501,6 +506,7 @@
 <li><a href="https://blog.csdn.net/u013929284/article/details/71616600" target="_blank" rel="noopener">Cesium之地形(1)</a>, by Super洛伽</li>
 <li><a href="https://www.jianshu.com/p/62d6f03f44e3" target="_blank" rel="noopener">Cesium中地形数据的加载</a>，by CrazyGIS</li>
 <li><a href="https://www.giserdqy.com/webgis/openlayers/22833/openlayers%E4%B9%8B%E5%A4%9A%E6%BA%90%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E4%BA%8C%EF%BC%9A%E7%93%A6%E7%89%87%E5%9C%B0%E5%9B%BE%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">OpenLayers之多源数据加载二：瓦片地图原理</a>,by giser.</li>
+<li><a href="https://www.cnblogs.com/nygfcn1234/p/8876711.html" target="_blank" rel="noopener">cesium加载离线tms切片</a>,by nygfcn.</li>
 </ol>
 
       

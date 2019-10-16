@@ -582,7 +582,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-10-15 17:31:01" itemprop="dateModified" datetime="2019-10-15T17:31:01+08:00">2019-10-15</time>
+                <time title="修改时间：2019-10-16 08:49:41" itemprop="dateModified" datetime="2019-10-16T08:49:41+08:00">2019-10-16</time>
               
             
           </span>
@@ -676,13 +676,18 @@
 </li>
 <li>发布地形服务。把terrain_tiles直接放到与 Cesium同端口的Tomcat或IIS站点<br>下（不能跨域），即可发布服务。 需要在Web Server中增加配置 .terrain文件的 Content-Type设为 application/octet-stream，同时拷贝“覆盖至生成tiles结果”目录中的 layer.json文件和0文件夹至生成结果目录下，比如我当前是 terrain_tiles目录下。</li>
 </ol>
-<h2 id="GDAL的安装使用"><a href="#GDAL的安装使用" class="headerlink" title="GDAL的安装使用"></a>GDAL的安装使用</h2><p>GDAL不推荐从源码编译安装，建议从gisinternals下载gdal-203-1911-x64-core.msi、GDAL-2.3.0.win-amd64-py2.7.msi直接二进制安装。安装步骤如下：</p>
+<h2 id="GDAL的安装使用"><a href="#GDAL的安装使用" class="headerlink" title="GDAL的安装使用"></a>GDAL的安装使用</h2><p>GDAL(Geospatial Data Abstraction Library)是一个在X/MIT许可协议下的开源栅格空间数据转换库。该项目由Frank Warmerdam教授于1998年发起。 它利用抽象数据模型来表达所支持的各种文件格式。 它还有一系列命令行工具来进行数据转换和处理。 OGR(OpenGIS Simple Features Reference Implementation)是GDAL项目的一个子项目， 提供对矢量数据的支持。 一般把这两个库合称为GDAL/OGR，或者简称为GDAL。</p>
+<h3 id="GDAL安装方法之一"><a href="#GDAL安装方法之一" class="headerlink" title="GDAL安装方法之一"></a>GDAL安装方法之一</h3><p>GDAL不推荐从源码编译安装，建议从gisinternals下载gdal-203-1911-x64-core.msi、GDAL-2.3.0.win-amd64-py2.7.msi直接二进制安装。安装步骤如下：</p>
 <ol>
 <li>安装python2.7。安装完成后配置环境变量，在path中添加 C:\Python27;</li>
 <li>安装gdal-203-1911-x64-core.msi。安装完成后，设置环境变量GDAL_DATA，值为C:\Program Files\GDAL\gdal-data\，修改环境变量PATH，增加C:\Program Files\GDAL; </li>
 <li>pip install numpy。这是为了使用地形切割的脚本gdal2srtmtiles.py。</li>
 <li>安装GDAL-2.3.0.win-amd64-py2.7.msi。</li>
 </ol>
+<p><strong>注意：当瓦片过多时，会报“OverflowError: range() result has too many items”的错误，而且python2已不再维护，因此不建议采用该方法安装GDAL。</strong></p>
+<h3 id="GDAL安装方法之二"><a href="#GDAL安装方法之二" class="headerlink" title="GDAL安装方法之二"></a>GDAL安装方法之二</h3><p>OSGeo4W是用于开源GIS项目的Windows安装程序。 开源的本质意味着许多项目/程序相互依赖才能实现功能。 GDAL就是一个很好的例子。 几乎所有的开源GIS项目都在某种程度上使用GDAL来读写数据。 但是因为Windows是一个封闭的平台，所以它没有像基于Unix的操作系统那样开发软件包管理器。 因此，如果使用GRASS和QGIS的独立安装程序安装它们，则最终会进行2次GDAL安装。 添加3或4个以上的开源安装，最终您将获得十几个GDAL安装，此外还有一个仅用于GDAL的安装。</p>
+<p>这就是OSGeo4W的用处。它可以跟踪开源GIS软件包的共享需求，因此QGIS和GRASS可以共享一次GDAL安装。 它还跟踪版本，因此您可以简单地升级程序。</p>
+<p>从官网<a href="http://www.klokan.cz/projects/gdal2tiles/" target="_blank" rel="noopener">GDAL2Tiles Project</a>找到 OSGeo4W 的下载链接，下载OSGeo4W并安装即可。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://cesiumjs.org/tutorials/Imagery-Layers-Tutorial/" target="_blank" rel="noopener">Imagery-Layers-Tutorial</a>, by cesiumjs</li>
 <li><a href="https://cesiumjs.org/tutorials/Terrain-Tutorial/" target="_blank" rel="noopener">Terrain-Tutorial</a>, by cesiumjs</li>
@@ -695,6 +700,11 @@
 <li><a href="https://www.jianshu.com/p/62d6f03f44e3" target="_blank" rel="noopener">Cesium中地形数据的加载</a>，by CrazyGIS</li>
 <li><a href="https://www.giserdqy.com/webgis/openlayers/22833/openlayers%E4%B9%8B%E5%A4%9A%E6%BA%90%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E4%BA%8C%EF%BC%9A%E7%93%A6%E7%89%87%E5%9C%B0%E5%9B%BE%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">OpenLayers之多源数据加载二：瓦片地图原理</a>,by giser.</li>
 <li><a href="https://www.cnblogs.com/nygfcn1234/p/8876711.html" target="_blank" rel="noopener">cesium加载离线tms切片</a>,by nygfcn.</li>
+<li><a href="https://zh.wikipedia.org/wiki/TIFF" target="_blank" rel="noopener">TIFF</a>,by wikipedia.</li>
+<li><a href="https://wiki.osgeo.org/wiki/Tile_Map_Service_Specification" target="_blank" rel="noopener">Tile_Map_Service_Specification</a>,by osgeo.</li>
+<li><a href="https://blog.csdn.net/dcraw/article/details/6443537" target="_blank" rel="noopener">TIFF图像文件格式详解(1)</a>,by xdyang.</li>
+<li><a href="http://www.cppblog.com/windcsn/archive/2005/11/16/1158.aspx" target="_blank" rel="noopener">TIFF图像文件格式分析</a>,by windcsn.</li>
+<li><a href="https://www.osgeo.cn/python_gdal_utah_tutorial/ch01.html" target="_blank" rel="noopener">1. 地理数据处理软件包GDAL简介</a>,by osgeo.cn.</li>
 </ol>
 
           

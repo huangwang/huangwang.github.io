@@ -314,6 +314,167 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/02/异常处理的一些理解/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/11/02/异常处理的一些理解/" itemprop="url">
+                  异常处理的一些理解
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-02 11:42:10 / 修改时间：12:07:48" itemprop="dateCreated datePublished" datetime="2019-11-02T11:42:10+08:00">2019-11-02</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在编程过程，经常遇到的一个问题是如何优雅地处理异常。下面给出一些对这个问题的答案。</p>
+<h1 id="异常处理定义"><a href="#异常处理定义" class="headerlink" title="异常处理定义"></a>异常处理定义</h1><p>异常处理，是编程语言或计算机硬件里的一种机制，用于处理软件或信息系统中出现的异常状况（即超出程序正常执行流程的某些特殊条件）。</p>
+<h2 id="异常处理与错误检测的区别"><a href="#异常处理与错误检测的区别" class="headerlink" title="异常处理与错误检测的区别"></a>异常处理与错误检测的区别</h2><p>错误检测与异常处理区别在于：<strong>错误检测是在正常的程序流中，处理不可预见问题的代码，例如一个调用操作未能成功结束。</strong></p>
+<p>某些编程语言有这样的函数：当输入存在非法数据时不能被安全地调用，或者返回值不能与异常进行有效的区别。例如，C语言中的atoi函数（ASCII串到整数的转换）在输入非法时可以返回0。在这种情况下编程者需要另外进行错误检测（可能通过某些辅助全局变量如C的errno），或进行输入检验（如通过正则表达式），或者共同使用这两种方法。</p>
+<p>通过异常处理，我们可以对用户在程序中的非法输入进行控制和提示，以防程序崩溃。从进程的视角，硬件中断相当于可恢复异常，虽然中断一般与程序流本身无关。从子程序编程者的视角，异常是很有用的一种机制，用于通知外界该子程序不能正常执行。如输入的数据无效（例如除数是0），或所需资源不可用（例如文件丢失）。如果系统没有异常机制，则编程者需要用返回值来标示发生了哪些错误。</p>
+<h1 id="异常处理的原则"><a href="#异常处理的原则" class="headerlink" title="异常处理的原则"></a>异常处理的原则</h1><p>为了更好的处理异常，应遵循以下三个原则：</p>
+<ul>
+<li>具体明确</li>
+<li>提早抛出</li>
+<li>延迟捕获</li>
+</ul>
+<h2 id="具体明确"><a href="#具体明确" class="headerlink" title="具体明确"></a>具体明确</h2><p>捕获异常时具体明确有利于对异常进行恰当的处理。例如在Java中对同一try块定义多个catch块，以便对每种异常分别进行恰当的处理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">File prefsFile = new File(prefsFilename);</span><br><span class="line"> </span><br><span class="line">try&#123;</span><br><span class="line">    readPreferences(prefsFile);</span><br><span class="line">&#125;</span><br><span class="line">catch (FileNotFoundException e)&#123;</span><br><span class="line">    // alert the user that the specified file</span><br><span class="line">    // does not exist</span><br><span class="line">&#125;</span><br><span class="line">catch (EOFException e)&#123;</span><br><span class="line">    // alert the user that the end of the file</span><br><span class="line">    // was reached</span><br><span class="line">&#125;</span><br><span class="line">catch (ObjectStreamException e)&#123;</span><br><span class="line">     // alert the user that the file is corrupted</span><br><span class="line">&#125;</span><br><span class="line">catch (IOException e)&#123;</span><br><span class="line">    // alert the user that some other I/O</span><br><span class="line">    // error occurred</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="提早抛出"><a href="#提早抛出" class="headerlink" title="提早抛出"></a>提早抛出</h2><p>异常堆栈信息提供了导致异常出现的方法调用链的精确顺序，包括每个方法调用的类名，方法名，代码文件名甚至行数，以此来精确定位异常出现的现场。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">java.lang.NullPointerException</span><br><span class="line">at java.io.FileInputStream.open(Native Method)</span><br><span class="line">at java.io.FileInputStream.&lt;init&gt;(FileInputStream.java:103)</span><br><span class="line">at jcheckbook.JCheckbook.readPreferences(JCheckbook.java:225)</span><br><span class="line">at jcheckbook.JCheckbook.startup(JCheckbook.java:116)</span><br><span class="line">at jcheckbook.JCheckbook.&lt;init&gt;(JCheckbook.java:27)</span><br><span class="line">at jcheckbook.JCheckbook.main(JCheckbook.java:318)</span><br></pre></td></tr></table></figure>
+<p>通过逐步回退跟踪堆栈信息并检查代码，可以确定错误原因。</p>
+<h2 id="延迟捕获"><a href="#延迟捕获" class="headerlink" title="延迟捕获"></a>延迟捕获</h2><p>捕获异常后怎么处理？最不该做的就是什么都不做。空的catch块等于把整个异常丢进黑洞，能够说明何时何处为何出错的所有信息都会永远丢失。把异常写到日志中还稍微好点，至少还有记录可查。但我们总不能指望用户去阅读或者理解日志文件和异常信息。</p>
+<p>因此，不要过早捕获异常，而是在合适的层面捕获异常，以便你的程序要么可以从异常中有意义地恢复并继续下去，而不导致更深入的错误；要么能够为用户提供明确的信息，包括引导他们从错误中恢复过来。如果你的方法无法胜任，那么就不要处理异常，把它留到后面捕获和在恰当的层面处理。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86" target="_blank" rel="noopener">异常处理</a>,by wikipedia.</li>
+<li><a href="https://www.zhihu.com/question/28254987" target="_blank" rel="noopener">如何优雅的处理异常（java）？</a>,by zhihu.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/30/Linux防SYN-Flood攻击的方法/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2060,213 +2221,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/10/Windows下QT与OSG开发环境配置/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/10/Windows下QT与OSG开发环境配置/" itemprop="url">
-                  Windows下QT与OSG开发环境配置
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-10-10 08:18:23" itemprop="dateCreated datePublished" datetime="2019-10-10T08:18:23+08:00">2019-10-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-10-13 18:17:54" itemprop="dateModified" datetime="2019-10-13T18:17:54+08:00">2019-10-13</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近想尝试使用QT开发图形用户界面，OSG负责三维展示的解决方案，于是研究了一下Windows下OSG的编译安装配置，以及在QT中集成OSG的配置过程。过程记录如下：</p>
-<h1 id="QT-OSG开发环境配置"><a href="#QT-OSG开发环境配置" class="headerlink" title="QT+OSG开发环境配置"></a>QT+OSG开发环境配置</h1><p>QT+OSG开发环境配置将使用QT Creator集成环境进行图形用户界面开发，使用Desktop Qt 5.9.8 MSVC2017 64构建套件编译链接调试C++程序。</p>
-<h2 id="Visual-Studio-Community-2017-下载安装"><a href="#Visual-Studio-Community-2017-下载安装" class="headerlink" title="Visual Studio Community 2017 下载安装"></a>Visual Studio Community 2017 下载安装</h2><p>下载安装Visual Studio Community 2017的“使用C++的桌面开发”工作负载。这将为QT提供MSVC2017 64bit编译套件。</p>
-<h2 id="CDB-调试器下载安装"><a href="#CDB-调试器下载安装" class="headerlink" title="CDB 调试器下载安装"></a>CDB 调试器下载安装</h2><p>没有安装CDB调试器，QT的Desktop Qt 5.9.8 MSVC2017 64构建套件前会出现感叹号，并且使用该构建套件调试时会报“Unable to create a debugging engine”错误。CDB调试器下载安装方法参考<a href="https://dlonng.com/posts/qt-osg" target="_blank" rel="noopener">QT - OSG 开发环境配置</a></p>
-<h2 id="QT-5-9-8-下载安装"><a href="#QT-5-9-8-下载安装" class="headerlink" title="QT 5.9.8 下载安装"></a>QT 5.9.8 下载安装</h2><p>QT 5.9.8是 LTS 版本，其下载安装请参考<a href="https://huangwang.github.io/2019/10/07/Qt5%E9%85%8D%E7%BD%AE%E5%BC%80%E6%BA%90GSL%E6%95%B0%E5%AD%A6%E5%BA%93/">Qt5配置开源GSL数学库</a>。<strong>需要注意的是，QT 5.9.8安装过程，选择MSVC2017 64bit编译组件，如图1所示。</strong></p>
-<p></p><p align="center">
-    <img src="images/qt_install.jpg" width="60%" alt="QT 5.9.8安装选择MSVC2017 64bit编译组件">
-</p><p></p>
-<center>图1 QT 5.9.8安装选择MSVC2017 64bit编译组件</center>
-
-<h2 id="cmake下载安装"><a href="#cmake下载安装" class="headerlink" title="cmake下载安装"></a>cmake下载安装</h2><p>到 cmake 官网下载安装 cmake，用于osg的编译安装。</p>
-<h1 id="下载编译安装OSG"><a href="#下载编译安装OSG" class="headerlink" title="下载编译安装OSG"></a>下载编译安装OSG</h1><h2 id="下载OSG及相关软件"><a href="#下载OSG及相关软件" class="headerlink" title="下载OSG及相关软件"></a>下载OSG及相关软件</h2><p>Windows平台编译安装OSG需下载从OSG官网以下资料：</p>
-<ul>
-<li>OpenSceneGraph 3.6.4源代码</li>
-<li>OpenSceneGraph-Data-3.4.0，因为找不到3.6.4版本的数据</li>
-<li>3rdParty_VS2017_v141_x64_V11_full</li>
-</ul>
-<h2 id="配置OSG"><a href="#配置OSG" class="headerlink" title="配置OSG"></a>配置OSG</h2><p>打开cmake，选择osg源代码路径和osg源代码构建的路径，再点击“configure”按钮，选择Visual Studio 15 2017 Win64编译套件，配置osg如图2所示。</p>
-<p></p><p align="center">
-    <img src="images/cmake_config.jpg" width="100%" alt="cmake编译osg配置">
-</p><p></p>
-<center>图2 cmake编译osg配置</center>
-
-<p>需要配置的地方主要有：</p>
-<ul>
-<li>ACTUAL_3rdparty_DIR：配置第三方库的目录</li>
-<li>Build_OSG_EXAMPLES：选中即编译安装OSG的示例。</li>
-<li>CMAKE_INSTALL_PREFIX：设置OSG的安装目录，通常放到C盘以外的地方，防止因权限问题安装失败。</li>
-</ul>
-<p>配置完成后，再持续点击“configure”按钮，知道红色警告消失。然后点击“Generate”按钮生成vs2017工程。</p>
-<h2 id="编译OSG"><a href="#编译OSG" class="headerlink" title="编译OSG"></a>编译OSG</h2><p>在cmake中点击“Open Project”按钮，即使用 VS2017 打开 build 文件夹下的工程，点击：生成 -&gt; 批生成 -&gt; 生成 Debug 和 Release 版本的 All_BUILD 即可。</p>
-<h2 id="安装OSG"><a href="#安装OSG" class="headerlink" title="安装OSG"></a>安装OSG</h2><p>右击解决方案的 Install 项目，点击生成，然后 Debug 平台的库文件就开始安装了，同理选择 Release 平台再重复安装。之后就可以在安装路径中看到编译的库文件了，安装路径由变量CMAKE_INSTALL_PREFIX的配置决定。</p>
-<h2 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h2><p>OSG官方文档 <a href="http://www.openscenegraph.org/index.php/documentation/platform-specifics/windows/37-visual-studio" target="_blank" rel="noopener">Windows Compiling with Visual Studio</a>指出，OSG安装完成后需要配置如下环境变量：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">OSG_ROOT points to the base of the OSG file structure (the directory that contains include, src etc. subdirectories)</span><br><span class="line">OSG_BIN_PATH = %OSG_ROOT%\bin</span><br><span class="line">OSG_INCLUDE_PATH = %OSG_ROOT%\include</span><br><span class="line">OSG_LIB_PATH = %OSG_ROOT%\lib</span><br><span class="line">OSG_SAMPLES_PATH = %OSG_ROOT%\share\OpenSceneGraph\bin</span><br><span class="line">OSG_FILE_PATH = ???\OpenSceneGraph-Data-X.X</span><br><span class="line">OPENSCENEGRAPH_VERSION = 3.6.4 </span><br><span class="line">PATH 添加：%OSG_ROOT%\bin;%OSG_ROOT%\bin\osgPlugins-%OPENSCENEGRAPH_VERSION%; 这两个是配置 bin 和插件的路径。</span><br></pre></td></tr></table></figure>
-<h1 id="OSG测试"><a href="#OSG测试" class="headerlink" title="OSG测试"></a>OSG测试</h1><h2 id="命令行测试"><a href="#命令行测试" class="headerlink" title="命令行测试"></a>命令行测试</h2><p>打开 cmd 命令行，输入osgversion，输出当前 osg 版本说明环境变量配置成功了，再来看看能不能导入模型文件，接着键入：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">osgviewer cow.osg</span><br></pre></td></tr></table></figure>
-<p>这里可能会提示系统缺少 zlibd.dll，解决方法很简单：</p>
-<ul>
-<li>拷贝第三方库的 dll 目录下的 zlib.dll 和 zlibd.dll 到 OSG 安装目录的 bin 目录中。</li>
-<li>拷贝第三方库的 lib 目录下的 zlib.dll 和 zlibd.dll 到 OSG 安装目录的 lib 目录中。</li>
-</ul>
-<p>这时重新键入上面的命令，就可以看到一头经典的 3D 牛了，说明 OSG 安装成功了。</p>
-<h2 id="QT-配置-OSG-库路径"><a href="#QT-配置-OSG-库路径" class="headerlink" title="QT 配置 OSG 库路径"></a>QT 配置 OSG 库路径</h2><p>新建一个 QT 的控制台项目，编辑 .pro 文件，加入 OSG 库的路径：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../OpenSceneGraph/lib/ -lOpenThreads -losg -losgDB -losgUtil -losgGA  -losgViewer -losgText</span><br><span class="line">else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../OpenSceneGraph/lib/ -lOpenThreadsd -losgd -losgDBd -losgUtild -losgGAd -losgViewerd -losgTextd</span><br><span class="line">else:unix: LIBS += -L$$PWD/../../../OpenSceneGraph/lib/ -lOpenThreads -losg -losgDB -losgUtil -losgGA -losgViewer -losgText</span><br><span class="line"></span><br><span class="line">INCLUDEPATH += $$PWD/../../../OpenSceneGraph/include</span><br><span class="line">DEPENDPATH += $$PWD/../../../OpenSceneGraph/lib</span><br></pre></td></tr></table></figure>
-<p>main.cpp 如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;osgViewer/Viewer&gt;</span><br><span class="line">#include &lt;osgDB/ReadFile&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    osgViewer::Viewer viewer;</span><br><span class="line">    viewer.setSceneData(osgDB::readNodeFile(&quot;cow.osg&quot;));</span><br><span class="line">    return viewer.run();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>运行，出来一头 3D 牛，即配置成功。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://dlonng.com/posts/qt-osg" target="_blank" rel="noopener">QT - OSG 开发环境配置</a>,by 程序小哥.</li>
-<li><a href="https://huangwang.github.io/2019/10/07/Qt5%E9%85%8D%E7%BD%AE%E5%BC%80%E6%BA%90GSL%E6%95%B0%E5%AD%A6%E5%BA%93/">Qt5配置开源GSL数学库</a>,by jackhuang.</li>
-<li><a href="https://huangwang.github.io/2019/09/14/Ubuntu16-04%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85OSG/">Ubuntu16.04编译安装OSG</a>,by jackhuang.</li>
-<li><a href="http://www.openscenegraph.org/index.php/documentation/platform-specifics/windows/37-visual-studio" target="_blank" rel="noopener">Windows Compiling with Visual Studio</a>,by OpenSceneGraph.</li>
-<li><a href="https://huangwang.github.io/2018/06/21/Visual-Studio-Community-2017%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85/">Visual_Studio_Community_2017离线安装</a>,by jackhuang.</li>
-<li><a href="https://blog.csdn.net/u013745174/article/details/53691589" target="_blank" rel="noopener">Qt-Creator常见问题</a>,by XenonSec.</li>
-<li><a href="https://stackoverflow.com/questions/31457306/visual-studio-msb3073-error-exited-with-code-1" target="_blank" rel="noopener">Visual Studio: MSB3073 error exited with code 1</a>,by stackoverflow.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2314,7 +2268,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">195</span>
+                    <span class="site-state-item-count">196</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

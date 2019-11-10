@@ -360,7 +360,7 @@
                 
               
 
-              <time title="创建时间：2019-11-10 12:26:15 / 修改时间：17:51:31" itemprop="dateCreated datePublished" datetime="2019-11-10T12:26:15+08:00">2019-11-10</time>
+              <time title="创建时间：2019-11-10 12:26:15 / 修改时间：17:53:15" itemprop="dateCreated datePublished" datetime="2019-11-10T12:26:15+08:00">2019-11-10</time>
             
 
             
@@ -440,6 +440,7 @@
 <h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><p>迭代器用于在一个对象群集的元素上进行遍历动作。对象群集可能是容器，也可能是容器的一部分。</p>
 <p>迭代器的主要用途是为容器提供一组很小的公共接口。利用这个接口，某项操作可以行进至群集内的下一个元素。</p>
 <p>每种容器都提供了各自的迭代器。迭代器了解该容器的内部结构，所以能够正确行进。迭代器的接口和一般指针类似。</p>
+<p>迭代器的作用就是提供一个遍历容器内部所有元素的接口，因此迭代器的内部必须保存一个与容器相关联的指针，然后重载各种运算操作来方便遍历，其中最重要的就是∗运算符和-&gt;运算符，以及++，–等可能需要的运算符重载。</p>
 <p>根据迭代器的操作方式的不同，迭代器分为五种：</p>
 <ul>
 <li>输入迭代器</li>
@@ -448,6 +449,8 @@
 <li>双向迭代器</li>
 <li>随机访问迭代器</li>
 </ul>
+<p>迭代器的示例代码如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    vector&lt;int&gt; v;        // 定义一个vector容器</span><br><span class="line"></span><br><span class="line">    v.push_back(1);        // 向容器中添加3个元素</span><br><span class="line">    v.push_back(2);</span><br><span class="line">    v.push_back(3);</span><br><span class="line"></span><br><span class="line">    // 遍历向量的元素</span><br><span class="line">    vector&lt;int&gt;::iterator b = v.begin();        // 指向容器的第一个元素</span><br><span class="line">    vector&lt;int&gt;::iterator e = v.end();            // 指向容器尾元素的下一个位置</span><br><span class="line"></span><br><span class="line">    // C++11新标准的写法, auto关键字为类型推断，由编译器自动完成</span><br><span class="line">    // auto b = v.begin();</span><br><span class="line">    // auto e = v.end();</span><br><span class="line"></span><br><span class="line">    for (vector&lt;int&gt;::iterator iter = b; iter != e; ++iter)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; *iter &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>算法用来处理群集内的元素，可以出于不同目的搜寻、排序、修改、使用那些元素。所有容器的迭代器都提供一致的接口，通过迭代器的协助，算法程序可以用于任意容器。</p>
 <p>STL 的一个特性是将数据和操作分离。数据由容器类别加以管理，操作则由可定制的算法定义。迭代器在两者之间充当“粘合剂”，以使算法可以和容器交互运作。</p>
 <p>STL 的另一个特性即组件可以针对任意型别运作。“标准模板库”这一名称即表示“可接受任意型别”的模板，并且这些型别均可执行必要操作。</p>

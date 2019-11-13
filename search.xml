@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Web应用压力测试方法]]></title>
+    <url>%2F2019%2F11%2F12%2FWeb%E5%BA%94%E7%94%A8%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
     <title><![CDATA[Axios请求超时处理方法]]></title>
     <url>%2F2019%2F11%2F11%2FAxios%E8%AF%B7%E6%B1%82%E8%B6%85%E6%97%B6%E5%A4%84%E7%90%86%E6%96%B9%E6%B3%95%2F</url>
     <content type="text"><![CDATA[Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js 中。Vue2官方推荐使用Axios执行HTTP请求和处理HTTP响应。Axios具有如下特征： 从浏览器中创建 XMLHttpRequests 从 node.js 创建 http 请求 支持 Promise API 拦截请求和响应 转换请求数据和响应数据 取消请求 自动转换 JSON 数据 客户端支持防御 XSRF 下面介绍使用Axios的拦截功能实现Axios超时错误的统一处理。 Axios基本用法执行 GET 请求： 123456789101112131415161718192021// 为给定 ID 的 user 创建请求axios.get(&apos;/user?ID=12345&apos;) .then(function (response) &#123; console.log(response); &#125;) .catch(function (error) &#123; console.log(error); &#125;);// 可选地，上面的请求可以这样做axios.get(&apos;/user&apos;, &#123; params: &#123; ID: 12345 &#125; &#125;) .then(function (response) &#123; console.log(response); &#125;) .catch(function (error) &#123; console.log(error); &#125;); 执行 POST 请求: 12345678910axios.post(&apos;/user&apos;, &#123; firstName: &apos;Fred&apos;, lastName: &apos;Flintstone&apos; &#125;) .then(function (response) &#123; console.log(response); &#125;) .catch(function (error) &#123; console.log(error); &#125;); 执行多个并发请求: 123456789101112function getUserAccount() &#123; return axios.get(&apos;/user/12345&apos;);&#125;function getUserPermissions() &#123; return axios.get(&apos;/user/12345/permissions&apos;);&#125;axios.all([getUserAccount(), getUserPermissions()]) .then(axios.spread(function (acct, perms) &#123; // 两个请求现在都执行完成 &#125;)); Axios拦截器自定义 axios 实例添加拦截器，在请求或响应被 then 或 catch 处理前拦截它们。 123456789101112131415161718192021222324// create an axios instanceconst service = axios.create(&#123; baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url // withCredentials: true, // send cookies when cross-domain requests timeout: 5000 // request timeout&#125;)// 添加请求拦截器service.interceptors.request.use(function (config) &#123; // 在发送请求之前做些什么 return config; &#125;, function (error) &#123; // 对请求错误做些什么 return Promise.reject(error); &#125;);// 添加响应拦截器service.interceptors.response.use(function (response) &#123; // 对响应数据做点什么 return response; &#125;, function (error) &#123; // 对响应错误做点什么 return Promise.reject(error); &#125;); 拦截timeout错误在Axios响应拦截器中，处理timeout错误，代码如下： 1234567891011service.interceptors.response.use(function (response) &#123; // 对响应数据做点什么 return response; &#125;, function (error) &#123; // 对响应错误做点什么 if(error.message.includes(&apos;timeout&apos;))&#123; // 判断请求异常信息中是否含有超时timeout字符串 console.log(&quot;错误回调&quot;, error); alert(&quot;网络超时&quot;); &#125; return Promise.reject(error); &#125;); 参考链接 Axios使用说明,by yunye. axios超时timeout拦截,by 亲爱的混蛋.]]></content>
@@ -76,7 +81,7 @@
   <entry>
     <title><![CDATA[Qt集成OSG开发]]></title>
     <url>%2F2019%2F10%2F13%2FQt%E9%9B%86%E6%88%90OSG%E5%BC%80%E5%8F%91%2F</url>
-    <content type="text"><![CDATA[参考链接 OSG嵌入QT的简明总结,by charlee44. OSG和Qt结合,by 先锋小牛. OSG中使用Qt做界面,by 很菜但努力. 第1课时《Qt osgEarth 编程入门》,by 汀兰左岸.]]></content>
+    <content type="text"><![CDATA[Qt集成OSG开发是指使用Qt开发图形用户界面，封装OSG为Qt的Widget，然后由OSG负责三维展示的解决方案。具体方法如下： QT+OSG开发环境配置具体配置过程请参考Windows下QT与OSG开发环境配置。 封装OSG为Widget封装OSG为Widget可参考osgQt。osgQt的编译链接与OSG类似。 osgQt仅将OSG封装成简单的Widget，还需研究将OSG封装成自定义控件，从而在QT Designer里方便使用。 参考链接 OSG嵌入QT的简明总结,by charlee44. OSG和Qt结合,by 先锋小牛. OSG中使用Qt做界面,by 很菜但努力. 第1课时《Qt osgEarth 编程入门》,by 汀兰左岸. QT pro文件解析, by 博弈right. Windows下QT与OSG开发环境配置,by jackhuang. window下查看dll, lib文件是32位还是64位,by 剑西楼. 使用VS工具查看dll是32位还是64位,by 代码运输员. 编写Qt Designer自定义控件（一）——如何创建并使用Qt自定义控件,by 深蓝静音. Qt自定义控件的创建与初步使用（一）之自定义控件的创建步骤,by 穿过记忆的河流. QT学习笔记（5）：自定义控件,by xuzheng11332.]]></content>
       <tags>
         <tag>笔记本</tag>
         <tag>飞行仿真</tag>

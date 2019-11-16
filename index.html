@@ -314,6 +314,340 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/16/CMake使用入门教程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/11/16/CMake使用入门教程/" itemprop="url">
+                  CMake使用入门教程
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-16 22:49:15 / 修改时间：23:21:32" itemprop="dateCreated datePublished" datetime="2019-11-16T22:49:15+08:00">2019-11-16</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>近几年美国对中国的科技封杀十分严重，说不定哪天Windows操作系统就不让我们用了。因此，在构建C/C++项目时应考虑跨平台，哪天不让用Windows了，可以请容易的将项目移植到Linux上。不同系统平台有不同的C/C++编译器，不同编译器有不同的构建规则，针对每个平台的不同编译器编写构建规则十分复杂，幸好有CMake可简化构建规则的编写，实现一次编写，不同平台适用。下面简单介绍CMake的使用。</p>
+<h1 id="CMake简介"><a href="#CMake简介" class="headerlink" title="CMake简介"></a>CMake简介</h1><p>代码变成可执行文件，叫做编译（compile）；先编译这个，还是先编译那个（即编译的安排），叫做构建（build）。</p>
+<p>Make是最常用的构建工具，诞生于1977年，主要用于C语言的项目。但是实际上 ，任何只要某个文件有变化，就要重新构建的项目，都可以用Make构建。</p>
+<p>Make工具有很多，例如 GNU Make ，QT 的 qmake ，微软的 MS nmake，BSD Make（pmake），Makepp，等等。这些 Make 工具遵循着不同的规范和标准，所执行的 Makefile 格式也千差万别。这样就带来了一个严峻的问题：如果软件想跨平台，必须要保证能够在不同平台编译。而如果使用上面的 Make 工具，就得为每一种标准写一次 Makefile ，这将是一件让人抓狂的工作。</p>
+<p>CMake就是针对上面问题所设计的工具：它首先允许开发者编写一种平台无关的 CMakeList.txt 文件来定制整个编译流程，然后再根据目标用户的平台进一步生成所需的本地化 Makefile 和工程文件，如 Unix 的 Makefile 或 Windows 的 Visual Studio 工程。从而做到“Write once, run everywhere”。显然，CMake 是一个比上述几种 make 更高级的编译配置工具。一些使用 CMake 作为项目架构系统的知名开源项目有 VTK、ITK、KDE、OpenCV、OSG 等。</p>
+<h1 id="CMake教程入门"><a href="#CMake教程入门" class="headerlink" title="CMake教程入门"></a>CMake教程入门</h1><h2 id="给工程起个名字"><a href="#给工程起个名字" class="headerlink" title="给工程起个名字"></a>给工程起个名字</h2><p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">project(&lt;PROJECT-NAME&gt; [LANGUAGES] [&lt;language-name&gt;...])</span><br></pre></td></tr></table></figure>
+<p>该指令定义工程名称。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">project(UtilTool)</span><br></pre></td></tr></table></figure>
+<h2 id="添加头文件目录INCLUDE-DIRECTORIES"><a href="#添加头文件目录INCLUDE-DIRECTORIES" class="headerlink" title="添加头文件目录INCLUDE_DIRECTORIES"></a>添加头文件目录INCLUDE_DIRECTORIES</h2><p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">include_directories([AFTER|BEFORE] [SYSTEM] dir1 [dir2 ...])</span><br></pre></td></tr></table></figure>
+<p>它相当于g++选项中的-I参数的作用，也相当于环境变量中增加路径到CPLUS_INCLUDE_PATH变量的作用。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">include_directories($&#123;CMAKE_CURRENT_LIST_DIR&#125;/include)</span><br></pre></td></tr></table></figure>
+<h2 id="添加需要链接的库文件目录LINK-DIRECTORIES"><a href="#添加需要链接的库文件目录LINK-DIRECTORIES" class="headerlink" title="添加需要链接的库文件目录LINK_DIRECTORIES"></a>添加需要链接的库文件目录LINK_DIRECTORIES</h2><p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">link_directories(directory1 directory2 ...)</span><br></pre></td></tr></table></figure>
+<p>它相当于g++命令的-L选项的作用，也相当于环境变量中增加LD_LIBRARY_PATH的路径的作用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">link_directories($&#123;CMAKE_CURRENT_LIST_DIR&#125;/lib)</span><br></pre></td></tr></table></figure>
+<h2 id="设置要链接的库文件的名称TARGET-LINK-LIBRARIES"><a href="#设置要链接的库文件的名称TARGET-LINK-LIBRARIES" class="headerlink" title="设置要链接的库文件的名称TARGET_LINK_LIBRARIES"></a>设置要链接的库文件的名称TARGET_LINK_LIBRARIES</h2><p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">target_link_libraries(&lt;target&gt; [item1 [item2 [...]]]</span><br><span class="line">                      [[debug|optimized|general] &lt;item&gt;] ...)</span><br></pre></td></tr></table></figure>
+<p>该指令的作用为将目标文件与库文件进行链接。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TARGET_LINK_LIBRARIES(utiltool-example utiltool)</span><br></pre></td></tr></table></figure>
+<h2 id="为工程生成目标文件"><a href="#为工程生成目标文件" class="headerlink" title="为工程生成目标文件"></a>为工程生成目标文件</h2><p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">add_executable(&lt;name&gt; [WIN32] [MACOSX_BUNDLE]</span><br><span class="line">               [EXCLUDE_FROM_ALL]</span><br><span class="line">               source1 [source2 ...])</span><br></pre></td></tr></table></figure>
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ADD_EXECUTABLE(utiltool-example examples/ConverterTest.cpp)</span><br></pre></td></tr></table></figure>
+<h2 id="为工程生成共享库"><a href="#为工程生成共享库" class="headerlink" title="为工程生成共享库"></a>为工程生成共享库</h2><p>语法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">add_library(&lt;name&gt; [STATIC | SHARED | MODULE]</span><br><span class="line">            [EXCLUDE_FROM_ALL]</span><br><span class="line">            [source1] [source2] [...])</span><br></pre></td></tr></table></figure>
+<p>该指令的主要作用就是将指定的源文件生成链接文件，然后添加到工程中去。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ADD_LIBRARY(utiltool SHARED $&#123;UTILTOOL_SOURCES&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="为工程制作简单的安装脚本"><a href="#为工程制作简单的安装脚本" class="headerlink" title="为工程制作简单的安装脚本"></a>为工程制作简单的安装脚本</h2><p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">install(TARGETS targets... [EXPORT &lt;export-name&gt;]</span><br><span class="line">          [[ARCHIVE|LIBRARY|RUNTIME|FRAMEWORK|BUNDLE|</span><br><span class="line">            PRIVATE_HEADER|PUBLIC_HEADER|RESOURCE]</span><br><span class="line">           [DESTINATION &lt;dir&gt;]</span><br><span class="line">           [PERMISSIONS permissions...]</span><br><span class="line">           [CONFIGURATIONS [Debug|Release|...]]</span><br><span class="line">           [COMPONENT &lt;component&gt;]</span><br><span class="line">           [OPTIONAL] [NAMELINK_ONLY|NAMELINK_SKIP]</span><br><span class="line">          ] [...])</span><br></pre></td></tr></table></figure>
+<p>该命令为一个工程生成安装规则。TARGETS格式的install命令规定了安装工程中的目标（targets）的规则。有5中可以被安装的目标文件：ARCHIVE，LIBRARY，RUNTIME，FRAMEWORK，和BUNDLE。静态链接的库文件总是被当做ARCHIVE目标。模块库总是被当做LIBRARY目标。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">install(TARGETS utiltool </span><br><span class="line">        RUNTIME DESTINATION bin</span><br><span class="line">        ARCHIVE DESTINATION lib </span><br><span class="line">        LIBRARY DESTINATION lib)</span><br><span class="line">install(FILES $&#123;UTILTOOL_HEADERS&#125; DESTINATION include)</span><br></pre></td></tr></table></figure>
+<h2 id="为工程设置变量"><a href="#为工程设置变量" class="headerlink" title="为工程设置变量"></a>为工程设置变量</h2><h1 id="完整简单示例"><a href="#完整简单示例" class="headerlink" title="完整简单示例"></a>完整简单示例</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"># CMakeList.txt: UtilTool 的 CMake 项目，在此处包括源代码并定义</span><br><span class="line"># 项目特定的逻辑。</span><br><span class="line">#</span><br><span class="line">cmake_minimum_required (VERSION 3.8)</span><br><span class="line"></span><br><span class="line">project(UtilTool)</span><br><span class="line"></span><br><span class="line"># set up versioning.</span><br><span class="line">set(BUILD_MAJOR &quot;1&quot;)</span><br><span class="line">set(BUILD_MINOR &quot;0&quot;)</span><br><span class="line">set(BUILD_VERSION &quot;0&quot;)</span><br><span class="line">set(BUILD_VERSION $&#123;BUILD_MAJOR&#125;.$&#123;BUILD_MINOR&#125;.$&#123;BUILD_VERSION&#125;)</span><br><span class="line"></span><br><span class="line">include_directories($&#123;CMAKE_CURRENT_LIST_DIR&#125;/include)</span><br><span class="line"></span><br><span class="line">link_directories($&#123;CMAKE_CURRENT_LIST_DIR&#125;/lib)</span><br><span class="line"></span><br><span class="line">link_libraries(gsl)</span><br><span class="line"></span><br><span class="line"># OS and compiler checks. </span><br><span class="line">if(UNIX)</span><br><span class="line">    # linux / normal unix</span><br><span class="line">    add_definitions(-D_LINUX)</span><br><span class="line">    if(CYGWIN)</span><br><span class="line">        # Special Cygwin stuff here</span><br><span class="line">    elseif(APPLE)</span><br><span class="line">        # Special Apple stuff here</span><br><span class="line">        remove_definitions(-D_LINUX)</span><br><span class="line">        add_definitions(-D_DARWIN)</span><br><span class="line">    endif()</span><br><span class="line">elseif(WIN32)</span><br><span class="line">    add_definitions(-DWIN32)</span><br><span class="line">    add_definitions(-D UtilTool_EXPORTS)</span><br><span class="line">    if(MINGW)</span><br><span class="line">        # Special MINGW stuff here</span><br><span class="line">    elseif(MSVC)</span><br><span class="line">        # Special MSVC stuff here</span><br><span class="line">        add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)</span><br><span class="line">    else()</span><br><span class="line">        # No idea what it is, but there&apos;s a good chance it&apos;s too weird.</span><br><span class="line">        MESSAGE( FATAL_ERROR &quot;Using unknown WIN32 compiler... NOT. Please add to build system.&quot; )</span><br><span class="line">    endif()</span><br><span class="line">endif()</span><br><span class="line"></span><br><span class="line">SET(UTILTOOL_HEADERS</span><br><span class="line">src/GeodeticConverter.h</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">SET(UTILTOOL_SOURCES</span><br><span class="line">src/GeodeticConverter.cpp</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"># mark headers as headers...</span><br><span class="line">SET_SOURCE_FILES_PROPERTIES( $&#123;UTILTOOL_HEADERS&#125; PROPERTIES HEADER_FILE_ONLY TRUE )</span><br><span class="line"># append to sources so that dependency checks work on headers</span><br><span class="line">LIST(APPEND UTILTOOL_SOURCES $&#123;UTILTOOL_HEADERS&#125;)</span><br><span class="line"></span><br><span class="line">OPTION(UTILTOOL_SHARED &quot;Build utiltool lib as shared.&quot; ON)</span><br><span class="line">OPTION(UTILTOOL_DEP_ONLY &quot;Build for use inside other CMake projects as dependency.&quot; OFF)</span><br><span class="line"></span><br><span class="line"># 将源代码添加到此项目的共享库中。</span><br><span class="line">if(UTILTOOL_SHARED)</span><br><span class="line">    ADD_LIBRARY(utiltool SHARED $&#123;UTILTOOL_SOURCES&#125;)</span><br><span class="line">endif()</span><br><span class="line"></span><br><span class="line"># install into configured prefix</span><br><span class="line">if(NOT UTILTOOL_DEP_ONLY)</span><br><span class="line">    install(TARGETS utiltool </span><br><span class="line">        RUNTIME DESTINATION bin</span><br><span class="line">        ARCHIVE DESTINATION lib </span><br><span class="line">        LIBRARY DESTINATION lib)</span><br><span class="line">    install(FILES $&#123;UTILTOOL_HEADERS&#125; DESTINATION include)</span><br><span class="line">else()</span><br><span class="line"></span><br><span class="line">endif()</span><br><span class="line"></span><br><span class="line"># TODO: 如有需要，请添加测试并安装目标。</span><br><span class="line">OPTION(UTILTOOL_EXAMPLES &quot;Build the examples&quot; ON)</span><br><span class="line"></span><br><span class="line">if(UTILTOOL_EXAMPLES)</span><br><span class="line">    ADD_EXECUTABLE(utiltool-example examples/ConverterTest.cpp)</span><br><span class="line">    TARGET_LINK_LIBRARIES(utiltool-example utiltool)</span><br><span class="line">endif()</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://huangwang.github.io/2019/03/20/Linux%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85%E6%B5%8B%E8%AF%95JSBSim/">Linux平台编译安装测试JSBSim</a>,by jackhuang.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/59450618" target="_blank" rel="noopener">干货：构建C/C++良好的工程结构</a>,by Froser.</li>
+<li><a href="https://www.cnblogs.com/coderfenghc/archive/2012/08/12/2627561.html" target="_blank" rel="noopener">CMake 手册详解（十九）install指令</a>,by SirDigit.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/15/CPlusCPlus常用库简介/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/11/15/CPlusCPlus常用库简介/" itemprop="url">
+                  C++常用库简介
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-15 21:48:55" itemprop="dateCreated datePublished" datetime="2019-11-15T21:48:55+08:00">2019-11-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-11-16 00:23:05" itemprop="dateModified" datetime="2019-11-16T00:23:05+08:00">2019-11-16</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.jianshu.com/p/2ba19ad64211" target="_blank" rel="noopener">C++数学库</a>,by xigua1234.</li>
+<li><a href="https://blog.csdn.net/SSYITwin/article/details/83016844" target="_blank" rel="noopener">c++中关于M_PI，M_E的解释和使用，以及参考值</a>,by SYITwin.</li>
+<li></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/12/Web应用压力测试方法/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1713,7 +2047,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-10-21 12:58:33" itemprop="dateModified" datetime="2019-10-21T12:58:33+08:00">2019-10-21</time>
+                <time title="修改时间：2019-11-15 11:47:04" itemprop="dateModified" datetime="2019-11-15T11:47:04+08:00">2019-11-15</time>
               
             
           </span>
@@ -1855,353 +2189,8 @@
 <li><a href="https://huangwang.github.io/2018/06/13/Cesium%E5%8D%AB%E6%98%9F%E5%9C%B0%E5%9B%BE%E5%92%8C%E9%AB%98%E7%A8%8B%E6%95%B0%E6%8D%AE%E5%88%87%E7%89%87%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/">Cesium卫星地图和高程数据切片经验总结</a>,by jackhuang.</li>
 <li><a href="https://blog.seisman.info/srtm/" target="_blank" rel="noopener">高精度地形网格数据 SRTM</a>,by seisman.</li>
 <li><a href="https://blog.csdn.net/qq_36377037/article/details/86300330" target="_blank" rel="noopener">工具gdal2srtmtiles的安装使用</a>,by 四域公子.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/20/GDAL处理地图栅格Tif黑边的方法/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/20/GDAL处理地图栅格Tif黑边的方法/" itemprop="url">
-                  GDAL处理地图栅格Tif黑边的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-10-20 09:32:28 / 修改时间：12:34:43" itemprop="dateCreated datePublished" datetime="2019-10-20T09:32:28+08:00">2019-10-20</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>通过地图下载软件LocaSpaceViewer下载卫星影像拼接成Tif文件后，会出现黑边问题。此外在Cesium中浏览瓦片地图会出现蓝色区域。下面即分析这两个问题出现的原因和解决方法。</p>
-<h1 id="下载方法"><a href="#下载方法" class="headerlink" title="下载方法"></a>下载方法</h1><p>LocaSpaceViewer中可选择行政区域下载卫星影像，这种方式拼接后的tif文件必然会出现黑边，如图1所示。</p>
-<p></p><p align="center">
-    <img src="images/black1.jpg" width="60%" alt="黑边问题1">
-</p><p></p>
-<center>图1 黑边问题1</center>
-
-<p>推荐在LocaSpaceViewer中以瓦片矩形区域下载卫星影像。具体方法为：</p>
-<ol>
-<li>在该链接<a href="https://www.maptiler.com/google-maps-coordinates-tile-bounds-projection/" target="_blank" rel="noopener">google-maps-coordinates-tile-bounds-projection</a>处查询瓦片的经纬度。</li>
-<li>在LocaSpaceViewer中绘制矩形，并将矩形顶点的经纬度设置为待下载瓦片的经纬度。</li>
-<li>在LocaSpaceViewer下载指定瓦片。</li>
-</ol>
-<p>该方法也可能会出现黑边，如图2所示。</p>
-<p></p><p align="center">
-    <img src="images/black2.jpg" width="60%" alt="黑边问题2">
-</p><p></p>
-<center>图1 黑边问题2</center>
-
-<p>此外，将tif文件转换成标准瓦片后，在Cesium中浏览瓦片地图会出现蓝色区域，如图3所示。</p>
-<p></p><p align="center">
-    <img src="images/blue.jpg" width="90%" alt="蓝边问题">
-</p><p></p>
-<center>图3 蓝边问题</center>
-
-<h1 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h1><p>对问题1，下载不规则边界的地图时，地图下载软件不会自动填充白色或变成透明，所以导致黑边问题1的产生。</p>
-<p>对问题2，产生原因目前不清楚，但因黑边的产生很有规则，所以解决方法会比较简单。</p>
-<p>对问题3，产生原因是蓝边对应的瓦片不存在。</p>
-<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>对问题1，可采用链接<a href="http://blog.locaspace.cn:81/?p=971" target="_blank" rel="noopener">用LSV下载的高清地图去黑边教程</a>指明的方法去除黑边，但使用如下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdal2tiles.py &lt;image&gt; &lt;tilesdir&gt;</span><br></pre></td></tr></table></figure>
-<p>生成瓦片时会报错，因此建议采用瓦片矩形区域下载卫星影像，不要下载行政区域卫星地图。</p>
-<p>对问题2，使用如下命令去除黑边：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 查看tif文件元数据信息</span><br><span class="line">gdalinfo 10.tif</span><br><span class="line">// 根据黑边位置使用如下命令去除</span><br><span class="line">gdal_translate -srcwin 0 0 4096 4096 10.tif test.tif</span><br></pre></td></tr></table></figure>
-<p>对问题3，使用LocaSpaceViewer下载指定级别指定区域的卫星影像即可。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://huangwang.github.io/2018/06/13/Cesium%E5%8D%AB%E6%98%9F%E5%9C%B0%E5%9B%BE%E5%92%8C%E9%AB%98%E7%A8%8B%E6%95%B0%E6%8D%AE%E5%88%87%E7%89%87%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/">Cesium卫星地图和高程数据切片经验总结</a>,by jackhuang.</li>
-<li><a href="http://blog.locaspace.cn:81/?p=971" target="_blank" rel="noopener">用LSV下载的高清地图去黑边教程</a>,by LocaSpaceViewer.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/13/Qt集成OSG开发/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/13/Qt集成OSG开发/" itemprop="url">
-                  Qt集成OSG开发
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-10-13 22:07:38" itemprop="dateCreated datePublished" datetime="2019-10-13T22:07:38+08:00">2019-10-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-11-13 16:02:54" itemprop="dateModified" datetime="2019-11-13T16:02:54+08:00">2019-11-13</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Qt集成OSG开发是指使用Qt开发图形用户界面，封装OSG为Qt的Widget，然后由OSG负责三维展示的解决方案。具体方法如下：</p>
-<h1 id="QT-OSG开发环境配置"><a href="#QT-OSG开发环境配置" class="headerlink" title="QT+OSG开发环境配置"></a>QT+OSG开发环境配置</h1><p>具体配置过程请参考<a href="https://huangwang.github.io/2019/10/10/Windows%E4%B8%8BQT%E4%B8%8EOSG%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">Windows下QT与OSG开发环境配置</a>。</p>
-<h1 id="封装OSG为Widget"><a href="#封装OSG为Widget" class="headerlink" title="封装OSG为Widget"></a>封装OSG为Widget</h1><p>封装OSG为Widget可参考<a href="https://github.com/openscenegraph/osgQt" target="_blank" rel="noopener">osgQt</a>。osgQt的编译链接与OSG类似。</p>
-<p>osgQt仅将OSG封装成简单的Widget，还需研究将OSG封装成自定义控件，从而在QT Designer里方便使用。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.w3xue.com/exp/article/20196/40679.html" target="_blank" rel="noopener">OSG嵌入QT的简明总结</a>,by charlee44.</li>
-<li><a href="https://blog.csdn.net/niu2212035673/article/details/72802055" target="_blank" rel="noopener">OSG和Qt结合</a>,by 先锋小牛.</li>
-<li><a href="https://blog.csdn.net/xpg4321/article/details/72867596" target="_blank" rel="noopener">OSG中使用Qt做界面</a>,by 很菜但努力.</li>
-<li><a href="https://blog.csdn.net/u013207966/article/details/51531023" target="_blank" rel="noopener">第1课时《Qt osgEarth 编程入门》</a>,by 汀兰左岸.</li>
-<li><a href="https://www.cnblogs.com/boright88/p/6264642.html" target="_blank" rel="noopener">QT pro文件解析</a>, by 博弈right.</li>
-<li><a href="https://huangwang.github.io/2019/10/10/Windows%E4%B8%8BQT%E4%B8%8EOSG%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">Windows下QT与OSG开发环境配置</a>,by jackhuang.</li>
-<li><a href="https://blog.csdn.net/q_l_s/article/details/52458240" target="_blank" rel="noopener">window下查看dll, lib文件是32位还是64位</a>,by 剑西楼.</li>
-<li><a href="https://blog.csdn.net/only_1/article/details/80760495" target="_blank" rel="noopener">使用VS工具查看dll是32位还是64位</a>,by 代码运输员.</li>
-<li><a href="https://blog.csdn.net/panshun888/article/details/51923927" target="_blank" rel="noopener">Qt自定义控件的创建与初步使用（一）之自定义控件的创建步骤</a>,by 穿过记忆的河流.</li>
-<li><a href="https://blog.csdn.net/panshun888/article/details/52074400" target="_blank" rel="noopener">Qt自定义控件的创建与初步使用（二）之图片上绘制文字、箭头、曲线</a>,by 穿过记忆的河流.</li>
-<li><a href="https://my.oschina.net/jannn/blog/466994" target="_blank" rel="noopener">QT自定义控件(生成和使用)</a>,by jannn.</li>
-<li><a href="https://blog.csdn.net/xuzheng11332/article/details/61618955" target="_blank" rel="noopener">QT学习笔记（5）：自定义控件</a>,by xuzheng11332.</li>
-<li><a href="https://blog.csdn.net/AleutianSix/article/details/88288721" target="_blank" rel="noopener">QT自定义控件在QTCreator中不显示问题</a>,by AleutianSix.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%9C%B0%E7%90%83%E6%A4%AD%E7%90%83" target="_blank" rel="noopener">地球椭球</a>,by wikipedia.</li>
+<li><a href="http://qiancy.com/2017/01/07/datum-spheroid-parameters-equation/" target="_blank" rel="noopener">椭球体的重要参数和公式</a>,by cyqian.</li>
 </ol>
 
           
@@ -2245,7 +2234,7 @@
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -2288,7 +2277,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">199</span>
+                    <span class="site-state-item-count">201</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

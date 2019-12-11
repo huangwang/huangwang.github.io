@@ -314,6 +314,811 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/23/RESTful-API设计及测试入门/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/23/RESTful-API设计及测试入门/" itemprop="url">
+                  RESTful_API设计及测试入门
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-23 17:01:34" itemprop="dateCreated datePublished" datetime="2019-07-23T17:01:34+08:00">2019-07-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-07-24 22:27:50" itemprop="dateModified" datetime="2019-07-24T22:27:50+08:00">2019-07-24</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>RESTful API是目前比较成熟的一套互联网应用程序的API设计理论，提供了一种统一的机制，方便不同的前端设备与后端进行通信，以应对前端设备层出不穷（手机、平板、桌面电脑、其他专用设备……）的状况。同时对开发人员而言，提供了一种规范，方便协作开发，降低了API接口设计的难度。</p>
+<h1 id="RESTful-API设计规范"><a href="#RESTful-API设计规范" class="headerlink" title="RESTful API设计规范"></a>RESTful API设计规范</h1><p>请参考阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html" target="_blank" rel="noopener">RESTful API 设计指南</a>。</p>
+<h1 id="RESTful-API的测试方法"><a href="#RESTful-API的测试方法" class="headerlink" title="RESTful API的测试方法"></a>RESTful API的测试方法</h1><p>RESTful API设计好了之后，需要测试其可用性。常用的API测试工具有Postman。简单入门可参考<a href="https://www.cnblogs.com/mafly/p/postman.html" target="_blank" rel="noopener">Postman 安装及使用入门教程</a>。</p>
+<p>Postman中使用HTTP POST方法测试RESTful API时，需要了解POST提交数据的方法。</p>
+<h2 id="POST提交数据的方法"><a href="#POST提交数据的方法" class="headerlink" title="POST提交数据的方法"></a>POST提交数据的方法</h2><p>POST 几种请求主要包括 application/x-www-form-urlencoded、 multipart/form-data、 application/json、text/xml 四种的方法。</p>
+<p>服务端通常是根据请求头（Request Headers）中的 Content-Type 字段来获知请求中的消息主体是用何种方式编码，再对主体进行解析。<br>POST 提交数据方案，包含了 Content-Type 和消息主体编码方式两部分。</p>
+<ul>
+<li>application/x-www-form-urlencoded (默认常用)</li>
+</ul>
+<p>这是最常见的 POST 提交数据的方式。浏览器的原生表单，如果不设置Content-type属性，就会默认该方式提交数据，并且提交的数据按照 key1=val1&amp;key2=val2 的方式进行编码，key 和 val 都进行了 URL 转码。</p>
+<ul>
+<li>multipart/form-data</li>
+</ul>
+<p>这是另一个常见的 POST 数据提交的方式。我们使用表单上传文件时，必须让表单的enctyped等于 multipart/form-data。</p>
+<ul>
+<li>application/json</li>
+</ul>
+<p>application/json 这种方案，可以方便的提交复杂的结构化数据，这种POST提交方式越来越多，用来告诉服务端消息主体是序列化后的 JSON 字符串。</p>
+<p>由于JSON规范的流行，出了低版本的IE之外，各大浏览器都支持 JSON.stringify 将JSON数据字符串化（编码）传到服务器，还可以通过  JSON.parse 将字符串转化（解码）为JSON数据供前端渲染或者其他处理。</p>
+<ul>
+<li>text/xml</li>
+</ul>
+<p>现在基本不用。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html" target="_blank" rel="noopener">RESTful API 设计指南</a>,by 阮一峰.</li>
+<li><a href="https://juejin.im/entry/59e460c951882542f578f2f0" target="_blank" rel="noopener">RESTful API 设计最佳实践</a>,by Philipp Hauer.</li>
+<li><a href="https://github.com/aisuhua/restful-api-design-references" target="_blank" rel="noopener">restful-api-design-references</a>,by aisuhua.</li>
+<li><a href="https://learning.getpostman.com/docs/postman/launching_postman/installation_and_updates/" target="_blank" rel="noopener">Postman Doc</a>,by postman homepage.</li>
+<li><a href="https://www.cnblogs.com/mafly/p/postman.html" target="_blank" rel="noopener">Postman 安装及使用入门教程</a>,by Mafly.</li>
+<li><a href="https://imququ.com/post/four-ways-to-post-data-in-http.html" target="_blank" rel="noopener">四种常见的 POST 提交数据方式</a>,by Jerry Qu.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/22/HTML-DOM文档对象模型简介/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/22/HTML-DOM文档对象模型简介/" itemprop="url">
+                  HTML_DOM文档对象模型简介
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-22 21:21:52" itemprop="dateCreated datePublished" datetime="2019-07-22T21:21:52+08:00">2019-07-22</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-07-23 08:18:02" itemprop="dateModified" datetime="2019-07-23T08:18:02+08:00">2019-07-23</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近要写一些八股文，上网一搜，好多范例，正想下载下来借鉴以下，可惜不让复制粘贴。不过难不倒我，直接使用文档对象模型(Document Object Model，DOM)提供编程接口，将整篇文章下来。</p>
+<h1 id="DOM概述"><a href="#DOM概述" class="headerlink" title="DOM概述"></a>DOM概述</h1><h2 id="DOM简介"><a href="#DOM简介" class="headerlink" title="DOM简介"></a>DOM简介</h2><p>文档对象模型 (DOM) 是HTML和XML文档的编程接口。它提供了对文档的结构化的表述，并定义了一种方式可以使从程序中对该结构进行访问，从而改变文档的结构，样式和内容。DOM 将文档解析为一个由节点和对象（包含属性和方法的对象）组成的结构集合。简言之，它会将web页面和脚本或程序语言连接起来。</p>
+<p>一个web页面是一个文档。这个文档可以在浏览器窗口或作为HTML源码显示出来。但上述两个情况中都是同一份文档。文档对象模型（DOM）提供了对同一份文档的另一种表现，存储和操作的方式。 DOM是web页面的完全的面向对象表述，它能够使用如 JavaScript等脚本语言进行修改。</p>
+<h2 id="DOM-和-JavaScript"><a href="#DOM-和-JavaScript" class="headerlink" title="DOM 和 JavaScript"></a>DOM 和 JavaScript</h2><p>开始的时候，JavaScript和DOM是交织在一起的，但它们最终演变成了两个独立的实体。JavaScript可以访问和操作存储在DOM中的内容，因此我们可以写成这个近似的等式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">API (web 或 XML 页面) = DOM + JS (脚本语言)</span><br></pre></td></tr></table></figure>
+<p>DOM 被设计成与特定编程语言相独立，使文档的结构化表述可以通过单一，一致的API获得。尽管通常使用JavaScript操作DOM， 但DOM 也可以使用其他的语言来实现。</p>
+<h2 id="DOM访问"><a href="#DOM访问" class="headerlink" title="DOM访问"></a>DOM访问</h2><p>在使用DOM时，您不需要做任何其他特殊的操作。不同的浏览器都有对DOM不同的实现， 这些实现对当前的DOM标准而言，都会呈现出不同程度的一致性，每个web浏览器都会使用一些文档对象模型，从而使页面可以被脚本语言访问。</p>
+<p>当您在创建一个脚本时-无论是使用内嵌 \<script\>元素或者使用在web页面脚本加载的方法— 您都可以使用 document或 window 元素的API来操作文档本身或获取文档的子类（web页面中的各种元素）。</script\></p>
+<p>您的DOM编程代码可能会像下面例子一样非常简单，如使用 window对象的alert()函数显示一个警告信息，或者使用比较复杂的方法来创建一个新的内容，如下面内容较长的实例所示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;body onload=&quot;window.alert(&apos;welcome to my home page!&apos;);&quot;&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="重要的数据类型"><a href="#重要的数据类型" class="headerlink" title="重要的数据类型"></a>重要的数据类型</h2><p>为简单起见，在API参考文档中的语法实例通常会使用element(s) 指代节点，使用nodeList（s）或 element(s)来指代节点数组，使用 attribute(s)来指代属性节点。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>document</td>
+<td>当一个成员返回 document 对象 （例如，元素的 ownerDocument 属性返回它所属于 document ) ，这个对象就是root document 对象本身。 DOM document Reference 一章对 document 对象进行了描述。</td>
+</tr>
+<tr>
+<td>element</td>
+<td>element 是指由 DOM API 中成员返回的类型为 element 的一个元素或节点。 例如， document.createElement() 方法会返回一个 node 的对象引用，也就是说这个方法返回了在DOM中创建的 element。 element 对象实现了 DOM Element 接口以及更基本的 Node 接口，参考文档将两者都包含在内。</td>
+</tr>
+<tr>
+<td>nodeList</td>
+<td>nodeList 是一个元素的数组，如从 document.getElementsByTagName() 方法返回的就是这种类型。 nodeList 中的条目由通过下标有两种方式进行访问：list.item(1)和list[1]。两种方式是等价的，第一种方式中 item() 是 nodeList 对象中的单独方法。 后面的方式则使用了经典的数组语法来获取列表中的第二个条目。</td>
+</tr>
+<tr>
+<td>attribute</td>
+<td>当 attribute 通过成员函数 (例如，通过 createAttribute()方法) 返回时，它是一个为属性暴露出专门接口的对象引用。DOM中的属性也是节点，就像元素一样，只不过您可能会很少使用它。</td>
+</tr>
+<tr>
+<td>namedNodeMap</td>
+<td>namedNodeMap 和数组类似，但是条目是由name或index访问的，虽然后一种方式仅仅是为了枚举方便，因为在 list 中本来就没有特定的顺序。 出于这个目的，  namedNodeMap 有一个 item() 方法，你也可以从  namedNodeMap 添加或移除条目。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>DOM 的最小组成单位叫做节点（node）。文档的树形结构（DOM 树），就是由各种不同类型的节点组成。每个节点可以看作是文档树的一片叶子。</p>
+<p>节点的类型有七种。</p>
+<ul>
+<li>Document：整个文档树的顶层节点</li>
+<li>DocumentType：doctype标签（比如\&lt;!DOCTYPE html>）</li>
+<li>Element：网页的各种HTML标签（比如\<body\>、\<a\>等）</a\></body\></li>
+<li>Attribute：网页元素的属性（比如class=”right”）</li>
+<li>Text：标签之间或标签包含的文本</li>
+<li>Comment：注释</li>
+<li>DocumentFragment：文档的片段</li>
+</ul>
+<p>浏览器提供一个原生的节点对象Node，上面这七种节点都继承了Node，因此具有一些共同的属性和方法。</p>
+<h2 id="DOM中核心接口"><a href="#DOM中核心接口" class="headerlink" title="DOM中核心接口"></a>DOM中核心接口</h2><p>在DOM编程时，通常使用的最多的就是 Document 和 window 对象。简单的说， window 对象表示浏览器中的内容，而 document 对象是文档本身的根节点。Element 继承了通用的 Node 接口,  将这两个接口结合后就提供了许多方法和属性可以供单个元素使用。在处理这些元素所对应的不同类型的数据时，这些元素可能会有专用的接口，如上节中的  table  对象的例子。</p>
+<p>下面是在web和XML页面脚本中使用DOM时，一些常用的API简要列表。</p>
+<ul>
+<li>document.getElementById(id)</li>
+<li>document.getElementsByTagName(name)</li>
+<li>document.createElement(name)</li>
+<li>parentNode.appendChild(node)</li>
+<li>element.innerHTML</li>
+<li>element.style.left</li>
+<li>element.setAttribute()</li>
+<li>element.getAttribute()</li>
+<li>element.addEventListener()</li>
+<li>window.content</li>
+<li>window.onload</li>
+<li>window.dump()</li>
+<li>window.scrollTo()</li>
+</ul>
+<h1 id="文档下载实战"><a href="#文档下载实战" class="headerlink" title="文档下载实战"></a>文档下载实战</h1><p>以<a href="http://www.gwyxiezuo.com/cailiao/pouxi/2018-11-23/486dbfad4cf89816bef7921d14a11311.html" target="_blank" rel="noopener">示例范文</a>为例，提取其中内容。</p>
+<h2 id="禁止复制粘贴的原理"><a href="#禁止复制粘贴的原理" class="headerlink" title="禁止复制粘贴的原理"></a>禁止复制粘贴的原理</h2><ul>
+<li>阻止默认的事件响应</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">// 禁止右键菜单</span><br><span class="line">document.oncontextmenu = function()&#123; return false; &#125;;</span><br><span class="line">// 禁止文字选择</span><br><span class="line">document.onselectstart = function()&#123; return false; &#125;;</span><br><span class="line">// 禁止复制</span><br><span class="line">document.oncopy = function()&#123; return false; &#125;;</span><br><span class="line">// 禁止剪切</span><br><span class="line">document.oncut = function()&#123; return false; &#125;;</span><br><span class="line">// 禁止粘贴</span><br><span class="line">document.onpaste = function()&#123; return false; &#125;;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>CSS阻止用户选择</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">element.style &#123;</span><br><span class="line">    user-select: none;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="破解禁止复制粘贴"><a href="#破解禁止复制粘贴" class="headerlink" title="破解禁止复制粘贴"></a>破解禁止复制粘贴</h2><p>使用chrome打开该网页，在使用快捷键ctrl+shift+i，打开开发者工具，找到文档节点DIV的id为article，使用如下代码提取文章内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var node=document.getElementById(&apos;article&apos;)</span><br><span class="line">console.log(node.innerText)</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://javascript.ruanyifeng.com/dom/node.html" target="_blank" rel="noopener">DOM 模型概述</a>,by 阮一峰.</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document_Object_Model/Introduction" target="_blank" rel="noopener">DOM概述</a>,by MDN web DOC.</li>
+<li><a href="http://blog.haoji.me/disable-html-copy-and-paste.html?from=xa" target="_blank" rel="noopener">网页上如何实现禁止复制粘贴以及如何破解</a>,by 小茗同学.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/19/Vue-cli-3集成jQWidgets/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/19/Vue-cli-3集成jQWidgets/" itemprop="url">
+                  Vue-cli-3集成jQWidgets
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-19 22:19:28 / 修改时间：22:26:16" itemprop="dateCreated datePublished" datetime="2019-07-19T22:19:28+08:00">2019-07-19</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>jQWidgets是一个软件框架，包含小部件，主题，输入验证，拖放插件，数据适配器，内置WAI-ARIA可访问性，国际化和MVVM支持。它建立在开放标准和技术HTML5，CSS，JavaScript和jQuery之上。该库用于开发响应式Web和移动应用程序。下面介绍在Vuejs中集成jQWidgets。</p>
+<h1 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h1><ul>
+<li>node.js: v10.16.0</li>
+<li>npm: 6.9.0</li>
+<li>vue: 2.6.10</li>
+<li>cesium: 1.45.0</li>
+<li>vue-cli: 3.9.2</li>
+<li>webpack: 4.28.4</li>
+</ul>
+<h1 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h1><ul>
+<li>安装vue-cli</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g @vue/cli</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建应用</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vue create jqwidgets-vue-cli-app   //Choose the default preset</span><br></pre></td></tr></table></figure>
+<ul>
+<li>导航到应用</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd jqwidgets-vue-cli-app</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装jQWidgets依赖</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install jqwidgets-scripts --save--dev</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>从node_modules/jqwidgets-scripts/jqwidgets复制styles文件夹到public文件夹。</p>
+</li>
+<li><p>在index.html链接 jqx.base.css 文件。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;./styles/jqx.base.css&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>修改App.vue如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;JqxBarGauge ref=&quot;barGaugeReference&quot;</span><br><span class="line">        :width=&quot;600&quot; :height=&quot;600&quot; </span><br><span class="line">        :values=&quot;values&quot; :formatFunction=&quot;formatFunction&quot; </span><br><span class="line">    /&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"> </span><br><span class="line">&lt;script&gt;</span><br><span class="line">    import JqxBarGauge from &apos;jqwidgets-scripts/jqwidgets-vue/vue_jqxbargauge.vue&apos;;</span><br><span class="line"> </span><br><span class="line">    export default &#123;</span><br><span class="line">        components: &#123;</span><br><span class="line">            JqxBarGauge</span><br><span class="line">        &#125;,</span><br><span class="line">        data: function () &#123;</span><br><span class="line">            return &#123;</span><br><span class="line">                values: [10, 20, 30, 40, 50]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        methods: &#123;</span><br><span class="line">            formatFunction: function (value, index, color) &#123;</span><br><span class="line">                return color;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>运行Vue Cli开发服务器</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run serve</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在浏览器中输入 localhost:8080 查看结果。</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.jqwidgets.com/vue-components-documentation/documentation/vue-cli/vue-cli.htm" target="_blank" rel="noopener">Vue CLI with jQWidgets</a>,by jQWidgets.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/18/Vue-cli-3集成Cesium/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/18/Vue-cli-3集成Cesium/" itemprop="url">
+                  Vue-cli 3集成Cesium
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-18 23:48:35" itemprop="dateCreated datePublished" datetime="2019-07-18T23:48:35+08:00">2019-07-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-02 20:31:29" itemprop="dateModified" datetime="2019-09-02T20:31:29+08:00">2019-09-02</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>之前记录了在Vue-Cli 2的基础上集成了Cesium，但现在Vue-Cli已更新到3，之前方法已不适用。在参考<a href="https://www.jianshu.com/p/0815c76d949f" target="_blank" rel="noopener">Vue-cli 3.0 + cesium 构建</a>的基础上，验证记录Vue-Cli 3脚手架工具中集成Cesium的过程。</p>
+<h1 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h1><ul>
+<li>node.js: v10.16.0</li>
+<li>npm: 6.9.0</li>
+<li>vue: 2.6.10</li>
+<li>cesium: 1.45.0</li>
+<li>vue-cli: 3.9.2</li>
+<li>webpack: 4.28.4</li>
+</ul>
+<h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><ul>
+<li><p>安装nodejs</p>
+</li>
+<li><p>安装vue-cli脚手架</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install -g @vue/cli</span><br><span class="line">vue create my-project</span><br><span class="line">cd my-project</span><br><span class="line">npm run serve</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装 cesium</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i cesium --save</span><br></pre></td></tr></table></figure>
+<ul>
+<li>新建 vue.config.js 文件，配置内容如下:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">const CopyWebpackPlugin = require(&apos;copy-webpack-plugin&apos;)</span><br><span class="line">const webpack = require(&apos;webpack&apos;)</span><br><span class="line">const path = require(&apos;path&apos;)</span><br><span class="line"></span><br><span class="line">const debug = process.env.NODE_ENV !== &apos;production&apos;</span><br><span class="line">let cesiumSource = &apos;./node_modules/cesium/Source&apos;</span><br><span class="line">let cesiumWorkers = &apos;../Build/Cesium/Workers&apos;</span><br><span class="line">module.exports = &#123;</span><br><span class="line">    baseUrl: &apos;&apos;,</span><br><span class="line">    devServer: &#123;</span><br><span class="line">        port: 9999</span><br><span class="line">    &#125;,</span><br><span class="line">    configureWebpack: &#123;</span><br><span class="line">        output: &#123;</span><br><span class="line">            sourcePrefix: &apos; &apos;</span><br><span class="line">        &#125;,</span><br><span class="line">        amd: &#123;</span><br><span class="line">            toUrlUndefined: true</span><br><span class="line">        &#125;,</span><br><span class="line">        resolve: &#123;</span><br><span class="line">            alias: &#123;</span><br><span class="line">                &apos;vue$&apos;: &apos;vue/dist/vue.esm.js&apos;,</span><br><span class="line">                &apos;@&apos;: path.resolve(&apos;src&apos;),</span><br><span class="line">                &apos;cesium&apos;: path.resolve(__dirname, cesiumSource)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        plugins: [</span><br><span class="line">            new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, cesiumWorkers), to: &apos;Workers&apos;&#125;]),</span><br><span class="line">            new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &apos;Assets&apos;), to: &apos;Assets&apos;&#125;]),</span><br><span class="line">            new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &apos;Widgets&apos;), to: &apos;Widgets&apos;&#125;]),</span><br><span class="line">            new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &apos;ThirdParty/Workers&apos;), to: &apos;ThirdParty/Workers&apos;&#125;]),</span><br><span class="line">            new webpack.DefinePlugin(&#123;</span><br><span class="line">                CESIUM_BASE_URL: JSON.stringify(&apos;./&apos;)</span><br><span class="line">            &#125;)</span><br><span class="line">        ],</span><br><span class="line">        module: &#123;</span><br><span class="line">            unknownContextCritical: /^.\/.*$/,</span><br><span class="line">            unknownContextCritical: false</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在 src/components 下新建 CesiumViewer.vue 文件，内容如下:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div id=&quot;cesiumContainer&quot; class=&quot;fullSize&quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">    name: &quot;CesiumViewer&quot;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line">.fullSize &#123;</span><br><span class="line">    display: block;</span><br><span class="line">    position: absolute;</span><br><span class="line">    top: 0;</span><br><span class="line">    left: 0;</span><br><span class="line">    border: none;</span><br><span class="line">    width: 100%;</span><br><span class="line">    height: 100%;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>修改 router.js ，引入 CesiumViewer组件，内容如下:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &apos;vue&apos;</span><br><span class="line">import Router from &apos;vue-router&apos;</span><br><span class="line">import CesiumViewer from &apos;./components/CesiumViewer.vue&apos;</span><br><span class="line"></span><br><span class="line">Vue.use(Router)</span><br><span class="line"></span><br><span class="line">export default new Router(&#123;</span><br><span class="line">  routes: [</span><br><span class="line">    &#123;</span><br><span class="line">      path: &apos;/&apos;,</span><br><span class="line">      name: &apos;CesiumViewer&apos;,</span><br><span class="line">      component: CesiumViewer</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>修改App.vue ，内容如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id=&quot;app&quot;&gt;</span><br><span class="line">    &lt;router-view/&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;style lang=&quot;css&quot;&gt;</span><br><span class="line">  html, body, #cesiumContainer &#123;</span><br><span class="line">    width: 100%;</span><br><span class="line">    height: 100%;</span><br><span class="line">    margin: 0;</span><br><span class="line">    padding: 0;</span><br><span class="line">    overflow: hidden;</span><br><span class="line">  &#125;</span><br><span class="line">  #app &#123;</span><br><span class="line">    font-family: &apos;Avenir&apos;, Helvetica, Arial, sans-serif;</span><br><span class="line">    -webkit-font-smoothing: antialiased;</span><br><span class="line">    -moz-osx-font-smoothing: grayscale;</span><br><span class="line">    text-align: center;</span><br><span class="line">    color: #2c3e50;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>最后修改 main.js 内容如下:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &apos;vue&apos;</span><br><span class="line">import App from &apos;./App.vue&apos;</span><br><span class="line">import router from &apos;./router&apos;</span><br><span class="line">import store from &apos;./store&apos;</span><br><span class="line">import Cesium from &apos;cesium/Cesium&apos;</span><br><span class="line">// noinspection ES6UnusedImports</span><br><span class="line">import widget from &apos;cesium/Widgets/widgets.css&apos;</span><br><span class="line"></span><br><span class="line">Vue.config.productionTip = false</span><br><span class="line"></span><br><span class="line">new Vue(&#123;</span><br><span class="line">  router,</span><br><span class="line">  store,</span><br><span class="line">  render: h =&gt; h(App),</span><br><span class="line">  mounted () &#123;</span><br><span class="line">    var viewer = new Cesium.Viewer(&apos;cesiumContainer&apos;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).$mount(&apos;#app&apos;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>最后 npm serve ，打开浏览器输入localhost:8080查看效果。</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.jianshu.com/p/0815c76d949f" target="_blank" rel="noopener">Vue-cli 3.0 + cesium 构建</a>,by QingMings.</li>
+<li><a href="http://cesium.marsgis.cn/forcesium/tutorials/cesium-and-webpack/" target="_blank" rel="noopener">cesium-and-webpack</a>,by marsgis.</li>
+<li><a href="https://huangwang.github.io/2018/05/11/Vue-js%E9%9B%86%E6%88%90Cesium/">Vue.js集成Cesium</a>,by jack huang.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/18/Vue-js开发入门简易教程/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1511,757 +2316,6 @@ b_{n}=\frac{2}{T}\int_{t_{0}}^{t_{0}+T}f(t)sin(n\omega t)dt \tag{3}</script><h1 
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/29/使用python3-PyQt5-pycharm桌面GUI开发/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/29/使用python3-PyQt5-pycharm桌面GUI开发/" itemprop="url">
-                  使用python3+PyQt5+PyCharm桌面GUI开发
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-29 21:18:34 / 修改时间：21:32:59" itemprop="dateCreated datePublished" datetime="2019-06-29T21:18:34+08:00">2019-06-29</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>下面简单介绍基于Python3、PyQt5和PyCharm进行桌面GUI开发。</p>
-<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><h2 id="安装python3"><a href="#安装python3" class="headerlink" title="安装python3"></a>安装python3</h2><p>PyQt5所支持的python版本是从3.5开始的，因此安装的Python3版本必须大于3.5。</p>
-<h2 id="安装PyQt5"><a href="#安装PyQt5" class="headerlink" title="安装PyQt5"></a>安装PyQt5</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip3 install PyQt5</span><br><span class="line">pip3 install PyQt5-tools</span><br></pre></td></tr></table></figure>
-<h2 id="安装PyCharm"><a href="#安装PyCharm" class="headerlink" title="安装PyCharm"></a>安装PyCharm</h2><p>安装完PyCharm后，需要配置Qt Designer和PyUIC，前者用于设计UI，后者用于将UI转成Py文件。</p>
-<p>具体步骤请参考<a href="https://www.cnblogs.com/zhoug2020/p/9039993.html" target="_blank" rel="noopener">程序员之路：python3+PyQt5+pycharm桌面GUI开发</a>。</p>
-<h1 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line"># Form implementation generated from reading ui file &apos;clearWaterPrintGui.ui&apos;</span><br><span class="line">#</span><br><span class="line"># Created by: PyQt5 UI code generator 5.11.3</span><br><span class="line">#</span><br><span class="line"># WARNING! All changes made in this file will be lost!</span><br><span class="line"></span><br><span class="line">from PyQt5 import QtCore, QtGui, QtWidgets</span><br><span class="line"></span><br><span class="line">class Ui_Form(object):</span><br><span class="line">    def setupUi(self, Form):</span><br><span class="line">        Form.setObjectName(&quot;Form&quot;)</span><br><span class="line">        Form.resize(400, 300)</span><br><span class="line">        self.label_DirPath = QtWidgets.QLabel(Form)</span><br><span class="line">        self.label_DirPath.setGeometry(QtCore.QRect(16, 52, 72, 15))</span><br><span class="line">        self.label_DirPath.setObjectName(&quot;label_DirPath&quot;)</span><br><span class="line">        self.label_ExtName = QtWidgets.QLabel(Form)</span><br><span class="line">        self.label_ExtName.setGeometry(QtCore.QRect(31, 112, 72, 15))</span><br><span class="line">        self.label_ExtName.setObjectName(&quot;label_ExtName&quot;)</span><br><span class="line">        self.buttonBox = QtWidgets.QDialogButtonBox(Form)</span><br><span class="line">        self.buttonBox.setGeometry(QtCore.QRect(190, 260, 193, 28))</span><br><span class="line">        self.buttonBox.setInputMethodHints(QtCore.Qt.ImhNone)</span><br><span class="line">        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)</span><br><span class="line">        self.buttonBox.setObjectName(&quot;buttonBox&quot;)</span><br><span class="line">        self.lineEdit_DirPath = QtWidgets.QLineEdit(Form)</span><br><span class="line">        self.lineEdit_DirPath.setGeometry(QtCore.QRect(100, 50, 281, 21))</span><br><span class="line">        self.lineEdit_DirPath.setObjectName(&quot;lineEdit_DirPath&quot;)</span><br><span class="line">        self.lineEdit_ExtName = QtWidgets.QLineEdit(Form)</span><br><span class="line">        self.lineEdit_ExtName.setGeometry(QtCore.QRect(100, 112, 281, 21))</span><br><span class="line">        self.lineEdit_ExtName.setObjectName(&quot;lineEdit_ExtName&quot;)</span><br><span class="line"></span><br><span class="line">        self.retranslateUi(Form)</span><br><span class="line">        QtCore.QMetaObject.connectSlotsByName(Form)</span><br><span class="line"></span><br><span class="line">    def retranslateUi(self, Form):</span><br><span class="line">        _translate = QtCore.QCoreApplication.translate</span><br><span class="line">        Form.setWindowTitle(_translate(&quot;Form&quot;, &quot;Form&quot;))</span><br><span class="line">        self.label_DirPath.setText(_translate(&quot;Form&quot;, &quot;文件路径：&quot;))</span><br><span class="line">        self.label_ExtName.setText(_translate(&quot;Form&quot;, &quot;扩展名：&quot;))</span><br><span class="line"></span><br><span class="line"># 下面代码是手动添加的</span><br><span class="line">if __name__==&quot;__main__&quot;:</span><br><span class="line">    import sys</span><br><span class="line">    from PyQt5.QtGui import QIcon</span><br><span class="line">    app=QtWidgets.QApplication(sys.argv)</span><br><span class="line">    widget=QtWidgets.QWidget()</span><br><span class="line">    ui=Ui_Form()</span><br><span class="line">    ui.setupUi(widget)</span><br><span class="line">    # widget.setWindowIcon(QIcon(&apos;web.png&apos;))#增加icon图标，如果没有图片可以没有这句</span><br><span class="line">    widget.show()</span><br><span class="line">    sys.exit(app.exec_())</span><br></pre></td></tr></table></figure>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.cnblogs.com/zhoug2020/p/9039993.html" target="_blank" rel="noopener">程序员之路：python3+PyQt5+pycharm桌面GUI开发</a>,by 莫水千流.</li>
-<li><a href="http://www.futantan.com/2015/11/22/use-pyqt-develop-gui/" target="_blank" rel="noopener">使用PyQt快速开发GUI应用</a>,by Prayer.</li>
-<li><a href="https://zh.wikipedia.org/wiki/PyQt" target="_blank" rel="noopener">PyQt</a>,by wikipedia.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/29/Python程序打包成exe/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/29/Python程序打包成exe/" itemprop="url">
-                  Python程序打包成exe
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-29 11:18:51 / 修改时间：11:38:29" itemprop="dateCreated datePublished" datetime="2019-06-29T11:18:51+08:00">2019-06-29</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>大部分人是普通人，不知道如何运行Python脚本程序，因此有必要将Python脚本程序打包成可执行文件，免去安装Python环境，提高Python脚本程序的可用性。</p>
-<h1 id="打包方法"><a href="#打包方法" class="headerlink" title="打包方法"></a>打包方法</h1><p>Python脚本程序的发布有三种方法：</p>
-<ul>
-<li>.py文件：对于开源项目或者源码没那么重要的，直接提供源码，需要使用者自行安装Python并且安装依赖的各种库。</li>
-<li>.pyc文件：有些公司或个人因为机密或者各种原因，不愿意源码被运行者看到，可以使用pyc文件发布，pyc文件是Python解释器可以识别的二进制码，故发布后也是跨平台的，需要使用者安装相应版本的Python和依赖库。</li>
-<li>可执行文件：对于非码农用户，最简单的方式就是提供一个可执行文件，只需要把用法告诉他即可。比较麻烦的是需要针对不同平台需要打包不同的可执行文件（Windows, Linux, Mac,…）。</li>
-</ul>
-<p>下面介绍将Python脚本程序打包成可执行程序的各种工具。</p>
-<center>表1 各种打包工具的对比</center>
-
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th>Solution</th>
-<th>Windows</th>
-<th>Linux</th>
-<th>OS X</th>
-<th>Python 3</th>
-<th>One file mode</th>
-<th>Zipfile import</th>
-<th>Eggs</th>
-<th>pkg_resources support</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>bbFreeze</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
-<td>no</td>
-<td>no</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
-</tr>
-<tr>
-<td>py2exe</td>
-<td>yes</td>
-<td>no</td>
-<td>no</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
-<td>no</td>
-<td>no</td>
-</tr>
-<tr>
-<td>pyInstaller</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
-<td>no</td>
-<td>yes</td>
-<td>no</td>
-</tr>
-<tr>
-<td>cx_Freeze</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
-<td>no</td>
-<td>yes</td>
-<td>yes</td>
-<td>no</td>
-</tr>
-<tr>
-<td>py2app</td>
-<td>no</td>
-<td>no</td>
-<td>yes</td>
-<td>yes</td>
-<td>no</td>
-<td>yes</td>
-<td>yes</td>
-<td>yes</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>从上述对Python脚本程序打包工具对比可知，推荐使用pyInstaller。</p>
-<h1 id="PyInstaller打包示例"><a href="#PyInstaller打包示例" class="headerlink" title="PyInstaller打包示例"></a>PyInstaller打包示例</h1><h2 id="安装PyInstaller"><a href="#安装PyInstaller" class="headerlink" title="安装PyInstaller"></a>安装PyInstaller</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pyinstaller</span><br></pre></td></tr></table></figure>
-<h2 id="打包Python脚本"><a href="#打包Python脚本" class="headerlink" title="打包Python脚本"></a>打包Python脚本</h2><p>打包Python脚本成单独的 .exe 文件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller -F yourprogram.py</span><br></pre></td></tr></table></figure>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/45288707" target="_blank" rel="noopener">如何将 Python 程序打包成 .exe 文件？</a>,by 刘哈哈.</li>
-<li><a href="https://blog.csdn.net/zengxiantao1994/article/details/76578421" target="_blank" rel="noopener">Python程序打包成exe可执行文件</a>,by 知行流浪.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/29/Python命令行参数解析示例/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/29/Python命令行参数解析示例/" itemprop="url">
-                  Python命令行参数解析示例
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-29 09:03:23 / 修改时间：19:06:28" itemprop="dateCreated datePublished" datetime="2019-06-29T09:03:23+08:00">2019-06-29</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最新需要一个小程序实现解析命令行参数、遍历指定文件夹，处理指定扩展名的文件。于是简单用python实现一下。</p>
-<h1 id="库选择"><a href="#库选择" class="headerlink" title="库选择"></a>库选择</h1><h2 id="参数解析"><a href="#参数解析" class="headerlink" title="参数解析"></a>参数解析</h2><h3 id="sys-argv"><a href="#sys-argv" class="headerlink" title="sys.argv"></a>sys.argv</h3><p>解析Python中命令行参数的最传统的方法是通过sys.argv。但这种方法比较古老，灵活性很差，同时解析出来的参数都是str类型。但在编写简单脚本，参数较少且固定时比较方便。</p>
-<h3 id="getopt模块"><a href="#getopt模块" class="headerlink" title="getopt模块"></a>getopt模块</h3><p>getopt模块是专门处理命令行参数的模块，用于获取命令行选项和参数，也就是sys.argv。命令行选项使得程序的参数更加灵活。支持短选项模式（-）和长选项模式（—）。</p>
-<h3 id="optparse模块"><a href="#optparse模块" class="headerlink" title="optparse模块"></a>optparse模块</h3><p>optparse，功能强大，易于使用，可以方便地生成标准的、符合Unix/Posix 规范的命令行说明。但在Python2.7后就已经弃用不再维护。</p>
-<h3 id="argparse模块"><a href="#argparse模块" class="headerlink" title="argparse模块"></a>argparse模块</h3><p>argparse模块是Python内置的参数解析模块，使用起来比较简单且功能强大。</p>
-<p>ArgumentParser类创建时的参数如下：</p>
-<ul>
-<li>prog - 程序的名字（默认：sys.argv[0]）</li>
-<li>usage - 描述程序用法的字符串（默认：从解析器的参数生成）</li>
-<li>description - 参数帮助信息之前的文本（默认：空）</li>
-<li>epilog - 参数帮助信息之后的文本（默认：空）</li>
-<li>parents - ArgumentParser 对象的一个列表，这些对象的参数应该包括进去</li>
-<li>formatter_class - 定制化帮助信息的类</li>
-<li>prefix_chars - 可选参数的前缀字符集（默认：‘-‘）</li>
-<li>fromfile_prefix_chars - 额外的参数应该读取的文件的前缀字符集（默认：None）</li>
-<li>argument_default - 参数的全局默认值（默认：None）</li>
-<li>conflict_handler - 解决冲突的可选参数的策略（通常没有必要）</li>
-<li>add_help - 给解析器添加-h/–help 选项（默认：True）</li>
-</ul>
-<p>add_argument函数的参数如下：</p>
-<ul>
-<li>name or flags - 选项字符串的名字或者列表，例如foo 或者-f, –foo。</li>
-<li>action - 在命令行遇到该参数时采取的基本动作类型。</li>
-<li>nargs - 应该读取的命令行参数数目。</li>
-<li>const - 某些action和nargs选项要求的常数值。</li>
-<li>default - 如果命令行中没有出现该参数时的默认值。</li>
-<li>type - 命令行参数应该被转换成的类型。</li>
-<li>choices - 参数可允许的值的一个容器。</li>
-<li>required - 该命令行选项是否可以省略（只针对可选参数）。</li>
-<li>help - 参数的简短描述。</li>
-<li>metavar - 参数在帮助信息中的名字。</li>
-<li>dest - 给parse_args()返回的对象要添加的属性名称。</li>
-</ul>
-<h3 id="参数解析模块比较"><a href="#参数解析模块比较" class="headerlink" title="参数解析模块比较"></a>参数解析模块比较</h3><ul>
-<li>getopt，只能简单的处理命令行参数，无法解析一个参数多个值的情况，如 —file file1 file2 file3。</li>
-<li>optparse，功能强大，易于使用，可以方便地生成标准的、符合Unix/Posix 规范的命令行说明。但在Python2.7后就已经弃用不再维护。</li>
-<li>argparse，使其更加容易的编写用户友好的命令行接口。它所需的程序进程了参数定义，argparse将更好的解析sys.argv。同时argparse模块还能自动生成帮助及用户输入错误参数时的提示信息。</li>
-</ul>
-<h2 id="文件夹遍历"><a href="#文件夹遍历" class="headerlink" title="文件夹遍历"></a>文件夹遍历</h2><p>文件夹遍历有两种方法：</p>
-<ul>
-<li>使用os.walk</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*- </span><br><span class="line">import os </span><br><span class="line">def Test1(rootDir): </span><br><span class="line">    list_dirs = os.walk(rootDir) </span><br><span class="line">    for root, dirs, files in list_dirs: </span><br><span class="line">        for d in dirs: </span><br><span class="line">            print os.path.join(root, d)      </span><br><span class="line">        for f in files: </span><br><span class="line">            print os.path.join(root, f)</span><br></pre></td></tr></table></figure>
-<ul>
-<li>使用os.listdir</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*- </span><br><span class="line">import os </span><br><span class="line">def Test2(rootDir): </span><br><span class="line">    for lists in os.listdir(rootDir): </span><br><span class="line">        path = os.path.join(rootDir, lists) </span><br><span class="line">        print path </span><br><span class="line">        if os.path.isdir(path): </span><br><span class="line">            Test2(path)</span><br></pre></td></tr></table></figure>
-<h2 id="文件处理"><a href="#文件处理" class="headerlink" title="文件处理"></a>文件处理</h2><p>Python内置了读写文件的函数，用法和C是兼容的。本节介绍内容大致有：文件的打开/关闭、文件对象、文件的读写等。</p>
-<h1 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h1><p>示例代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*- </span><br><span class="line"></span><br><span class="line">import os </span><br><span class="line">import argparse</span><br><span class="line"></span><br><span class="line"># 遍历文件夹</span><br><span class="line">def traverse(pathName,extName):</span><br><span class="line">    extNameList=extName.split(&apos; &apos;) </span><br><span class="line">    print(extNameList)</span><br><span class="line">    list_dirs = os.walk(pathName) </span><br><span class="line">    for root, dirs, files in list_dirs:   </span><br><span class="line">        for f in files:</span><br><span class="line">            targetExt=os.path.splitext(f)[-1]</span><br><span class="line">            if targetExt.lower() in extNameList:</span><br><span class="line">                clearWaterPrint(os.path.join(root, f))</span><br><span class="line"></span><br><span class="line">def clearWaterPrint(fileName):</span><br><span class="line">    print(fileName)</span><br><span class="line">    fileOrgin=open(fileName,&apos;rb&apos;)</span><br><span class="line">    fileTarget=open(fileName+&apos;.exe&apos;,&apos;wb&apos;)</span><br><span class="line">    fileTarget.write(fileOrgin.read())</span><br><span class="line">    fileOrgin.close()</span><br><span class="line">    os.remove(fileName)</span><br><span class="line">    fileTarget.close()</span><br><span class="line">    os.rename(fileName+&apos;.exe&apos;,fileName)</span><br><span class="line">  </span><br><span class="line"># Driver Code </span><br><span class="line">if __name__ == &apos;__main__&apos;: </span><br><span class="line">    # 首先创建一个ArgumentParser对象</span><br><span class="line">    parser = argparse.ArgumentParser(description=&apos;Process the water print!&apos;)   </span><br><span class="line">    # 添加--path设置文件目录</span><br><span class="line">    parser.add_argument(&apos;-p&apos;,&apos;--path&apos;, type = str,dest=&apos;pathName&apos;, help=&apos;give the path of directory&apos;,</span><br><span class="line">    default = &apos;./&apos;)    </span><br><span class="line">    # 添加--ext设置文件目录</span><br><span class="line">    parser.add_argument(&apos;-e&apos;,&apos;--ext&apos;, type = str,dest=&apos;extName&apos;, help=&apos;give the extension name of file&apos;,</span><br><span class="line">    default = &apos;.doc .docx .wav .txt .xml .dot .html .jpg .png&apos;,nargs = &apos;*&apos;)    </span><br><span class="line">    #返回一个命名空间,如果想要使用变量,可用args.attr</span><br><span class="line">    args = parser.parse_args()</span><br><span class="line"></span><br><span class="line">    # Calling traverse() function </span><br><span class="line">    traverse(args.pathName,args.extName)</span><br></pre></td></tr></table></figure>
-<p>使用方法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python3 clearWaterPrint.py -h</span><br><span class="line">python3 clearWaterPrint.py -p /home/test -e .doc .ppt</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://noahsnail.com/2017/09/13/2017-09-13-Python%E7%9A%84%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90/" target="_blank" rel="noopener">Python的命令行参数解析</a>,by Tyan.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/56961708" target="_blank" rel="noopener">Python中最好用的命令行参数解析工具</a>,by Mingle Wong.</li>
-<li><a href="https://blog.51cto.com/laocao/525140" target="_blank" rel="noopener">Python遍历文件夹的两种方法比较</a>,by likecao.</li>
-<li><a href="https://python3-cookbook.readthedocs.io/zh_CN/latest/c05/p04_read_write_binary_data.html" target="_blank" rel="noopener">读写字节数据</a>,by python3-cookbook.</li>
-<li><a href="http://funhacks.net/explore-python/File-Directory/binary_file_io.html" target="_blank" rel="noopener">读写二进制文件</a>,by funhacks.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/26/CPlusPlus标准演化简介/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/26/CPlusPlus标准演化简介/" itemprop="url">
-                  C++标准演化简介
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-26 19:45:12 / 修改时间：20:36:16" itemprop="dateCreated datePublished" datetime="2019-06-26T19:45:12+08:00">2019-06-26</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近阅读采用C++编写的MAVROS源码，遇到很多C++语言的新特性，理解起来很费劲，因此，特地分析一下C++标准演变过程，学习其进化过程中引入的新特性，提高C++源码阅读效率。</p>
-<h1 id="C-标准演变"><a href="#C-标准演变" class="headerlink" title="C++标准演变"></a>C++标准演变</h1><p>2017年12月05日，ISO C++ 委员会正式发布了 C++ 17 标准，官方名称为 ISO/IEC 14882:2017。之前发布的C++标准有C++14、C++11、C++03、C++98。</p>
-<h2 id="C-98"><a href="#C-98" class="headerlink" title="C++98"></a>C++98</h2><p>C++98是第一个C++标准。它分为两个部分：核心语言和C++标准程序库；后者包含了大部分标准模板库和C标准程序库的稍加修改版本。存在许多不属于标准部分的C++程序库，且使用外部链接，程序库甚至可以用C撰写。</p>
-<p>C++标准程序库充分吸收了C标准程序库，并佐以少许的修改，使其与C++良好的运作。另一个大型的程序库部分，是以标准模板库（STL）为基础，STL于1994年2月正式成为ANSI/ISO C++。它提供了实用的工具，如容器类（如：Array和Vector），迭代器（广义指针）提供容器以类似数组的访问方式，以及泛型算法进行搜索和排序的运算。此外还提供了(multi)map和(multi)set，它们都共享相似的成员函数。因此，以下成为可能，使用模板撰写泛型算法，它可以和任何容器或在任何以迭代器定义的序列上运作。如同C，使用#include指令包含标准表头，即可访问程序库里的功能。C++提供69个标准表头，其中19个不再赞成使用。</p>
-<p>使用标准模板库（例如：使用std::vector或std::string来取代C风格的数组或字符数组）有助于导向更安全和更灵活的软件。</p>
-<p>在STL在纳入C++标准以前，是来自HP和后来的SGI的第三方程式库，标准中并未称之为“STL”，它只是标准库中的一部分，但仍有许多人使用这个名称，以别于其它的标准库（输入／输出流、国际化、诊断、C程序库子集，等等）。 另外，如std::basic_string此类标准委员会添加的接口，有时也被误认为STL；实际上它们并不存在于原始的SGI STL中，在标准化后SGI STL才从标准库吸收加入其中。</p>
-<h2 id="C-03"><a href="#C-03" class="headerlink" title="C++03"></a>C++03</h2><p>C++03 是 C++ 语言国际标准的一个版本，正式名称是 ISO/IEC 14882:2003。该标准由国际标准化组织（ISO）和国际电工委员会（IEC）共同制定。</p>
-<p>C++03 取代了 C++ 标准的前一个版本 C++98，后被 C++11 所取代。C++03 主要是在前一个版本的基础上针对实现方的一些问题进行了修复，从而在各个实现间达到一致、保持了可移植性。该版本共涉及 92 项核心语言缺陷报告、125 项库缺陷报告，所提供的新特性只有一项：值初始化（英语：value initialization）。</p>
-<p>C++03 的第 69 号库缺陷报告非常值得一提，为了解决该问题，标准中加入了“std::vector 中的元素必须连续存储”的要求。</p>
-<h2 id="C-11"><a href="#C-11" class="headerlink" title="C++11"></a>C++11</h2><p>C++11，先前被称作C++0x，即ISO/IEC 14882:2011，是C++编程语言的一个标准。它取代第二版标准ISO/IEC 14882:2003（第一版ISO/IEC 14882:1998公开于1998年，第二版于2003年更新，分别通称C++98以及C++03，两者差异很小），且已被C++14取代。相比于C++03，C++11标准包含核心语言的新机能，而且扩展C++标准程序库，并入了大部分的C++ Technical Report 1程序库（数学的特殊函数除外）。 ISO／IEC JTC1/SC22/WG21 C++标准委员会计划在2010年8月之前完成对最终委员会草案的投票，以及于2011年3月召开的标准会议完成国际标准的最终草案。然而，WG21预期ISO将要花费六个月到一年的时间才能正式发布新的C++标准。为了能够如期完成，委员会决定致力于直至2006年为止的提案，忽略新的提案。最终于2011年8月12日公布，并于2011年9月出版。</p>
-<p>2012年2月28日的国际标准草案是最接近于C++11标准的草案，差异仅有编辑上的修正。</p>
-<p>像C++这样的编程语言，透过一种演化的的过程来发展其定义。这个过程不可避免地将引发与现有代码的兼容问题，在C++的发展过程中偶尔会发生。不过根据比雅尼·斯特劳斯特鲁普（C++的创始人并且是委员会的一员）表示，新的标准将几乎100%兼容于现有标准。</p>
-<h2 id="C-14"><a href="#C-14" class="headerlink" title="C++14"></a>C++14</h2><p>C++14是C++的现行标准的非正式名称，正式名称为”International Standard ISO/IEC 14882:2014(E) Programming Language C++”。C++14旨在作为C++11的一个小扩展，主要提供漏洞修复和小的改进。C++14标准的委员会草案（Committee Draft）N3690于2013年5月15日发表。工作草案（Working Draft）N3936已于2014年3月2日完成。最终的投票期结束于2014年8月15日，结果（一致通过）已于8月18日公布。</p>
-<h2 id="C-17"><a href="#C-17" class="headerlink" title="C++17"></a>C++17</h2><p>C++17又称C++1z，是C++的现行标准的非正式名称，正式名称为”International Standard ISO/IEC Programming Language C++”。C++17旨在作为大型扩展，最终的投票期将于2017年结束。</p>
-<p>当前不少著名C++编译器已支持C++17仍未定案的草案（draft），例如最新的GCC6已支持C++ concept的C++事务型内存（Transactional Memory），Visual Studio与Clang当前都提供了modules。</p>
-<h1 id="C-新语言特性"><a href="#C-新语言特性" class="headerlink" title="C++新语言特性"></a>C++新语言特性</h1><h2 id="Lambda函数与表示式"><a href="#Lambda函数与表示式" class="headerlink" title="Lambda函数与表示式"></a>Lambda函数与表示式</h2><p>在标准C++，特别是当使用C++标准程序库算法函数诸如sort和find，用户经常希望能够在算法函数调用的附近定义一个临时的述部函数（又称谓词函数，predicate function）。由于语言本身允许在函数内部定义类别，可以考虑使用函数对象，然而这通常既麻烦又冗赘，也阻碍了代码的流程。此外，标准C++不允许定义于函数内部的类别被用于模板，所以前述的作法是不可行的。</p>
-<p><strong>C++11对lambda（即匿名函数）的支持可以解决上述问题</strong>。</p>
-<p>一个lambda函数可以用如下的方式定义：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[](int x, int y) &#123; return x + y; &#125;</span><br></pre></td></tr></table></figure>
-<p>这个不具名函数的回返类型是decltype(x+y)。只有在lambda函数匹配”return expression”的形式下，它的回返类型才能被忽略。在前述的情况下，lambda函数仅能为一个述句。</p>
-<p>在一个更为复杂的例子中，回返类型可以被明确的指定如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[](int x, int y) -&gt; int &#123; int z = x + y; return z + x; &#125;</span><br></pre></td></tr></table></figure>
-<p>本例中，一个临时的参数z被创建用来存储中间结果。如同一般的函数，z的值不会保留到下一次该不具名函数再次被调用时。</p>
-<p>如果lambda函数没有传回值（例如void），其回返类型可被完全忽略。</p>
-<p>定义在与lambda函数相同作用域的参数引用也可以被使用。这种的参数集合一般被称作closure（闭包）。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[]      // 沒有定义任何变量。使用未定义变量会引发错误。</span><br><span class="line">[x, &amp;y] // x以传值方式传入（默认），y以引用方式传入。</span><br><span class="line">[&amp;]     // 任何被使用到的外部变量都隐式地以引用方式加以引用。</span><br><span class="line">[=]     // 任何被使用到的外部变量都隐式地以传值方式加以引用。</span><br><span class="line">[&amp;, x]  // x显式地以传值方式加以引用。其余变量以引用方式加以引用。</span><br><span class="line">[=, &amp;z] // z显式地以引用方式加以引用。其余变量以传值方式加以引用。</span><br></pre></td></tr></table></figure>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B" target="_blank" rel="noopener">C++</a>,by wikipedia.</li>
-<li><a href="https://zh.cppreference.com/w/cpp/language/history" target="_blank" rel="noopener">C++ 的历史</a>,by cppreference.</li>
-<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B03" target="_blank" rel="noopener">C++03</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B11" target="_blank" rel="noopener">C++11</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B14" target="_blank" rel="noopener">C++14</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B17" target="_blank" rel="noopener">C++17</a>,by wikipedia.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2309,7 +2363,7 @@ b_{n}=\frac{2}{T}\int_{t_{0}}^{t_{0}+T}f(t)sin(n\omega t)dt \tag{3}</script><h1 
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">205</span>
+                    <span class="site-state-item-count">209</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

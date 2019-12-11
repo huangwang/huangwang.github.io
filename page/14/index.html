@@ -314,6 +314,720 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/12/机器学习之线性回归问题求解/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/12/机器学习之线性回归问题求解/" itemprop="url">
+                  机器学习之线性回归问题求解
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-12 17:46:35 / 修改时间：22:39:58" itemprop="dateCreated datePublished" datetime="2019-01-12T17:46:35+08:00">2019-01-12</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在统计学中，线性回归（Linear regression）是利用称为线性回归方程的最小二乘函数对一个或多个自变量和因变量之间关系进行建模的一种回归分析。这种函数是一个或多个称为回归系数的模型参数的线性组合。只有一个自变量的情况称为简单回归，大于一个自变量情况的叫做多元回归。下面以简单线性回归为例，以机器学习的方法求解此问题。</p>
+<h1 id="问题设定"><a href="#问题设定" class="headerlink" title="问题设定"></a>问题设定</h1><p>已知有 $N$ 个 $x, y$ 对构成数据集 $X, Y$ ，他们在坐标轴上的分布如下图：</p>
+<p align="center">
+    <img src="images/dataset.png" width="80%" alt="数据集">
+</p>
+
+<p>现在希望找到一个函数：</p>
+<script type="math/tex; mode=display">h(x) = wx+b</script><p>这个函数会尽可能的拟合数据集 $X, Y$ ，为了做到这点，我们希望这个函数 $h(x)$ 在 $X$ 上每一个取值 $x_i$ 的函数值 $h(x_i)$ 与 $Y$ 上每一个对应的 $y_i$ 的平方差尽可能小。即找到一组 $w, b$ ，能使得 $loss(w, b)$ 最小。</p>
+<script type="math/tex; mode=display">loss(w, b) = \frac{1}{N}\sum^{N}_{i=0}(wx_i+b-y_i)^2</script><h1 id="问题求解"><a href="#问题求解" class="headerlink" title="问题求解"></a>问题求解</h1><p>采用梯度下降法找到目标 $w, b$，先随机初始化一对 $w_0, b_0$。由于函数的负梯度方向是函数值下降最快的方向，因此对 $w, b$ 求其偏微分:</p>
+<script type="math/tex; mode=display">\begin{aligned} \frac{\partial loss(w, b)}{\partial w} &= \frac{2}{N}\sum^{N}_{i=0}(wx_i+b-y_i)\cdot x_i, \\ \frac{\partial loss(w, b)}{\partial b} &= \frac{2}{N}\sum^{N}_{i=0}(wx_i+b-y_i) \end{aligned}</script><p>再通过下式在每次迭代中更新 $w, b$ ：</p>
+<script type="math/tex; mode=display">\begin{aligned} w_{t+1} &= w_t - \eta \frac{\partial l(w_t, b_t)}{\partial w_t} \\ b_{t+1} &= b_t - \eta \frac{\partial l(w_t, b_t)}{\partial b_t} \end{aligned}</script><p>其中， $\eta$ 是学习率。</p>
+<h2 id="python实现"><a href="#python实现" class="headerlink" title="python实现"></a>python实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line"># %matplotlib inline</span><br><span class="line"></span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line"># 生成100对x, y</span><br><span class="line">data_count = 100</span><br><span class="line">w_cache, b_cache, l_cache, = [], [], []</span><br><span class="line"># 学习速度</span><br><span class="line">learning_rate = 0.003</span><br><span class="line"># 迭代次数</span><br><span class="line">training_steps = 3000</span><br><span class="line"></span><br><span class="line">x_data = np.linspace(-20, 20, data_count)</span><br><span class="line">y_data = np.multiply(4, x_data) + 7 + np.random.normal(loc=0, scale=8.0, size=(data_count,))</span><br><span class="line"></span><br><span class="line"># 初始化w和b</span><br><span class="line">w = np.random.rand()</span><br><span class="line">b = np.random.rand()</span><br><span class="line">y_predict = w * x_data + b</span><br><span class="line"></span><br><span class="line"># 梯度下降迭代3000次</span><br><span class="line">for iteration in range(training_steps):</span><br><span class="line">    y_predict = w * x_data + b</span><br><span class="line">    diff = y_predict - y_data</span><br><span class="line">    error = np.sum(np.square(diff)) / data_count</span><br><span class="line">    grad_w = np.mean(diff * x_data)</span><br><span class="line">    grad_b = np.mean(diff)</span><br><span class="line">    w -= learning_rate * grad_w</span><br><span class="line">    b -= learning_rate * grad_b</span><br><span class="line">    w_cache.append(w)</span><br><span class="line">    b_cache.append(b)</span><br><span class="line">    l_cache.append(error)</span><br><span class="line"></span><br><span class="line">y_predict = w * x_data + b</span><br><span class="line"></span><br><span class="line"># 绘制结果</span><br><span class="line">plt.figure(figsize=(10, 6))</span><br><span class="line">plt.scatter(x_data, y_data, s=10, color=&apos;g&apos;)</span><br><span class="line">plt.plot(x_data, y_predict)</span><br><span class="line">plt.title(&apos;y=4x+7&apos;)</span><br><span class="line">plt.xlabel(&apos;x&apos;)</span><br><span class="line">plt.ylabel(&apos;y&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<h2 id="tensorflow实现"><a href="#tensorflow实现" class="headerlink" title="tensorflow实现"></a>tensorflow实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">import tensorflow as tf</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line"># 初始化变量和模型参数，定义训练闭环中的运算</span><br><span class="line"></span><br><span class="line"># 生成100对x, y</span><br><span class="line">data_count = 100</span><br><span class="line"></span><br><span class="line"># 超参数，实际的训练迭代次数</span><br><span class="line">training_steps=1000</span><br><span class="line"></span><br><span class="line"># 超参数，学习速率</span><br><span class="line">learning_rate=0.003</span><br><span class="line"></span><br><span class="line"># 定义tf graph输入</span><br><span class="line">X = tf.placeholder(tf.float32)</span><br><span class="line">Y = tf.placeholder(tf.float32)</span><br><span class="line"># 定义模型参数</span><br><span class="line">W = tf.Variable(np.random.randn(), name=&quot;weight&quot;, dtype=tf.float32)</span><br><span class="line">b = tf.Variable(np.random.randn(), name=&quot;bias&quot;, dtype=tf.float32)</span><br><span class="line"></span><br><span class="line">def inference(X):</span><br><span class="line">    # 计算推断模型在数据X上的输出，并将结果返回</span><br><span class="line">    pred = tf.add(tf.multiply(W, X), b)</span><br><span class="line">    return pred</span><br><span class="line"></span><br><span class="line">def loss(X,Y):</span><br><span class="line">    # 依据训练数据X及其期望输出Y计算损失</span><br><span class="line">    pred = tf.add(tf.multiply(W, X), b)</span><br><span class="line">    cost = tf.reduce_sum(tf.pow(pred-Y, 2)) /  data_count</span><br><span class="line">    return cost</span><br><span class="line"></span><br><span class="line">def inputs():</span><br><span class="line">    # 读取或生成训练数据X及其期望输出Y</span><br><span class="line">    x_data = np.linspace(-20, 20, data_count)</span><br><span class="line">    y_data = np.multiply(4, x_data) + 7 + np.random.normal(loc=0, scale=8.0, size=(data_count,))</span><br><span class="line">    return (x_data,y_data)</span><br><span class="line"></span><br><span class="line">def train(total_loss):</span><br><span class="line">    # 依据计算的总损失训练或调整模型参数</span><br><span class="line">    optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(total_loss)</span><br><span class="line">    return optimizer</span><br><span class="line">    </span><br><span class="line">def evaluate(sess,X,Y):</span><br><span class="line">    # 对训练得到的模型进行评估</span><br><span class="line">    # 因为是线性回归，这里只图示</span><br><span class="line">    plt.figure(figsize=(10, 6))</span><br><span class="line">    plt.scatter(X, Y, s=10, color=&apos;g&apos;)</span><br><span class="line">    pred=inference(X)</span><br><span class="line">    plt.plot(X, sess.run(pred))</span><br><span class="line">    plt.title(&apos;y=4x+7&apos;)</span><br><span class="line">    plt.xlabel(&apos;x&apos;)</span><br><span class="line">    plt.ylabel(&apos;y&apos;)</span><br><span class="line">    plt.show()</span><br><span class="line">    </span><br><span class="line"># 在一个会话对象中启动数据流图，搭建流程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    tf.initialize_all_variables().run()</span><br><span class="line">    </span><br><span class="line">    X,Y=inputs()</span><br><span class="line">    </span><br><span class="line">    total_loss=loss(X,Y)</span><br><span class="line">    train_op=train(total_loss)</span><br><span class="line">    </span><br><span class="line">    coord=tf.train.Coordinator()</span><br><span class="line">    threads=tf.train.start_queue_runners(sess=sess,coord=coord)</span><br><span class="line"></span><br><span class="line">    for step in range(training_steps):</span><br><span class="line">        sess.run([train_op])</span><br><span class="line">        # 出于调试和学习的目的，查看损失在训练过程中递减的情况</span><br><span class="line">        if step % 10 ==0:</span><br><span class="line">            print(&quot;loss: &quot;,sess.run([total_loss]))</span><br><span class="line"></span><br><span class="line">    evaluate(sess,X,Y)</span><br><span class="line"></span><br><span class="line">    coord.request_stop()</span><br><span class="line">    coord.join(threads)</span><br><span class="line">    sess.close()</span><br></pre></td></tr></table></figure>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/线性回归" target="_blank" rel="noopener">线性回归</a>, by wikipedia.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/36553041" target="_blank" rel="noopener">重拾基础 - 线性回归（一）</a>, by Cerulean.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/07/开源跨平台下载利器Aria2/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/07/开源跨平台下载利器Aria2/" itemprop="url">
+                  开源跨平台下载利器Aria2
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-07 19:39:12 / 修改时间：19:56:24" itemprop="dateCreated datePublished" datetime="2019-01-07T19:39:12+08:00">2019-01-07</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>长期以来，迅雷一直是我在Windows平台上首选的下载工具。但是随着迅雷软件升级更新后的下载限速和广告推销的愈演愈烈，我终于下定决心卸载了它。下面我推荐一款开源跨平台的下载利器Aria2。</p>
+<h1 id="Aria2简介"><a href="#Aria2简介" class="headerlink" title="Aria2简介"></a>Aria2简介</h1><p>Aria2是一款自由、跨平台命令行界面的下载管理器，该软件根据GPLv2许可证进行分发。支持的下载协议有：HTTP、HTTPS、FTP、Bittorrent和Metalink。</p>
+<p>不同于Wget这样的的命令行界面下载器，Aria2不仅支持BitTorrent，还能够从各种来源多路检索所请求的文件。包括HTTP，HTTPS，FTP和BitTorrent协议。aria2使用Metalink数据块的校验和自动查验BitTorrent下载的数据部分。</p>
+<h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><p>从<a href="https://aria2.github.io/" target="_blank" rel="noopener">Aria2官网</a>下载最新Aria2安装包，当前Aria2最新的版本为1.34.0。</p>
+<p>将下载的Aria2安装包aria2-1.34.0-win-64bit-build1解压到C盘目录，并将Aria2安装目录添加到Windows环境变量PATH。</p>
+<p>重启后，打开Windows终端，即可在命令行中使用Aria2下载文件。</p>
+<h1 id="使用帮助"><a href="#使用帮助" class="headerlink" title="使用帮助"></a>使用帮助</h1><p>从Web中下载文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c http://example.org/mylinux.iso</span><br></pre></td></tr></table></figure>
+<p>从2个源下载文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c http://a/f.iso ftp://b/f.iso</span><br></pre></td></tr></table></figure>
+<p>使用2个连接下载文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c -x2 http://a/f.iso</span><br></pre></td></tr></table></figure></p>
+<p>BitTorrent下载：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c http://example.org/mylinux.torrent</span><br></pre></td></tr></table></figure></p>
+<p>BitTorrent Magnet URI下载：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c &apos;magnet:?xt=urn:btih:248D0A1CD08284299DE78D5C1ED359BB46717D8C&apos;</span><br></pre></td></tr></table></figure></p>
+<p>按照txt中给出的URI下载：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c -i uris.txt</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/Aria2" target="_blank" rel="noopener">Aria2</a>,by wikipedia.</li>
+<li><a href="https://aria2.github.io/" target="_blank" rel="noopener">Aria2 Homepage</a>,by Aria2.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/06/飞行仿真之刚体六自由度方程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/06/飞行仿真之刚体六自由度方程/" itemprop="url">
+                  飞行仿真之刚体六自由度方程
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-06 18:50:47" itemprop="dateCreated datePublished" datetime="2019-01-06T18:50:47+08:00">2019-01-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-26 22:30:19" itemprop="dateModified" datetime="2019-01-26T22:30:19+08:00">2019-01-26</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在飞行仿真中，获取飞机的位姿是基本要求。将飞行器视为刚体，根据牛顿第二定律和动量矩定理，即可推导出飞机的质心运动方程和飞机绕质心转动的动力学方程，即刚体的六自由度方程。下面即从《航空飞行器飞行动力学》中摘抄刚体六自由度方程的推导过程。</p>
+<h1 id="飞行器质心运动方程"><a href="#飞行器质心运动方程" class="headerlink" title="飞行器质心运动方程"></a>飞行器质心运动方程</h1><p>根据牛顿第二定理：</p>
+<script type="math/tex; mode=display">m\frac{dV}{dt}=F \tag{1}</script><p>式中$m$为飞行器质量，$V$为飞行器飞行速度矢量，$F$为作用于质心处外力的合力矢量。</p>
+<p>具体研究飞行器质心运动规律时，工程上常建立投影正在一动坐标系的标量方程，并认为大气时静止的。</p>
+<h2 id="一般动坐标系中质心动力学方程"><a href="#一般动坐标系中质心动力学方程" class="headerlink" title="一般动坐标系中质心动力学方程"></a>一般动坐标系中质心动力学方程</h2><p>取原点位于飞行器质心的一动坐标系$Oxyz$，它相对惯性坐标系$O_gx_gy_gz_g$有一转动角速度$w$。质心的绝对速度为$V$，如图1所示。</p>
+<p align="center">
+    <img src="images/DynamicAxis.jpg" width="60%" alt="动系相对于惯性坐标系的关系">
+</p>
+<center>图1 动系相对于惯性坐标系的关系</center>
+
+将速度$V$和角速度$w$分别在动坐标系上投影，则有
+
+$$V=V_xi+V_yj+V_zk \tag{2}$$
+$$w=w_xi+w_yj+w_zk \tag{3}$$
+
+式中$i,j,k$为动坐标系$Oxyz$的单位矢量。由于$w$存在，其方向将随时间变化。
+
+将公式$(2)和(3)$带入公式$(1)$，则速度$V$的微分，即质心的绝对加速度为：
+
+$$
+\frac{F}{m}=\frac{dV}{dt}=\frac{dV_x}{dt}i+\frac{dV_y}{dt}j+\frac{dV_z}{dt}k+V_x\frac{di}{dt}+V_y\frac{dj}{dt}+V_z\frac{dk}{dt} \tag{4}
+$$
+
+式中单位矢量导数$di/dt$是矢量端点$i$的速度，此时矢端曲线是绕$w$旋转的圆，因此：
+
+$$\frac{di}{dt}=w\times i$$
+$$\frac{dy}{dt}=w\times y$$
+$$\frac{dz}{dt}=w\times z$$
+
+将上述关系代入公式$(4)$，即可知质心的绝对加速度可表示为
+
+$$\frac{F}{m}=\frac{dV}{dt}=\frac{\delta V}{\delta t}+w \times V  \tag{5}$$
+
+其中：
+
+$$\frac{\delta V}{\delta t}=\frac{dV_x}{dt}i+\frac{dV_y}{dt}j+\frac{dV_z}{dt}k$$
+
+式$(5)$中$\frac{\delta V}{\delta t}$为动系角速度$w=0$时的加速度，即相当于观察者站在动坐标系中所看到的质心加速度；$w\times V$为由于存在角速度$w$使$V$相对于动坐标系方向发生变化而产生的加速度；$\frac{dV}{dt}$为质心的绝对加速度，即观察者在地面坐标系上所看到的加速度。
+
+同样合力矢量$F$用动坐标系上投影表示为：
+
+$$F=F_xi+F_yj+F_zk$$
+
+于是式(5)在动坐标系$Oxyz$上投影的质心动力学标量方程如下：
+
+$$m(\frac{dV_x}{dt}+V_zw_y-V_yw_z)=F_x$$
+$$m(\frac{dV_y}{dt}+V_xw_z-V_zw_x)=F_y$$
+$$m(\frac{dV_z}{dt}+V_yw_x-V_xw_y)=F_z$$
+
+上述方程组适用于任何动坐标系。
+
+# 飞行器绕质心的动力学方程
+
+根据动量矩定理，飞行器绕质心的转动运动可表示为：
+
+$$M=\frac{dh}{dt} \tag{6}$$
+
+式中$h$为飞行器对坐标系原点的动量矩；$M$为作用在飞行器上的外力对原点的合力矩。
+
+<p align="center">
+    <img src="images/MomentumOfCentroid.jpg" width="60%" alt="对质心的动量矩">
+</p>
+
+<center>图2 对质心的动量矩</center>
+
+<p>根据动量矩定义，飞行器上任意微元质量为dm，对坐标系原点的动量矩为：</p>
+<script type="math/tex; mode=display">\Delta h=r\times V dm</script><p>式中$r$为微元质量到坐标系原点的矢径；$V$为该微元质量的速度矢量，则</p>
+<script type="math/tex; mode=display">V=V_o+w\times r</script><p>式中$V_o$为坐标系原点速度（如坐标原点取为飞行器质心，则为质心速度）；$w$为坐标系转动角速度。</p>
+<p>于是飞行器的总动量矩可积分得出</p>
+<script type="math/tex; mode=display">h=\int r\times V dm=\int r dm \times V_o +\int r \times (w \times r) dm</script><p>取坐标系原点为质心时，有</p>
+<script type="math/tex; mode=display">\int r dm=0</script><p>飞行器动量矩简化为</p>
+<script type="math/tex; mode=display">h=\int r \times (w\times r) dm \tag{7}</script><p>上式表明，飞行器的动量矩只取决于转动产生的速度部分，而与质心运动速度$V_o$无关。矢径$r$和角速度$w$用坐标系中投影分量表示为：</p>
+<script type="math/tex; mode=display">r=xi+yj+zk</script><script type="math/tex; mode=display">w=w_xi+w_yj+w_zk</script><p>将上述关系式代入式$(7)$，经整理得：</p>
+<script type="math/tex; mode=display">h_x=w_xI_x-w_yI_{xy}-w_zI_{zx}</script><script type="math/tex; mode=display">h_y=w_yI_y-w_xI_{xy}-w_zI_{yx}</script><script type="math/tex; mode=display">h_z=w_zI_z-w_xI_{zx}-w_yI_{yz}</script><p>式中$I_x,I_y,I_z$分别为飞行器对$Ox轴,Oy轴,Oz轴$地惯性矩，分别为：</p>
+<script type="math/tex; mode=display">I_x=\int (y^2+z^2) dm</script><script type="math/tex; mode=display">I_y=\int (x^2+z^2) dm</script><script type="math/tex; mode=display">I_z=\int (x^2+y^2) dm</script><p>而$I<em>{xy},I</em>{yz},I_{zx}$则为对$Ox轴与Oy轴$，$Oy轴与Oz轴$，$Oz轴与Ox轴$的惯性积，分别为</p>
+<script type="math/tex; mode=display">I_{xy}=\int xy dm</script><script type="math/tex; mode=display">I_{yz}=\int yz dm</script><script type="math/tex; mode=display">I_{zx}=\int zx dm</script><h2 id="一般动坐标系中绕质心转动动力学方程"><a href="#一般动坐标系中绕质心转动动力学方程" class="headerlink" title="一般动坐标系中绕质心转动动力学方程"></a>一般动坐标系中绕质心转动动力学方程</h2><p>具体研究飞行器绕质心转动规律时，矢量形式的式$(6)$使用不便。工程习惯上将其投影在一动坐标系上建成方程的标量形式。此时动坐标系在空中以$w$转动，类同于加速度$\frac{dV}{dt}$，动量矩可以表示为：</p>
+<script type="math/tex; mode=display">M=\frac{dh}{dt}=\frac{\delta h}{\delta t}+w\times h</script><p>类似一般动坐标系中质心动力学方程的推导，最终可得转动运动方程的标量形式为：</p>
+<script type="math/tex; mode=display">m(\frac{dh_x}{dt}+h_zw_y-h_yw_z)=F_x</script><script type="math/tex; mode=display">m(\frac{dh_y}{dt}+h_xw_z-h_zw_x)=F_y</script><script type="math/tex; mode=display">m(\frac{dh_z}{dt}+h_yw_x-h_xw_y)=F_z</script><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li>方振平,陈万春,张曙光. 航空飞行器飞行动力学[M]. 2015.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/05/MathJax语法笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/05/MathJax语法笔记/" itemprop="url">
+                  MathJax语法笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-05 18:05:32" itemprop="dateCreated datePublished" datetime="2019-01-05T18:05:32+08:00">2019-01-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-26 16:00:26" itemprop="dateModified" datetime="2019-01-26T16:00:26+08:00">2019-01-26</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MathJax是一个跨浏览器的JavaScript库，它使用MathML、LaTeX和ASCIIMathML标记在Web浏览器中显示数学符号。MathJax是在Apache许可证下作为开源软件发布的。</p>
+<h1 id="安装MathJax"><a href="#安装MathJax" class="headerlink" title="安装MathJax"></a>安装MathJax</h1><p>MathJax有三种安装方式：最简单的方法就是使用分布式网络服务中的MathJax的副本，它位于 cdn.mathjax.org ,但是你也可以下载并安装一个MathJax的副本到你的服务器,或者使用在你本地硬盘的副本（这样是不需要使用网络）。 官方文档里有详细的描述。</p>
+<h1 id="MathJax语法"><a href="#MathJax语法" class="headerlink" title="MathJax语法"></a>MathJax语法</h1><h2 id="如何插入公式"><a href="#如何插入公式" class="headerlink" title="如何插入公式"></a>如何插入公式</h2><p>LaTeX的数学公式有两种：行中公式和独立公式。行中公式放在文中与其它文字混编，独立公式单独成行。</p>
+<p>行中公式可以用如下两种方法表示：</p>
+<blockquote>
+<p>(数学公式)　或　$数学公式$</p>
+</blockquote>
+<p>独立公式可以用如下两种方法表示：</p>
+<blockquote>
+<p>[数学公式]　或　$$数学公式$$</p>
+</blockquote>
+<h2 id="打Tag和引用公式"><a href="#打Tag和引用公式" class="headerlink" title="打Tag和引用公式"></a>打Tag和引用公式</h2><p>如果在某个公式之后，又想要引用原公式并说明原公式的出处，可以用 tagging/labelling/referencing system来做。 </p>
+<p>可以用 \tag{yourtag} 来给原公式打 Tag。</p>
+<script type="math/tex; mode=display">m\frac{dV}{dt}=F \tag{1}</script><p>如果在后面需要引用它，就在 \tag 后面加上 \label{somelabel}，yourtag 和 somelabel不一定要一样，但最好一样。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/MathJax" target="_blank" rel="noopener">MathJax</a>, by wikipedia.</li>
+<li><a href="https://www.zybuluo.com/knight/note/96093" target="_blank" rel="noopener">MathJax使用LaTeX语法编写数学公式教程</a>, by knight.</li>
+<li><a href="https://www.mathjax.org/" target="_blank" rel="noopener">MathJax Home</a>, by mathjax.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/05/Markdown语法笔记/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1299,673 +2013,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/22/Web安全攻防技术探讨/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/22/Web安全攻防技术探讨/" itemprop="url">
-                  网络安全攻防技术探讨
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-22 13:16:18 / 修改时间：13:52:57" itemprop="dateCreated datePublished" datetime="2018-12-22T13:16:18+08:00">2018-12-22</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>网络安全（英语：network security）包含网络设备安全、网络信息安全、网络软件安全。在此重点探讨网络软件安全中的Web安全。当前Web安全面临的压力越来越大，一方面是Web应用一统江湖，君临天下，另一方面针对Web应用的攻击越来越多，攻击方法越来越成熟。下面重点介绍常见的Web攻击方法。</p>
-<h1 id="XSS"><a href="#XSS" class="headerlink" title="XSS"></a>XSS</h1><p>XSS (Cross Site Script，跨站脚本攻击)的原理是恶意攻击者往 Web 页面里插入恶意可执行网页脚本代码，当用户浏览该页之时，嵌入其中 Web 里面的脚本代码会被执行，从而可以达到攻击者盗取用户信息或其他侵犯用户安全隐私的目的。</p>
-<h2 id="非持久型-XSS"><a href="#非持久型-XSS" class="headerlink" title="非持久型 XSS"></a>非持久型 XSS</h2><h2 id="持久型-XSS"><a href="#持久型-XSS" class="headerlink" title="持久型 XSS"></a>持久型 XSS</h2><h1 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h1><p>CSRF（Cross-Site Request Forgery,跨站请求伪造攻击）可以盗用你的登陆信息，以你的身份模拟发送各种请求。</p>
-<h1 id="SQL-注入"><a href="#SQL-注入" class="headerlink" title="SQL 注入"></a>SQL 注入</h1><p>SQL 注入漏洞（SQL Injection）是 Web 开发中最常见的一种安全漏洞。可以用它来从数据库获取敏感信息，或者利用数据库的特性执行添加用户，导出文件等一系列恶意操作，甚至有可能获取数据库乃至系统用户最高权限。</p>
-<h1 id="命令行注入"><a href="#命令行注入" class="headerlink" title="命令行注入"></a>命令行注入</h1><p>命令行注入漏洞，指的是攻击者能够通过 HTTP 请求直接侵入主机，执行攻击者预设的 shell 命令。</p>
-<h1 id="DDoS-攻击"><a href="#DDoS-攻击" class="headerlink" title="DDoS 攻击"></a>DDoS 攻击</h1><p>DDoS 又叫分布式拒绝服务，全称 Distributed Denial of Service，其原理就是利用大量的请求造成资源过载，导致服务不可用。</p>
-<h2 id="网络层-DDoS"><a href="#网络层-DDoS" class="headerlink" title="网络层 DDoS"></a>网络层 DDoS</h2><h2 id="应用层-DDoS"><a href="#应用层-DDoS" class="headerlink" title="应用层 DDoS"></a>应用层 DDoS</h2><h1 id="流量劫持"><a href="#流量劫持" class="headerlink" title="流量劫持"></a>流量劫持</h1><p>流量劫持是黑产行业的一大经济支柱。</p>
-<h2 id="DNS-劫持"><a href="#DNS-劫持" class="headerlink" title="DNS 劫持"></a>DNS 劫持</h2><h2 id="HTTP-劫持"><a href="#HTTP-劫持" class="headerlink" title="HTTP 劫持"></a>HTTP 劫持</h2><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.georgovassilis.com/2016/04/16/advanced-web-security-topics/" target="_blank" rel="noopener">Advanced web security topics</a>,by George.</li>
-<li><a href="https://zh.wikipedia.org/wiki/网络安全" target="_blank" rel="noopener">网络安全</a>,by wikipedia.</li>
-<li><a href="https://zoumiaojiang.com/article/common-web-security/" target="_blank" rel="noopener">常见 Web 安全攻防总结</a>,by zoumiaojiang.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/20/科学研究中阅读论文的方法/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/20/科学研究中阅读论文的方法/" itemprop="url">
-                  科学研究中阅读论文的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-20 23:44:44" itemprop="dateCreated datePublished" datetime="2018-12-20T23:44:44+08:00">2018-12-20</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-12-21 00:07:08" itemprop="dateModified" datetime="2018-12-21T00:07:08+08:00">2018-12-21</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在科学研究的过程中，选题十分重要。因此在初步确定好选题方向后，应对该选题方向进行调研。调研的主要工作就是寻找该方向的论文，进行阅读、分析、总结，了解该方向的过去和现在，并预测未来可能的发展方向。对于刚上研究生的同学，该采用什么样的方法来整理选题方向上的论文，使之符合逻辑，并且条理清晰呢？偶尔拜读了Flood Sung写的文章”深度学习论文阅读路线图“，觉得深受启发，将其所提出的深度学习论文阅读路线图构建原则记录备忘一下。</p>
-<h1 id="路线图的构建原则"><a href="#路线图的构建原则" class="headerlink" title="路线图的构建原则"></a>路线图的构建原则</h1><p>有以下四个原则：</p>
-<ul>
-<li>从整体到局部。即从Survey的文章，影响大局的文章到具体子问题子领域的文章。</li>
-<li>从过去到最前沿。即每个topic的文章是按照时间顺序排列的，这样大家就可以清楚的看到这个方向的研究发展脉络。</li>
-<li>从通用到应用。即有些深度学习的文章是面向深度学习通用理论，比如Resnet，可以用在任意的神经网络中，而有些文章则是具体应用，比如Image Caption。</li>
-<li>面向最前沿。收集的文章会有很多是最新的，甚至就是几天前出来的，这样能保证路线图是最新的。</li>
-</ul>
-<p>每一种topic只选择最有代表性的几篇文章，比如深度增强学习（Deep Reinforcement Learning），这个领域现在有几十篇文章，但只选择几篇，要深入了解甚至做为自己的研究方向，还需要进一步的阅读该领域的文章。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/23080129" target="_blank" rel="noopener">深度学习论文阅读路线图 Deep Learning Papers Reading Roadmap</a>,by Flood Sung.</li>
-<li><a href="https://github.com/floodsung/Deep-Learning-Papers-Reading-Roadmap" target="_blank" rel="noopener">Deep Learning Papers Reading Roadmap</a>,by Flood Sung.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/18/系统仿真中一些问题的思考/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/18/系统仿真中一些问题的思考/" itemprop="url">
-                  系统仿真中一些问题的思考
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-18 18:41:42 / 修改时间：22:49:50" itemprop="dateCreated datePublished" datetime="2018-12-18T18:41:42+08:00">2018-12-18</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>系统仿真（system simulation）就是根据系统分析的目的，在分析系统各要素性质及其相互关系的基础上，建立能描述系统结构或行为过程的、且具有一定逻辑关系或数量关系的仿真模型，据此进行试验或定量分析，以获得正确决策所需的各种信息。</p>
-<h1 id="系统仿真与仿真游戏的区别"><a href="#系统仿真与仿真游戏的区别" class="headerlink" title="系统仿真与仿真游戏的区别"></a>系统仿真与仿真游戏的区别</h1><p>系统仿真与仿真游戏本质上没有区别，都是计算机程序对现实的模拟，所不同的是各自对仿真保真度（Simulation Fidelity）的要求不同。</p>
-<p>仿真保真度（Simulation Fidelity）用于描述仿真精度，模拟真实对应物有多近似：</p>
-<ul>
-<li>低保真：对系统的最小模拟，接受输入产生输出</li>
-<li>中等保真：对刺激能自动响应，有限精度</li>
-<li>高保真：接近不可辨识或者尽可能地接近真实系统</li>
-</ul>
-<p>通常系统仿真对仿真保真度的要求比仿真游戏要高。</p>
-<h1 id="计算步长与采样周期"><a href="#计算步长与采样周期" class="headerlink" title="计算步长与采样周期"></a>计算步长与采样周期</h1><p>采用计算机进行数值模拟或系统仿真时，经常需要采用数值解法求解模型方程。系统模型一般采用微分方程描述（也有其它形式），采用数值方法求解，就是采用迭代法逐步逼近。</p>
-<h2 id="计算步长"><a href="#计算步长" class="headerlink" title="计算步长"></a>计算步长</h2><p>积分与微分是互逆。对一个曲线（包括直线）方程求积分，其实就是求曲线与横轴围成的面积。该面积可以用一系列间隔很小的面积块相加得到。这些小间隔的宽度就是计算步长。显然，纯粹从精度的角度考虑，步长越小越精确，因为近似面积更接近实际图形面积。</p>
-<h2 id="采样周期"><a href="#采样周期" class="headerlink" title="采样周期"></a>采样周期</h2><p>采样周期是对一个实际信号测量时，相邻两次测量之间的时间间隔。有时候，采样周期和计算步长相似，但采样周期要考虑实际限制，且是时间单位，而计算步长不一定是时间单位，且相对自由些。两者在数值上没必然联系。<strong>对于同一问题，且都是时间量纲的话，采样周期大于等于计算步长，前者是后者的整数倍</strong>。</p>
-<p>系统仿真包含系统模型求解，也就是在每个采样周期内，要解出模型方程。控制系统仿真时在采样周期内要解出两个模型方程：控制器模型和系统模型。</p>
-<p><strong>一个采样周期内可对系统模型迭代求解一次或多次</strong>。</p>
-<h2 id="计算步长和采样周期大小的选择"><a href="#计算步长和采样周期大小的选择" class="headerlink" title="计算步长和采样周期大小的选择"></a>计算步长和采样周期大小的选择</h2><p>关于采样周期和计算步长的选择，一般考虑以下因素：</p>
-<ul>
-<li><p>从求解精度考虑，越小越好。</p>
-</li>
-<li><p>从计算量考虑，越大越好。</p>
-</li>
-</ul>
-<h2 id="采样周期与每秒帧数-Frames-Per-Second，FPS"><a href="#采样周期与每秒帧数-Frames-Per-Second，FPS" class="headerlink" title="采样周期与每秒帧数(Frames Per Second，FPS)"></a>采样周期与每秒帧数(Frames Per Second，FPS)</h2><p>采样周期以秒为单位，则</p>
-<script type="math/tex; mode=display">FPS=\frac{1}{采样周期}</script><p>FPS是指每秒画面重绘的次数，用于衡量画面切换速度。FPS越大，则动画效果越平滑，当FPS小于20时，一般就能明显感受到画面的卡滞现象。</p>
-<p>当FPS足够大(比如达到60)，再增加帧数人眼也不会感受到明显的变化，反而相应地就要消耗更多资源(比如电影的胶片就需要更长了，或是电脑刷新画面需要消耗计算资源等等)。因此，选择一个适中的FPS即可。</p>
-<p>NTSC标准的电视FPS是30，PAL标准的电视FPS是25，电影的FPS标准为24。</p>
-<h1 id="WebGL动画"><a href="#WebGL动画" class="headerlink" title="WebGL动画"></a>WebGL动画</h1><p>WebGL是一种JavaScript API，用于在不使用插件的情况下在任何兼容的网页浏览器中呈现交互式2D和3D图形。但要产生WebGL动画，需要对运动的场景不停的采样，即不停地拍照。JavaScript的采样函数主要有setInterval方法和requestAnimationFrame方法。</p>
-<h2 id="setInterval方法"><a href="#setInterval方法" class="headerlink" title="setInterval方法"></a>setInterval方法</h2><blockquote>
-<p>如果要设置特定的FPS(虽然严格来说，即使使用这种方法，JavaScript也不能保证帧数精确性)，可以使用JavaScript DOM定义的方法：</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setInterval(fn,mesc)</span><br></pre></td></tr></table></figure>
-<p>其中，fn是每过msec毫秒执行的函数，如果将fn定义为重绘画面的函数，就能实现动画效果。setInterval函数返回一个变量timer，如果需要停止重绘，需要使用clearInterval方法，并传入该变量timer。</p>
-<h2 id="requestAnimationFrame方法"><a href="#requestAnimationFrame方法" class="headerlink" title="requestAnimationFrame方法"></a>requestAnimationFrame方法</h2><blockquote>
-<p>大多数时候，我们并不在意多久重绘一次，这时候就适合用requestAnimationFrame方法了。它告诉浏览器在合适的时候调用指定函数，通常可能达到60FPS。</p>
-</blockquote>
-<ul>
-<li>requestAnimationFrame同样有对应的cancelAnimationFrame取消动画</li>
-<li>和setInterval不同的是，由于requestAnimationFrame只请求一帧画面，因此，除了在init函数中需要调用，在被其调用的函数中需要再次调用requestAnimationFrame</li>
-</ul>
-<h2 id="使用stat-js记录FPS"><a href="#使用stat-js记录FPS" class="headerlink" title="使用stat.js记录FPS"></a>使用stat.js记录FPS</h2><p>stat.js是Three.js的作者Mr.Doob的另一个有用的JavaScript库。很多情况下，我们希望知道实时的FPS信息，从而更好地监测动画效果。这时候，stat.js就能提供一个很好的帮助，它占据屏幕中的一小块位置(如左上角)，显示实时的FPS信息。</p>
-<p>在HTML中引用stat.js:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot; src=&quot;//mrdoob.github.io/stats.js/build/stats.min.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-<p>再使用如下代码监视实时FPS：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">var stats = new Stats();</span><br><span class="line">stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom</span><br><span class="line">document.body.appendChild( stats.dom );</span><br><span class="line"></span><br><span class="line">function animate() &#123;</span><br><span class="line"></span><br><span class="line">	stats.begin();</span><br><span class="line"></span><br><span class="line">	// monitored code goes here</span><br><span class="line"></span><br><span class="line">	stats.end();</span><br><span class="line"></span><br><span class="line">	requestAnimationFrame( animate );</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">requestAnimationFrame( animate );</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://blog.sciencenet.cn/blog-341979-776318.html" target="_blank" rel="noopener">计算步长和采样周期</a>,by 王永林.</li>
-<li><a href="http://www.ufgame.com/5951.html" target="_blank" rel="noopener">离散和连续模拟之间的实际区别是什么？</a>,by UF Game.</li>
-<li><a href="https://baike.baidu.com/item/系统仿真" target="_blank" rel="noopener">系统仿真</a>,by 百度百科.</li>
-<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-physicsengines/index.html" target="_blank" rel="noopener">开源的物理引擎</a>,by M. Jones.</li>
-<li><a href="https://zh.wikipedia.org/wiki/数值分析" target="_blank" rel="noopener">数值分析</a>,by wikipedia.</li>
-<li><a href="https://segmentfault.com/a/1190000012238927" target="_blank" rel="noopener">three.js 入门详解(二)</a>,by Levi.</li>
-<li><a href="https://zh.wikipedia.org/wiki/WebGL" target="_blank" rel="noopener">WebGL</a>,by wikipedia.</li>
-<li><a href="https://github.com/mrdoob/stats.js" target="_blank" rel="noopener">stats.js</a>, by mydoob.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/33058983" target="_blank" rel="noopener">详解JavaScript中的Event Loop（事件循环）机制</a>,by 暮雨清秋.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/17/撰写学术论文的思考/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/17/撰写学术论文的思考/" itemprop="url">
-                  撰写学术论文的思考
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-17 20:25:20" itemprop="dateCreated datePublished" datetime="2018-12-17T20:25:20+08:00">2018-12-17</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-17 22:19:35" itemprop="dateModified" datetime="2019-01-17T22:19:35+08:00">2019-01-17</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>迫于学业和工作的压力，撰写了不少的学术论文。但是并没有对如何撰写学术论文进行思考。看到清华大学的肖寒<br>博士在某个问题下的回答后，感觉茅塞顿开：</p>
-<blockquote>
-<p> 不过，一般注水的作者相对而言都是新手，因为比较有经验的研究者都知道：“<strong>论文的一切都在于贡献，不在于结果</strong>”</p>
-<p> 你的结果只是一个说明你贡献的例证，多那么点少那么点，大家看了毫无区别。你注水除了恶心我们这些后来实验的人，就没什么别的用处了。有那些<strong>疯狂调参和使劲弄技巧</strong>的时间，真不如<strong>拿来整理好你自己的思路，把论文的论述过程做到有理有据</strong>！因为 80.2 和 80.3 正常人都没法记住其间区别，但你<strong>循循善诱的精致论述会让所有人印象深刻</strong>。我希望新手不要本末倒置！</p>
-</blockquote>
-<p>论文重在贡献，迫于学业和工作的压力造的注水论文实在无趣！</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/22520434" target="_blank" rel="noopener">看图说话的AI小朋友——图像标注趣谈（下）</a>, by 杜客.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/30575091" target="_blank" rel="noopener">从标题到写作流程：写好一篇论文的十条基本原则</a>,by 机器之心.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2013,7 +2060,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">205</span>
+                    <span class="site-state-item-count">209</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2701,9 +2748,9 @@
   
     
       
-    
-      
         
+      
+    
       
     
       

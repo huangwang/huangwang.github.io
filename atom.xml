@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://huangwang.github.io/"/>
-  <updated>2019-12-11T12:57:06.019Z</updated>
+  <updated>2019-12-12T12:57:07.886Z</updated>
   <id>https://huangwang.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>C++中Cout输出到文件</title>
+    <link href="https://huangwang.github.io/2019/12/12/CPlusPlus%E4%B8%ADCout%E8%BE%93%E5%87%BA%E5%88%B0%E6%96%87%E4%BB%B6/"/>
+    <id>https://huangwang.github.io/2019/12/12/CPlusPlus中Cout输出到文件/</id>
+    <published>2019-12-12T12:46:41.000Z</published>
+    <updated>2019-12-12T12:57:07.886Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近在调试一个C++程序时，没有报任何错误就直接退出了，Cout输出到控制台的信息没法查看，无法找到错误原因。于是想到将Cout输出重定向到文件，以便分析错误原因。具体代码如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;fstream&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line">    streambuf *psbuf,*backup;</span><br><span class="line">    ofstream file;</span><br><span class="line">    file.open(&quot;test.txt&quot;);</span><br><span class="line">    backup=cout.rdbuf();</span><br><span class="line">    psbuf=file.rdbuf();</span><br><span class="line"></span><br><span class="line">    cout.rdbuf(psbuf);//将cout输出重定向到文件</span><br><span class="line">    cout&lt;&lt; &quot;This will write to test.txt!&quot;;</span><br><span class="line"></span><br><span class="line">    cout.rdbuf(backup);//恢复cout输出重定向到终端</span><br><span class="line">    file.close();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://www.cnblogs.com/fly1988happy/archive/2012/04/16/2452021.html" target="_blank" rel="noopener">NULL指针、零指针、野指针</a>,by fly1988happy.</li><li><a href="https://www.w3cschool.cn/cpp/cpp-null-pointers.html" target="_blank" rel="noopener">C++ Null 指针</a>,by w3cschool.</li><li><a href="https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-files" target="_blank" rel="noopener">How to redirect cin and cout to files?</a>,by stackoverflow.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;最近在调试一个C++程序时，没有报任何错误就直接退出了，Cout输出到控制台的信息没法查看，无法找到错误原因。于是想到将Cout输出重定向到文件，以便分析错误原因。具体代码如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;
+      
+    
+    </summary>
+    
+    
+      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
+    
+      <category term="C/C++" scheme="https://huangwang.github.io/tags/C-C/"/>
+    
+  </entry>
   
   <entry>
     <title>红外点源目标探测仿真</title>
@@ -518,34 +544,6 @@
       <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
     
       <category term="Cesium" scheme="https://huangwang.github.io/tags/Cesium/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Qt集成OSG开发</title>
-    <link href="https://huangwang.github.io/2019/10/13/Qt%E9%9B%86%E6%88%90OSG%E5%BC%80%E5%8F%91/"/>
-    <id>https://huangwang.github.io/2019/10/13/Qt集成OSG开发/</id>
-    <published>2019-10-13T14:07:38.000Z</published>
-    <updated>2019-11-13T08:02:54.759Z</updated>
-    
-    <content type="html"><![CDATA[<p>Qt集成OSG开发是指使用Qt开发图形用户界面，封装OSG为Qt的Widget，然后由OSG负责三维展示的解决方案。具体方法如下：</p><h1 id="QT-OSG开发环境配置"><a href="#QT-OSG开发环境配置" class="headerlink" title="QT+OSG开发环境配置"></a>QT+OSG开发环境配置</h1><p>具体配置过程请参考<a href="https://huangwang.github.io/2019/10/10/Windows%E4%B8%8BQT%E4%B8%8EOSG%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">Windows下QT与OSG开发环境配置</a>。</p><h1 id="封装OSG为Widget"><a href="#封装OSG为Widget" class="headerlink" title="封装OSG为Widget"></a>封装OSG为Widget</h1><p>封装OSG为Widget可参考<a href="https://github.com/openscenegraph/osgQt" target="_blank" rel="noopener">osgQt</a>。osgQt的编译链接与OSG类似。</p><p>osgQt仅将OSG封装成简单的Widget，还需研究将OSG封装成自定义控件，从而在QT Designer里方便使用。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol><li><a href="https://www.w3xue.com/exp/article/20196/40679.html" target="_blank" rel="noopener">OSG嵌入QT的简明总结</a>,by charlee44.</li><li><a href="https://blog.csdn.net/niu2212035673/article/details/72802055" target="_blank" rel="noopener">OSG和Qt结合</a>,by 先锋小牛.</li><li><a href="https://blog.csdn.net/xpg4321/article/details/72867596" target="_blank" rel="noopener">OSG中使用Qt做界面</a>,by 很菜但努力.</li><li><a href="https://blog.csdn.net/u013207966/article/details/51531023" target="_blank" rel="noopener">第1课时《Qt osgEarth 编程入门》</a>,by 汀兰左岸.</li><li><a href="https://www.cnblogs.com/boright88/p/6264642.html" target="_blank" rel="noopener">QT pro文件解析</a>, by 博弈right.</li><li><a href="https://huangwang.github.io/2019/10/10/Windows%E4%B8%8BQT%E4%B8%8EOSG%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">Windows下QT与OSG开发环境配置</a>,by jackhuang.</li><li><a href="https://blog.csdn.net/q_l_s/article/details/52458240" target="_blank" rel="noopener">window下查看dll, lib文件是32位还是64位</a>,by 剑西楼.</li><li><a href="https://blog.csdn.net/only_1/article/details/80760495" target="_blank" rel="noopener">使用VS工具查看dll是32位还是64位</a>,by 代码运输员.</li><li><a href="https://blog.csdn.net/panshun888/article/details/51923927" target="_blank" rel="noopener">Qt自定义控件的创建与初步使用（一）之自定义控件的创建步骤</a>,by 穿过记忆的河流.</li><li><a href="https://blog.csdn.net/panshun888/article/details/52074400" target="_blank" rel="noopener">Qt自定义控件的创建与初步使用（二）之图片上绘制文字、箭头、曲线</a>,by 穿过记忆的河流.</li><li><a href="https://my.oschina.net/jannn/blog/466994" target="_blank" rel="noopener">QT自定义控件(生成和使用)</a>,by jannn.</li><li><a href="https://blog.csdn.net/xuzheng11332/article/details/61618955" target="_blank" rel="noopener">QT学习笔记（5）：自定义控件</a>,by xuzheng11332.</li><li><a href="https://blog.csdn.net/AleutianSix/article/details/88288721" target="_blank" rel="noopener">QT自定义控件在QTCreator中不显示问题</a>,by AleutianSix.</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;Qt集成OSG开发是指使用Qt开发图形用户界面，封装OSG为Qt的Widget，然后由OSG负责三维展示的解决方案。具体方法如下：&lt;/p&gt;
-&lt;h1 id=&quot;QT-OSG开发环境配置&quot;&gt;&lt;a href=&quot;#QT-OSG开发环境配置&quot; class=&quot;headerlink&quot; ti
-      
-    
-    </summary>
-    
-    
-      <category term="笔记本" scheme="https://huangwang.github.io/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/"/>
-    
-      <category term="飞行仿真" scheme="https://huangwang.github.io/tags/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F/"/>
-    
-      <category term="计算机仿真" scheme="https://huangwang.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BB%BF%E7%9C%9F/"/>
     
   </entry>
   

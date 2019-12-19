@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Python第三方包离线安装]]></title>
+    <url>%2F2019%2F12%2F19%2FPython%E7%AC%AC%E4%B8%89%E6%96%B9%E5%8C%85%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85%2F</url>
+    <content type="text"><![CDATA[需要在离线的情况下，配置电脑的Python环境，具体方法如下： 寻找一台与离线电脑架构一致且能上网的干净电脑或虚拟机，在线配置Python环境。 在线电脑上打包Python环境，拷贝到离线电脑上。 在离线电脑上安装Python环境。 在线配置Python环境安装Python3之后，使用如下命令安装第三方包： 12# 临时使用清华镜像，加快Python第三方包下载速度pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple matplotlib 打包安装的Python第三方包： 123pip3 list #查看安装的包pip3 freeze &gt;requirements.txtpip3 install --download C:\Python37\packages -r requirements.txt 离线配置Python环境将打包好的Python环境拷贝到离线电脑后，使用如下命令安装第三方包： 1pip install --no-index --find-links=C:\Python37\packages -r requirements.txt 参考链接 pypi 镜像使用帮助,by 清华大学开源软件镜像站. Python pip离线安装package方法总结（以TensorFlow为例）,by 毛帅. 离线环境安装python第三方库,by 接纳自己.]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[C++中Cout输出到文件]]></title>
     <url>%2F2019%2F12%2F12%2FCPlusPlus%E4%B8%ADCout%E8%BE%93%E5%87%BA%E5%88%B0%E6%96%87%E4%BB%B6%2F</url>
     <content type="text"><![CDATA[最近在调试一个C++程序时，没有报任何错误就直接退出了，Cout输出到控制台的信息没法查看，无法找到错误原因。于是想到将Cout输出重定向到文件，以便分析错误原因。具体代码如下： 12345678910111213141516171819#include &lt;iostream&gt;#include &lt;fstream&gt;using namespace std;int main()&#123; streambuf *psbuf,*backup; ofstream file; file.open(&quot;test.txt&quot;); backup=cout.rdbuf(); psbuf=file.rdbuf(); cout.rdbuf(psbuf);//将cout输出重定向到文件 cout&lt;&lt; &quot;This will write to test.txt!&quot;; cout.rdbuf(backup);//恢复cout输出重定向到终端 file.close(); return 0;&#125; 参考链接 NULL指针、零指针、野指针,by fly1988happy. C++ Null 指针,by w3cschool. How to redirect cin and cout to files?,by stackoverflow.]]></content>

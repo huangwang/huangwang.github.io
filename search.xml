@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[jszip使用方法简介]]></title>
+    <url>%2F2019%2F12%2F24%2Fjszip%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E7%AE%80%E4%BB%8B%2F</url>
+    <content type="text"><![CDATA[当大文件需要在网络中传输时，最好进行压缩传输，然后在终点进行解压。以ZIP压缩为例，压缩后文件大小极具减小，可节约带宽，提高系统并发能力。下面介绍使用jszip在浏览器端的解压方法。 JSZip简介JSZip是一个用于创建、读取和编辑.zip文件的javascript库，有一个可爱而简单的API。JSZip支持Nodejs和浏览器端的安装使用。具体方法如下： 1234567With npm : npm install jszipWith bower : bower install Stuk/jszipWith component : component install Stuk/jszipManually : download JSZip and include the file dist/jszip.js or dist/jszip.min.js 浏览器端解压zip文件后端Nodejs将zip文件以二进制形式存储到数据库中。当前端需要该zip文件时，后端将zip文件以二进制形式传输到前端，前端再解压还原。 Nodejs使用JSZip压缩文件123456789101112var JSZip = require(&quot;jszip&quot;);var zip = new JSZip();// create a filezip.file(&quot;hello.txt&quot;, &quot;Hello[p my)6cxsw2q&quot;);// oops, cat on keyboard. Fixing !zip.file(&quot;hello.txt&quot;, &quot;Hello World\n&quot;);// create a file and a folderzip.file(&quot;nested/hello.txt&quot;, &quot;Hello World\n&quot;);// same aszip.folder(&quot;nested&quot;).file(&quot;hello.txt&quot;, &quot;Hello World\n&quot;); 浏览器端解压Zip文件12345678910import JSZip from &apos;jszip&apos;let new_zip = new JSZip();// Read zip packagenew_zip.loadAsync(content).then(function(zip) &#123; // you now have every files contained in the loaded zip new_zip.file(&quot;hello.txt&quot;).async(&quot;string&quot;); &#125;); 参考链接 ZIP格式,by wikipedia. gzip,bzip2,zip三种格式压缩率对比,by CatDeacon. JSZip,by stuk.]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>前端</tag>
+        <tag>nodejs</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Python第三方包离线安装]]></title>
     <url>%2F2019%2F12%2F19%2FPython%E7%AC%AC%E4%B8%89%E6%96%B9%E5%8C%85%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85%2F</url>
     <content type="text"><![CDATA[需要在离线的情况下，配置电脑的Python环境，具体方法如下： 寻找一台与离线电脑架构一致且能上网的干净电脑或虚拟机，在线配置Python环境。 在线电脑上打包Python环境，拷贝到离线电脑上。 在离线电脑上安装Python环境。 在线配置Python环境安装Python3之后，使用如下命令安装第三方包： 12# 临时使用清华镜像，加快Python第三方包下载速度pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple matplotlib 打包安装的Python第三方包： 123pip3 list #查看安装的包pip3 freeze &gt;requirements.txtpip3 install --download C:\Python37\packages -r requirements.txt 离线配置Python环境将打包好的Python环境拷贝到离线电脑后，使用如下命令安装第三方包： 1pip install --no-index --find-links=C:\Python37\packages -r requirements.txt 参考链接 pypi 镜像使用帮助,by 清华大学开源软件镜像站. Python pip离线安装package方法总结（以TensorFlow为例）,by 毛帅. 离线环境安装python第三方库,by 接纳自己.]]></content>

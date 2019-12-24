@@ -314,6 +314,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/24/Expressjs组件morgan保存日志到文件的方法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/24/Expressjs组件morgan保存日志到文件的方法/" itemprop="url">
+                  Expressjs组件morgan保存日志到文件的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-24 23:57:27" itemprop="dateCreated datePublished" datetime="2019-07-24T23:57:27+08:00">2019-07-24</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-07-25 00:00:48" itemprop="dateModified" datetime="2019-07-25T00:00:48+08:00">2019-07-25</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>morgan是express默认的日志中间件，也可以脱离express，作为node.js的日志组件单独使用。</p>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><h2 id="将日志打印到本地文件"><a href="#将日志打印到本地文件" class="headerlink" title="将日志打印到本地文件"></a>将日志打印到本地文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var express = require(&apos;express&apos;);</span><br><span class="line">var app = express();</span><br><span class="line">var morgan = require(&apos;morgan&apos;);</span><br><span class="line">var fs = require(&apos;fs&apos;);</span><br><span class="line">var path = require(&apos;path&apos;);</span><br><span class="line"></span><br><span class="line">var accessLogStream = fs.createWriteStream(path.join(__dirname, &apos;access.log&apos;), &#123;flags: &apos;a&apos;&#125;);</span><br><span class="line"></span><br><span class="line">app.use(morgan(&apos;short&apos;, &#123;stream: accessLogStream&#125;));</span><br><span class="line">app.use(function(req, res, next)&#123;</span><br><span class="line">    res.send(&apos;ok&apos;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.listen(3000);</span><br></pre></td></tr></table></figure>
+<h2 id="日志切割"><a href="#日志切割" class="headerlink" title="日志切割"></a>日志切割</h2><p>一个线上应用，如果所有的日志都落地到同一个本地文件，时间久了，文件会变得非常大，既影响性能，又不便于查看。这时候，就需要用到日志分割了。</p>
+<p>借助file-stream-rotator插件，可以轻松完成日志分割的工作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">var FileStreamRotator = require(&apos;file-stream-rotator&apos;)</span><br><span class="line">var express = require(&apos;express&apos;)</span><br><span class="line">var fs = require(&apos;fs&apos;)</span><br><span class="line">var morgan = require(&apos;morgan&apos;)</span><br><span class="line">var path = require(&apos;path&apos;)</span><br><span class="line"></span><br><span class="line">var app = express()</span><br><span class="line">var logDirectory = path.join(__dirname, &apos;log&apos;)</span><br><span class="line"></span><br><span class="line">// ensure log directory exists</span><br><span class="line">fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)</span><br><span class="line"></span><br><span class="line">// create a rotating write stream</span><br><span class="line">var accessLogStream = FileStreamRotator.getStream(&#123;</span><br><span class="line">  date_format: &apos;YYYYMMDD&apos;,</span><br><span class="line">  filename: path.join(logDirectory, &apos;access-%DATE%.log&apos;),</span><br><span class="line">  frequency: &apos;daily&apos;,</span><br><span class="line">  verbose: false</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">// setup the logger</span><br><span class="line">app.use(morgan(&apos;combined&apos;, &#123;stream: accessLogStream&#125;))</span><br><span class="line"></span><br><span class="line">app.get(&apos;/&apos;, function (req, res) &#123;</span><br><span class="line">  res.send(&apos;hello, world!&apos;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.cnblogs.com/chyingp/p/node-learning-guide-express-morgan.html" target="_blank" rel="noopener">Node 进阶：express 默认日志组件 morgan 从入门使用到源码剖析</a>,by 程序猿小卡.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/24/Expressjs-cors入门简介/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2091,169 +2250,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/14/小波变换学习笔记/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/14/小波变换学习笔记/" itemprop="url">
-                  小波变换学习笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-07-14 15:52:21" itemprop="dateCreated datePublished" datetime="2019-07-14T15:52:21+08:00">2019-07-14</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-10-04 17:38:45" itemprop="dateModified" datetime="2019-10-04T17:38:45+08:00">2019-10-04</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>小波分析（英语：wavelet analysis）或小波变换（英语：wavelet transform）是指用有限长或快速衰减的“母小波”（mother wavelet）的振荡波形来表示信号。该波形被缩放和平移以匹配输入的信号。</p>
-<p>小波变化的发展，承袭Gabor transform的局部化思想，并且克服了傅里叶和Gabor transform的部分缺陷，小波变换提供了一个可以调变的时频窗口，窗口的宽度(width)随着频率变化，频率增高时，时间窗口的宽度就会变窄，以提高分辨率．小波在整个时间范围内的振幅平均值为0，具有有限的持续时间和突变的频率与震幅，可以是不规则，或不对称的信号。</p>
-<p>小波变换分成两个大类：离散小波变换（DWT） 和连续小波变换（CWT）。两者的主要区别在于，连续变换在所有可能的缩放和平移上操作，而离散变换采用所有缩放和平移值的特定子集。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.zhihu.com/question/22864189" target="_blank" rel="noopener">能不能通俗的讲解下傅立叶分析和小波分析之间的关系？</a>,by zhihu.</li>
-<li><a href="https://www.zhihu.com/question/278337954" target="_blank" rel="noopener">什么是线性平稳信号和非线性非平稳信号？</a>,by zhihu.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/22450818" target="_blank" rel="noopener">形象易懂讲解算法I——小波变换</a>,by 咚懂咚懂咚.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/66189212" target="_blank" rel="noopener">从傅里叶变换进阶到小波变换（一）</a>,by 1335.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/34989414" target="_blank" rel="noopener">信号频域分析方法的理解（频谱、能量谱、功率谱、倒频谱、小波分析）</a>,by Mr.括号.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E5%B0%8F%E6%B3%A2%E5%88%86%E6%9E%90" target="_blank" rel="noopener">小波分析</a>,by wikipedia.</li>
-<li><a href="http://www.jezzamon.com/fourier/zh-cn.html" target="_blank" rel="noopener">傅里叶变换交互式入门</a>,by Jez Swanson.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2301,7 +2297,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">211</span>
+                    <span class="site-state-item-count">212</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

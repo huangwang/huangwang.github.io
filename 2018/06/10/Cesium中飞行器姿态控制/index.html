@@ -110,7 +110,7 @@
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
 <meta property="og:description" content="问题提出最近研究开源虚拟地球Cesium，遇到一个问题：在获取飞行器经度纬度高度偏航俯仰滚转六个参数的前提下，如何在Cesium中用CZML文件表示，从而完美实现飞行器姿态轨迹的复现。在CZML的position属性中使用cartographicDegrees表示飞行器的经度纬度高度，可以很好复现飞行器的轨迹。然而在CZML的orientation属性中使用unitQuaternion表示飞机自身">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-11-25T15:13:21.280Z">
+<meta property="og:updated_time" content="2019-12-26T12:10:10.967Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cesium中飞行器姿态控制">
 <meta name="twitter:description" content="问题提出最近研究开源虚拟地球Cesium，遇到一个问题：在获取飞行器经度纬度高度偏航俯仰滚转六个参数的前提下，如何在Cesium中用CZML文件表示，从而完美实现飞行器姿态轨迹的复现。在CZML的position属性中使用cartographicDegrees表示飞行器的经度纬度高度，可以很好复现飞行器的轨迹。然而在CZML的orientation属性中使用unitQuaternion表示飞机自身">
@@ -376,7 +376,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-11-25 23:13:21" itemprop="dateModified" datetime="2019-11-25T23:13:21+08:00">2019-11-25</time>
+                <time title="修改时间：2019-12-26 20:10:10" itemprop="dateModified" datetime="2019-12-26T20:10:10+08:00">2019-12-26</time>
               
             
           </span>
@@ -435,8 +435,11 @@
 <li>模型坐标系<br>模型坐标系以物体的中心为坐标原点，物体旋转、平移等操作都是围绕局部坐标系进行的。这时当物体模型进行旋转、平移等操作时，局部坐标系也执行相应的旋转、平移等操作。<br>局部坐标系是一个假想的坐标系，该坐标系与物体的相对位置至始至终是不变的，假想出这个坐标系的目的主要是为了正向理解对三维场景中物体执行的平移和旋转操作。使用局部坐标系理解模型变换时，所有的变换操作直接作用与局部坐标系，由于局部坐标系与物体的相对位置不变，因此对局部坐标系进行平移、旋转和缩放时，物体在场景中位置和形状也会发生相应的变化。</li>
 </ol>
 <p>在Cesium中存在两种世界坐标系和地理坐标系之间坐标转换的方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 经纬度转换为世界坐标</span><br><span class="line">Cesium.Cartesian3.fromDegrees(longitude, latitude, height, ellipsoid, result) </span><br><span class="line"># 世界坐标转换为经纬度</span><br><span class="line">var ellipsoid=viewer.scene.globe.ellipsoid;</span><br><span class="line">var cartesian3=new Cesium.cartesian3(x,y,z);</span><br><span class="line">var cartographic=ellipsoid.cartesianToCartographic(cartesian3);</span><br><span class="line">var lat=Cesium.Math.toDegrees(cartograhphic.latitude);</span><br><span class="line">var lng=Cesium.Math.toDegrees(cartograhpinc.longitude);</span><br><span class="line">var alt=cartographic.height;</span><br></pre></td></tr></table></figure></p>
-<h2 id="CZML分析"><a href="#CZML分析" class="headerlink" title="CZML分析"></a>CZML分析</h2><p>CZML是一种用来描述动态场景的JSON架构的语言，主要用于Cesium在浏览器中的展示。它可以用来描述点、线、布告板、模型以及其他的图元，同时定义他们是怎样随时间变化的<sup>[3]</sup>。<br>CZML可使用model属性直接加载3D模型，由position属性决定模型在世界坐标系内的位置，由orientation决定模型在世界坐标系内的姿态，并最终由orientation的unitQuaternion表示。<br>unitQuaternion即单位四元数，可与偏航俯仰滚转相互转换，并避免偏航俯仰滚转的万向节锁定问题，但其本质上都是一个旋转矩阵，可决定模型在世界坐标系内的姿态。</p>
+<h2 id="CZML分析"><a href="#CZML分析" class="headerlink" title="CZML分析"></a>CZML分析</h2><p>CZML是一种用来描述动态场景的JSON架构的语言，主要用于Cesium在浏览器中的展示。它可以用来描述点、线、布告板、模型以及其他的图元，同时定义他们是怎样随时间变化的<sup>[3]</sup>。  </p>
+<p>CZML可使用model属性直接加载3D模型，由position属性决定模型在世界坐标系内的位置，由orientation决定模型在世界坐标系内的姿态，并最终由orientation的unitQuaternion表示。  </p>
+<p>unitQuaternion即单位四元数，可与偏航俯仰滚转相互转换，并避免偏航俯仰滚转的万向节锁定问题，但其本质上都是一个旋转矩阵，可决定模型在世界坐标系内的姿态。</p>
 <h2 id="获取正确的飞行器姿态"><a href="#获取正确的飞行器姿态" class="headerlink" title="获取正确的飞行器姿态"></a>获取正确的飞行器姿态</h2><p>首先计算飞行器模型坐标系对站点直角坐标系的旋转矩阵（在制作飞行器3D模型时，应使其中心在本地坐标系原点，机头机翼与轴平行，方便计算在站点直角坐标系内的旋转角度），再乘以由飞行器偏航俯仰滚转得到的旋转矩阵，再乘以站点直角坐标系对世界坐标系的旋转矩阵。将最终得到旋转矩阵转换为单位四元数，即得到正确的飞行器姿态。</p>
+<p>小技巧：飞机3D模型的中心设置在本地坐标系原点，机头机翼与轴平行后，可能在Cesium中渲染时姿态还是不对。原因是绕Z轴旋转的角度还是不对。可以在HeadingPitchRoll示例中使用自己的飞机3D模型，参照Cesium给的运输机模型，比较它们之间绕Z轴旋转的差异，然后调整飞机3D模型绕Z轴旋转的角度。</p>
 <h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>参考代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var lon=113,lat=34;//模型的站心经纬度</span><br><span class="line">var h1=0,p1=0,r1=0;//模型坐标系对站点坐标系的旋转角度</span><br><span class="line">var h2=0,p2=0,r2=0;//模型在站点坐标系的姿态</span><br><span class="line">var center = Cesium.Cartesian3.fromDegrees(lon, lat)</span><br><span class="line">var hpr = new Cesium.HeadingPitchRoll(h1+h2, p1+p2, r1+r2)</span><br><span class="line">var q1 = Cesium.Transforms.headingPitchRollQuaternion(center, hpr)</span><br></pre></td></tr></table></figure></p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://stackoverflow.com/questions/43389069/cesium-how-to-animate-an-aircraft-from-pitch-roll-heading" target="_blank" rel="noopener">CESIUM : How to animate an aircraft from pitch, roll, heading?</a>, by stackoverflow.</li>
@@ -574,7 +577,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">212</span>
+                    <span class="site-state-item-count">213</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

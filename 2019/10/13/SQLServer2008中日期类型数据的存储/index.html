@@ -110,7 +110,7 @@
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
 <meta property="og:description" content="日期类型比较SQL Server 2008中有datetime、datetime2、datetimeoffset三种数据类型用于存储时间类型数据。它们之间的差别主要有：  datetime、datetime2不存储时区信息，datetimeoffset存储时区信息。 datetime与datetime2区别是两者存储字节大小和精度不同，后者优于前者。  因此，在存储时间信息时，优先使用dateti">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-11-06T13:58:49.407Z">
+<meta property="og:updated_time" content="2019-12-30T11:00:31.338Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SQLServer2008中日期类型数据的存储">
 <meta name="twitter:description" content="日期类型比较SQL Server 2008中有datetime、datetime2、datetimeoffset三种数据类型用于存储时间类型数据。它们之间的差别主要有：  datetime、datetime2不存储时区信息，datetimeoffset存储时区信息。 datetime与datetime2区别是两者存储字节大小和精度不同，后者优于前者。  因此，在存储时间信息时，优先使用dateti">
@@ -376,7 +376,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-11-06 21:58:49" itemprop="dateModified" datetime="2019-11-06T21:58:49+08:00">2019-11-06</time>
+                <time title="修改时间：2019-12-30 19:00:31" itemprop="dateModified" datetime="2019-12-30T19:00:31+08:00">2019-12-30</time>
               
             
           </span>
@@ -436,8 +436,8 @@
 <p>这时需要根据自己所在时区对时间进行修正。最简单的方法是在SQL语句中进行修正，代码如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select birthday1, dateadd(hour,-8,birthday) from students</span><br></pre></td></tr></table></figure>
 <h1 id="日期转换"><a href="#日期转换" class="headerlink" title="日期转换"></a>日期转换</h1><p>有时时间会以字符串类型存储在数据库中，当需要对时间进行比较时，需要先将字符串类型时间转换成日期类型，可使用convert函数进行转换，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select convert(varchar, getdate(), 1)</span><br></pre></td></tr></table></figure>
-<p>其中varchar是要转换的数据的类型，getdate()是被转换的数据，1表示被转换数据的格式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 字符串转日期</span><br><span class="line">select convert(date, &apos;2005-12-31 23:59:59.9999999&apos;)</span><br><span class="line"># 日期转字符串</span><br><span class="line">select convert(varchar, getdate(), 1)</span><br></pre></td></tr></table></figure>
+<p>其中date是要转换的数据的类型，’2005-12-31 23:59:59.9999999’是被转换的数据。</p>
 <h1 id="日期比较"><a href="#日期比较" class="headerlink" title="日期比较"></a>日期比较</h1><p>在mssql中比较两个日期的大小，可采用DATEDIFF函数，其语法如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DATEDIFF ( datepart , startdate , enddate )</span><br></pre></td></tr></table></figure>
 <p>其中，datepart是时间单位，startdate和enddate是合法的日期表达式。datediff用法示例如下：</p>

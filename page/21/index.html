@@ -314,6 +314,250 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/13/Cesium卫星地图和高程数据切片经验总结/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/13/Cesium卫星地图和高程数据切片经验总结/" itemprop="url">
+                  Cesium卫星地图和高程数据切片经验总结
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-13 21:20:48" itemprop="dateCreated datePublished" datetime="2018-06-13T21:20:48+08:00">2018-06-13</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-10-21 21:46:37" itemprop="dateModified" datetime="2019-10-21T21:46:37+08:00">2019-10-21</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近研究在Cesium中调用自定义的图像和地形，不借助任何GIS系统（如Arcgis、天地图等），方便在网络不好或离线的情况下使用。下面对整个过程进行总结。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="地图服务提供方法"><a href="#地图服务提供方法" class="headerlink" title="地图服务提供方法"></a>地图服务提供方法</h2><p>目前互联网地图服务商提供的地图服务分成两种<sup>[3]</sup>：  </p>
+<ul>
+<li>图像瓦片地图服务<br>这种方法目前最常见，其提供的是图片格式的瓦片，在客户端将拼接成真正的地图。</li>
+<li>矢量瓦片地图服务<br>这种方法正在发展，其提供矢量的瓦片数据，然后在客户端进行渲染，是今后的发展方向。</li>
+</ul>
+<p>地图服务在使用过程中需要获取特定经纬度所在区域的瓦片和获取瓦片上像素点对应的经纬度，因此需要进行经纬度坐标与瓦片坐标、像素坐标的相互转换。</p>
+<h3 id="经纬度与瓦片编号互换"><a href="#经纬度与瓦片编号互换" class="headerlink" title="经纬度与瓦片编号互换"></a>经纬度与瓦片编号互换</h3><p>互联网地图的经纬度坐标与瓦片坐标相互转换只与该地图商的墨卡托投影和瓦片编号的定义有关，跟地图商采用的大地坐标系标准无关。</p>
+<h3 id="经纬度与瓦片像素互换"><a href="#经纬度与瓦片像素互换" class="headerlink" title="经纬度与瓦片像素互换"></a>经纬度与瓦片像素互换</h3><p>转换方式与地图商采用的大地坐标系有关。国际标准的经纬度坐标是WGS84。Open Street Map、外国版的Google Map都是采用WGS84；高德地图使用的坐标系是GCJ-02；百度地图使用的坐标系是BD-09。</p>
+<h2 id="地图投影"><a href="#地图投影" class="headerlink" title="地图投影"></a>地图投影</h2><p>地图投影，是指按照一定的数学法则将地球椭球面上的经纬网转换到平面上，使地面的地理坐标与平面直角坐标建立起函数关系。这是绘制地图的数学基础之一。由于地球是一个不可展的球体，使用物理方法将其展平会引起褶皱、拉伸和断裂，因此要使用地图投影实现由曲面向平面的转化。</p>
+<h3 id="麦卡托投影法"><a href="#麦卡托投影法" class="headerlink" title="麦卡托投影法"></a>麦卡托投影法</h3><p>麦卡托投影法 (Mercator projection)，又称麦卡托投影法、正轴等角圆柱投影，是一种等角的圆柱形地图投影法。本投影法得名于法兰德斯出身的地理学家杰拉杜斯·麦卡托，他于1569年发表长202公分、宽124公分以此方式绘制的世界地图。在以此投影法绘制的地图上，经纬线于任何位置皆垂直相交，使世界地图可以绘制在一个长方形上。由于可显示任两点间的正确方位，航海用途的海图、航路图大都以此方式绘制。在该投影中线型比例尺在图中任意一点周围都保持不变，从而可以保持大陆轮廓投影后的角度和形状不变（即等角）；但麦卡托投影会使面积产生变形，极点的比例甚至达到了无穷大。</p>
+<p align="center">
+    <img src="images/墨卡托投影示意图.jpg" width="50%" alt="墨卡托投影示意图">
+</p>
+<center>图1  墨卡托投影示意图</center>
+各大地图服务商大都采用了Web Mercator进行投影，瓦片坐标系的不同主要是投影截取的地球范围不同、瓦片坐标起点不同<sup>[3]</sup>。
+
+## 瓦片切割和瓦片坐标
+
+对于经过墨卡托投影为平面的世界地图，在不同的地图分辨率(整个世界地图的像素大小)下，通过切割的方式将世界地图划分为像素为256px/256px的地图单元，划分成的每一块地图单元称为地图瓦片。其特定如下：
+
+* 具有唯一的瓦片等级（Level）和瓦片坐标编号（tileX, tileY）。
+* 瓦片分辨率为256*256。
+* 最小的地图等级是0，此时世界地图只由一张瓦片组成。
+* 瓦片等级越高，组成世界地图的瓦片数越多，可以展示的地图越详细。
+* 某一瓦片等级地图的瓦片是由低一级的各瓦片切割成的4个瓦片组成，形成了瓦片金字塔。
+
+<p align="center">
+    <img src="images/瓦片金字塔.jpg" width="50%" alt="瓦片金字塔">
+</p>
+
+<h1 id="过程总结"><a href="#过程总结" class="headerlink" title="过程总结"></a>过程总结</h1><p>将自定义图像和地形以Web形式发布后，在cesium中调用自定义图像和地形很简单，代码如下，关键是图像和地形的获取和处理。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var tmsImageryProvider=Cesium.createTileMapServiceImageryProvider(&#123;</span><br><span class="line">    url:&apos;http://localhost:8080/test_tms_tiles&apos;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">var terrainProvider=new Cesium.CesiumTerrainProvider(&#123;</span><br><span class="line">    url:&apos;http://localhost:8080/terrain_tiles&apos;</span><br><span class="line">&#125;);</span><br><span class="line">var viewer = new Cesium.Viewer(&apos;cesiumContainer&apos;, &#123;</span><br><span class="line">    imageryProvider : tmsImageryProvider,</span><br><span class="line">    terrainProvider: terrainProvider,</span><br><span class="line">    baseLayerPicker: false,</span><br><span class="line">    geocoder: false,</span><br><span class="line">    shadows: false,</span><br><span class="line">    shouldAnimate: true</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="卫星图像的获取和处理"><a href="#卫星图像的获取和处理" class="headerlink" title="卫星图像的获取和处理"></a>卫星图像的获取和处理</h2><p>卫星图像获取可以使用一些相关软件，如水经注、LocaSpaceViewer、SXearth等。其原理通常是从一些地图服务商下载地图瓦片后重新拼接，再分割成对应格式的瓦片。拼接的图像最好输出为<strong>tif格式</strong>，因为tif格式可以在头部包含一些信息，例如地理坐标等信息，以方便后续的瓦片切割，以及被GIS系统直接识别导入。为使切割后的瓦片能够被Cesium直接调用，应采用<strong>标准TMS方式</strong>。</p>
+<p>通常卫星图像下载软件提供多种瓦片分割方式，如果能直接进行标准TMS瓦片分割最好不过，如果不可以进行标准TMS分割，则可使用GDAL。</p>
+<p>GDAL是地理空间数据抽象库的简称，是一个地理空间数据的格式转换及处理工具。文章最后将详细介绍其安装使用方法。使用GDAL进行卫星图像瓦片分割主要使用gdal2tiles.py工具。具体步骤如下：</p>
+<ol>
+<li>选取之前下载拼接的最大分辨率的tif卫星图像</li>
+<li>使用如下命令切割卫星图片,将自动生成瓦片金字塔。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdal2tiles.py &lt;image&gt; &lt;tilesdir&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="卫星图像蓝边的处理"><a href="#卫星图像蓝边的处理" class="headerlink" title="卫星图像蓝边的处理"></a>卫星图像蓝边的处理</h3><p>卫星图像在浏览的过程中有可能会出现蓝边，其原因是瓦片下载过程中的边界没有处理好。解决思路是严格按照瓦片的经纬度设定边界。可通过<a href="https://www.maptiler.com/google-maps-coordinates-tile-bounds-projection/" target="_blank" rel="noopener">google-maps-coordinates-tile-bounds-projection</a>查询特定级别瓦片的各个顶点的经纬度。</p>
+<h2 id="地形的获取和处理"><a href="#地形的获取和处理" class="headerlink" title="地形的获取和处理"></a>地形的获取和处理</h2><p>Cesium支持多种地形provider来接收地形数据瓦片<sup>[8]</sup>：</p>
+<ol>
+<li>Cesium Terrain Server——高分辨率的全球地形数据，支持地形光照和水流效果。地形瓦片提交给客户端的数据的格式用的是quantized-mesh v1.0。</li>
+<li>Esri ArcGIS Image Server——从Esri影像服务里的高度图中产生地形数据集。详情见Cesium里的ArcGisImageServerTerrainProvider.</li>
+<li>VR-TheWorld Server——从一个VR-TheWorld服务里的高度图中产生地形数据。它们的托管服务器有全球90米的数据，包括深度测量。</li>
+<li>Ellipsoid——是Cesium默认的地形provider，是一个光滑的椭球面，没有现实的地形，地形高度为0。  </li>
+</ol>
+<p>常用的CesiumTerrainProvider支持两种格式的地形：一种是quantized-mesh格式的地形数据，另一种是基于高度图技术的DEM。前一种技术是Cesium独有不开放，因此将使用DEM数据在Cesium中渲染地形。  </p>
+<p>DEM数据是数字高程模型，是描述每个点位的高程数据，没有其他附加信息<sup>[9]</sup>。DEM数据在ArcGIS中打开只能看到是灰度图。通过相关软件可直接下载各大地图服务商的高程数据，但没有在Cesium中加载成功。下面介绍一种经过验证可在Cesium中成功加载地形的方法：</p>
+<ol>
+<li>下载地形数据。可以从<a href="http://www.gscloud.cn/" target="_blank" rel="noopener">地理空间数据云</a>下载地形数据。注册登录后，在首页选择“DEM 数字高程数据”，在选择“GDEMV2 30M 分辨率数字高程数据”。</li>
+<li><p>合并地形数据。使用GDAL下的gdal_merge.py工具将下载的地形数据合并成一个Tif文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdal_merge.py -o out.tif input1.tif input2.tif</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切割地形数据。使用牛人制作的gdal2srtmtiles.py脚本分割地形数据。编辑gdal2srtmtiles.py，在最后设置高程文件和输出目录。参考链接<a href="https://blog.csdn.net/qq_36377037/article/details/86300330" target="_blank" rel="noopener">工具gdal2srtmtiles的安装使用</a>。</p>
+</li>
+<li>发布地形服务。把terrain_tiles直接放到与 Cesium同端口的Tomcat或IIS站点。<br>下（不能跨域），即可发布服务。 需要在Web Server中增加配置 .terrain文件的 Content-Type设为 application/octet-stream，同时拷贝“覆盖至生成tiles结果”目录中的 layer.json文件和0文件夹至生成结果目录下，比如我当前是 terrain_tiles目录下。</li>
+</ol>
+<h2 id="GDAL的安装使用"><a href="#GDAL的安装使用" class="headerlink" title="GDAL的安装使用"></a>GDAL的安装使用</h2><p>GDAL(Geospatial Data Abstraction Library)是一个在X/MIT许可协议下的开源栅格空间数据转换库。该项目由Frank Warmerdam教授于1998年发起。 它利用抽象数据模型来表达所支持的各种文件格式。 它还有一系列命令行工具来进行数据转换和处理。 OGR(OpenGIS Simple Features Reference Implementation)是GDAL项目的一个子项目， 提供对矢量数据的支持。 一般把这两个库合称为GDAL/OGR，或者简称为GDAL。</p>
+<h3 id="GDAL安装方法之一"><a href="#GDAL安装方法之一" class="headerlink" title="GDAL安装方法之一"></a>GDAL安装方法之一</h3><p>GDAL不推荐从源码编译安装，建议从gisinternals下载gdal-203-1911-x64-core.msi、GDAL-2.3.0.win-amd64-py2.7.msi直接二进制安装。安装步骤如下：</p>
+<ol>
+<li>安装python2.7。安装完成后配置环境变量，在path中添加 C:\Python27;</li>
+<li>安装gdal-203-1911-x64-core.msi。安装完成后，设置环境变量GDAL_DATA，值为C:\Program Files\GDAL\gdal-data\，修改环境变量PATH，增加C:\Program Files\GDAL; </li>
+<li>pip install numpy。这是为了使用地形切割的脚本gdal2srtmtiles.py。</li>
+<li>安装GDAL-2.3.0.win-amd64-py2.7.msi。</li>
+</ol>
+<p><strong>注意：当瓦片过多时，会报“OverflowError: range() result has too many items”的错误，而且python2已不再维护，因此不建议采用该方法安装GDAL。</strong></p>
+<h3 id="GDAL安装方法之二"><a href="#GDAL安装方法之二" class="headerlink" title="GDAL安装方法之二"></a>GDAL安装方法之二</h3><p>OSGeo4W是用于开源GIS项目的Windows安装程序。 开源的本质意味着许多项目/程序相互依赖才能实现功能。 GDAL就是一个很好的例子。 几乎所有的开源GIS项目都在某种程度上使用GDAL来读写数据。 但是因为Windows是一个封闭的平台，所以它没有像基于Unix的操作系统那样开发软件包管理器。 因此，如果使用GRASS和QGIS的独立安装程序安装它们，则最终会进行2次GDAL安装。 添加3或4个以上的开源安装，最终您将获得十几个GDAL安装，此外还有一个仅用于GDAL的安装。</p>
+<p>这就是OSGeo4W的用处。它可以跟踪开源GIS软件包的共享需求，因此QGIS和GRASS可以共享一次GDAL安装。 它还跟踪版本，因此您可以简单地升级程序。</p>
+<p>从官网<a href="http://www.klokan.cz/projects/gdal2tiles/" target="_blank" rel="noopener">GDAL2Tiles Project</a>找到 OSGeo4W 的下载链接，下载OSGeo4W并安装即可。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://cesiumjs.org/tutorials/Imagery-Layers-Tutorial/" target="_blank" rel="noopener">Imagery-Layers-Tutorial</a>, by cesiumjs</li>
+<li><a href="https://cesiumjs.org/tutorials/Terrain-Tutorial/" target="_blank" rel="noopener">Terrain-Tutorial</a>, by cesiumjs</li>
+<li><a href="http://cntchen.github.io/2016/05/09/国内主要地图瓦片坐标系定义及计算原理/" target="_blank" rel="noopener">国内主要地图瓦片坐标系定义及计算原理</a>, by CntChen</li>
+<li><a href="https://zh.wikipedia.org/wiki/地图投影" target="_blank" rel="noopener">地图投影</a>, by wikipedia</li>
+<li><a href="https://yanyinhong.github.io/2017/05/02/How-to-insert-image-in-hexo-post/" target="_blank" rel="noopener">Hexo博客搭建之在文章中插入图片</a>, by Yan Yinhong</li>
+<li><a href="https://blog.csdn.net/wbz810/article/details/79294511" target="_blank" rel="noopener">用ArcMap给遥感影像(tif格式)加入地理坐标</a>，by wbz810.</li>
+<li><a href="http://www.gdal.org/" target="_blank" rel="noopener">GDAL</a>，by gdal</li>
+<li><a href="https://blog.csdn.net/u013929284/article/details/71616600" target="_blank" rel="noopener">Cesium之地形(1)</a>, by Super洛伽</li>
+<li><a href="https://www.jianshu.com/p/62d6f03f44e3" target="_blank" rel="noopener">Cesium中地形数据的加载</a>，by CrazyGIS</li>
+<li><a href="https://www.giserdqy.com/webgis/openlayers/22833/openlayers%E4%B9%8B%E5%A4%9A%E6%BA%90%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E4%BA%8C%EF%BC%9A%E7%93%A6%E7%89%87%E5%9C%B0%E5%9B%BE%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">OpenLayers之多源数据加载二：瓦片地图原理</a>,by giser.</li>
+<li><a href="https://www.cnblogs.com/nygfcn1234/p/8876711.html" target="_blank" rel="noopener">cesium加载离线tms切片</a>,by nygfcn.</li>
+<li><a href="https://zh.wikipedia.org/wiki/TIFF" target="_blank" rel="noopener">TIFF</a>,by wikipedia.</li>
+<li><a href="https://wiki.osgeo.org/wiki/Tile_Map_Service_Specification" target="_blank" rel="noopener">Tile_Map_Service_Specification</a>,by osgeo.</li>
+<li><a href="https://blog.csdn.net/dcraw/article/details/6443537" target="_blank" rel="noopener">TIFF图像文件格式详解(1)</a>,by xdyang.</li>
+<li><a href="http://www.cppblog.com/windcsn/archive/2005/11/16/1158.aspx" target="_blank" rel="noopener">TIFF图像文件格式分析</a>,by windcsn.</li>
+<li><a href="https://www.osgeo.cn/python_gdal_utah_tutorial/ch01.html" target="_blank" rel="noopener">1. 地理数据处理软件包GDAL简介</a>,by osgeo.cn.</li>
+<li><a href="https://www.maptiler.com/google-maps-coordinates-tile-bounds-projection/" target="_blank" rel="noopener">google-maps-coordinates-tile-bounds-projection</a>,by maptiler.</li>
+<li><a href="https://theonegis.gitbook.io/geopy/" target="_blank" rel="noopener">geopy</a>,by theonegis.</li>
+<li><a href="https://blog.csdn.net/qq_36377037/article/details/86300330" target="_blank" rel="noopener">工具gdal2srtmtiles的安装使用</a>,by 四域公子.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/10/Cesium中飞行器姿态控制/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -853,12 +1097,24 @@
                 
               
 
-              <time title="创建时间：2018-06-03 09:41:25 / 修改时间：11:30:52" itemprop="dateCreated datePublished" datetime="2018-06-03T09:41:25+08:00">2018-06-03</time>
+              <time title="创建时间：2018-06-03 09:41:25" itemprop="dateCreated datePublished" datetime="2018-06-03T09:41:25+08:00">2018-06-03</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-01-01 11:52:05" itemprop="dateModified" datetime="2020-01-01T11:52:05+08:00">2020-01-01</time>
               
             
           </span>
@@ -894,20 +1150,26 @@
         
           
             <p>股票分析离不开各种图表的绘制，尤其是最常用的蜡烛图。下面介绍python中使用matplotlib绘制蜡烛图的过程。</p>
-<h1 id="环境及配置"><a href="#环境及配置" class="headerlink" title="环境及配置"></a>环境及配置</h1><p>使用的环境如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ python3 --version</span><br><span class="line">Python 3.6.5rc1</span><br><span class="line">$ ipython3</span><br><span class="line">In [1]: import matplotlib</span><br><span class="line">In [2]: matplotlib.__version__</span><br><span class="line">Out[2]: &apos;2.2.2&apos;</span><br><span class="line">In [3]: import tushare as ts</span><br><span class="line">In [4]: ts.__version__</span><br><span class="line">Out[4]: &apos;1.1.9&apos;</span><br><span class="line">In [5]: import talib</span><br><span class="line">In [6]: talib.__version__</span><br><span class="line">Out[6]: &apos;0.4.17&apos;</span><br></pre></td></tr></table></figure></p>
-<p>绘制蜡烛图通常使用matplotlib.finance库，但这个库在matplotlib 2.0后已经被废弃，并被移到一个名叫mpl_finance的库中。可使用如下命令安装mpl_finance。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install https://github.com/matplotlib/mpl_finance/archive/master.zip</span><br></pre></td></tr></table></figure></p>
+<h1 id="环境及配置"><a href="#环境及配置" class="headerlink" title="环境及配置"></a>环境及配置</h1><p>使用的环境如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ python3 --version</span><br><span class="line">Python 3.6.5rc1</span><br><span class="line">$ ipython3</span><br><span class="line">In [1]: import matplotlib</span><br><span class="line">In [2]: matplotlib.__version__</span><br><span class="line">Out[2]: &apos;2.2.2&apos;</span><br><span class="line">In [3]: import tushare as ts</span><br><span class="line">In [4]: ts.__version__</span><br><span class="line">Out[4]: &apos;1.1.9&apos;</span><br><span class="line">In [5]: import talib</span><br><span class="line">In [6]: talib.__version__</span><br><span class="line">Out[6]: &apos;0.4.17&apos;</span><br></pre></td></tr></table></figure>
+<p>绘制蜡烛图通常使用matplotlib.finance库，但这个库在matplotlib 2.0后已经被废弃，并被移到一个名叫mpl_finance的库中。可使用如下命令安装mpl_finance。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install https://github.com/matplotlib/mpl_finance/archive/master.zip</span><br></pre></td></tr></table></figure>
 <p>mpl_finance使用雅虎接口获取股票数据，但是不稳定，因此推荐使用tushare库获取股票数据。另外使用talib计算股票各种技术分析指标，例如常用的均线数据。需要注意的是通过pip3按照的talib库是对C/C++版talib的包装，因此需先安装C/C++版talib。</p>
-<h1 id="蜡烛图绘制"><a href="#蜡烛图绘制" class="headerlink" title="蜡烛图绘制"></a>蜡烛图绘制</h1><h2 id="蜡烛图绘制函数简介"><a href="#蜡烛图绘制函数简介" class="headerlink" title="蜡烛图绘制函数简介"></a>蜡烛图绘制函数简介</h2><p>mpl_finance库中蜡烛图的绘制主要有以下四个函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">candlestick2_ochl(ax, opens, closes, highs, lows, width=4, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=0.75)</span><br><span class="line">candlestick2_ohlc(ax, opens, highs, lows, closes, width=4, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=0.75)</span><br><span class="line">candlestick_ochl(ax, quotes, width=0.2, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=1.0)</span><br><span class="line">candlestick_ohlc(ax, quotes, width=0.2, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=1.0)</span><br></pre></td></tr></table></figure></p>
+<h1 id="蜡烛图绘制"><a href="#蜡烛图绘制" class="headerlink" title="蜡烛图绘制"></a>蜡烛图绘制</h1><h2 id="蜡烛图绘制函数简介"><a href="#蜡烛图绘制函数简介" class="headerlink" title="蜡烛图绘制函数简介"></a>蜡烛图绘制函数简介</h2><p>mpl_finance库中蜡烛图的绘制主要有以下四个函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">candlestick2_ochl(ax, opens, closes, highs, lows, width=4, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=0.75)</span><br><span class="line">candlestick2_ohlc(ax, opens, highs, lows, closes, width=4, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=0.75)</span><br><span class="line">candlestick_ochl(ax, quotes, width=0.2, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=1.0)</span><br><span class="line">candlestick_ohlc(ax, quotes, width=0.2, colorup=&apos;k&apos;, colordown=&apos;r&apos;, alpha=1.0)</span><br></pre></td></tr></table></figure>
 <p>在这四个函数的使用过程中需要注意的是：</p>
 <ul>
-<li>candlestick2_ohlc函数假定opens, highs, lows, closes中任意一个值不存在，则其他值也不存在。</li>
-<li>candlestick_ochl和candlestick_ohlc的输入参数quotes是(time, open, close, high, low, …)元组序列，其中time必须是浮点日期格式，具体参见date2num。</li>
+<li><p>candlestick2_ohlc函数假定opens, highs, lows, closes中任意一个值不存在，则其他值也不存在。</p>
+</li>
+<li><p>candlestick_ochl和candlestick_ohlc的输入参数quotes是(time, open, close, high, low, …)元组序列，其中time必须是浮点日期格式，具体参见date2num。</p>
+</li>
 </ul>
-<p>蜡烛图绘制函数存在日线图的时间间隔问题（非交易日无法跳过，导致图像断裂）。常用解决方法是建议重新调整横坐标，被动地过滤掉非交易时间段<sup>[2]</sup>。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ax.set_xticks(range(0, len(data[&apos;date&apos;]), 10))</span><br><span class="line">ax.set_xticklabels(data[&apos;date&apos;][::10])</span><br></pre></td></tr></table></figure></p>
-<h2 id="蜡烛图的简单绘制"><a href="#蜡烛图的简单绘制" class="headerlink" title="蜡烛图的简单绘制"></a>蜡烛图的简单绘制</h2><p>蜡烛图的简单例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import talib</span><br><span class="line">import tushare as ts</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import mpl_finance as mpf</span><br><span class="line"> </span><br><span class="line">data = ts.get_k_data(&apos;002320&apos;)</span><br><span class="line">sma_10 = talib.SMA(np.array(data[&apos;close&apos;]), 10)</span><br><span class="line">sma_30 = talib.SMA(np.array(data[&apos;close&apos;]), 30)</span><br><span class="line">fig = plt.figure(figsize=(24, 8))</span><br><span class="line">ax = fig.add_subplot(1, 1, 1)</span><br><span class="line">ax.set_xticks(range(0, len(data[&apos;date&apos;]), 50))</span><br><span class="line">ax.set_xticklabels(data[&apos;date&apos;][::50])</span><br><span class="line">ax.plot(sma_10, label=&apos;10 日均线&apos;)</span><br><span class="line">ax.plot(sma_30, label=&apos;30 日均线&apos;)</span><br><span class="line">ax.legend(loc=&apos;upper left&apos;)</span><br><span class="line">mpf.candlestick2_ochl(ax, data[&apos;open&apos;], data[&apos;close&apos;], data[&apos;high&apos;], data[&apos;low&apos;],width=0.5, colorup=&apos;r&apos;, colordown=&apos;green&apos;,alpha=0.6)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>蜡烛图绘制函数存在日线图的时间间隔问题（非交易日无法跳过，导致图像断裂）。常用解决方法是建议重新调整横坐标，被动地过滤掉非交易时间段<sup>[2]</sup>。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ax.set_xticks(range(0, len(data[&apos;date&apos;]), 10))</span><br><span class="line">ax.set_xticklabels(data[&apos;date&apos;][::10])</span><br></pre></td></tr></table></figure>
+<h2 id="蜡烛图的简单绘制"><a href="#蜡烛图的简单绘制" class="headerlink" title="蜡烛图的简单绘制"></a>蜡烛图的简单绘制</h2><p>蜡烛图的简单例子如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import talib</span><br><span class="line">import tushare as ts</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import mpl_finance as mpf</span><br><span class="line"> </span><br><span class="line">data = ts.get_k_data(&apos;002320&apos;)</span><br><span class="line">sma_10 = talib.SMA(np.array(data[&apos;close&apos;]), 10)</span><br><span class="line">sma_30 = talib.SMA(np.array(data[&apos;close&apos;]), 30)</span><br><span class="line">fig = plt.figure(figsize=(24, 8))</span><br><span class="line">ax = fig.add_subplot(1, 1, 1)</span><br><span class="line">ax.set_xticks(range(0, len(data[&apos;date&apos;]), 50))</span><br><span class="line">ax.set_xticklabels(data[&apos;date&apos;][::50])</span><br><span class="line">ax.plot(sma_10, label=&apos;10 日均线&apos;)</span><br><span class="line">ax.plot(sma_30, label=&apos;30 日均线&apos;)</span><br><span class="line">ax.legend(loc=&apos;upper left&apos;)</span><br><span class="line">mpf.candlestick2_ochl(ax, data[&apos;open&apos;], data[&apos;close&apos;], data[&apos;high&apos;], data[&apos;low&apos;],width=0.5, colorup=&apos;r&apos;, colordown=&apos;green&apos;,alpha=0.6)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://matplotlib.org/api/finance_api.html" target="_blank" rel="noopener">https://matplotlib.org/api/finance_api.html</a>, by matplotlib</li>
-<li><a href="https://ipreacher.github.io/2017/candlestick/" target="_blank" rel="noopener">https://ipreacher.github.io/2017/candlestick/</a>, by The North</li>
+<li><a href="https://matplotlib.org/api/finance_api.html" target="_blank" rel="noopener">finance api</a>, by matplotlib</li>
 </ol>
 
           
@@ -1025,7 +1287,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-06-03 09:37:48" itemprop="dateModified" datetime="2018-06-03T09:37:48+08:00">2018-06-03</time>
+                <time title="修改时间：2020-01-01 11:53:01" itemprop="dateModified" datetime="2020-01-01T11:53:01+08:00">2020-01-01</time>
               
             
           </span>
@@ -1061,19 +1323,28 @@
         
           
             <p>matplotlib 是Python编程语言及其数值数学扩展包 NumPy的可视化操作界面。它为利用通用的图形用户界面工具包，如Tkinter, wxPython, Qt或GTK+向应用程序嵌入式绘图提供了应用程序接口（API）。此外，matplotlib还有一个基于图像处理库（如开放图形库OpenGL）的pylab接口，其设计与MATLAB非常类似—尽管并不怎么好用。SciPy就是用matplotlib进行图形绘制。</p>
-<h1 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h1><p>使用plt.figure定义一个图像窗口。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line">x = np.linspace(-1, 1, 50)</span><br><span class="line">y = 2*x + 1</span><br><span class="line">plt.figure() </span><br><span class="line">plt.plot(x, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="设置坐标轴"><a href="#设置坐标轴" class="headerlink" title="设置坐标轴"></a>设置坐标轴</h2><p>使用plt.xlim设置x坐标轴范围：(-1, 2)； 使用plt.ylim设置y坐标轴范围：(-2, 3)；<br>使用plt.xlabel设置x坐标轴名称：’I am x’； 使用plt.ylabel设置y坐标轴名称：’I am y’；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line">plt.xlabel(&apos;I am x&apos;)</span><br><span class="line">plt.ylabel(&apos;I am y&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>使用np.linspace定义范围以及个数：范围是(-1,2);个数是5. 使用print打印出新定义的范围. 使用plt.xticks设置x轴刻度：范围是(-1,2);个数是5.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">new_ticks = np.linspace(-1, 2, 5)</span><br><span class="line">print(new_ticks)</span><br><span class="line">plt.xticks(new_ticks)</span><br></pre></td></tr></table></figure></p>
-<p>使用plt.yticks设置y轴刻度以及名称：刻度为[-2, -1.8, -1, 1.22, 3]；对应刻度的名称为[‘really bad’,’bad’,’normal’,’good’, ‘really good’]. 使用plt.show显示图像.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.yticks([-2, -1.8, -1, 1.22, 3],[r&apos;$really\ bad$&apos;, r&apos;$bad$&apos;, r&apos;$normal$&apos;, r&apos;$good$&apos;, r&apos;$really\ good$&apos;])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<p>使用plt.gca获取当前坐标轴信息. 使用.spines设置边框：右侧边框；使用.set_color设置边框颜色：默认白色； 使用.spines设置边框：上边框；使用.set_color设置边框颜色：默认白色；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax = plt.gca()</span><br><span class="line">ax.spines[&apos;right&apos;].set_color(&apos;none&apos;)</span><br><span class="line">ax.spines[&apos;top&apos;].set_color(&apos;none&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<h2 id="调整坐标轴"><a href="#调整坐标轴" class="headerlink" title="调整坐标轴"></a>调整坐标轴</h2><p>使用.xaxis.set_ticks_position设置x坐标刻度数字或名称的位置：bottom.（所有位置：top，bottom，both，default，none）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ax.xaxis.set_ticks_position(&apos;bottom&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>使用.spines设置边框：x轴；使用.set_position设置边框位置：y=0的位置；（位置所有属性：outward，axes，data）<br>使用.yaxis.set_ticks_position设置y坐标刻度数字或名称的位置：left.（所有位置：left，right，both，default，none）<br>使用.spines设置边框：y轴；使用.set_position设置边框位置：x=0的位置；（位置所有属性：outward，axes，data） 使用plt.show显示图像.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax.spines[&apos;bottom&apos;].set_position((&apos;data&apos;, 0))</span><br><span class="line">ax.yaxis.set_ticks_position(&apos;left&apos;)</span><br><span class="line">ax.spines[&apos;left&apos;].set_position((&apos;data&apos;,0))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
+<h1 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h1><p>使用plt.figure定义一个图像窗口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line">x = np.linspace(-1, 1, 50)</span><br><span class="line">y = 2*x + 1</span><br><span class="line">plt.figure() </span><br><span class="line">plt.plot(x, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<h2 id="设置坐标轴"><a href="#设置坐标轴" class="headerlink" title="设置坐标轴"></a>设置坐标轴</h2><p>使用plt.xlim设置x坐标轴范围：(-1, 2)； 使用plt.ylim设置y坐标轴范围：(-2, 3)；<br>使用plt.xlabel设置x坐标轴名称：’I am x’； 使用plt.ylabel设置y坐标轴名称：’I am y’；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line">plt.xlabel(&apos;I am x&apos;)</span><br><span class="line">plt.ylabel(&apos;I am y&apos;)</span><br></pre></td></tr></table></figure>
+<p>使用np.linspace定义范围以及个数：范围是(-1,2);个数是5. 使用print打印出新定义的范围. 使用plt.xticks设置x轴刻度：范围是(-1,2);个数是5.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">new_ticks = np.linspace(-1, 2, 5)</span><br><span class="line">print(new_ticks)</span><br><span class="line">plt.xticks(new_ticks)</span><br></pre></td></tr></table></figure>
+<p>使用plt.yticks设置y轴刻度以及名称：刻度为[-2, -1.8, -1, 1.22, 3]；对应刻度的名称为[‘really bad’,’bad’,’normal’,’good’, ‘really good’]. 使用plt.show显示图像.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.yticks([-2, -1.8, -1, 1.22, 3],[r&apos;$really\ bad$&apos;, r&apos;$bad$&apos;, r&apos;$normal$&apos;, r&apos;$good$&apos;, r&apos;$really\ good$&apos;])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>使用plt.gca获取当前坐标轴信息. 使用.spines设置边框：右侧边框；使用.set_color设置边框颜色：默认白色； 使用.spines设置边框：上边框；使用.set_color设置边框颜色：默认白色；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax = plt.gca()</span><br><span class="line">ax.spines[&apos;right&apos;].set_color(&apos;none&apos;)</span><br><span class="line">ax.spines[&apos;top&apos;].set_color(&apos;none&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<h2 id="调整坐标轴"><a href="#调整坐标轴" class="headerlink" title="调整坐标轴"></a>调整坐标轴</h2><p>使用.xaxis.set_ticks_position设置x坐标刻度数字或名称的位置：bottom.（所有位置：top，bottom，both，default，none）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ax.xaxis.set_ticks_position(&apos;bottom&apos;)</span><br></pre></td></tr></table></figure>
+<p>使用.spines设置边框：x轴；使用.set_position设置边框位置：y=0的位置；（位置所有属性：outward，axes，data）<br>使用.yaxis.set_ticks_position设置y坐标刻度数字或名称的位置：left.（所有位置：left，right，both，default，none）<br>使用.spines设置边框：y轴；使用.set_position设置边框位置：x=0的位置；（位置所有属性：outward，axes，data） 使用plt.show显示图像.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax.spines[&apos;bottom&apos;].set_position((&apos;data&apos;, 0))</span><br><span class="line">ax.yaxis.set_ticks_position(&apos;left&apos;)</span><br><span class="line">ax.spines[&apos;left&apos;].set_position((&apos;data&apos;,0))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
 <h2 id="legend图例"><a href="#legend图例" class="headerlink" title="legend图例"></a>legend图例</h2><h3 id="基本用法-1"><a href="#基本用法-1" class="headerlink" title="基本用法"></a>基本用法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">x = np.linspace(-3, 3, 50)</span><br><span class="line">y1 = 2*x + 1</span><br><span class="line">y2 = x**2</span><br><span class="line"></span><br><span class="line">plt.figure()</span><br><span class="line">#set x limits</span><br><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line"></span><br><span class="line"># set new sticks</span><br><span class="line">new_sticks = np.linspace(-1, 2, 5)</span><br><span class="line">plt.xticks(new_sticks)</span><br><span class="line"># set tick labels</span><br><span class="line">plt.yticks([-2, -1.8, -1, 1.22, 3],</span><br><span class="line">           [r&apos;$really\ bad$&apos;, r&apos;$bad$&apos;, r&apos;$normal$&apos;, r&apos;$good$&apos;, r&apos;$really\ good$&apos;])</span><br><span class="line"></span><br><span class="line"># set line syles</span><br><span class="line">l1, = plt.plot(x, y1, label=&apos;linear line&apos;)</span><br><span class="line">l2, = plt.plot(x, y2, color=&apos;red&apos;, linewidth=1.0, linestyle=&apos;--&apos;, label=&apos;square line&apos;)</span><br><span class="line"></span><br><span class="line">plt.legend(loc=&apos;upper right&apos;)</span><br></pre></td></tr></table></figure>
 <h3 id="调整位置和名称"><a href="#调整位置和名称" class="headerlink" title="调整位置和名称"></a>调整位置和名称</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.legend(handles=[l1, l2], labels=[&apos;up&apos;, &apos;down&apos;],  loc=&apos;best&apos;)</span><br></pre></td></tr></table></figure>
-<p>其中’loc’参数有多种，’best’表示自动分配最佳位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&apos;best&apos; : 0,          </span><br><span class="line">&apos;upper right&apos;  : 1,</span><br><span class="line">&apos;upper left&apos;   : 2,</span><br><span class="line">&apos;lower left&apos;   : 3,</span><br><span class="line">&apos;lower right&apos;  : 4,</span><br><span class="line">&apos;right&apos;        : 5,</span><br><span class="line">&apos;center left&apos;  : 6,</span><br><span class="line">&apos;center right&apos; : 7,</span><br><span class="line">&apos;lower center&apos; : 8,</span><br><span class="line">&apos;upper center&apos; : 9,</span><br><span class="line">&apos;center&apos;       : 10,</span><br></pre></td></tr></table></figure></p>
+<p>其中’loc’参数有多种，’best’表示自动分配最佳位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&apos;best&apos; : 0,          </span><br><span class="line">&apos;upper right&apos;  : 1,</span><br><span class="line">&apos;upper left&apos;   : 2,</span><br><span class="line">&apos;lower left&apos;   : 3,</span><br><span class="line">&apos;lower right&apos;  : 4,</span><br><span class="line">&apos;right&apos;        : 5,</span><br><span class="line">&apos;center left&apos;  : 6,</span><br><span class="line">&apos;center right&apos; : 7,</span><br><span class="line">&apos;lower center&apos; : 8,</span><br><span class="line">&apos;upper center&apos; : 9,</span><br><span class="line">&apos;center&apos;       : 10,</span><br></pre></td></tr></table></figure>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Matplotlib" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Matplotlib</a>, by wikipedia</li>
-<li><a href="https://morvanzhou.github.io" target="_blank" rel="noopener">https://morvanzhou.github.io</a>, by morvanzhou</li>
+<li><a href="https://zh.wikipedia.org/wiki/Matplotlib" target="_blank" rel="noopener">matplotlib</a>, by wikipedia</li>
+<li><a href="https://morvanzhou.github.io" target="_blank" rel="noopener">莫烦Python</a>, by morvanzhou</li>
+<li><a href="https://matplotlib.org/api/index.html#usage-patterns" target="_blank" rel="noopener">API Overview</a>,by matplotlib.</li>
 </ol>
 
           
@@ -1847,206 +2118,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/11/Vue-js集成Cesium/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/11/Vue-js集成Cesium/" itemprop="url">
-                  Vue.js集成Cesium
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-11 13:05:22" itemprop="dateCreated datePublished" datetime="2018-05-11T13:05:22+08:00">2018-05-11</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-07-18 23:45:03" itemprop="dateModified" datetime="2019-07-18T23:45:03+08:00">2019-07-18</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>近期在研究集成封装Cesium为Vue.js组件，记录一下过程，防止忘了。</p>
-<h2 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h2><ul>
-<li>node.js: v8.9.4</li>
-<li>npm: 5.6.0</li>
-<li>vue: 2.5.2</li>
-<li>cesium: 1.45.0</li>
-<li>vue-cli: 2.9.3</li>
-<li>webpack: 3.6.0</li>
-</ul>
-<p><strong>注意此处vue-cli版本是2，因此该教程不适用vue-cli 3。如需在Vue-cli 3中构建Cesium，请参考<a href="https://www.jianshu.com/p/0815c76d949f" target="_blank" rel="noopener">Vue-cli 3.0 + cesium 构建</a>.</strong></p>
-<h2 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h2><ol>
-<li>安装nodejs</li>
-<li><p>安装vue-cli脚手架</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">npm install -g vue-cli</span><br><span class="line">vue init webpack my-project</span><br><span class="line">cd my-project</span><br><span class="line">npm install</span><br><span class="line">npm run dev</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>安装cesium</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save cesium</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>webpack配置</p>
-</li>
-</ol>
-<ul>
-<li><p>在build/webpack.base.conf.js文件中做如下修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">//定义cesium源代码位置</span><br><span class="line">const cesiumSource = &apos;../node_modules/cesium/Source&apos;</span><br><span class="line">...</span><br><span class="line">module.exports = &#123;</span><br><span class="line">...</span><br><span class="line">output: &#123;</span><br><span class="line">    path: config.build.assetsRoot,</span><br><span class="line">    filename: &apos;[name].js&apos;,</span><br><span class="line">    publicPath: process.env.NODE_ENV === &apos;production&apos;</span><br><span class="line">      ? config.build.assetsPublicPath</span><br><span class="line">      : config.dev.assetsPublicPath,</span><br><span class="line">    // Needed to compile multiline strings in Cesium</span><br><span class="line">    sourcePrefix: &apos;&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">amd:&#123;</span><br><span class="line">    // Enable webpack-friendly use of require in Cesium</span><br><span class="line">    toUrlUndefined: true</span><br><span class="line">  &#125;,</span><br><span class="line">resolve: &#123;</span><br><span class="line">    extensions: [&apos;.js&apos;, &apos;.vue&apos;, &apos;.json&apos;],</span><br><span class="line">    alias: &#123;</span><br><span class="line">      &apos;vue$&apos;: &apos;vue/dist/vue.esm.js&apos;,</span><br><span class="line">      &apos;@&apos;: resolve(&apos;src&apos;),</span><br><span class="line">      //设置cesium的别名</span><br><span class="line">      &apos;cesium&apos;: path.resolve(__dirname, cesiumSource)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      ...</span><br><span class="line">    ],</span><br><span class="line">    //不让Webpack打印载入特定库时候的警告</span><br><span class="line">    unknownContextCritical: false</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在build/webpack.dev.conf.js文件中做如下修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">//定义 Cesium 源代码路径，前面没有../</span><br><span class="line">const cesiumSource = &apos;node_modules/cesium/Source&apos;</span><br><span class="line">//定义 Cesium Workers 路径</span><br><span class="line">const cesiumWorkers = &apos;../Build/Cesium/Workers&apos;</span><br><span class="line">...</span><br><span class="line">plugins: [</span><br><span class="line">    ...</span><br><span class="line">    new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, cesiumWorkers), to: &apos;Workers&apos; &#125; ]),</span><br><span class="line">    new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &apos;Assets&apos;), to: &apos;Assets&apos; &#125; ]),</span><br><span class="line">    new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &apos;Widgets&apos;), to: &apos;Widgets&apos; &#125; ]),</span><br><span class="line">    new webpack.DefinePlugin(&#123;</span><br><span class="line">      // Define relative base path in cesium for loading assets</span><br><span class="line">      CESIUM_BASE_URL: JSON.stringify(&apos;&apos;)</span><br><span class="line">    &#125;)</span><br><span class="line">    ...</span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在build/webpack.prod.conf.js文件中做如下修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">//定义 Cesium 源代码路径，前面没有../</span><br><span class="line">const cesiumSource = &apos;node_modules/cesium/Source&apos;</span><br><span class="line">//定义 Cesium Workers 路径</span><br><span class="line">const cesiumWorkers = &apos;../Build/Cesium/Workers&apos;</span><br><span class="line">...</span><br><span class="line">plugins: [</span><br><span class="line">    ...</span><br><span class="line">    new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, cesiumWorkers), to: &apos;Workers&apos; &#125; ]),</span><br><span class="line">    new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &apos;Assets&apos;), to: &apos;Assets&apos; &#125; ]),</span><br><span class="line">    new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &apos;Widgets&apos;), to: &apos;Widgets&apos; &#125; ]),</span><br><span class="line">    new webpack.DefinePlugin(&#123;</span><br><span class="line">      //定义 Cesium 从哪里加载资源，如果使用默认的&apos;&apos;，却变成了绝对路径了，所以这里使用&apos;./&apos;,使用相对路径</span><br><span class="line">      CESIUM_BASE_URL: JSON.stringify(&apos;./&apos;)</span><br><span class="line">    &#125;)</span><br><span class="line">    ...</span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="Vue-js组件编写"><a href="#Vue-js组件编写" class="headerlink" title="Vue.js组件编写"></a>Vue.js组件编写</h2><ul>
-<li><p>在src/components下新建 CesiumViewer.vue vue组件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id=&quot;cesiumContainer&quot;&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">import Cesium from &apos;cesium/Cesium&apos;</span><br><span class="line">import widgets from &apos;cesium/Widgets/widgets.css&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;CesiumViewer&apos;,</span><br><span class="line">  mounted () &#123;</span><br><span class="line">    var viewer = new Cesium.Viewer(&apos;cesiumContainer&apos;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;style  rel=&quot;stylesheet/scss&quot; lang=&quot;scss&quot; scoped&gt;</span><br><span class="line">#cesiumContainer &#123;</span><br><span class="line">  width: 100%;</span><br><span class="line">  height: 100%;</span><br><span class="line">  margin: 0;</span><br><span class="line">  padding: 0;</span><br><span class="line">  overflow: hidden;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>创建全局样式文件src/styles/index.scss，做如下修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">html,</span><br><span class="line">body &#123;</span><br><span class="line">  width: 100%;</span><br><span class="line">  height: 100%;</span><br><span class="line">  margin: 0;</span><br><span class="line">  padding: 0;</span><br><span class="line">  overflow: hidden;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在src/main.js中做如下修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import &apos;@/styles/index.scss&apos; // global css</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://www.jianshu.com/p/fb237c7eb48c" target="_blank" rel="noopener">基于webpack 构建Cesium + Vue 的应用</a>, by QingMings</li>
-<li><a href="https://www.jianshu.com/p/0815c76d949f" target="_blank" rel="noopener">Vue-cli 3.0 + cesium 构建</a>,by QingMings.</li>
-<li><a href="https://cesiumjs.org/tutorials/cesium-and-webpack/" target="_blank" rel="noopener">cesium-and-webpack</a>, by cesiumjs.org</li>
-<li><a href="https://segmentfault.com/q/1010000012765665/a-1020000012832001" target="_blank" rel="noopener">vue-cli生成的项目，main.js引入scss时报错</a>,by segmentfault.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2094,7 +2165,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">218</span>
+                    <span class="site-state-item-count">219</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2262,7 +2333,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

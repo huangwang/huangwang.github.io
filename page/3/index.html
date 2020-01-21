@@ -314,6 +314,153 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/27/Eigen入门教程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/11/27/Eigen入门教程/" itemprop="url">
+                  Eigen入门教程
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-27 21:50:14 / 修改时间：22:11:58" itemprop="dateCreated datePublished" datetime="2019-11-27T21:50:14+08:00">2019-11-27</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Eigen是用于线性代数的C ++模板库，包括矩阵，向量，数值求解器和相关算法。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>从<a href="http://eigen.tuxfamily.org/index.php?title=Main_Page#Download" target="_blank" rel="noopener">Eigen官网</a>下载最新的Eigen版本。解压Eigen，然后使用Cmake进行配置并生成Visual Studio 15 2017的工程。打开解决方案，先生成ALL_BUILD工程，再生成INSTALL工程，则安装Eigen完毕。将在安装路径下生成Eigen的头文件。</p>
+<p>当然也可以不编译安装，直接将Eigen源代码目录下的Eigen子目录复制到Include文件夹即可。</p>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><h2 id="运行时推断矩阵尺寸示例"><a href="#运行时推断矩阵尺寸示例" class="headerlink" title="运行时推断矩阵尺寸示例"></a>运行时推断矩阵尺寸示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;Eigen/Dense&gt;</span><br><span class="line">using namespace Eigen;</span><br><span class="line">using namespace std;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">  MatrixXd m = MatrixXd::Random(3,3);</span><br><span class="line">  m = (m + MatrixXd::Constant(3,3,1.2)) * 50;</span><br><span class="line">  cout &lt;&lt; &quot;m =&quot; &lt;&lt; endl &lt;&lt; m &lt;&lt; endl;</span><br><span class="line">  VectorXd v(3);</span><br><span class="line">  v &lt;&lt; 1, 2, 3;</span><br><span class="line">  cout &lt;&lt; &quot;m * v =&quot; &lt;&lt; endl &lt;&lt; m * v &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="编译时确定矩阵尺寸示例"><a href="#编译时确定矩阵尺寸示例" class="headerlink" title="编译时确定矩阵尺寸示例"></a>编译时确定矩阵尺寸示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">	</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;Eigen/Dense&gt;</span><br><span class="line">using namespace Eigen;</span><br><span class="line">using namespace std;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">  Matrix3d m = Matrix3d::Random();</span><br><span class="line">  m = (m + Matrix3d::Constant(1.2)) * 50;</span><br><span class="line">  cout &lt;&lt; &quot;m =&quot; &lt;&lt; endl &lt;&lt; m &lt;&lt; endl;</span><br><span class="line">  Vector3d v(1,2,3);</span><br><span class="line">  </span><br><span class="line">  cout &lt;&lt; &quot;m * v =&quot; &lt;&lt; endl &lt;&lt; m * v &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://eigen.tuxfamily.org/dox/GettingStarted.html" target="_blank" rel="noopener">Getting started</a>,by eigen home.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/26/太阳位置及辐射强度等属性的计算方法/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -767,7 +914,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2020-01-14 20:36:55" itemprop="dateModified" datetime="2020-01-14T20:36:55+08:00">2020-01-14</time>
+                <time title="修改时间：2020-01-21 11:40:26" itemprop="dateModified" datetime="2020-01-21T11:40:26+08:00">2020-01-21</time>
               
             
           </span>
@@ -821,6 +968,9 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">link_directories(directory1 directory2 ...)</span><br></pre></td></tr></table></figure>
 <p>它相当于g++命令的-L选项的作用，也相当于环境变量中增加LD_LIBRARY_PATH的路径的作用。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">link_directories($&#123;CMAKE_CURRENT_LIST_DIR&#125;/lib)</span><br></pre></td></tr></table></figure>
+<h2 id="向当前工程添加存放源文件的子目录ADD-SUBDIRECTORY"><a href="#向当前工程添加存放源文件的子目录ADD-SUBDIRECTORY" class="headerlink" title="向当前工程添加存放源文件的子目录ADD_SUBDIRECTORY"></a>向当前工程添加存放源文件的子目录ADD_SUBDIRECTORY</h2><p>ADD_SUBDIRECTORY用于向当前工程添加存放源文件的子目录，并可以指定中间二进制和目标二进制存放的位置。语法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ADD_SUBDIRECTORY(source_dir [binary_dir]</span><br><span class="line">                  [EXCLUDE_FROM_ALL])</span><br></pre></td></tr></table></figure>
+<p>上面的例子定义了将 src 子目录加入工程，并指定了编译输出路径为 bin 目录。如果不指定 bin 目录，那么编译的结果都将存放在 build/src 目录。</p>
 <h2 id="设置要链接的库文件的名称TARGET-LINK-LIBRARIES"><a href="#设置要链接的库文件的名称TARGET-LINK-LIBRARIES" class="headerlink" title="设置要链接的库文件的名称TARGET_LINK_LIBRARIES"></a>设置要链接的库文件的名称TARGET_LINK_LIBRARIES</h2><p>语法：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">target_link_libraries(&lt;target&gt; [item1 [item2 [...]]]</span><br><span class="line">                      [[debug|optimized|general] &lt;item&gt;] ...)</span><br></pre></td></tr></table></figure>
 <p>该指令的作用为将目标文件与库文件进行链接。例如：</p>
@@ -858,6 +1008,8 @@
 <li><a href="https://murphypei.github.io/blog/2018/10/cmake-variable" target="_blank" rel="noopener">CMake中变量总结</a>,by 拾荒志.</li>
 <li><a href="https://juejin.im/post/5b3ecfef6fb9a04f8c5ebab5" target="_blank" rel="noopener">cmake使用教程（十）-关于file</a>,by saka.</li>
 <li><a href="https://stackoverflow.com/questions/17653738/recursive-cmake-search-for-header-and-source-files" target="_blank" rel="noopener">Recursive CMake search for header and source files</a>,by stackoverflow.</li>
+<li><a href="https://stackoverflow.com/questions/47251874/cmake-shared-library-in-subdirectory" target="_blank" rel="noopener">CMake shared library in subdirectory</a>,by stackoverflow.</li>
+<li><a href="https://blog.leosocy.top/CMake%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0/" target="_blank" rel="noopener">CMake 语言和语法</a>,by leosocy.</li>
 </ol>
 
           
@@ -2030,154 +2182,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/27/不同语言的计时方法/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/27/不同语言的计时方法/" itemprop="url">
-                  不同语言的计时方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-10-27 21:57:46 / 修改时间：22:02:21" itemprop="dateCreated datePublished" datetime="2019-10-27T21:57:46+08:00">2019-10-27</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>剖析代码性能时通常需要计时。下面记录不同语言的各种计时方法。</p>
-<h1 id="C-计时方法"><a href="#C-计时方法" class="headerlink" title="C++计时方法"></a>C++计时方法</h1><p>传统计时方法的代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;ctime&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">clock_t start = clock();</span><br><span class="line">// do something...</span><br><span class="line">clock_t end   = clock();</span><br><span class="line">cout &lt;&lt; &quot;花费了&quot; &lt;&lt; (double)(end - start) / CLOCKS_PER_SEC &lt;&lt; &quot;秒&quot; &lt;&lt; endl;</span><br></pre></td></tr></table></figure>
-<p>C++11 标准的”最佳计时方法“的代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;chrono&gt;   </span><br><span class="line">using namespace std;</span><br><span class="line">using namespace chrono;</span><br><span class="line"></span><br><span class="line">auto start = system_clock::now();</span><br><span class="line">// do something...</span><br><span class="line">auto end   = system_clock::now();</span><br><span class="line">auto duration = duration_cast&lt;microseconds&gt;(end - start);</span><br><span class="line">cout &lt;&lt;  &quot;花费了&quot; </span><br><span class="line">     &lt;&lt; double(duration.count())</span><br><span class="line">     &lt;&lt; &quot;微秒&quot; &lt;&lt; endl;</span><br></pre></td></tr></table></figure>
-<h1 id="Python计时方法"><a href="#Python计时方法" class="headerlink" title="Python计时方法"></a>Python计时方法</h1><p>在Jupyter Notebook中，计时使用一个magic command：%timeit。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/u013390476/article/details/50209603" target="_blank" rel="noopener">C++11 新的计时方法——std::chrono 大法好</a>,by sicolex.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2225,7 +2229,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">223</span>
+                    <span class="site-state-item-count">224</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

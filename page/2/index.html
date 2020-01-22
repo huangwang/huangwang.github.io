@@ -314,6 +314,190 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/12/28/3D模型动画分类及其使用/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/28/3D模型动画分类及其使用/" itemprop="url">
+                  3D模型动画分类及其使用
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-12-28 20:35:32 / 修改时间：21:05:19" itemprop="dateCreated datePublished" datetime="2019-12-28T20:35:32+08:00">2019-12-28</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>3DMax、Blender之类的3D建模软件易学难精，其原因在于很多人不了解其背后的计算机图形学原理。因此，掌握相关的计算机图形学原理和知识，对于我们熟练运用3D建模软件是十分必要的。下面简单介绍3D模型的分类及其使用方法。</p>
+<h1 id="3D模型动画分类"><a href="#3D模型动画分类" class="headerlink" title="3D模型动画分类"></a>3D模型动画分类</h1><blockquote>
+<p><strong>3D模型动画的基本原理是让模型中各顶点的位置随时间变化。</strong> 主要种类有Morph（变形）动画，关节动画和骨骼蒙皮动画(SkinnedMesh)。从动画数据的角度来说，三者一般都采用关键帧技术，即只给出关键帧的数据，其他帧的数据使用插值得到。但由于这三种技术的不同，关键帧的数据是不一样的。</p>
+</blockquote>
+<h2 id="变形动画"><a href="#变形动画" class="headerlink" title="变形动画"></a>变形动画</h2><blockquote>
+<p>Morph（渐变，变形）动画是直接指定动画每一帧的顶点位置，其动画关键中存储的是Mesh所有顶点在关键帧对应时刻的位置。</p>
+</blockquote>
+<h2 id="关节动画"><a href="#关节动画" class="headerlink" title="关节动画"></a>关节动画</h2><blockquote>
+<p>关节动画的模型不是一个整体的Mesh,而是分成很多部分(Mesh)，通过一个父子层次结构将这些分散的Mesh组织在一起，父Mesh带动其下子Mesh的运动，各Mesh中的顶点坐标定义在自己的坐标系中，这样各个Mesh是作为一个整体参与运动的。</p>
+<p>动画帧中设置各子Mesh相对于其父Mesh的变换（主要是旋转，当然也可包括移动和缩放），通过子到父，一级级的变换累加（当然从技术上，如果是矩阵操作是累乘）得到该Mesh在整个动画模型所在的坐标空间中的变换（从本文的视角来说就是世界坐标系了，下同），从而确定每个Mesh在世界坐标系中的位置和方向，然后以Mesh为单位渲染即可。</p>
+<p>关节动画的问题是，各部分Mesh中的顶点是固定在其Mesh坐标系中的，这样在两个Mesh结合处就可能产生裂缝。</p>
+</blockquote>
+<h2 id="骨骼蒙皮动画"><a href="#骨骼蒙皮动画" class="headerlink" title="骨骼蒙皮动画"></a>骨骼蒙皮动画</h2><blockquote>
+<p>骨骼蒙皮动画即SkinnedMesh了，骨骼蒙皮动画的出现解决了关节动画的裂缝问题。骨骼动画的基本原理可概括为：在骨骼控制下，通过顶点混合动态计算蒙皮网格的顶点，而骨骼的运动相对于其父骨骼，并由动画关键帧数据驱动。</p>
+<p>一个骨骼动画通常包括骨骼层次结构数据，网格(Mesh)数据，网格蒙皮数据(skin info)和骨骼的动画(关键帧)数据。</p>
+</blockquote>
+<h3 id="SkinnedMesh原理"><a href="#SkinnedMesh原理" class="headerlink" title="SkinnedMesh原理"></a>SkinnedMesh原理</h3><blockquote>
+<p>SkinnedMesh中文一般称作骨骼蒙皮动画，正如其名，这种动画中包含骨骼（Bone）和蒙皮(Skinned Mesh)两个部分，Bone的层次结构和关节动画类似，Mesh则和关节动画不同：</p>
+<p>关节动画中是使用多个分散的Mesh,而Skinned Mesh中Mesh是一个整体，也就是说只有一个Mesh,实际上如果没有骨骼让Mesh运动变形，Mesh就和静态模型一样了。</p>
+<p>Skinned Mesh技术的精华在于蒙皮，所谓的皮并不是模型的贴图（也许会有人这么想过吧），而是Mesh本身，蒙皮是指将Mesh中的顶点附着（绑定）在骨骼之上，而且每个顶点可以被多个骨骼所控制，这样在关节处的顶点由于同时受到父子骨骼的拉扯而改变位置就消除了裂缝。</p>
+<p>Skinned Mesh这个词从字面上理解似乎是有皮的模型，哦，如果贴图是皮，那么普通静态模型不也都有吗？所以我觉得应该理解为具有蒙皮信息的Mesh或可当做皮肤用的Mesh，这个皮肤就是Mesh。而为了有皮肤功能，Mesh还需要蒙皮信息，即Skin数据，没有Skin数据就是一个普通的静态Mesh了。</p>
+<p>Skin数据决定顶点如何绑定到骨骼上。顶点的Skin数据包括顶点受哪些骨骼影响以及这些骨骼影响该顶点时的权重(weight)，另外对于每块骨骼还需要骨骼偏移矩阵(BoneOffsetMatrix)用来将顶点从Mesh空间变换到骨骼空间。</p>
+</blockquote>
+<h3 id="SkinnedMesh结构"><a href="#SkinnedMesh结构" class="headerlink" title="SkinnedMesh结构"></a>SkinnedMesh结构</h3><ul>
+<li>骨骼决定了模型整体在世界坐标系中的位置和朝向。</li>
+</ul>
+<blockquote>
+<p>先看看静态模型吧，静态模型没有骨骼，我们在世界坐标系中放置静态模型时，只要指定模型自身坐标系在世界坐标系中的位置和朝向。在骨骼动画中，不是把Mesh直接放到世界坐标系中，Mesh只是作为Skin使用的，是依附于骨骼的，真正决定模型在世界坐标系中的位置和朝向的是骨骼。</p>
+<p>在渲染静态模型时，由于模型的顶点都是定义在模型坐标系中的，所以各顶点只要经过模型坐标系到世界坐标系的变换后就可进行渲染。而对于骨骼动画，我们设置模型的位置和朝向，实际是在设置根骨骼的位置和朝向，然后根据骨骼层次结构中父子骨骼之间的变换关系计算出各个骨骼的位置和朝向，然后根据骨骼对Mesh中顶点的绑定计算出顶点在世界坐标系中的坐标，从而对顶点进行渲染。要记住，在骨骼动画中，骨骼才是模型主体，Mesh不过是一层皮，一件衣服。</p>
+</blockquote>
+<ul>
+<li>骨骼可理解为一个坐标空间。</li>
+</ul>
+<blockquote>
+<p>骨骼只是一个形象的说法，实际上骨骼可理解为一个坐标空间，关节可理解为骨骼坐标空间的原点。关节的位置由它在父骨骼坐标空间中的位置描述。上图中有三块骨骼，分别是上臂，前臂和两个手指。Clavicle(锁骨)是一个关节，它是上臂的原点，同样肘关节(elbow joint)是前臂的原点，腕关节(wrist)是手指骨骼的原点。关节既决定了骨骼空间的位置，又是骨骼空间的旋转和缩放中心。</p>
+<p>骨骼就是坐标空间，骨骼层次就是嵌套的坐标空间。关节只是描述骨骼的位置即骨骼自己的坐标空间原点在其父空间中的位置，绕关节旋转是指骨骼坐标空间（包括所有子空间）自身的旋转。</p>
+<p>但还有两个可能的疑问，一是骨骼的长度问题，由于骨骼是坐标空间，没有所谓的长度和宽度的限制，我们看到的长度一方面是蒙皮后的结果，另一方面子骨骼的原点（也就是关节）的位置往往决定了视觉上父骨骼的长度，比如这里upper arm线段的长度实际是由elbow joint的位置决定的。</p>
+<p>第二个问题，手指的那个端点是啥啊？实际上在我们的例子中手指没有子骨骼，所以那个端点并不存在：）那是为了方便演示画上去的。实际问题中总有最下层的骨骼，他们不能决定其他骨骼了，他们的作用只剩下控制Mesh顶点。对了，那么手指的长度如何确定？我们看到的长度应该是由蒙皮决定的，也就是由Mesh中属于手指的那些点离腕关节的距离决定。</p>
+</blockquote>
+<h1 id="3D模型动画使用"><a href="#3D模型动画使用" class="headerlink" title="3D模型动画使用"></a>3D模型动画使用</h1><p>下面给出一段在Unity3D中控制3D模型动画的代码，作为参考。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">using UnityEngine;</span><br><span class="line">using System.Collections;</span><br><span class="line"> </span><br><span class="line">public class AnimationScript : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    void Start()</span><br><span class="line">    &#123;</span><br><span class="line">        Animation animation = this.animation;//动画控制器</span><br><span class="line">        animation.Play(&quot;idle&quot;);//上来直接播放idle动画</span><br><span class="line">    &#125;</span><br><span class="line">    void OnGUI()</span><br><span class="line">    &#123;</span><br><span class="line">        if (GUI.Button(new Rect(0, 0, 100, 30), &quot;行走&quot;))</span><br><span class="line">        &#123;</span><br><span class="line">            animation.Play(&quot;run&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        if (GUI.Button(new Rect(100, 0, 100, 30), &quot;停止&quot;))</span><br><span class="line">        &#123;</span><br><span class="line">            animation.Play(&quot;idle&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        if (GUI.Button(new Rect(200, 0, 100, 30), &quot;攻击&quot;))</span><br><span class="line">        &#123;</span><br><span class="line">            animation.Play(&quot;attack&quot;);</span><br><span class="line">            animation.PlayQueued(&quot;idle&quot;);//播放完attack之后再播放idle</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://gameinstitute.qq.com/community/detail/127900" target="_blank" rel="noopener">骨骼蒙皮动画(SkinnedMesh)的原理解析</a>,by feng.</li>
+<li><a href="https://blog.csdn.net/yongh701/article/details/73001312" target="_blank" rel="noopener">【Unity3D】3D模型的使用——FBX的使用与Animation设置</a>,by yongh701.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/12/26/gitbook入门教程/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1738,241 +1922,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/30/三阶魔方复原方法简介/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/11/30/三阶魔方复原方法简介/" itemprop="url">
-                  三阶魔方复原方法简介
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-11-30 20:46:42" itemprop="dateCreated datePublished" datetime="2019-11-30T20:46:42+08:00">2019-11-30</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-12-02 21:44:28" itemprop="dateModified" datetime="2019-12-02T21:44:28+08:00">2019-12-02</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>魔方作为家喻户晓的益智玩具，由匈牙利建筑学教授暨雕塑家鲁比克·艾尔内于1974年发明，最初的名称叫Magic Cube[2]，1980年Ideal Toys公司于贩售此玩具，并将名称改为Rubik’s Cube。下面简要介绍魔方复原的方法。</p>
-<h1 id="魔方公式书写方式"><a href="#魔方公式书写方式" class="headerlink" title="魔方公式书写方式"></a>魔方公式书写方式</h1><p>为了记录下复原、转乱的过程或公式的步骤，会用Singmaster符号来书写（由David Singmaster发明）。书写方式如下：</p>
-<ul>
-<li>R(Right)、L(Left)、U(Up)、D(Down)、F(Front)、B(Back)分别代表右、左、上、下、前、后层。</li>
-<li>若是顺时针旋转，则直接写上符号；若是逆时针旋转，则在符号后加上“’”或是“i”；若是旋转180°，则在符号后加上“2”或是“²”。</li>
-</ul>
-<h1 id="魔方数学方程式"><a href="#魔方数学方程式" class="headerlink" title="魔方数学方程式"></a>魔方数学方程式</h1><h2 id="变化数"><a href="#变化数" class="headerlink" title="变化数"></a>变化数</h2><p>三阶魔方的总变化数是：</p>
-<script type="math/tex; mode=display">{\displaystyle {\frac {8!\times 3^{8}\times 12!\times 2^{12}}{2\times 2\times 3}}=43,\!252,\!003,\!274,\!489,\!856,\!000\approx 4.33\times 10^{19}}</script><p>三阶魔方总变化数的算式是这样得来：</p>
-<ul>
-<li><p>8个角块可以互换位置（${\displaystyle 8!}$），也可以旋转（3），但不能单独旋转一个角块，所以总共有${\displaystyle {\frac {8!\times 3^{8}}{3}}}$种变化状态。</p>
-</li>
-<li><p>12个边块可以互换位置（$12!$)，也可以翻转（2），但不能单独翻转一个边块（将两个面对调），也不能单独交换两边块，所以总共有${\displaystyle {\frac {12!\times 2^{12}}{2\times 2}}}$种变化状态。</p>
-</li>
-</ul>
-<h2 id="上帝的数字"><a href="#上帝的数字" class="headerlink" title="上帝的数字"></a>上帝的数字</h2><p>所有的三阶魔方都可以在有限步数内复原，1982年，佛雷与辛马斯特合著的《魔方手册》定义任意的三阶魔方都可以保证最少n步复原，并称呼n为上帝的数字。在此书中，证明上帝的数字介于17~52之间。</p>
-<p>1995年，瑞德证明上帝的数字介于20-29之间。2006年，雷杜用群论证明上界可改进为27。</p>
-<p>2007年，计算机科学家古柏曼与他的学生用20台超级电脑花了8000个小时证明上界可改进为26。</p>
-<p>2008年，Tomas Rokicki宣布证明了任何魔方可以在25步以内解开[22]。之后又改进为22步。</p>
-<p>2010年，包括Tomas Rokicki和Morley Davidson等人的研究团队证明任意组合的魔方可以在20步内还原，现在上帝的数字正式定为20。</p>
-<h1 id="魔方复原方法"><a href="#魔方复原方法" class="headerlink" title="魔方复原方法"></a>魔方复原方法</h1><p>以白色面为例，说明魔方复原的简单方法。</p>
-<h2 id="第一步白色面的复原"><a href="#第一步白色面的复原" class="headerlink" title="第一步白色面的复原"></a>第一步白色面的复原</h2><p>第一步白色面的复原非常简单，分成两小步，如图1和图2所示。</p>
-<p></p><p align="center">
-    <img src="images/good-white-cross.svg" width="40%" alt="解决白色边缘">
-</p><p></p>
-<center>图1 解决白色边缘</center>
-<p align="center">
-    <img src="images/solved-first-white-face.svg" width="40%" alt="解决白色角落">
-</p>
-<center>图2 解决白色角落</center>
-
-<p>白色面的还原比较简单，就不介绍具体步骤了。</p>
-<h2 id="第二步中间层的复原"><a href="#第二步中间层的复原" class="headerlink" title="第二步中间层的复原"></a>第二步中间层的复原</h2><p>第二步中间层的复原分成两种情况，如图3和图4所示。</p>
-<p></p><p align="center">
-    <img src="images/left.png" width="40%" alt="中间层左侧边块的复原">
-</p><p></p>
-<center>U' L' U L U F U' F'</center>
-<center>图3 中间层左侧边块的复原</center>
-<p align="center">
-    <img src="images/right.png" width="40%" alt="中间层右侧边块的复原"> 
-</p>
-<center>U R U' R' U' F' U F</center>
-<center>图4 中间层右侧边块的复原</center>
-
-<h2 id="第三步顶层的复原"><a href="#第三步顶层的复原" class="headerlink" title="第三步顶层的复原"></a>第三步顶层的复原</h2><p>第三步最后一层的还原遇到的情况很多，目前我也没有完全搞明白，下面简单介绍最后一层复原的步骤，但并不能保证一定能复原。</p>
-<h3 id="形成顶层十字"><a href="#形成顶层十字" class="headerlink" title="形成顶层十字"></a>形成顶层十字</h3><p></p><p align="center">
-    <img src="images/top-cross.png" width="40%" alt="顶层十字的复原">
-</p><p></p>
-<center>F R U R' U' F'</center>
-<center>图5 顶层十字的复原</center>
-
-<p>根据顶层状态，多次使用公式F R U R’ U’ F’，以形成顶部十字。</p>
-<h3 id="交换顶层十字边块"><a href="#交换顶层十字边块" class="headerlink" title="交换顶层十字边块"></a>交换顶层十字边块</h3><p>交换顶层边块，使其边缘颜色保持一致，如图6所示。</p>
-<p></p><p align="center">
-    <img src="images/top-cross-color.png" width="60%" alt="交换顶层边块">
-</p><p></p>
-<center>R U R' U R U2 R' U</center>
-<center>图6 交换顶层边块</center>
-
-<h3 id="交换顶层角块"><a href="#交换顶层角块" class="headerlink" title="交换顶层角块"></a>交换顶层角块</h3><p>现在只剩下黄色的角落，将分两个步骤进行。首先，我们必须以定位它们，在下一步骤中定向它们。</p>
-<h4 id="定位顶层角块"><a href="#定位顶层角块" class="headerlink" title="定位顶层角块"></a>定位顶层角块</h4><p></p><p align="center">
-    <img src="images/cycle-yellow-corners.svg" width="60%" alt="定位顶层角块">
-</p><p></p>
-<center>U R U' L' U R' U' L</center>
-<center>图7 定位顶层角块</center>
-
-<p>此算法循环上面图像上顶层的角块，但标有“OK”的前右上角将保留在原位。</p>
-<h4 id="定向顶层角块"><a href="#定向顶层角块" class="headerlink" title="定向顶层角块"></a>定向顶层角块</h4><p>现在顶层角块都已定位，但角块颜色与周围面不一致，使用如图8所示算法一个一个旋转顶层角块。</p>
-<p></p><p align="center">
-    <img src="images/orient-yellow-corners.svg" width="60%" alt="定向顶层角块">
-</p><p></p>
-<center>R' D' R D</center>
-<center>图8 定向顶层角块</center>
-
-<p>首先在突出显示的右前方点，拿着你的手有一个不对准的黄色角落的立方体（见图8）。重复R’ D’ R D算法，直到这一块在它的地方与黄色贴纸。</p>
-<p>只将一面向上转动，将另一个错误的黄色拐角移到突出显示的点，并重复R’ D’ R D算法，直到这个黄色面被解决。</p>
-<p>移动其他未对齐的黄色边角，一个一个到标记的点，并做公式，直到所有的黄色角落都被解决。</p>
-<h4 id="顶层最后两个角块位置对颜色不对的复原方法"><a href="#顶层最后两个角块位置对颜色不对的复原方法" class="headerlink" title="顶层最后两个角块位置对颜色不对的复原方法"></a>顶层最后两个角块位置对颜色不对的复原方法</h4><p>将色向不对的两个角放在顶层左手边位置,用公式(R;U;R’;U;R;U2;R’;)(L’;U’;L;U’;L’;U2;L;)。</p>
-<p>做一遍如果不对的话,就再做一遍就行了.</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://cube3x3.com/%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E9%AD%94%E6%96%B9/" target="_blank" rel="noopener">如何解决魔方 魔方</a>,by cub3x3.</li>
-<li><a href="https://zhidao.baidu.com/question/446648519.html" target="_blank" rel="noopener">三阶魔方解法最后两个角如何复原?位置是对的只是颜色对不住？</a>,by qiuyuhanfeng.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E9%AD%94%E6%96%B9" target="_blank" rel="noopener">魔方</a>,by wikipedia.</li>
-<li><a href="https://site.douban.com/107925/widget/notes/4567539/note/171635813/" target="_blank" rel="noopener">暴强！！！只需7步，任何魔方6面皆可还原！</a>,by 飞天飘渺.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2020,7 +1969,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">224</span>
+                    <span class="site-state-item-count">225</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

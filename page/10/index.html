@@ -314,6 +314,237 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/29/Python程序打包成exe/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/29/Python程序打包成exe/" itemprop="url">
+                  Python程序打包成exe
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-29 11:18:51 / 修改时间：11:38:29" itemprop="dateCreated datePublished" datetime="2019-06-29T11:18:51+08:00">2019-06-29</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>大部分人是普通人，不知道如何运行Python脚本程序，因此有必要将Python脚本程序打包成可执行文件，免去安装Python环境，提高Python脚本程序的可用性。</p>
+<h1 id="打包方法"><a href="#打包方法" class="headerlink" title="打包方法"></a>打包方法</h1><p>Python脚本程序的发布有三种方法：</p>
+<ul>
+<li>.py文件：对于开源项目或者源码没那么重要的，直接提供源码，需要使用者自行安装Python并且安装依赖的各种库。</li>
+<li>.pyc文件：有些公司或个人因为机密或者各种原因，不愿意源码被运行者看到，可以使用pyc文件发布，pyc文件是Python解释器可以识别的二进制码，故发布后也是跨平台的，需要使用者安装相应版本的Python和依赖库。</li>
+<li>可执行文件：对于非码农用户，最简单的方式就是提供一个可执行文件，只需要把用法告诉他即可。比较麻烦的是需要针对不同平台需要打包不同的可执行文件（Windows, Linux, Mac,…）。</li>
+</ul>
+<p>下面介绍将Python脚本程序打包成可执行程序的各种工具。</p>
+<center>表1 各种打包工具的对比</center>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Solution</th>
+<th>Windows</th>
+<th>Linux</th>
+<th>OS X</th>
+<th>Python 3</th>
+<th>One file mode</th>
+<th>Zipfile import</th>
+<th>Eggs</th>
+<th>pkg_resources support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bbFreeze</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>py2exe</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+</tr>
+<tr>
+<td>pyInstaller</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr>
+<td>cx_Freeze</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr>
+<td>py2app</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>从上述对Python脚本程序打包工具对比可知，推荐使用pyInstaller。</p>
+<h1 id="PyInstaller打包示例"><a href="#PyInstaller打包示例" class="headerlink" title="PyInstaller打包示例"></a>PyInstaller打包示例</h1><h2 id="安装PyInstaller"><a href="#安装PyInstaller" class="headerlink" title="安装PyInstaller"></a>安装PyInstaller</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pyinstaller</span><br></pre></td></tr></table></figure>
+<h2 id="打包Python脚本"><a href="#打包Python脚本" class="headerlink" title="打包Python脚本"></a>打包Python脚本</h2><p>打包Python脚本成单独的 .exe 文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller -F yourprogram.py</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/45288707" target="_blank" rel="noopener">如何将 Python 程序打包成 .exe 文件？</a>,by 刘哈哈.</li>
+<li><a href="https://blog.csdn.net/zengxiantao1994/article/details/76578421" target="_blank" rel="noopener">Python程序打包成exe可执行文件</a>,by 知行流浪.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/29/Python命令行参数解析示例/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2025,192 +2256,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/10/轨迹相似度度量方法总结/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/10/轨迹相似度度量方法总结/" itemprop="url">
-                  轨迹相似度度量方法总结
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-10 22:39:26" itemprop="dateCreated datePublished" datetime="2019-06-10T22:39:26+08:00">2019-06-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-06-11 21:53:37" itemprop="dateModified" datetime="2019-06-11T21:53:37+08:00">2019-06-11</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>轨迹相似度度量有广泛的用途，如语音识别分类、模板匹配、信息检索等。下面介绍各种轨迹相似度度量方法。</p>
-<h1 id="轨迹定义"><a href="#轨迹定义" class="headerlink" title="轨迹定义"></a>轨迹定义</h1><p>轨迹可由时间域到空间域的映射函数表示，如：</p>
-<script type="math/tex; mode=display">t\stackrel{F}{\longrightarrow}R^d, d>1</script><h1 id="度量方法"><a href="#度量方法" class="headerlink" title="度量方法"></a>度量方法</h1><p>轨迹相似度度量方法主要有：</p>
-<ul>
-<li><p>基于点方法： EDR，LCSS，DTW等</p>
-</li>
-<li><p>基于形状的方法： Frechet， Hausdorff</p>
-</li>
-<li><p>基于分段的方法：One Way Distance, LIP distance</p>
-</li>
-<li><p>基于特定任务的方法：TRACLUS， Road Network，grid等</p>
-</li>
-</ul>
-<h2 id="基于点的方法"><a href="#基于点的方法" class="headerlink" title="基于点的方法"></a>基于点的方法</h2><h3 id="DTW"><a href="#DTW" class="headerlink" title="DTW"></a>DTW</h3><p>DTW（Dynamic Time Warping, 动态时间规整）可以计算两个时间序列的相似度，尤其适用于不同长度、不同节奏的时间序列（比如不同的人读同一个词的音频序列）。DTW将自动warping扭曲 时间序列（即在时间轴上进行局部的缩放），使得两个序列的形态尽可能的一致，得到最大可能的相似度。</p>
-<p>Dynamic Time Warping（DTW）诞生有一定的历史了（日本学者Itakura提出），它出现的目的也比较单纯，是一种衡量两个长度不同的时间序列的相似度的方法。应用也比较广，主要是在模板匹配中，比如说用在孤立词语音识别（识别两段语音是否表示同一个单词），手势识别，数据挖掘和信息检索等中。</p>
-<p>设 $P=<p_1,p_2,...,p_m>$ 和 $Q=<q_1,q_2,...,q_n>$ 是两个时间序列，则 $P$ 和 $Q$的距离 $DTW(P,Q)$ 定义如下：</q_1,q_2,...,q_n></p_1,p_2,...,p_m></p>
-<script type="math/tex; mode=display">DTW(P,Q)= \left\{
-\begin{array}{lcl}
-0     &   &if\ m=n=0\\
-\infty &   &if\ m=0\ or\ n=0\\
-dist(p_1,q_1)+min
-    \left\{
-    \begin{aligned}
-            DTW(Rest(P),Rest(Q))\\
-            DTW(Rest(P),Q)\\
-            DTW(P,Rest(Q))\\
-    \end{aligned}
-    \right\} & & otherwise
-\end{array}
-\right.</script><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.zhihu.com/question/27213170" target="_blank" rel="noopener">如何判断两条轨迹（或曲线）的相似度？</a>,by zhihu.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/43247215" target="_blank" rel="noopener">动态时间规整（DTW）算法简介</a>,by 文均.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/32849741" target="_blank" rel="noopener">DTW(Dynamic Time Warping)动态时间规整</a>,by X-猪.</li>
-<li><a href="https://www.cnblogs.com/luxiaoxun/archive/2013/05/09/3069036.html" target="_blank" rel="noopener">Dynamic Time Warping 动态时间规整算法</a>,by 阿凡卢.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2258,7 +2303,7 @@ dist(p_1,q_1)+min
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">227</span>
+                    <span class="site-state-item-count">228</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

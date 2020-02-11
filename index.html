@@ -377,7 +377,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2020-02-11 10:24:36" itemprop="dateModified" datetime="2020-02-11T10:24:36+08:00">2020-02-11</time>
+                <time title="修改时间：2020-02-11 10:43:12" itemprop="dateModified" datetime="2020-02-11T10:43:12+08:00">2020-02-11</time>
               
             
           </span>
@@ -414,7 +414,7 @@
           
             <p>使用强化学习实现机器人的连续控制，策略梯度方法是首选。下面即对强化学习中策略梯度方法进行总结。</p>
 <h1 id="强化学习分类"><a href="#强化学习分类" class="headerlink" title="强化学习分类"></a>强化学习分类</h1><p></p><p align="center">
-    <img src="images/rl_algorithms.svg" width="60%" alt="强化学习简单分类">
+    <img src="images/rl_algorithms.svg" width="90%" alt="强化学习简单分类">
 </p><p></p>
 <center>图1 强化学习简单分类</center>
 
@@ -493,6 +493,12 @@
 <p>使用梯度上升方法，我们可以将参数 $\theta$ 往梯度 $\nabla<em>{\theta} J(\theta)$ 给出的方向进行改变从而去找到最优的 $\theta$ 使得其对应的策略 $\pi</em>{\theta}$ 能够给智能体带来最大的期望累积回报。</p>
 <script type="math/tex; mode=display">\theta_{k+1} = \theta_k + \alpha \left. \nabla_{\theta} J(\pi_{\theta}) \right|_{\theta_k}.</script><p>策略性能的梯度 $\nabla<em>{\theta} J(\pi</em>{\theta})$ ，通常被称为 策略梯度 ，优化策略的算法通常被称为 策略算法 。</p>
 <h2 id="策略梯度定理"><a href="#策略梯度定理" class="headerlink" title="策略梯度定理"></a>策略梯度定理</h2><script type="math/tex; mode=display">\begin{aligned} \nabla_\theta J(\theta) &\propto \sum_{s \in \mathcal{S}} d^\pi(s) \sum_{a \in \mathcal{A}} Q^\pi(s, a) \nabla_\theta \pi_\theta(a \vert s) &\\ &= \sum_{s \in \mathcal{S}} d^\pi(s) \sum_{a \in \mathcal{A}} \pi_\theta(a \vert s) Q^\pi(s, a) \frac{\nabla_\theta \pi_\theta(a \vert s)}{\pi_\theta(a \vert s)} &\\ &= \mathbb{E}_\pi [Q^\pi(s, a) \nabla_\theta \ln \pi_\theta(a \vert s)] & \scriptstyle{\text{; 因为 } (\ln x)’ = 1/x} \end{aligned}</script><p>$\mathbb{E}<em>{\pi}$代表$\mathbb{E}</em>{s \sim d<em>{\pi}, a \sim \pi</em>{\theta}}$，下标表示遵循策略$\pi_{\theta}$（在线策略）时状态以及动作的分布。</p>
+<h2 id="深度确定性策略梯度-（DDPG）"><a href="#深度确定性策略梯度-（DDPG）" class="headerlink" title="深度确定性策略梯度 （DDPG）"></a>深度确定性策略梯度 （DDPG）</h2><p>DDPG（Lillicrap, et al., 2015）是深度确定性策略梯度（Deep Deterministic Policy Gradient）的缩写，是一个结合了DPG以及DQN的无模型离线演员-评论家算法。DQN（深度Q网络）通过经验回访以及冻结目标网络的方式来稳定Q函数的训练过程。原始的DQN算法只能在离散的动作空间上使用，DDPG算法在学习一个确定性策略的同时通过演员-评论家框架将其扩展到连续的动作空间中。</p>
+<p></p><p align="center">
+    <img src="images/ddpg.svg" width="90%" alt="深度确定性策略梯度算法伪代码">
+</p><p></p>
+<center>图2 深度确定性策略梯度算法伪代码</center>
+
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://tomaxent.com/2019/04/14/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%E6%96%B9%E6%B3%95/" target="_blank" rel="noopener">策略梯度方法</a>,by Abracadabra.</li>
 <li><a href="https://lilianweng.github.io/lil-log/2018/02/19/a-long-peek-into-reinforcement-learning.html#key-concepts" target="_blank" rel="noopener">A (Long) Peek into Reinforcement Learning</a>,by Lilian Weng.</li>

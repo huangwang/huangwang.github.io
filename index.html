@@ -560,7 +560,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2020-02-11 10:43:12" itemprop="dateModified" datetime="2020-02-11T10:43:12+08:00">2020-02-11</time>
+                <time title="修改时间：2020-02-17 16:51:44" itemprop="dateModified" datetime="2020-02-17T16:51:44+08:00">2020-02-17</time>
               
             
           </span>
@@ -596,6 +596,15 @@
         
           
             <p>使用强化学习实现机器人的连续控制，策略梯度方法是首选。下面即对强化学习中策略梯度方法进行总结。</p>
+<h1 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h1><h2 id="免模型学习（Model-Free）-vs-有模型学习（Model-Based）"><a href="#免模型学习（Model-Free）-vs-有模型学习（Model-Based）" class="headerlink" title="免模型学习（Model-Free） vs 有模型学习（Model-Based）"></a>免模型学习（Model-Free） vs 有模型学习（Model-Based）</h2><p>不同强化学习算法最重要的区分点之一就是<strong>智能体是否能完整了解或学习到所在环境的模型。</strong> 环境的模型是指一个预测状态转换和奖励的函数。</p>
+<p>有模型学习最大的优势在于智能体能够 提前考虑来进行规划，走到每一步的时候，都提前尝试未来可能的选择，然后明确地从这些候选项中进行选择。智能体可以把预先规划的结果提取为学习策略。这其中最著名的例子就是 AlphaZero。这个方法起作用的时候，可以大幅度提升采样效率 —— 相对于那些没有模型的方法。</p>
+<p>有模型学习最大的缺点就是智能体往往不能获得环境的真实模型。如果智能体想在一个场景下使用模型，那它必须完全从经验中学习，这会带来很多挑战。最大的挑战就是，智能体探索出来的模型和真实模型之间存在误差，而这种误差会导致智能体在学习到的模型中表现很好，但在真实的环境中表现得不好（甚至很差）。基于模型的学习从根本上讲是非常困难的，即使你愿意花费大量的时间和计算力，最终的结果也可能达不到预期的效果。</p>
+<p>使用模型的算法叫做有模型学习，不基于模型的叫做免模型学习。虽然免模型学习放弃了有模型学习在样本效率方面的潜在收益，但是他们往往更加易于实现和调整。</p>
+<h2 id="同策略（on-policy）-vs-异策略（off-policy）"><a href="#同策略（on-policy）-vs-异策略（off-policy）" class="headerlink" title="同策略（on-policy） vs 异策略（off-policy）"></a>同策略（on-policy） vs 异策略（off-policy）</h2><p>异策略（off-policy）的代表算法Q-learning，亦称SarasMax，其采样的策略（用于执行，behavior policy) 和更新Q值的策略（用于评估，target policy）不一样，行为策略为贪心策略，而target policy为确定性策略，即选择最Q值最优的action。</p>
+<p>同策略（on-policy）的代表算法Sarsa，亦称on-line Q-learning，其采样的策略（用于执行，behavior policy) 和更新Q值的策略（用于评估，target policy）一样,行为策略和目标策略均为贪心策略。Sarsa的每次Q值更新需要知道前一步的状态（state）、前一步的动作（action）、奖赏值（reward）、当前状态（state）、将要执行的动作（action），由此得名Sarsa算法。</p>
+<h2 id="在线（online）-vs-离线（offline）"><a href="#在线（online）-vs-离线（offline）" class="headerlink" title="在线（online） vs 离线（offline）"></a>在线（online） vs 离线（offline）</h2><p>在计算机科学中，在线机器学习是一种机器学习的方法，其中数据按顺序可用，并且用于在每个步骤中为将来的数据更新我们的最佳预测器，而不是通过学习生成最佳预测器的批处理学习技术 一次对整个训练数据集。 在线学习是机器学习领域中的一种常用技术，在该领域中，计算无法训练整个数据集是不可行的，因此需要核心算法。 它也用于算法必须动态适应数据中的新模式的情况下，或者在数据本身随时间而变的情况下（例如，股价预测）使用。 在线学习算法可能易于遭受灾难性干扰，这一问题可以通过增量学习方法来解决。</p>
+<p>在机器学习中，采用离线学习的系统在初始训练阶段完成后不会改变其对目标函数的近似值。这些系统通常也是渴望学习的示例。</p>
+<p>在在线学习中，只有一组可能的元素是已知的，而在离线学习中，学习者则知道这些元素的标识以及它们显示的顺序。</p>
 <h1 id="强化学习分类"><a href="#强化学习分类" class="headerlink" title="强化学习分类"></a>强化学习分类</h1><p></p><p align="center">
     <img src="images/rl_algorithms.svg" width="90%" alt="强化学习简单分类">
 </p><p></p>
@@ -687,6 +696,8 @@
 <li><a href="https://lilianweng.github.io/lil-log/2018/02/19/a-long-peek-into-reinforcement-learning.html#key-concepts" target="_blank" rel="noopener">A (Long) Peek into Reinforcement Learning</a>,by Lilian Weng.</li>
 <li><a href="https://spinningup.readthedocs.io/zh_CN/latest/spinningup/rl_intro3.html" target="_blank" rel="noopener">第三部分：策略优化介绍</a>,by spinningup.</li>
 <li><a href="https://huangwang.github.io/2018/11/26/%E6%B7%B1%E5%BA%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%A0%94%E7%A9%B6%E7%AC%94%E8%AE%B0/">深度强化学习研究笔记</a>,by jackhuang.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/81437177" target="_blank" rel="noopener">异策略（Q-learning） v.s. 同策略（Sarsa）</a>,by MOMO.</li>
+<li><a href="https://en.wikipedia.org/wiki/Online_machine_learning" target="_blank" rel="noopener">Online_machine_learning</a>,by wikipedia.</li>
 </ol>
 
           

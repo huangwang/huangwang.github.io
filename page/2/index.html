@@ -314,6 +314,269 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/01/15/四元数与旋转矩阵/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/01/15/四元数与旋转矩阵/" itemprop="url">
+                  四元数与旋转矩阵
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-01-15 19:26:04 / 修改时间：22:11:30" itemprop="dateCreated datePublished" datetime="2020-01-15T19:26:04+08:00">2020-01-15</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>四元数是由爱尔兰数学家威廉·卢云·哈密顿在1843年创立出的数学概念。单位四元数（Unit quaternion）可以用于表示三维空间里的旋转。它与常用的另外两种表示方式（三维正交矩阵和欧拉角）是等价的，但是避免了欧拉角表示法中的万向锁问题。比起三维正交矩阵表示，四元数表示能够更方便地给出旋转的转轴与旋转角。</p>
+<h1 id="欧拉角"><a href="#欧拉角" class="headerlink" title="欧拉角"></a>欧拉角</h1><p>欧拉角（Euler Angles）是一种描述三维旋转的方式，根据欧拉旋转定理，任何一个旋转都可以用三个旋转的参数来表示。但欧拉角的描述方式有很多种，并没有一个统一标准。对于定义一个欧拉角，需要明确的内容包括：</p>
+<ol>
+<li>三个旋转角的组合方式（是xyz还是yzx还是zxy）</li>
+<li>旋转角度的参考坐标系统（旋转是相对于固定的坐标系还是相对于自身的坐标系）</li>
+<li>使用旋转角度是左手系还是右手系</li>
+<li>三个旋转角的记法</li>
+</ol>
+<h2 id="旋转角的记法"><a href="#旋转角的记法" class="headerlink" title="旋转角的记法"></a>旋转角的记法</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>顺序</th>
+<th>飞行器</th>
+<th>望远镜</th>
+<th>符号</th>
+<th>角速度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一</td>
+<td>heading</td>
+<td>azimuth</td>
+<td>$θ$</td>
+<td>yaw</td>
+</tr>
+<tr>
+<td>第二</td>
+<td>attitude</td>
+<td>elevation</td>
+<td>$ϕ$</td>
+<td>pitch</td>
+</tr>
+<tr>
+<td>第三</td>
+<td>bank</td>
+<td>tilt</td>
+<td>$ψ$</td>
+<td>roll</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="旋转矩阵"><a href="#旋转矩阵" class="headerlink" title="旋转矩阵"></a>旋转矩阵</h1><p>对于两个三维点 $p_1(x_1, y_1, z_1)$，$p_2(x_2,y_2,z_2)$，由点 $p_1$ 经过旋转矩阵 $R$ 旋转到 $p_2$，则有：</p>
+<script type="math/tex; mode=display">R = \left[ \begin{matrix} 
+r_{11}  & r_{12} & r_{13}\\
+r_{21}  & r_{22} & r_{23}\\
+r_{31}  & r_{32} & r_{33}
+\end{matrix} \right]</script><script type="math/tex; mode=display">\left[ \begin{matrix}
+x_2 \\
+y_2 \\
+z_2 
+\end{matrix} \right] = R
+\left[ \begin{matrix}
+x_1 \\
+y_1 \\
+z_1 
+\end{matrix} \right]</script><p>注：旋转矩阵为正交矩阵$RR^T=E$</p>
+<ul>
+<li>绕x轴旋转：</li>
+</ul>
+<script type="math/tex; mode=display">R_x(\theta) = \left[ \begin{matrix} 
+1  & 0 & 0\\
+0  & cos\theta & -sin\theta\\
+0  & sin\theta & cos\theta
+\end{matrix} \right]</script><ul>
+<li>绕y轴旋转:</li>
+</ul>
+<script type="math/tex; mode=display">R_y(\theta) = \left[ \begin{matrix} 
+cos\theta  & 0 & sin\theta\\
+0  & 1 & 0\\
+-sin\theta  & 0 & cos\theta
+\end{matrix} \right]</script><ul>
+<li>绕z轴旋转：</li>
+</ul>
+<script type="math/tex; mode=display">R_z(\theta) = \left[ \begin{matrix} 
+cos\theta  & -sin\theta & 0\\
+sin\theta  & cos\theta & 0\\
+0  & 0 & 1
+\end{matrix} \right]</script><ul>
+<li>任意旋转矩阵：</li>
+</ul>
+<p>任何一个旋转可以表示为依次绕着三个旋转轴旋三个角度的组合。这三个角度称为<strong>欧拉角</strong>。</p>
+<h2 id="由欧拉角求旋转矩阵"><a href="#由欧拉角求旋转矩阵" class="headerlink" title="由欧拉角求旋转矩阵"></a>由欧拉角求旋转矩阵</h2><p>设三个轴$x，y，z$的欧拉角分别为$θ_x,θ_y,θ_z$，正弦值、余弦值分别为$s_x, c_x, s_y, c_y, s_z, c_z$那么旋转矩阵为：</p>
+<script type="math/tex; mode=display">R(\theta_x,\theta_y,\theta_z)=R_z(\theta_z)R_y(\theta_y)R_x(\theta_x) = \left[ \begin{matrix} 
+c_y c_z  & c_z s_x s_y - c_x s_z & s_x s_z + c_x c_z s_y\\
+c_y s_z  & c_x c_z + s_x s_y s_z & c_x s_y s_z - c_z s_z\\
+-s_y  & c_y s_x & c_x c_y
+\end{matrix} \right]</script><h2 id="由旋转矩阵求欧拉角"><a href="#由旋转矩阵求欧拉角" class="headerlink" title="由旋转矩阵求欧拉角"></a>由旋转矩阵求欧拉角</h2><script type="math/tex; mode=display">R = \left[ \begin{matrix} 
+r_{11}  & r_{12} & r_{13}\\
+r_{21}  & r_{22} & r_{23}\\
+r_{31}  & r_{32} & r_{33}
+\end{matrix} \right] = \left[ \begin{matrix} 
+c_y c_z  & c_z s_x s_y - c_x s_z & s_x s_z + c_x c_z s_y\\
+c_y s_z  & c_x c_z + s_x s_y s_z & c_x s_y s_z - c_z s_z\\
+-s_y  & c_y s_x & c_x c_y
+\end{matrix} \right]</script><p>解方程可得：</p>
+<script type="math/tex; mode=display">\theta_x = atan2(r_{32}, r_{33})</script><script type="math/tex; mode=display">\theta_y = atan2(-r_{31}, \sqrt{r_{32}^2+r_{33}^2})</script><script type="math/tex; mode=display">\theta_z = atan2(r_{21}, r_{11})</script><p>注意：atan2()为C++中的函数，atan2(y，x) 求的是y/x的反正切，其返回值为[-pi,+pi]之间的一个数。</p>
+<h1 id="四元数"><a href="#四元数" class="headerlink" title="四元数"></a>四元数</h1><p>三维空间的任意旋转，都可以用绕三维空间的某个轴旋转过某个角度来表示，即所谓的Axis-Angle表示方法。这种表示方法里，Axis可用一个三维向量$(x,y,z)$来表示，$θ$可以用一个角度值来表示，直观来讲，一个四维向量$(θ,x,y,z)$就可以表示出三维空间任意的旋转。注意，这里的三维向量$(x,y,z)$只是用来表示axis的方向朝向，因此更紧凑的表示方式是用一个单位向量来表示方向axis，而用该三维向量的长度来表示角度值$θ$。这样以来，可以用一个三维向量$(θ∗x,θ∗y,θ∗z)$就可以表示出三维空间任意的旋转，前提是其中$(x,y,z)$是单位向量。这就是旋转向量(Rotation Vector)的表示方式，OpenCV里大量使用的就是这种表示方法来表示旋转(见OpenCV相机标定部分的rvec)。</p>
+<ul>
+<li>单位向量(x,y,z)旋转θ角度后的四元数：</li>
+</ul>
+<script type="math/tex; mode=display">(cos \frac{\theta}{2}, x*sin \frac{\theta}{2}, y*sin \frac{\theta}{2}, z*sin \frac{\theta}{2})</script><ul>
+<li>对于三维坐标的旋转，可以通过四元数乘法直接操作，与旋转矩阵操作可以等价，但是表示方式更加紧凑，计算量也可以小一些。</li>
+</ul>
+<h2 id="四元数求旋转矩阵"><a href="#四元数求旋转矩阵" class="headerlink" title="四元数求旋转矩阵"></a>四元数求旋转矩阵</h2><p>已知四元数:</p>
+<script type="math/tex; mode=display">\mathbf{q} = q_0 +  q_1 i + q_2 j + q_3 k = [s, \mathbf{v}]</script><p>利用Rodrigues公式可以由四元数求得旋转矩阵R:</p>
+<script type="math/tex; mode=display">R = \left[ \begin{matrix} 
+1 - 2 q_2^2 - 2 q_3^2 & 2q_1 q_2 - 2q_0 q_3 & 2 q_1 q_3 + 2 q_0 q_2 \\
+2q_1 q_2 + 2q_0 q_3 & 1 - 2 q_1^2 - 2 q_3^2 & 2 q_2 q_3 - 2 q_0 q_1 \\
+2 q_1 q_3 - 2 q_0 q_2 & 2 q_2 q_3 + 2 q_0 q_1 & 1 - 2 q_1^2 - 2 q_2^2
+\end{matrix} \right ]</script><h2 id="旋转矩阵求四元数"><a href="#旋转矩阵求四元数" class="headerlink" title="旋转矩阵求四元数"></a>旋转矩阵求四元数</h2><p>给出其中一种情况的计算方法：</p>
+<script type="math/tex; mode=display">q_0 = \frac{\sqrt{1+r_{11}+r_{22}+r_{33}}}{2}</script><script type="math/tex; mode=display">q_1 = \frac{r_{32}-r_{23}}{4q_0}</script><script type="math/tex; mode=display">q_2 = \frac{r_{13}-r_{31}}{4q_0}</script><script type="math/tex; mode=display">q_3 = \frac{r_{21}-r_{12}}{4q_0}</script><p>其中要满足 $q<em>0 \neq 0$，$1+r</em>{11}+r<em>{22}+r</em>{33}&gt;0$，即 $1+tr(R)&gt;0$</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%9B%9B%E5%85%83%E6%95%B8" target="_blank" rel="noopener">四元数</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E7%A9%BA%E9%97%B4%E6%97%8B%E8%BD%AC" target="_blank" rel="noopener">四元数与空间旋转</a>,by wikipedia.</li>
+<li><a href="http://www.p-chao.com/2017-08-29/%E4%BB%8E%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E8%AE%A1%E7%AE%97%E6%AC%A7%E6%8B%89%E8%A7%92/" target="_blank" rel="noopener">从旋转矩阵计算欧拉角</a>,by PengChao.</li>
+<li><a href="https://blog.csdn.net/csxiaoshui/article/details/65446125" target="_blank" rel="noopener">旋转变换（一）旋转矩阵</a>,by csxiaoshui.</li>
+<li><a href="https://blog.csdn.net/lql0716/article/details/72597719" target="_blank" rel="noopener">旋转矩阵、欧拉角、四元数理论及其转换关系</a>,by jason_ql.</li>
+<li><a href="https://blog.csdn.net/csxiaoshui/article/details/65437633" target="_blank" rel="noopener">旋转变换（二）欧拉角</a>,by csxiaoshui.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E8%A7%92" target="_blank" rel="noopener">欧拉角</a>,by wikipedia.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/85108850" target="_blank" rel="noopener">欧拉角细节/旋转顺序/内旋外旋</a>,by 能儿.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/01/13/JSBSim源代码分析/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1974,156 +2237,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/12/24/jszip使用方法简介/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/12/24/jszip使用方法简介/" itemprop="url">
-                  jszip使用方法简介
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-12-24 19:45:47 / 修改时间：20:08:07" itemprop="dateCreated datePublished" datetime="2019-12-24T19:45:47+08:00">2019-12-24</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>当大文件需要在网络中传输时，最好进行压缩传输，然后在终点进行解压。以ZIP压缩为例，压缩后文件大小极具减小，可节约带宽，提高系统并发能力。下面介绍使用jszip在浏览器端的解压方法。</p>
-<h1 id="JSZip简介"><a href="#JSZip简介" class="headerlink" title="JSZip简介"></a>JSZip简介</h1><p>JSZip是一个用于创建、读取和编辑.zip文件的javascript库，有一个可爱而简单的API。JSZip支持Nodejs和浏览器端的安装使用。具体方法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">With npm : npm install jszip</span><br><span class="line"></span><br><span class="line">With bower : bower install Stuk/jszip</span><br><span class="line"></span><br><span class="line">With component : component install Stuk/jszip</span><br><span class="line"></span><br><span class="line">Manually : download JSZip and include the file dist/jszip.js or dist/jszip.min.js</span><br></pre></td></tr></table></figure>
-<h1 id="浏览器端解压zip文件"><a href="#浏览器端解压zip文件" class="headerlink" title="浏览器端解压zip文件"></a>浏览器端解压zip文件</h1><p>后端Nodejs将zip文件以二进制形式存储到数据库中。当前端需要该zip文件时，后端将zip文件以二进制形式传输到前端，前端再解压还原。</p>
-<h2 id="Nodejs使用JSZip压缩文件"><a href="#Nodejs使用JSZip压缩文件" class="headerlink" title="Nodejs使用JSZip压缩文件"></a>Nodejs使用JSZip压缩文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var JSZip = require(&quot;jszip&quot;);</span><br><span class="line">var zip = new JSZip();</span><br><span class="line"></span><br><span class="line">// create a file</span><br><span class="line">zip.file(&quot;hello.txt&quot;, &quot;Hello[p my)6cxsw2q&quot;);</span><br><span class="line">// oops, cat on keyboard. Fixing !</span><br><span class="line">zip.file(&quot;hello.txt&quot;, &quot;Hello World\n&quot;);</span><br><span class="line"></span><br><span class="line">// create a file and a folder</span><br><span class="line">zip.file(&quot;nested/hello.txt&quot;, &quot;Hello World\n&quot;);</span><br><span class="line">// same as</span><br><span class="line">zip.folder(&quot;nested&quot;).file(&quot;hello.txt&quot;, &quot;Hello World\n&quot;);</span><br></pre></td></tr></table></figure>
-<h2 id="浏览器端解压Zip文件"><a href="#浏览器端解压Zip文件" class="headerlink" title="浏览器端解压Zip文件"></a>浏览器端解压Zip文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import JSZip from &apos;jszip&apos;</span><br><span class="line"></span><br><span class="line">let new_zip = new JSZip();</span><br><span class="line"></span><br><span class="line">// Read zip package</span><br><span class="line">new_zip.loadAsync(content)</span><br><span class="line">.then(function(zip) &#123;</span><br><span class="line">    // you now have every files contained in the loaded zip</span><br><span class="line">    new_zip.file(&quot;hello.txt&quot;).async(&quot;string&quot;); </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/ZIP%E6%A0%BC%E5%BC%8F" target="_blank" rel="noopener">ZIP格式</a>,by wikipedia.</li>
-<li><a href="https://catdeacon.com/note/679.html" target="_blank" rel="noopener">gzip,bzip2,zip三种格式压缩率对比</a>,by CatDeacon.</li>
-<li><a href="https://stuk.github.io/jszip/" target="_blank" rel="noopener">JSZip</a>,by stuk.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2171,7 +2284,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">231</span>
+                    <span class="site-state-item-count">232</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -314,6 +314,215 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/26/matplotlib用法笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/26/matplotlib用法笔记/" itemprop="url">
+                  matplotlib用法笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-05-26 23:42:59" itemprop="dateCreated datePublished" datetime="2018-05-26T23:42:59+08:00">2018-05-26</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-01-05 20:50:10" itemprop="dateModified" datetime="2020-01-05T20:50:10+08:00">2020-01-05</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>matplotlib 是Python编程语言及其数值数学扩展包 NumPy的可视化操作界面。它为利用通用的图形用户界面工具包，如Tkinter, wxPython, Qt或GTK+向应用程序嵌入式绘图提供了应用程序接口（API）。此外，matplotlib还有一个基于图像处理库（如开放图形库OpenGL）的pylab接口，其设计与MATLAB非常类似—尽管并不怎么好用。SciPy就是用matplotlib进行图形绘制。</p>
+<h1 id="绘图结构"><a href="#绘图结构" class="headerlink" title="绘图结构"></a>绘图结构</h1><p>matplotlib API包含有三层：</p>
+<ul>
+<li>backend_bases.FigureCanvas : 图表的绘制领域</li>
+<li>backend_bases.Renderer : 知道如何在FigureCanvas上如何绘图</li>
+<li>artist.Artist : 知道如何使用Renderer在FigureCanvas上绘图</li>
+</ul>
+<blockquote>
+<p>FigureCanvas和Renderer需要处理底层的绘图操作，例如使用wxPython在界面上绘图，或者使用PostScript绘制PDF。Artist则处理所有的高层结构，例如处理图表、文字和曲线等的绘制和布局。通常我们只和Artist打交道，而不需要关心底层的绘制细节。</p>
+<p>Artists分为简单类型和容器类型两种。简单类型的Artists为标准的绘图元件，例如Line2D、 Rectangle、 Text、AxesImage 等等。而容器类型则可以包含许多简单类型的Artists，使它们组织成一个整体，例如Axis、 Axes、Figure等。</p>
+</blockquote>
+<p></p><p align="center">
+    <img src="images/matplotlib.jpg" width="80%" alt="matplotlib pyplot绘图结构">
+</p><p></p>
+<center>图1 matplotlib pyplot绘图结构</center>
+
+<h1 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h1><p>使用plt.figure定义一个图像窗口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line">x = np.linspace(-1, 1, 50)</span><br><span class="line">y = 2*x + 1</span><br><span class="line">plt.figure() </span><br><span class="line">plt.plot(x, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<h2 id="设置标题"><a href="#设置标题" class="headerlink" title="设置标题"></a>设置标题</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># 导入matplotlib库</span><br><span class="line">import matplotlib</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line"># %matplotlib inline 显示图表</span><br><span class="line"># 使用&apos;ggplot&apos;风格美化显示的图表</span><br><span class="line">plt.style.use(&apos;ggplot&apos;) </span><br><span class="line"></span><br><span class="line"># 设置使用的字体（需要显示中文的时候使用）</span><br><span class="line">font = &#123;&apos;family&apos;:&apos;SimHei&apos;&#125; </span><br><span class="line">matplotlib.rc(&apos;font&apos;,**font)</span><br><span class="line"></span><br><span class="line"># 当坐标轴有负号的时候可以显示负号</span><br><span class="line">matplotlib.rcParams[&apos;axes.unicode_minus&apos;]=False </span><br><span class="line"></span><br><span class="line"># 设置标题</span><br><span class="line">plt.title(&apos;正弦函数&apos;,fontsize=20) 设置子图表标题和标题字体的大小</span><br></pre></td></tr></table></figure>
+<h2 id="设置坐标轴"><a href="#设置坐标轴" class="headerlink" title="设置坐标轴"></a>设置坐标轴</h2><p>使用plt.xlim设置x坐标轴范围：(-1, 2)； 使用plt.ylim设置y坐标轴范围：(-2, 3)；<br>使用plt.xlabel设置x坐标轴名称：’I am x’； 使用plt.ylabel设置y坐标轴名称：’I am y’；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line">plt.xlabel(&apos;I am x&apos;)</span><br><span class="line">plt.ylabel(&apos;I am y&apos;)</span><br></pre></td></tr></table></figure>
+<p>使用np.linspace定义范围以及个数：范围是(-1,2);个数是5. 使用print打印出新定义的范围. 使用plt.xticks设置x轴刻度：范围是(-1,2);个数是5.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">new_ticks = np.linspace(-1, 2, 5)</span><br><span class="line">print(new_ticks)</span><br><span class="line">plt.xticks(new_ticks)</span><br></pre></td></tr></table></figure>
+<p>使用plt.yticks设置y轴刻度以及名称：刻度为[-2, -1.8, -1, 1.22, 3]；对应刻度的名称为[‘really bad’,’bad’,’normal’,’good’, ‘really good’]. 使用plt.show显示图像.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.yticks([-2, -1.8, -1, 1.22, 3],[r&apos;$really\ bad$&apos;, r&apos;$bad$&apos;, r&apos;$normal$&apos;, r&apos;$good$&apos;, r&apos;$really\ good$&apos;])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>使用plt.gca获取当前坐标轴信息. 使用.spines设置边框：右侧边框；使用.set_color设置边框颜色：默认白色； 使用.spines设置边框：上边框；使用.set_color设置边框颜色：默认白色；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax = plt.gca()</span><br><span class="line">ax.spines[&apos;right&apos;].set_color(&apos;none&apos;)</span><br><span class="line">ax.spines[&apos;top&apos;].set_color(&apos;none&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<h2 id="调整坐标轴"><a href="#调整坐标轴" class="headerlink" title="调整坐标轴"></a>调整坐标轴</h2><p>使用.xaxis.set_ticks_position设置x坐标刻度数字或名称的位置：bottom.（所有位置：top，bottom，both，default，none）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ax.xaxis.set_ticks_position(&apos;bottom&apos;)</span><br></pre></td></tr></table></figure>
+<p>使用.spines设置边框：x轴；使用.set_position设置边框位置：y=0的位置；（位置所有属性：outward，axes，data）<br>使用.yaxis.set_ticks_position设置y坐标刻度数字或名称的位置：left.（所有位置：left，right，both，default，none）<br>使用.spines设置边框：y轴；使用.set_position设置边框位置：x=0的位置；（位置所有属性：outward，axes，data） 使用plt.show显示图像.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ax.spines[&apos;bottom&apos;].set_position((&apos;data&apos;, 0))</span><br><span class="line">ax.yaxis.set_ticks_position(&apos;left&apos;)</span><br><span class="line">ax.spines[&apos;left&apos;].set_position((&apos;data&apos;,0))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<h2 id="legend图例"><a href="#legend图例" class="headerlink" title="legend图例"></a>legend图例</h2><h3 id="基本用法-1"><a href="#基本用法-1" class="headerlink" title="基本用法"></a>基本用法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">x = np.linspace(-3, 3, 50)</span><br><span class="line">y1 = 2*x + 1</span><br><span class="line">y2 = x**2</span><br><span class="line"></span><br><span class="line">plt.figure()</span><br><span class="line">#set x limits</span><br><span class="line">plt.xlim((-1, 2))</span><br><span class="line">plt.ylim((-2, 3))</span><br><span class="line"></span><br><span class="line"># set new sticks</span><br><span class="line">new_sticks = np.linspace(-1, 2, 5)</span><br><span class="line">plt.xticks(new_sticks)</span><br><span class="line"># set tick labels</span><br><span class="line">plt.yticks([-2, -1.8, -1, 1.22, 3],</span><br><span class="line">           [r&apos;$really\ bad$&apos;, r&apos;$bad$&apos;, r&apos;$normal$&apos;, r&apos;$good$&apos;, r&apos;$really\ good$&apos;])</span><br><span class="line"></span><br><span class="line"># set line syles</span><br><span class="line">l1, = plt.plot(x, y1, label=&apos;linear line&apos;)</span><br><span class="line">l2, = plt.plot(x, y2, color=&apos;red&apos;, linewidth=1.0, linestyle=&apos;--&apos;, label=&apos;square line&apos;)</span><br><span class="line"></span><br><span class="line">plt.legend(loc=&apos;upper right&apos;)</span><br></pre></td></tr></table></figure>
+<h3 id="调整位置和名称"><a href="#调整位置和名称" class="headerlink" title="调整位置和名称"></a>调整位置和名称</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.legend(handles=[l1, l2], labels=[&apos;up&apos;, &apos;down&apos;],  loc=&apos;best&apos;)</span><br></pre></td></tr></table></figure>
+<p>其中’loc’参数有多种，’best’表示自动分配最佳位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&apos;best&apos; : 0,          </span><br><span class="line">&apos;upper right&apos;  : 1,</span><br><span class="line">&apos;upper left&apos;   : 2,</span><br><span class="line">&apos;lower left&apos;   : 3,</span><br><span class="line">&apos;lower right&apos;  : 4,</span><br><span class="line">&apos;right&apos;        : 5,</span><br><span class="line">&apos;center left&apos;  : 6,</span><br><span class="line">&apos;center right&apos; : 7,</span><br><span class="line">&apos;lower center&apos; : 8,</span><br><span class="line">&apos;upper center&apos; : 9,</span><br><span class="line">&apos;center&apos;       : 10,</span><br></pre></td></tr></table></figure>
+<h2 id="子图"><a href="#子图" class="headerlink" title="子图"></a>子图</h2><p>使用plt.subplot来创建小图。 plt.subplot(2,2,1)表示将整个图像窗口分为2行2列, 当前位置为1。 使用plt.plot([0,1],[0,1])在第1个位置创建一个小图。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">fig=plt.figure()</span><br><span class="line">ax = fig.add_subplot(2, 2, 1, projection=&apos;3d&apos;)</span><br><span class="line">ax.plot([0,1,1],[0,1,1])</span><br></pre></td></tr></table></figure>
+<p>plt.subplot(222)表示将整个图像窗口分为2行2列, 当前位置为2. 使用plt.plot([0,1],[0,2])在第2个位置创建一个小图.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.subplot(222)</span><br><span class="line">plt.plot([0,1],[0,2])</span><br></pre></td></tr></table></figure>
+<h2 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h2><p>Matplotlib使用FuncAnimation函数生成动画。参数说明：</p>
+<ul>
+<li>fig 进行动画绘制的figure</li>
+<li>func 自定义动画函数，即传入刚定义的函数animate</li>
+<li>frames 动画长度，一次循环包含的帧数</li>
+<li>init_func 自定义开始帧，即传入刚定义的函数init</li>
+<li>interval 更新频率，以ms计</li>
+<li>blit 选择更新所有点，还是仅更新产生变化的点。应选择True，但mac用户请选择False，否则无法显示动画</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">from matplotlib import pyplot as plt</span><br><span class="line">from matplotlib import animation</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">fig, ax = plt.subplots()</span><br><span class="line"></span><br><span class="line">x = np.arange(0, 2*np.pi, 0.01)</span><br><span class="line">line, = ax.plot(x, np.sin(x))</span><br><span class="line"></span><br><span class="line">def animate(i):</span><br><span class="line">    line.set_ydata(np.sin(x + i/10.0))</span><br><span class="line">    return line,</span><br><span class="line"></span><br><span class="line">def init():</span><br><span class="line">    line.set_ydata(np.sin(x))</span><br><span class="line">    return line,</span><br><span class="line">//注意此处FuncAnimation必须有返回值</span><br><span class="line">ani = animation.FuncAnimation(fig=fig,</span><br><span class="line">                              func=animate,</span><br><span class="line">                              frames=100,</span><br><span class="line">                              init_func=init,</span><br><span class="line">                              interval=20,</span><br><span class="line">                              blit=False)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/Matplotlib" target="_blank" rel="noopener">matplotlib</a>, by wikipedia</li>
+<li><a href="https://morvanzhou.github.io" target="_blank" rel="noopener">莫烦Python</a>, by morvanzhou</li>
+<li><a href="https://matplotlib.org/api/index.html#usage-patterns" target="_blank" rel="noopener">API Overview</a>,by matplotlib.</li>
+<li><a href="https://blog.csdn.net/matrix_laboratory/article/details/50698239" target="_blank" rel="noopener">Python matplotlib高级绘图详解</a>,by 微岩.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/32444081" target="_blank" rel="noopener">用Matplotlib制作动画</a>,by 段丞博.</li>
+<li><a href="https://stackoverflow.com/questions/29356269/plot-inline-or-a-separate-window-using-matplotlib-in-spyder-ide" target="_blank" rel="noopener">Plot inline or a separate window using Matplotlib in Spyder IDE</a>,by stackoverflow.</li>
+<li><a href="https://www.jianshu.com/p/dc16dc3659a6" target="_blank" rel="noopener">Python之matplotlib的使用汇总</a>,by 探索数据之美.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/26/python3与python2的区别与兼容/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1937,185 +2146,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/09/Vue-js集成Bootstrap4/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/09/Vue-js集成Bootstrap4/" itemprop="url">
-                  Vue.js集成Bootstrap4
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-09 16:51:56" itemprop="dateCreated datePublished" datetime="2018-05-09T16:51:56+08:00">2018-05-09</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-08-22 22:17:29" itemprop="dateModified" datetime="2019-08-22T22:17:29+08:00">2019-08-22</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>记录在Vue.js中集成Bootstrap4的方法，防止忘了！</p>
-<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><ul>
-<li>vue-cli: 2.x</li>
-</ul>
-<h1 id="集成过程"><a href="#集成过程" class="headerlink" title="集成过程"></a>集成过程</h1><ol>
-<li><p>创建Vue.js工程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install -g vue-cli</span><br><span class="line">vue init webpack project_name</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>安裝 Sass-loader / node-sass</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install sass-loader node-sass --save-save</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>安裝BootStrap / jQuery / Popper</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install bootstrap jquery popper.js --save</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置build/webpack.base.conf.js</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  ...</span><br><span class="line">  // 新增plugins</span><br><span class="line">  plugins: [</span><br><span class="line">    new webpack.ProvidePlugin(&#123;</span><br><span class="line">        &apos;$&apos;: &quot;jquery&quot;,</span><br><span class="line">        &apos;jQuery&apos;: &quot;jquery&quot;,</span><br><span class="line">        &apos;Popper&apos;: &apos;popper.js&apos;</span><br><span class="line">    &#125;)</span><br><span class="line">  ],</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在src/main.js中载入Bootstrap</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import &apos;bootstrap&apos;</span><br><span class="line">import &apos;bootstrap/dist/css/bootstrap.css&apos;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用Bootstrap和sass编写Vue.js组件</p>
-</li>
-</ol>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://getbootstrap.com/docs/4.0/getting-started/webpack/" target="_blank" rel="noopener">Bootstrap Webpack</a>,by bootstrap homepage.</li>
-<li><a href="https://code.luasoftware.com/tutorials/vuejs/setup-bootstrap-with-vue-cli-3-webpack/" target="_blank" rel="noopener">Setup Bootstrap 4 With Vue Cli 3 Webpack</a>,by lua software code.</li>
-<li><a href="https://travishorn.com/adding-bootstrap-to-a-vue-cli-project-98c2a30e0ed0" target="_blank" rel="noopener">Adding Bootstrap to a Vue CLI Project</a>,by Travis Horn.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2163,7 +2193,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">233</span>
+                    <span class="site-state-item-count">234</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2290,7 +2320,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">56</span>
+                      
+                    
+                    <span class="site-state-item-count">57</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

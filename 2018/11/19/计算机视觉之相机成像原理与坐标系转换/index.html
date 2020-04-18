@@ -9,10 +9,10 @@
 
 
 <html class="theme-next muse use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.8.0">
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
 <meta name="theme-color" content="#222">
 
 
@@ -26,8 +26,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
 
 
@@ -50,9 +50,9 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css">
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
@@ -103,34 +103,34 @@
 
 
   <meta name="description" content="计算机视觉是一门研究用摄影机和计算机代替人眼对目标进行识别、跟踪和测量的学科。为了解该门学科，首先应掌握投影原理和世界坐标系、相机坐标系、图像坐标系、像素坐标系之间的转换关系。 三维投影计算机3D图形学中，三维投影是将三维空间中的点映射到二维平面上的方法。常用三维投影有正交投影和透视投影。正交投影通常用于对现实物品的三维建模，而透视投影与人的视觉系统类似，常用于在二维平面呈现三维世界。 正交投影原">
-<meta name="keywords" content="笔记本,3D,计算机视觉">
 <meta property="og:type" content="article">
 <meta property="og:title" content="计算机视觉之相机成像原理与坐标系转换">
-<meta property="og:url" content="https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/index.html">
+<meta property="og:url" content="https://huangwang.github.io/2018/11/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E4%B9%8B%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2/index.html">
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
 <meta property="og:description" content="计算机视觉是一门研究用摄影机和计算机代替人眼对目标进行识别、跟踪和测量的学科。为了解该门学科，首先应掌握投影原理和世界坐标系、相机坐标系、图像坐标系、像素坐标系之间的转换关系。 三维投影计算机3D图形学中，三维投影是将三维空间中的点映射到二维平面上的方法。常用三维投影有正交投影和透视投影。正交投影通常用于对现实物品的三维建模，而透视投影与人的视觉系统类似，常用于在二维平面呈现三维世界。 正交投影原">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/images/perspective_model.jpg">
-<meta property="og:image" content="https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/images/four_axis.png">
-<meta property="og:image" content="https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/images/worldtocamera.jpg">
-<meta property="og:image" content="https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/images/3dto2d.jpg">
-<meta property="og:image" content="https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/images/image2uv.jpg">
-<meta property="og:image" content="https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/images/summary1.jpg">
-<meta property="og:image" content="https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/images/summary2.jpg">
-<meta property="og:updated_time" content="2019-12-14T12:24:07.186Z">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://huangwang.github.io/2018/11/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E4%B9%8B%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2/images/perspective_model.jpg">
+<meta property="og:image" content="https://huangwang.github.io/2018/11/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E4%B9%8B%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2/images/four_axis.png">
+<meta property="og:image" content="https://huangwang.github.io/2018/11/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E4%B9%8B%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2/images/worldtocamera.jpg">
+<meta property="og:image" content="https://huangwang.github.io/2018/11/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E4%B9%8B%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2/images/3dto2d.jpg">
+<meta property="og:image" content="https://huangwang.github.io/2018/11/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E4%B9%8B%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2/images/image2uv.jpg">
+<meta property="og:image" content="https://huangwang.github.io/2018/11/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E4%B9%8B%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2/images/summary1.jpg">
+<meta property="og:image" content="https://huangwang.github.io/2018/11/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E4%B9%8B%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2/images/summary2.jpg">
+<meta property="article:published_time" content="2018-11-19T08:02:41.000Z">
+<meta property="article:modified_time" content="2019-12-14T12:24:07.186Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="3D">
+<meta property="article:tag" content="计算机视觉">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="计算机视觉之相机成像原理与坐标系转换">
-<meta name="twitter:description" content="计算机视觉是一门研究用摄影机和计算机代替人眼对目标进行识别、跟踪和测量的学科。为了解该门学科，首先应掌握投影原理和世界坐标系、相机坐标系、图像坐标系、像素坐标系之间的转换关系。 三维投影计算机3D图形学中，三维投影是将三维空间中的点映射到二维平面上的方法。常用三维投影有正交投影和透视投影。正交投影通常用于对现实物品的三维建模，而透视投影与人的视觉系统类似，常用于在二维平面呈现三维世界。 正交投影原">
-<meta name="twitter:image" content="https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/images/perspective_model.jpg">
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Jack Huang's Blog" type="application/atom+xml">
+<meta name="twitter:image" content="https://huangwang.github.io/2018/11/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E4%B9%8B%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2/images/perspective_model.jpg">
 
 
 
 
-  <link rel="canonical" href="https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/">
+
+
+  <link rel="canonical" href="https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/"/>
 
 
 
@@ -176,21 +176,21 @@
       .logo-line-after i { right: initial; }
     }
   </style>
-</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</noscript>
 
-</head>
+<meta name="generator" content="Hexo 4.2.0"></head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
   
   
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -229,7 +229,7 @@
           
           <li class="menu-item menu-item-home">
     <a href="/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
   </li>
         
         
@@ -237,7 +237,7 @@
           
           <li class="menu-item menu-item-tags">
     <a href="/tags/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
   </li>
         
         
@@ -245,7 +245,7 @@
           
           <li class="menu-item menu-item-archives">
     <a href="/archives/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
   </li>
 
       
@@ -255,7 +255,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
         </li>
       
     </ul>
@@ -278,7 +278,9 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -320,20 +322,20 @@
 
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E4%B9%8B%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jack Huang">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Jack Huang's Blog">
     </span>
 
@@ -398,8 +400,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/11/19/计算机视觉之相机成像原理与坐标系转换/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/11/19/计算机视觉之相机成像原理与坐标系转换/" itemprop="commentsCount"></span>
+                <a href="/2018/11/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E4%B9%8B%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/11/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E4%B9%8B%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -410,10 +412,11 @@
 
           
             <span class="post-meta-divider">|</span>
-            <span class="post-meta-item-icon">
+            <span class="post-meta-item-icon"
+            >
             <i class="fa fa-eye"></i>
              阅读次数： 
-            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
             </span>
           
 
@@ -437,52 +440,21 @@
         <p>计算机视觉是一门研究用摄影机和计算机代替人眼对目标进行识别、跟踪和测量的学科。为了解该门学科，首先应掌握投影原理和世界坐标系、相机坐标系、图像坐标系、像素坐标系之间的转换关系。</p>
 <h1 id="三维投影"><a href="#三维投影" class="headerlink" title="三维投影"></a>三维投影</h1><p>计算机3D图形学中，三维投影是将三维空间中的点映射到二维平面上的方法。常用三维投影有正交投影和透视投影。正交投影通常用于对现实物品的三维建模，而透视投影与人的视觉系统类似，常用于在二维平面呈现三维世界。</p>
 <h2 id="正交投影原理"><a href="#正交投影原理" class="headerlink" title="正交投影原理"></a>正交投影原理</h2><p>正交投影是一系列用于显示三维物体的轮廓、细节或精确测量结果的变换方法。通常又称作截面图、鸟瞰图或立面图。</p>
-<p>当视平面的法向（即摄像机的朝向）平行于笛卡尔坐标系三根坐标轴中的一根，数学变换定义如下： 若使用一个平行于y轴（侧视图）的正交投影将三维点 $a<em>{x}$, $a</em>{y}$,$a<em>{z}$投影到二维平面上得到二维点 $b</em>{x}$,$b_{y}$，可以使用如下公式</p>
-<script type="math/tex; mode=display">b_x=s_xa_x+c_x</script><script type="math/tex; mode=display">b_y=s_za_z+c_z</script><p>其中向量s是一个任意的缩放因子，而c是一个任意的偏移量。这些常量可自由选择，通常用于将视口调整到一个合适的位置。该投影变换同样可以使用矩阵表示（为清晰起见引入临时向量d）</p>
-<script type="math/tex; mode=display">
-\begin{bmatrix}
-    d_x  \\
-    d_y  \\
-\end{bmatrix}
-=
-\begin{bmatrix}
-    1 & 0 & 0 \\
-    0 & 0 & 1 \\
-\end{bmatrix}
-\begin{bmatrix}
-    a_x \\
-    a_y \\
-    a_z \\
-\end{bmatrix}</script><script type="math/tex; mode=display">
-\begin{bmatrix}
-    b_x\\
-    b_y\\
-\end{bmatrix}
-=
-\begin{bmatrix}
-    s_x & 0 \\
-    0     & s_z \\
-\end{bmatrix}
-\begin{bmatrix}
-    d_x\\
-    d_y\\
-\end{bmatrix}
-+
-\begin{bmatrix}
-    c_x\\
-    c_z\\
-\end{bmatrix}</script><p>虽然正交投影产生的图像在一定程度上反映了物体的三维特性，但此类投影图像和实际观测到的并不相同。特别是对于相同长度的平行线段，无论离虚拟观察者（摄像机）远近与否，它们都会在正交投影中显示为相同长度。这会导致较近的线段看起来被缩短了。</p>
+<p>当视平面的法向（即摄像机的朝向）平行于笛卡尔坐标系三根坐标轴中的一根，数学变换定义如下： 若使用一个平行于y轴（侧视图）的正交投影将三维点 $a_{x}$, $a_{y}$,$a_{z}$投影到二维平面上得到二维点 $b_{x}$,$b_{y}$，可以使用如下公式</p>
+<p>$$b_x=s_xa_x+c_x$$<br>$$b_y=s_za_z+c_z$$</p>
+<p>其中向量s是一个任意的缩放因子，而c是一个任意的偏移量。这些常量可自由选择，通常用于将视口调整到一个合适的位置。该投影变换同样可以使用矩阵表示（为清晰起见引入临时向量d）</p>
+<p>$$<br>\begin{bmatrix}<br>    d_x  \<br>    d_y  \<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>    1 &amp; 0 &amp; 0 \<br>    0 &amp; 0 &amp; 1 \<br>\end{bmatrix}<br>\begin{bmatrix}<br>    a_x \<br>    a_y \<br>    a_z \<br>\end{bmatrix}<br>$$<br>$$<br>\begin{bmatrix}<br>    b_x\<br>    b_y\<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>    s_x &amp; 0 \<br>    0     &amp; s_z \<br>\end{bmatrix}<br>\begin{bmatrix}<br>    d_x\<br>    d_y\<br>\end{bmatrix}<br>+<br>\begin{bmatrix}<br>    c_x\<br>    c_z\<br>\end{bmatrix}<br>$$<br>虽然正交投影产生的图像在一定程度上反映了物体的三维特性，但此类投影图像和实际观测到的并不相同。特别是对于相同长度的平行线段，无论离虚拟观察者（摄像机）远近与否，它们都会在正交投影中显示为相同长度。这会导致较近的线段看起来被缩短了。</p>
 <h2 id="透视投影原理"><a href="#透视投影原理" class="headerlink" title="透视投影原理"></a>透视投影原理</h2><p>透视投影是为了获得接近真实三维物体的视觉效果而在二维的纸或者画布平面上绘图或者渲染的一种方法，它也称为透视图。透视投影的绘制必须根据已有的几何规则进行。</p>
 <p>常用的透视投影视椎体模型如图1所示。设视点E位于原点，视平面P垂直于Z轴，且四边分别平行于x轴和y轴，视椎体的近截面离视点的距离为n，远截面离视点的距离为f，且一般取近截面为视平面。</p>
-<p></p><p align="center">
-    <img src="images/perspective_model.jpg" width="90%" alt="透视投影的标准视椎体模型">
-</p><p></p>
+<p align="center">
+    <img src="images/perspective_model.jpg" width="90%" alt="透视投影的标准视椎体模型"/>
+</p>
 <center>图1 透视投影的标准视椎体模型</center>
 
 <h1 id="坐标系之间的转换"><a href="#坐标系之间的转换" class="headerlink" title="坐标系之间的转换"></a>坐标系之间的转换</h1><p>计算机视觉通常涉及到四个坐标系：像素平面坐标系（u,v）、像平面坐标系（图像物理坐标第（x,y）、相机坐标系（Xc,Yc,Zc）和世界坐标系（Xw,Yw,Zw），如图2所示。</p>
-<p></p><p align="center">
-    <img src="images/four_axis.png" width="90%" alt="四个坐标系">
-</p><p></p>
+<p align="center">
+    <img src="images/four_axis.png" width="90%" alt="四个坐标系"/>
+</p>
 <center>图2 四个坐标系</center>
 
 <p>1 : 世界坐标系：根据情况而定，可以表示任何物体。单位m。</p>
@@ -490,64 +462,31 @@
 <p>3：图像物理坐标系（也叫平面坐标系）：用物理单位表示像素的位置，坐标原点为摄像机光轴与图像物理坐标系的交点位置。坐标系为图上o-xy。单位是mm。单位毫米的原因是此时由于相机内部的CCD传感器是很小的，比如8mm x 6mm。但是最后图像照片是也像素为单位比如640x480.这就涉及到了图像物理坐标系与像素坐标系的变换了。下面的像素坐标系将会讲到。</p>
 <p>4：像素坐标系：以像素为单位，坐标原点在左上角。这也是一些opencv，OpenGL等库的坐标原点选在左上角的原因。当然明显看出CCD传感器以mm单位到像素中间有转换的。举个例子，CCD传感上上面的8mm x 6mm，转换到像素大小是640x480. 假如dx表示像素坐标系中每个像素的物理大小就是1/80. 也就是说毫米与像素点的之间关系是piexl/mm.</p>
 <h2 id="世界坐标系到相机坐标系的转换"><a href="#世界坐标系到相机坐标系的转换" class="headerlink" title="世界坐标系到相机坐标系的转换"></a>世界坐标系到相机坐标系的转换</h2><p>物体之间的坐标系变换都可以表示坐标系的旋转变换加上平移变换，则世界坐标系到相机坐标系的转换关系也是如此，他们之间的变换如图3所示。</p>
-<p></p><p align="center">
-    <img src="images/worldtocamera.jpg" width="90%" alt="世界坐标系到相机坐标系的转换">
-</p><p></p>
+<p align="center">
+    <img src="images/worldtocamera.jpg" width="90%" alt="世界坐标系到相机坐标系的转换"/>
+</p>
 <center>图3 世界坐标系到相机坐标系的转换</center>
 
-<p>可以得到P点在相机坐标系下的坐标:</p>
-<script type="math/tex; mode=display">
-\begin{bmatrix}
-    X_c\\
-    Y_c\\
-    Z_c\\
-\end{bmatrix}
-=
-R
-\begin{bmatrix}
-    X_w\\
-    Y_w\\
-    Z_w\\
-\end{bmatrix}
-+T
-\Rightarrow 
-\begin{bmatrix}
-    X_c\\
-    Y_c\\
-    Z_c\\
-    1\\
-\end{bmatrix}
-=
-\begin{bmatrix}
-    R & T\\
-    \vec{0} & 1\\
-\end{bmatrix}
-\begin{bmatrix}
-    X_w\\
-    Y_w\\
-    Z_w\\
-    1\\
-\end{bmatrix}
-,
-R:3*3,T:3*1</script><h2 id="相机坐标系到图像物理坐标系的转换"><a href="#相机坐标系到图像物理坐标系的转换" class="headerlink" title="相机坐标系到图像物理坐标系的转换"></a>相机坐标系到图像物理坐标系的转换</h2><p>从相机坐标系到图像坐标系，属于透视投影关系，从3D转换到2D。 也可以看成是针孔模型的变种。该转换满足三角形的相似定理，如图4所示。</p>
-<p></p><p align="center">
-    <img src="images/3dto2d.jpg" width="90%" alt="相机坐标系到图像物理坐标系的转换">
-</p><p></p>
+<p>可以得到P点在相机坐标系下的坐标:<br>$$<br>\begin{bmatrix}<br>    X_c\<br>    Y_c\<br>    Z_c\<br>\end{bmatrix}<br>=<br>R<br>\begin{bmatrix}<br>    X_w\<br>    Y_w\<br>    Z_w\<br>\end{bmatrix}<br>+T<br>\Rightarrow<br>\begin{bmatrix}<br>    X_c\<br>    Y_c\<br>    Z_c\<br>    1\<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>    R &amp; T\<br>    \vec{0} &amp; 1\<br>\end{bmatrix}<br>\begin{bmatrix}<br>    X_w\<br>    Y_w\<br>    Z_w\<br>    1\<br>\end{bmatrix}<br>,<br>R:3<em>3,T:3</em>1<br>$$</p>
+<h2 id="相机坐标系到图像物理坐标系的转换"><a href="#相机坐标系到图像物理坐标系的转换" class="headerlink" title="相机坐标系到图像物理坐标系的转换"></a>相机坐标系到图像物理坐标系的转换</h2><p>从相机坐标系到图像坐标系，属于透视投影关系，从3D转换到2D。 也可以看成是针孔模型的变种。该转换满足三角形的相似定理，如图4所示。</p>
+<p align="center">
+    <img src="images/3dto2d.jpg" width="90%" alt="相机坐标系到图像物理坐标系的转换"/>
+</p>
 <center>图4 相机坐标系到图像物理坐标系的转换</center>
 
 <h2 id="图像物理坐标系到像素坐标系的转换"><a href="#图像物理坐标系到像素坐标系的转换" class="headerlink" title="图像物理坐标系到像素坐标系的转换"></a>图像物理坐标系到像素坐标系的转换</h2><p>图像物理坐标系到像素坐标系的转换不涉及旋转变换，但是坐标原点位置不一致，大小不一致，涉及伸缩变换及平移变换，如图5所示。</p>
-<p></p><p align="center">
-    <img src="images/image2uv.jpg" width="90%" alt="图像物理坐标系到像素坐标系的转换">
-</p><p></p>
+<p align="center">
+    <img src="images/image2uv.jpg" width="90%" alt="图像物理坐标系到像素坐标系的转换"/>
+</p>
 <center>图5 图像物理坐标系到像素坐标系的转换</center>
 
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>四个坐标系之间存在着下述关系 ( 矩阵依次左乘 )，如图6所示:</p>
-<p></p><p align="center">
-    <img src="images/summary1.jpg" width="90%" alt="世界坐标系到像素坐标系的转换">
-</p><p></p>
-<p></p><p align="center">
-    <img src="images/summary2.jpg" width="90%">
-</p><p></p>
+<p align="center">
+    <img src="images/summary1.jpg" width="90%" alt="世界坐标系到像素坐标系的转换"/>
+</p>
+<p align="center">
+    <img src="images/summary2.jpg" width="90%"/>
+</p>
 <center>图6 世界坐标系到像素坐标系的转换</center>
 
 <p>其中相机的内参和外参可以通过张正友标定获取。通过最终的转换关系来看，一个三维中的坐标点，的确可以在图像中找到一个对应的像素点，但是反过来，通过图像中的一个点找到它在三维中对应的点就很成了一个问题，因为我们并不知道等式左边的Z<sub>c</sub>的值。</p>
@@ -556,7 +495,7 @@ R:3*3,T:3*1</script><h2 id="相机坐标系到图像物理坐标系的转换"><a
 <li><a href="https://blog.csdn.net/Goncely/article/details/5397729" target="_blank" rel="noopener">透视投影的原理和实现</a>,by Goncely.</li>
 <li><a href="https://blog.csdn.net/chentravelling/article/details/53558096" target="_blank" rel="noopener">计算机视觉：相机成像原理：世界坐标系、相机坐标系、图像坐标系、像素坐标系之间的转换</a>,by 生活没有if-else</li>
 <li><a href="https://blog.csdn.net/lyl771857509/article/details/79633412" target="_blank" rel="noopener">【相机标定】四个坐标系之间的变换关系</a></li>
-<li><a href="http://zhaoxuhui.top/blog/2018/03/18/Location&amp;PoseEstimationInSLAM.html" target="_blank" rel="noopener">SLAM相机位姿估计(1)</a>,by Zhao xuhui.</li>
+<li><a href="http://zhaoxuhui.top/blog/2018/03/18/Location&PoseEstimationInSLAM.html" target="_blank" rel="noopener">SLAM相机位姿估计(1)</a>,by Zhao xuhui.</li>
 <li><a href="https://zhaoxuhui.top/blog/2018/03/08/%E5%8D%95%E7%9B%AESLAM%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80.html" target="_blank" rel="noopener">单目SLAM理论基础</a>,by Zhao xuhui.</li>
 <li><a href="https://www.cnblogs.com/graphics/archive/2012/07/25/2582119.html" target="_blank" rel="noopener">透视投影详解</a>,by zdd.</li>
 <li><a href="https://blog.csdn.net/csxiaoshui/article/details/65446125" target="_blank" rel="noopener">旋转变换（一）旋转矩阵</a>,by csxiaoshui.</li>
@@ -581,11 +520,11 @@ R:3*3,T:3*1</script><h2 id="相机坐标系到图像物理坐标系的转换"><a
       
         <div class="post-tags">
           
-            <a href="/tags/笔记本/" rel="tag"># 笔记本</a>
+            <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
           
             <a href="/tags/3D/" rel="tag"># 3D</a>
           
-            <a href="/tags/计算机视觉/" rel="tag"># 计算机视觉</a>
+            <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" rel="tag"># 计算机视觉</a>
           
         </div>
       
@@ -598,7 +537,7 @@ R:3*3,T:3*1</script><h2 id="相机坐标系到图像物理坐标系的转换"><a
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/11/17/生活中的统计学之购买车展黄牛票/" rel="next" title="生活中的统计学之购买车展黄牛票">
+              <a href="/2018/11/17/%E7%94%9F%E6%B4%BB%E4%B8%AD%E7%9A%84%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%8B%E8%B4%AD%E4%B9%B0%E8%BD%A6%E5%B1%95%E9%BB%84%E7%89%9B%E7%A5%A8/" rel="next" title="生活中的统计学之购买车展黄牛票">
                 <i class="fa fa-chevron-left"></i> 生活中的统计学之购买车展黄牛票
               </a>
             
@@ -608,7 +547,7 @@ R:3*3,T:3*1</script><h2 id="相机坐标系到图像物理坐标系的转换"><a
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/11/19/机器学习之相关概念/" rel="prev" title="机器学习之相关概念">
+              <a href="/2018/11/19/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B9%8B%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5/" rel="prev" title="机器学习之相关概念">
                 机器学习之相关概念 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -678,7 +617,7 @@ R:3*3,T:3*1</script><h2 id="相机坐标系到图像物理坐标系的转换"><a
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">Jack Huang</p>
               <p class="site-description motion-element" itemprop="description"></p>
@@ -689,9 +628,9 @@ R:3*3,T:3*1</script><h2 id="相机坐标系到图像物理坐标系的转换"><a
               
                 <div class="site-state-item site-state-posts">
                 
-                  <a href="/archives/">
+                  <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">240</span>
+                    <span class="site-state-item-count">241</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -830,13 +769,6 @@ R:3*3,T:3*1</script><h2 id="相机坐标系到图像物理坐标系的转换"><a
             </nav>
           
 
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
           
 
           
@@ -1452,24 +1384,7 @@ R:3*3,T:3*1</script><h2 id="相机坐标系到图像物理坐标系的转换"><a
         }
     });
 </script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config("");
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     
   

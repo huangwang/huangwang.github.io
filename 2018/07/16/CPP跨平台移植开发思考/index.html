@@ -9,10 +9,10 @@
 
 
 <html class="theme-next muse use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.8.0">
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
 <meta name="theme-color" content="#222">
 
 
@@ -26,8 +26,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
 
 
@@ -50,9 +50,9 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css">
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
@@ -103,26 +103,25 @@
 
 
   <meta name="description" content="最近需要将一份C++代码通过Emscripten编译成asm.js，结果失败，因为这份C++代码使用MFC GUI库，导致Emscripten编译失败。这引起了我对C++跨平台移植的思考。 C++代码理论上能实现源代码级别的跨平台移植，即同一份代码可以不加修改的在不同的平台上编译运行且表现一致。这要求编写的C++代码符合跨平台移植的规范，如链接[1]所指出的那样，它给出了很多实现C++代码跨平台移">
-<meta name="keywords" content="笔记本,C&#x2F;C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++跨平台移植开发思考">
-<meta property="og:url" content="https://huangwang.github.io/2018/07/16/CPP跨平台移植开发思考/index.html">
+<meta property="og:url" content="https://huangwang.github.io/2018/07/16/CPP%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%A7%BB%E6%A4%8D%E5%BC%80%E5%8F%91%E6%80%9D%E8%80%83/index.html">
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
 <meta property="og:description" content="最近需要将一份C++代码通过Emscripten编译成asm.js，结果失败，因为这份C++代码使用MFC GUI库，导致Emscripten编译失败。这引起了我对C++跨平台移植的思考。 C++代码理论上能实现源代码级别的跨平台移植，即同一份代码可以不加修改的在不同的平台上编译运行且表现一致。这要求编写的C++代码符合跨平台移植的规范，如链接[1]所指出的那样，它给出了很多实现C++代码跨平台移">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-11-15T13:09:42.270Z">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-07-16T03:13:31.000Z">
+<meta property="article:modified_time" content="2019-11-15T13:09:42.270Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="C&#x2F;C++">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="C++跨平台移植开发思考">
-<meta name="twitter:description" content="最近需要将一份C++代码通过Emscripten编译成asm.js，结果失败，因为这份C++代码使用MFC GUI库，导致Emscripten编译失败。这引起了我对C++跨平台移植的思考。 C++代码理论上能实现源代码级别的跨平台移植，即同一份代码可以不加修改的在不同的平台上编译运行且表现一致。这要求编写的C++代码符合跨平台移植的规范，如链接[1]所指出的那样，它给出了很多实现C++代码跨平台移">
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Jack Huang's Blog" type="application/atom+xml">
 
 
 
 
-  <link rel="canonical" href="https://huangwang.github.io/2018/07/16/CPP跨平台移植开发思考/">
+
+
+  <link rel="canonical" href="https://huangwang.github.io/2018/07/16/CPP跨平台移植开发思考/"/>
 
 
 
@@ -168,21 +167,21 @@
       .logo-line-after i { right: initial; }
     }
   </style>
-</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</noscript>
 
-</head>
+<meta name="generator" content="Hexo 4.2.0"></head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
   
   
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -221,7 +220,7 @@
           
           <li class="menu-item menu-item-home">
     <a href="/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
   </li>
         
         
@@ -229,7 +228,7 @@
           
           <li class="menu-item menu-item-tags">
     <a href="/tags/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
   </li>
         
         
@@ -237,7 +236,7 @@
           
           <li class="menu-item menu-item-archives">
     <a href="/archives/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
   </li>
 
       
@@ -247,7 +246,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
         </li>
       
     </ul>
@@ -270,7 +269,9 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -312,20 +313,20 @@
 
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/16/CPP跨平台移植开发思考/">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/16/CPP%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%A7%BB%E6%A4%8D%E5%BC%80%E5%8F%91%E6%80%9D%E8%80%83/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jack Huang">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Jack Huang's Blog">
     </span>
 
@@ -390,8 +391,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/07/16/CPP跨平台移植开发思考/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/07/16/CPP跨平台移植开发思考/" itemprop="commentsCount"></span>
+                <a href="/2018/07/16/CPP%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%A7%BB%E6%A4%8D%E5%BC%80%E5%8F%91%E6%80%9D%E8%80%83/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/07/16/CPP%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%A7%BB%E6%A4%8D%E5%BC%80%E5%8F%91%E6%80%9D%E8%80%83/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -402,10 +403,11 @@
 
           
             <span class="post-meta-divider">|</span>
-            <span class="post-meta-item-icon">
+            <span class="post-meta-item-icon"
+            >
             <i class="fa fa-eye"></i>
              阅读次数： 
-            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
             </span>
           
 
@@ -435,39 +437,39 @@
 <li>标准 C++：标准 c++ 是98年制定的，现在主流的 c++ 编译器都能够比较好的支持了。这里建议使用VC7.1和GCC4.0及以上版本。在Linux中，glibc是标准C的实现，libstdc++则是标准C++的实现。在Windows中，VS2015之前MSVCRT.DLL是标准C/C++的实现，之后UCRTBASE.DLLz则是标准C/C++的实现。</li>
 <li>boost：boost 则是 C++ 标准委员会的一群人弄起来的一个 C++ 库集合，其中不少库以经进入 C++ TR1，可以说是准标准。使用这里的库我们有着充分的理由。象字符串的操作可以用 boost 的 String algorithms 库，格式化操作可以用 boost::format，正则式可用 boost::regex 等等。</li>
 </ul>
-<ol>
+<ol start="2">
 <li>网络</li>
 </ol>
 <ul>
 <li>ACE（Adaptive Communication Environment）：ACE是一个以C++的Template技术所做成的开放源代码的可跨平台的网络应用程序的程式库套件。ACE自适配通信环境（ADAPTIVE Communication Environment）是可以自由使用、开放源码的面向对象（OO）框架（Framework），在其中实现了许多用于并发通信软件的核心模式。ACE提供了一组丰富的可复用C++ Wrapper Facade（包装外观）和框架组件，可跨越多种平台完成通用的通信软件任务，其中包括：事件多路分离和事件处理器分派、信号处理、服务初始化、进程间通信、共享内存管理、消息路由、分布式服务动态（重）配置、并发执行和同步，等等。</li>
 <li>Boost.Asio：用于网络和底层I/O编程的跨平台的C++库</li>
 </ul>
-<ol>
+<ol start="3">
 <li>数据库</li>
 </ol>
 <ul>
 <li>OTL (Oracle, Odbc and DB2-CLI Template Library)：<br>不但支持跨平台，还跨数据库。OTL支持以下面的数据库 : OTL Oracle ,SQL Server, Access, MySQL。还有其它的库如DTL，这个库不但支持ODBC，它还支持数据库的原生接口，可以有更佳的性能。</li>
 </ul>
-<ol>
+<ol start="4">
 <li>GUI</li>
 </ol>
 <ul>
 <li>QT：QT是双认证的，当你的程序免费时它就免费，你的程序打算卖钱时，它也要，而且要价很高。所以，如果有版权，成本上的考虑的话，则可以考虑wxWidgets。</li>
 <li>wxWidgets：wxWidgets（/wɪksˈwɪdʒɪts/，原名wxWindows）是一个开放源代码且跨平台的对象工具集（widget toolkit），其库可用来创建基本的图形用户界面（GUI）。wxWidgets由Julian Smart于1992年首先开发。</li>
 </ul>
-<ol>
+<ol start="5">
 <li>科学计算</li>
 </ol>
 <ul>
 <li>GSL：GNU科学库。</li>
 </ul>
-<ol>
+<ol start="6">
 <li>游戏开发</li>
 </ol>
 <ul>
 <li>Cocos2d-x：一个跨平台框架，用于构建2D游戏，互动图书，演示和其他图形应用程序。</li>
 </ul>
-<ol>
+<ol start="7">
 <li>视频</li>
 </ol>
 <ul>
@@ -507,7 +509,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/笔记本/" rel="tag"># 笔记本</a>
+            <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
           
             <a href="/tags/C-C/" rel="tag"># C/C++</a>
           
@@ -522,7 +524,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/15/Emscripten教程/" rel="next" title="Emscripten教程">
+              <a href="/2018/07/15/Emscripten%E6%95%99%E7%A8%8B/" rel="next" title="Emscripten教程">
                 <i class="fa fa-chevron-left"></i> Emscripten教程
               </a>
             
@@ -532,7 +534,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/08/26/中文文献免费下载方法/" rel="prev" title="中文文献免费下载方法">
+              <a href="/2018/08/26/%E4%B8%AD%E6%96%87%E6%96%87%E7%8C%AE%E5%85%8D%E8%B4%B9%E4%B8%8B%E8%BD%BD%E6%96%B9%E6%B3%95/" rel="prev" title="中文文献免费下载方法">
                 中文文献免费下载方法 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -602,7 +604,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">Jack Huang</p>
               <p class="site-description motion-element" itemprop="description"></p>
@@ -613,9 +615,9 @@
               
                 <div class="site-state-item site-state-posts">
                 
-                  <a href="/archives/">
+                  <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">240</span>
+                    <span class="site-state-item-count">241</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -754,13 +756,6 @@
             </nav>
           
 
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
           
 
           
@@ -1376,24 +1371,7 @@
         }
     });
 </script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config("");
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     
   

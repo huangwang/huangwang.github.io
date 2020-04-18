@@ -9,10 +9,10 @@
 
 
 <html class="theme-next muse use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.8.0">
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
 <meta name="theme-color" content="#222">
 
 
@@ -26,8 +26,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
 
 
@@ -50,9 +50,9 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css">
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
@@ -103,29 +103,29 @@
 
 
   <meta name="description" content="同步定位与地图构建（SLAM或Simultaneous localization and mapping）是一种概念：希望机器人从未知环境的未知地点出发，在运动过程中通过重复观测到的地图特征（比如，墙角，柱子等）定位自身位置和姿态，再根据自身位置增量式的构建地图，从而达到同时定位和地图构建的目的。 SLAM的核心工作有两个：  地图构建  研究如何把从一系列传感器收集到的信息，集成到一个一致性的模">
-<meta name="keywords" content="笔记本,飞行仿真,计算机视觉">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SLAM中位姿估计的数学基础">
-<meta property="og:url" content="https://huangwang.github.io/2019/05/20/SLAM中位姿估计的数学基础/index.html">
+<meta property="og:url" content="https://huangwang.github.io/2019/05/20/SLAM%E4%B8%AD%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A1%E7%9A%84%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
 <meta property="og:description" content="同步定位与地图构建（SLAM或Simultaneous localization and mapping）是一种概念：希望机器人从未知环境的未知地点出发，在运动过程中通过重复观测到的地图特征（比如，墙角，柱子等）定位自身位置和姿态，再根据自身位置增量式的构建地图，从而达到同时定位和地图构建的目的。 SLAM的核心工作有两个：  地图构建  研究如何把从一系列传感器收集到的信息，集成到一个一致性的模">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://huangwang.github.io/2019/05/20/SLAM中位姿估计的数学基础/images/epipolor1.png">
-<meta property="og:image" content="https://huangwang.github.io/2019/05/20/SLAM中位姿估计的数学基础/images/epipolor2.png">
-<meta property="og:updated_time" content="2019-05-20T13:01:24.165Z">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://huangwang.github.io/2019/05/20/SLAM%E4%B8%AD%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A1%E7%9A%84%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80/images/epipolor1.png">
+<meta property="og:image" content="https://huangwang.github.io/2019/05/20/SLAM%E4%B8%AD%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A1%E7%9A%84%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80/images/epipolor2.png">
+<meta property="article:published_time" content="2019-05-20T11:38:57.000Z">
+<meta property="article:modified_time" content="2019-05-20T13:01:24.165Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="飞行仿真">
+<meta property="article:tag" content="计算机视觉">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SLAM中位姿估计的数学基础">
-<meta name="twitter:description" content="同步定位与地图构建（SLAM或Simultaneous localization and mapping）是一种概念：希望机器人从未知环境的未知地点出发，在运动过程中通过重复观测到的地图特征（比如，墙角，柱子等）定位自身位置和姿态，再根据自身位置增量式的构建地图，从而达到同时定位和地图构建的目的。 SLAM的核心工作有两个：  地图构建  研究如何把从一系列传感器收集到的信息，集成到一个一致性的模">
-<meta name="twitter:image" content="https://huangwang.github.io/2019/05/20/SLAM中位姿估计的数学基础/images/epipolor1.png">
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Jack Huang's Blog" type="application/atom+xml">
+<meta name="twitter:image" content="https://huangwang.github.io/2019/05/20/SLAM%E4%B8%AD%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A1%E7%9A%84%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80/images/epipolor1.png">
 
 
 
 
-  <link rel="canonical" href="https://huangwang.github.io/2019/05/20/SLAM中位姿估计的数学基础/">
+
+
+  <link rel="canonical" href="https://huangwang.github.io/2019/05/20/SLAM中位姿估计的数学基础/"/>
 
 
 
@@ -171,21 +171,21 @@
       .logo-line-after i { right: initial; }
     }
   </style>
-</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</noscript>
 
-</head>
+<meta name="generator" content="Hexo 4.2.0"></head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
   
   
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -224,7 +224,7 @@
           
           <li class="menu-item menu-item-home">
     <a href="/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
   </li>
         
         
@@ -232,7 +232,7 @@
           
           <li class="menu-item menu-item-tags">
     <a href="/tags/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
   </li>
         
         
@@ -240,7 +240,7 @@
           
           <li class="menu-item menu-item-archives">
     <a href="/archives/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
   </li>
 
       
@@ -250,7 +250,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
         </li>
       
     </ul>
@@ -273,7 +273,9 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -315,20 +317,20 @@
 
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/20/SLAM中位姿估计的数学基础/">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/20/SLAM%E4%B8%AD%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A1%E7%9A%84%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jack Huang">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Jack Huang's Blog">
     </span>
 
@@ -381,8 +383,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/05/20/SLAM中位姿估计的数学基础/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2019/05/20/SLAM中位姿估计的数学基础/" itemprop="commentsCount"></span>
+                <a href="/2019/05/20/SLAM%E4%B8%AD%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A1%E7%9A%84%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2019/05/20/SLAM%E4%B8%AD%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A1%E7%9A%84%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -393,10 +395,11 @@
 
           
             <span class="post-meta-divider">|</span>
-            <span class="post-meta-item-icon">
+            <span class="post-meta-item-icon"
+            >
             <i class="fa fa-eye"></i>
              阅读次数： 
-            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
             </span>
           
 
@@ -429,47 +432,22 @@
 <p>研究在地图上估测机器人的坐标和姿势形态的问题；换而言之，机器人需要回答这里的第二核心问题，我在哪？典型的解包含以下两个方面：追踪——通常机器人的初始位置已知；全局定位——通常只给出很少，甚至不给出有关于起始位置环境特征的先验信息。</p>
 <p>下面主要介绍SLAM定位研究中涉及的数学知识。</p>
 <h1 id="向量点积"><a href="#向量点积" class="headerlink" title="向量点积"></a>向量点积</h1><p>有如下两个向量:</p>
-<script type="math/tex; mode=display">a=\begin{pmatrix}
-a_{1}\\ 
-a_{2}\\ 
-a_{3}
-\end{pmatrix},b=\begin{pmatrix}
-b_{1}\\ 
-b_{2}\\ 
-b_{3}
-\end{pmatrix}</script><p>它们的点乘定义如下：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-a\cdot b=a^{T}\cdot b = \sum_{i=1}^{3}a_{i}b_{i}=\left | a \right |\left | b \right |cos<a,b> %]]></script><p>即两个向量点乘等于一个向量的转置乘以另一个向量。</p>
+<p>$$a=\begin{pmatrix}<br>a_{1}\<br>a_{2}\<br>a_{3}<br>\end{pmatrix},b=\begin{pmatrix}<br>b_{1}\<br>b_{2}\<br>b_{3}<br>\end{pmatrix}$$</p>
+<p>它们的点乘定义如下：</p>
+<p>$$% <![CDATA[
+a\cdot b=a^{T}\cdot b = \sum_{i=1}^{3}a_{i}b_{i}=\left | a \right |\left | b \right |cos<a,b> %]]>$$</p>
+<p>即两个向量点乘等于一个向量的转置乘以另一个向量。</p>
 <h1 id="向量叉积"><a href="#向量叉积" class="headerlink" title="向量叉积"></a>向量叉积</h1><p>两个向量做叉积结果还是一个向量，这个向量垂直于这两个做叉积的向量所组成的平面。</p>
-<script type="math/tex; mode=display">
-a\times b=\begin{vmatrix}
-i & j & k\\ 
-a_{1} & a_{2} & a_{3}\\ 
-b_{1} & b_{2} & b_{3}
-\end{vmatrix}=(a_{2}b_{3}-a_{3}b_{2})i+(a_{3}b_{1}-a_{1}b_{3})j+(a_{1}b_{2}-a_{2}b_{1})k</script><p>为了计算方便，将两个向量写成行列式的形式，然后按对角线法则计算行列式的值。i、j、k分量分别即代表x、y、z轴方向的分量。写成列向量的形式如下:</p>
-<script type="math/tex; mode=display">
-\begin{pmatrix}
-a_{2}b_{3}-a_{3}b_{2}\\ 
-a_{3}b_{1}-a_{1}b_{3}\\ 
-a_{1}b_{2}-a_{2}b_{1}
-\end{pmatrix}=\begin{pmatrix}
-0\cdot b_{1}-a_{3}b_{2}+a_{2}b_{3}\\ 
-a_{3}b_{1}-0\cdot b_{2}-a_{1}b_{3}\\ 
--a{2}b_{1}+a_{1}b_{2}+0\cdot b_{3}
-\end{pmatrix}=\begin{pmatrix}
-0 & -a_{3} & a_{2}\\ 
-a_{3} & 0 & -a_{1}\\ 
--a_{2} & a_{1} & 0
-\end{pmatrix}\begin{pmatrix}
-b_{1}\\ 
-b_{2}\\ 
-b_{3}
-\end{pmatrix}</script><p>再将其写成与b相乘的矩阵形式，提取系数矩阵。这个系数矩阵就称作向量a的反对称矩阵，用a^记。所谓反对称矩阵，是指满足下面这个条件的矩阵。</p>
-<script type="math/tex; mode=display">A^{-1}=-A</script><p>因为向量叉积的结果是一个向量，因此可以用来表示旋转，结果向量的方向为旋转轴，大小为旋转角。结果可以看作一个旋转向量。</p>
+<p>$$<br>a\times b=\begin{vmatrix}<br>i &amp; j &amp; k\<br>a_{1} &amp; a_{2} &amp; a_{3}\<br>b_{1} &amp; b_{2} &amp; b_{3}<br>\end{vmatrix}=(a_{2}b_{3}-a_{3}b_{2})i+(a_{3}b_{1}-a_{1}b_{3})j+(a_{1}b_{2}-a_{2}b_{1})k $$</p>
+<p>为了计算方便，将两个向量写成行列式的形式，然后按对角线法则计算行列式的值。i、j、k分量分别即代表x、y、z轴方向的分量。写成列向量的形式如下:</p>
+<p>$$<br>\begin{pmatrix}<br>a_{2}b_{3}-a_{3}b_{2}\<br>a_{3}b_{1}-a_{1}b_{3}\<br>a_{1}b_{2}-a_{2}b_{1}<br>\end{pmatrix}=\begin{pmatrix}<br>0\cdot b_{1}-a_{3}b_{2}+a_{2}b_{3}\<br>a_{3}b_{1}-0\cdot b_{2}-a_{1}b_{3}\<br>-a{2}b_{1}+a_{1}b_{2}+0\cdot b_{3}<br>\end{pmatrix}=\begin{pmatrix}<br>0 &amp; -a_{3} &amp; a_{2}\<br>a_{3} &amp; 0 &amp; -a_{1}\<br>-a_{2} &amp; a_{1} &amp; 0<br>\end{pmatrix}\begin{pmatrix}<br>b_{1}\<br>b_{2}\<br>b_{3}<br>\end{pmatrix} $$</p>
+<p>再将其写成与b相乘的矩阵形式，提取系数矩阵。这个系数矩阵就称作向量a的反对称矩阵，用a^记。所谓反对称矩阵，是指满足下面这个条件的矩阵。</p>
+<p>$$A^{-1}=-A$$</p>
+<p>因为向量叉积的结果是一个向量，因此可以用来表示旋转，结果向量的方向为旋转轴，大小为旋转角。结果可以看作一个旋转向量。</p>
 <h1 id="对极几何"><a href="#对极几何" class="headerlink" title="对极几何"></a>对极几何</h1><p>两个相机在不同位置拍摄同一物体，两张照片中的景物有重叠部分，那么理论上这两张照片会存在一定的对应关系，而对极几何就是探索描述它们之间对应关系的工具。相机在不同位置拍摄同一物体示意图如图1所示。</p>
-<p></p><p align="center">
-    <img src="images/epipolor1.png" width="90%" alt="相机在不同位置拍摄同一物体示意图">
-</p><p></p>
+<p align="center">
+    <img src="images/epipolor1.png" width="90%" alt="相机在不同位置拍摄同一物体示意图"/>
+</p>
 <center>图1  相机在不同位置拍摄同一物体示意图</center>
 
 <p>图中的概念有：</p>
@@ -482,15 +460,17 @@ b_{3}
 </li>
 </ul>
 <p>对极几何则是描述这几个量之间的对应关系。直观讲，从左图的角度看，如果不知道p点的深度信息，射线op是这个点可能出现的空间位置，因为该射线上的点都会投影到同一个像素点，同时，如果不知道p点的具体位置，那么当在右图的位置看时，极线 l’ 就是点p可能出现的位置，即在这条线上的某个地方。如图2所示:</p>
-<p></p><p align="center">
-    <img src="images/epipolor2.png" width="90%" alt="物体位置示意图">
-</p><p></p>
+<p align="center">
+    <img src="images/epipolor2.png" width="90%" alt="物体位置示意图"/>
+</p>
 <center>图2  物体位置示意图</center>
 
 <p>在计算机视觉中，基础矩阵（Fundamental matrix） F 是一个3×3的矩阵，表达了立体像对的像点之间的对应关系。在对极几何中，对于立体像对中的一对同名点，它们的齐次化图像坐标分别为 $p$ 与 $p’$， ${\displaystyle \mathrm {F} p}$ 表示一条必定经过 $p’$的直线（极线）。这意味着立体像对的所有同名点对都满足：</p>
-<script type="math/tex; mode=display">{\displaystyle p'^{\top }\mathrm {F} p=0.}</script><p>F矩阵中蕴含了立体像对的两幅图像在拍摄时相互之间的空间几何关系（外参数）以及相机检校参数（内参数），包括旋转、位移、像主点坐标和焦距。因为 F 矩阵的秩为2，并且可以自由缩放（尺度化），所以只需7对同名点即可估算出F的值。</p>
+<p>$${\displaystyle p’^{\top }\mathrm {F} p=0.}$$</p>
+<p>F矩阵中蕴含了立体像对的两幅图像在拍摄时相互之间的空间几何关系（外参数）以及相机检校参数（内参数），包括旋转、位移、像主点坐标和焦距。因为 F 矩阵的秩为2，并且可以自由缩放（尺度化），所以只需7对同名点即可估算出F的值。</p>
 <p>基础矩阵这一概念由Q. T. Luong在他那篇很有影响力的博士毕业论文中提出。Faugeras则是在1992年发表的著作中以上面的关系式给出了 F 矩阵的定义。尽管Longuet-Higgins提出的本质矩阵也满足类似的关系式，但本质矩阵中并不蕴含相机检校参数。本质矩阵与基础矩阵之间的关系可由下式表达：</p>
-<script type="math/tex; mode=display">{\displaystyle \mathrm {E} =\mathrm {K'^{\top }} \mathrm {FK} .}</script><p>其中 $K$和 $K’$分别为两个相机的内参数矩阵。</p>
+<p>$$ {\displaystyle \mathrm {E} =\mathrm {K’^{\top }} \mathrm {FK} .}$$</p>
+<p>其中 $K$和 $K’$分别为两个相机的内参数矩阵。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="http://zhaoxuhui.top/blog/2018/03/22/MathInSLAM.html" target="_blank" rel="noopener">SLAM数学基础</a>,by zhaoxuhui.</li>
 <li><a href="https://zh.wikipedia.org/wiki/即时定位与地图构建" target="_blank" rel="noopener">即时定位与地图构建</a>,by wikipedia.</li>
@@ -519,11 +499,11 @@ b_{3}
       
         <div class="post-tags">
           
-            <a href="/tags/笔记本/" rel="tag"># 笔记本</a>
+            <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
           
-            <a href="/tags/飞行仿真/" rel="tag"># 飞行仿真</a>
+            <a href="/tags/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F/" rel="tag"># 飞行仿真</a>
           
-            <a href="/tags/计算机视觉/" rel="tag"># 计算机视觉</a>
+            <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" rel="tag"># 计算机视觉</a>
           
         </div>
       
@@ -536,7 +516,7 @@ b_{3}
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/15/PX4无人机MAVROS外部控制教程/" rel="next" title="PX4无人机MAVROS外部控制教程">
+              <a href="/2019/05/15/PX4%E6%97%A0%E4%BA%BA%E6%9C%BAMAVROS%E5%A4%96%E9%83%A8%E6%8E%A7%E5%88%B6%E6%95%99%E7%A8%8B/" rel="next" title="PX4无人机MAVROS外部控制教程">
                 <i class="fa fa-chevron-left"></i> PX4无人机MAVROS外部控制教程
               </a>
             
@@ -546,7 +526,7 @@ b_{3}
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/05/26/光线追踪基本概念入门/" rel="prev" title="光线追踪基本概念入门">
+              <a href="/2019/05/26/%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8/" rel="prev" title="光线追踪基本概念入门">
                 光线追踪基本概念入门 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -616,7 +596,7 @@ b_{3}
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">Jack Huang</p>
               <p class="site-description motion-element" itemprop="description"></p>
@@ -627,9 +607,9 @@ b_{3}
               
                 <div class="site-state-item site-state-posts">
                 
-                  <a href="/archives/">
+                  <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">240</span>
+                    <span class="site-state-item-count">241</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -768,13 +748,6 @@ b_{3}
             </nav>
           
 
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
           
 
           
@@ -1390,24 +1363,7 @@ b_{3}
         }
     });
 </script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config("");
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     
   

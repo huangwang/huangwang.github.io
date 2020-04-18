@@ -9,10 +9,10 @@
 
 
 <html class="theme-next muse use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.8.0">
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
 <meta name="theme-color" content="#222">
 
 
@@ -26,8 +26,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
 
 
@@ -50,9 +50,9 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css">
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
@@ -103,31 +103,30 @@
 
 
   <meta name="description" content="太阳位置是从地球表面观察时，太阳在天空中的位置，它是时间和地理位置两者的函数。计算给定地点和时间的太阳位置要经过下列三个步骤：  计算太阳在黄道坐标系的位置 转换到赤道坐标系统 依据观测者的位置和时间，转换到地平坐标系  计算太阳黄道坐标的方法黄道坐标系是以黄道作基准平面的天球坐标系统，多用作研究太阳系天体运动情况之用。如图1所示。        图1 黄道坐标系  黄道是由地球上观察太阳一年中在">
-<meta name="keywords" content="笔记本,C&#x2F;C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="太阳位置及辐射强度等属性的计算方法">
-<meta property="og:url" content="https://huangwang.github.io/2019/11/26/太阳位置及辐射强度等属性的计算方法/index.html">
+<meta property="og:url" content="https://huangwang.github.io/2019/11/26/%E5%A4%AA%E9%98%B3%E4%BD%8D%E7%BD%AE%E5%8F%8A%E8%BE%90%E5%B0%84%E5%BC%BA%E5%BA%A6%E7%AD%89%E5%B1%9E%E6%80%A7%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95/index.html">
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
 <meta property="og:description" content="太阳位置是从地球表面观察时，太阳在天空中的位置，它是时间和地理位置两者的函数。计算给定地点和时间的太阳位置要经过下列三个步骤：  计算太阳在黄道坐标系的位置 转换到赤道坐标系统 依据观测者的位置和时间，转换到地平坐标系  计算太阳黄道坐标的方法黄道坐标系是以黄道作基准平面的天球坐标系统，多用作研究太阳系天体运动情况之用。如图1所示。        图1 黄道坐标系  黄道是由地球上观察太阳一年中在">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://huangwang.github.io/2019/11/26/太阳位置及辐射强度等属性的计算方法/images/Earths_orbit_and_ecliptic.png">
-<meta property="og:image" content="https://huangwang.github.io/2019/11/26/太阳位置及辐射强度等属性的计算方法/images/AxialTiltObliquity.png">
-<meta property="og:image" content="https://huangwang.github.io/2019/11/26/太阳位置及辐射强度等属性的计算方法/images/Horizontal_coordinate_system.png">
-<meta property="og:image" content="https://huangwang.github.io/2019/11/26/太阳位置及辐射强度等属性的计算方法/images/HourAngle_Observer_en.png">
-<meta property="og:updated_time" content="2019-11-26T13:53:30.241Z">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://huangwang.github.io/2019/11/26/%E5%A4%AA%E9%98%B3%E4%BD%8D%E7%BD%AE%E5%8F%8A%E8%BE%90%E5%B0%84%E5%BC%BA%E5%BA%A6%E7%AD%89%E5%B1%9E%E6%80%A7%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95/images/Earths_orbit_and_ecliptic.png">
+<meta property="og:image" content="https://huangwang.github.io/2019/11/26/%E5%A4%AA%E9%98%B3%E4%BD%8D%E7%BD%AE%E5%8F%8A%E8%BE%90%E5%B0%84%E5%BC%BA%E5%BA%A6%E7%AD%89%E5%B1%9E%E6%80%A7%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95/images/AxialTiltObliquity.png">
+<meta property="og:image" content="https://huangwang.github.io/2019/11/26/%E5%A4%AA%E9%98%B3%E4%BD%8D%E7%BD%AE%E5%8F%8A%E8%BE%90%E5%B0%84%E5%BC%BA%E5%BA%A6%E7%AD%89%E5%B1%9E%E6%80%A7%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95/images/Horizontal_coordinate_system.png">
+<meta property="og:image" content="https://huangwang.github.io/2019/11/26/%E5%A4%AA%E9%98%B3%E4%BD%8D%E7%BD%AE%E5%8F%8A%E8%BE%90%E5%B0%84%E5%BC%BA%E5%BA%A6%E7%AD%89%E5%B1%9E%E6%80%A7%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95/images/HourAngle_Observer_en.png">
+<meta property="article:published_time" content="2019-11-26T12:48:12.000Z">
+<meta property="article:modified_time" content="2019-11-26T13:53:30.241Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="C&#x2F;C++">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="太阳位置及辐射强度等属性的计算方法">
-<meta name="twitter:description" content="太阳位置是从地球表面观察时，太阳在天空中的位置，它是时间和地理位置两者的函数。计算给定地点和时间的太阳位置要经过下列三个步骤：  计算太阳在黄道坐标系的位置 转换到赤道坐标系统 依据观测者的位置和时间，转换到地平坐标系  计算太阳黄道坐标的方法黄道坐标系是以黄道作基准平面的天球坐标系统，多用作研究太阳系天体运动情况之用。如图1所示。        图1 黄道坐标系  黄道是由地球上观察太阳一年中在">
-<meta name="twitter:image" content="https://huangwang.github.io/2019/11/26/太阳位置及辐射强度等属性的计算方法/images/Earths_orbit_and_ecliptic.png">
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Jack Huang's Blog" type="application/atom+xml">
+<meta name="twitter:image" content="https://huangwang.github.io/2019/11/26/%E5%A4%AA%E9%98%B3%E4%BD%8D%E7%BD%AE%E5%8F%8A%E8%BE%90%E5%B0%84%E5%BC%BA%E5%BA%A6%E7%AD%89%E5%B1%9E%E6%80%A7%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95/images/Earths_orbit_and_ecliptic.png">
 
 
 
 
-  <link rel="canonical" href="https://huangwang.github.io/2019/11/26/太阳位置及辐射强度等属性的计算方法/">
+
+
+  <link rel="canonical" href="https://huangwang.github.io/2019/11/26/太阳位置及辐射强度等属性的计算方法/"/>
 
 
 
@@ -173,21 +172,21 @@
       .logo-line-after i { right: initial; }
     }
   </style>
-</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</noscript>
 
-</head>
+<meta name="generator" content="Hexo 4.2.0"></head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
   
   
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -226,7 +225,7 @@
           
           <li class="menu-item menu-item-home">
     <a href="/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
   </li>
         
         
@@ -234,7 +233,7 @@
           
           <li class="menu-item menu-item-tags">
     <a href="/tags/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
   </li>
         
         
@@ -242,7 +241,7 @@
           
           <li class="menu-item menu-item-archives">
     <a href="/archives/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
   </li>
 
       
@@ -252,7 +251,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
         </li>
       
     </ul>
@@ -275,7 +274,9 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -317,20 +318,20 @@
 
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/26/太阳位置及辐射强度等属性的计算方法/">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/26/%E5%A4%AA%E9%98%B3%E4%BD%8D%E7%BD%AE%E5%8F%8A%E8%BE%90%E5%B0%84%E5%BC%BA%E5%BA%A6%E7%AD%89%E5%B1%9E%E6%80%A7%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jack Huang">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Jack Huang's Blog">
     </span>
 
@@ -383,8 +384,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/11/26/太阳位置及辐射强度等属性的计算方法/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2019/11/26/太阳位置及辐射强度等属性的计算方法/" itemprop="commentsCount"></span>
+                <a href="/2019/11/26/%E5%A4%AA%E9%98%B3%E4%BD%8D%E7%BD%AE%E5%8F%8A%E8%BE%90%E5%B0%84%E5%BC%BA%E5%BA%A6%E7%AD%89%E5%B1%9E%E6%80%A7%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2019/11/26/%E5%A4%AA%E9%98%B3%E4%BD%8D%E7%BD%AE%E5%8F%8A%E8%BE%90%E5%B0%84%E5%BC%BA%E5%BA%A6%E7%AD%89%E5%B1%9E%E6%80%A7%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -395,10 +396,11 @@
 
           
             <span class="post-meta-divider">|</span>
-            <span class="post-meta-item-icon">
+            <span class="post-meta-item-icon"
+            >
             <i class="fa fa-eye"></i>
              阅读次数： 
-            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
             </span>
           
 
@@ -426,9 +428,9 @@
 <li>依据观测者的位置和时间，转换到地平坐标系</li>
 </ul>
 <h1 id="计算太阳黄道坐标的方法"><a href="#计算太阳黄道坐标的方法" class="headerlink" title="计算太阳黄道坐标的方法"></a>计算太阳黄道坐标的方法</h1><p>黄道坐标系是以黄道作基准平面的天球坐标系统，多用作研究太阳系天体运动情况之用。如图1所示。</p>
-<p></p><p align="center">
-    <img src="images/Earths_orbit_and_ecliptic.png" width="80%" alt="黄道坐标系">
-</p><p></p>
+<p align="center">
+    <img src="images/Earths_orbit_and_ecliptic.png" width="80%" alt="黄道坐标系"/>
+</p>
 <center>图1 黄道坐标系</center>
 
 <p>黄道是由地球上观察太阳一年中在天球上的视运动所通过的路径，若以地球“不动”作参照的话就是太阳绕地球公转的轨道平面（黄道面）在天球上的投影。</p>
@@ -437,34 +439,43 @@
 <p>此坐标系特别适合标示太阳系内天体的位置，大多数行星（水星和冥王星除外）与许多小行星轨道平面与黄道的倾角都很小，故其黄纬值（β）都不大。</p>
 <p>太阳黄道坐标的近似计算方法如下：</p>
 <p>先计算与格林尼治 2000.0年1月1日中午12:00（历元）相距的日数。如果你知道儒略日，则你的叙述会如下：</p>
-<script type="math/tex; mode=display">n = \mathrm{JD} - 2451545.0</script><p>以光行差修正太阳的平黄经，如下：</p>
-<script type="math/tex; mode=display">L = 280.460^\circ + 0.9856474^\circ n</script><p>太阳的平近点角（实际上，是地球在轨道上绕着太阳，但是假设太阳绕着地球比较方便）如下：</p>
-<script type="math/tex; mode=display">g = 357.528^\circ + 0.9856003^\circ n</script><p>根据需要将L和g多次加或减360°，让数值的范围调整到0°至 360°之间。</p>
+<p>$$ n = \mathrm{JD} - 2451545.0 $$</p>
+<p>以光行差修正太阳的平黄经，如下：</p>
+<p>$$ L = 280.460^\circ + 0.9856474^\circ n $$</p>
+<p>太阳的平近点角（实际上，是地球在轨道上绕着太阳，但是假设太阳绕着地球比较方便）如下：</p>
+<p>$$ g = 357.528^\circ + 0.9856003^\circ n $$</p>
+<p>根据需要将L和g多次加或减360°，让数值的范围调整到0°至 360°之间。</p>
 <p>最后，太阳的黄经是：</p>
-<script type="math/tex; mode=display">\lambda = L + 1.915^\circ \sin g + 0.020^\circ \sin 2g</script><p>太阳的黄纬是:</p>
-<script type="math/tex; mode=display">\beta = 0</script><p>太阳的黄纬不超过0.00033，</p>
+<p>$$ \lambda = L + 1.915^\circ \sin g + 0.020^\circ \sin 2g$$</p>
+<p>太阳的黄纬是:</p>
+<p>$$ \beta = 0 $$</p>
+<p>太阳的黄纬不超过0.00033，</p>
 <p>并且从太阳到地球的距离，以天文单位度量是：</p>
-<script type="math/tex; mode=display">R = 1.00014 - 0.01671 \cos g - 0.00014 \cos 2g</script><h1 id="计算太阳赤道坐标的方法"><a href="#计算太阳赤道坐标的方法" class="headerlink" title="计算太阳赤道坐标的方法"></a>计算太阳赤道坐标的方法</h1><p>赤道坐标系统是使用得最广泛的天球坐标系统，他的元素是:</p>
+<p>$$ R = 1.00014 - 0.01671 \cos g - 0.00014 \cos 2g $$</p>
+<h1 id="计算太阳赤道坐标的方法"><a href="#计算太阳赤道坐标的方法" class="headerlink" title="计算太阳赤道坐标的方法"></a>计算太阳赤道坐标的方法</h1><p>赤道坐标系统是使用得最广泛的天球坐标系统，他的元素是:</p>
 <ul>
 <li>赤纬（$\delta$）</li>
 <li>赤经（$\alpha$ ）－也记为RA</li>
 </ul>
 <p>他与地理坐标系统非常相似，因为两者使用相同的基准平面和相同的极点。地球的赤道在天球上的投影就称为天球赤道，相同的，地理极点在天球上的投影就是天极，如图2所示。</p>
-<p></p><p align="center">
-    <img src="images/AxialTiltObliquity.png" width="80%" alt="赤道坐标系">
-</p><p></p>
+<p align="center">
+    <img src="images/AxialTiltObliquity.png" width="80%" alt="赤道坐标系"/>
+</p>
 <center>图2 赤道坐标系</center>
 
 <p>在经过一夜或数个夜晚，就能看出来星星在天空中的位置移动了，当然，这并非恒星在天球上的运动，只是地球运动造成的。因为岁差和章动的影响，在相当长的时间间隔下所做的观测，就必须注明所使用的特殊历元，为行星、恒星、星系等等的位置做记录。现在使用的历元是J2000.0分点，稍早期使用的是B1950.0分点。</p>
 <p>赤道坐标系统中与纬度相似的值是赤纬(缩写为Dec.)，是天体在天球赤道上方或下方的角度。与经度对应的是赤经(缩写为RA)，是与春分点的角度距离，不同于经度的是赤经以时、分、秒为单位，而非度、分、秒。</p>
 <p>$\lambda$、$\beta$ 和 $R$ 构成太阳在黄道座标完整的位置。通过黄赤交角 $ε$ 的计算可以转换成赤道座标，计算方法如下：</p>
 <p>赤经：</p>
-<script type="math/tex; mode=display">\alpha = \arctan(\cos \epsilon \tan \lambda)</script><p>赤纬：</p>
-<script type="math/tex; mode=display">\delta = \arcsin(\sin \epsilon \sin \lambda)</script><p>其中，黄赤交角不是固定不变的，它目前的值接近：</p>
-<script type="math/tex; mode=display">\epsilon = 23.439^\circ - 0.0000004^\circ n</script><h1 id="计算太阳地平坐标的方法"><a href="#计算太阳地平坐标的方法" class="headerlink" title="计算太阳地平坐标的方法"></a>计算太阳地平坐标的方法</h1><p>地平坐标系，又作地平座标系，是天球坐标系统中的一种，以观测者所在地为中心点，所在地的地平线作为基础平面，将天球适当的分成能看见的上半球和看不见（被地球本身遮蔽）的下半球。上半球的顶点（最高点）称为天顶，下半球的顶点（最低点）称为地底。如图3所示。</p>
-<p></p><p align="center">
-    <img src="images/Horizontal_coordinate_system.png" width="80%" alt="地平坐标系">
-</p><p></p>
+<p>$$ \alpha = \arctan(\cos \epsilon \tan \lambda)$$</p>
+<p>赤纬：</p>
+<p>$$ \delta = \arcsin(\sin \epsilon \sin \lambda)$$</p>
+<p>其中，黄赤交角不是固定不变的，它目前的值接近：</p>
+<p>$$  \epsilon = 23.439^\circ - 0.0000004^\circ n $$</p>
+<h1 id="计算太阳地平坐标的方法"><a href="#计算太阳地平坐标的方法" class="headerlink" title="计算太阳地平坐标的方法"></a>计算太阳地平坐标的方法</h1><p>地平坐标系，又作地平座标系，是天球坐标系统中的一种，以观测者所在地为中心点，所在地的地平线作为基础平面，将天球适当的分成能看见的上半球和看不见（被地球本身遮蔽）的下半球。上半球的顶点（最高点）称为天顶，下半球的顶点（最低点）称为地底。如图3所示。</p>
+<p align="center">
+    <img src="images/Horizontal_coordinate_system.png" width="80%" alt="地平坐标系"/>
+</p>
 <center>图3 地平坐标系</center>
 
 <p>地平坐标系统是：</p>
@@ -477,11 +488,14 @@
 <p>在数学公式中，以$A$代表方位，$a$代表高度。</p>
 <p>以$\delta$ 表示赤纬，$H$ 表示时角。 $φ$ 为观测者所在地的纬度。</p>
 <p>赤道坐标转为地平坐标的计算方法如下：</p>
-<script type="math/tex; mode=display">\sin a=\sin \phi \cdot \sin \delta +\cos \phi \cdot \cos \delta \cdot \cos H</script><script type="math/tex; mode=display">{\displaystyle \cos A\cdot \cos a=-\cos \phi \cdot \sin \delta +\sin \phi \cdot \cos \delta \cdot \cos H}</script><script type="math/tex; mode=display">{\displaystyle \sin A\cdot \cos a=\cos \delta \cdot \sin H}</script><p>有些人或许会试图将最后两个公式相除来加以简化，以消除$\cos a$，而只剩下$\tan A$。但是正切函数不能清楚的区别出象限，例如45°和225°是完全不同的方位，分别指向相对的东北方和西南方。</p>
+<p>$$\sin a=\sin \phi \cdot \sin \delta +\cos \phi \cdot \cos \delta \cdot \cos H$$</p>
+<p>$${\displaystyle \cos A\cdot \cos a=-\cos \phi \cdot \sin \delta +\sin \phi \cdot \cos \delta \cdot \cos H}$$</p>
+<p>$${\displaystyle \sin A\cdot \cos a=\cos \delta \cdot \sin H}$$</p>
+<p>有些人或许会试图将最后两个公式相除来加以简化，以消除$\cos a$，而只剩下$\tan A$。但是正切函数不能清楚的区别出象限，例如45°和225°是完全不同的方位，分别指向相对的东北方和西南方。</p>
 <p>时角（HA）是天文学的名词，一个天体的时角被定义为该天体的赤经与当地的恒星时的差值。 在天文学和天文航海中，时角是在赤道坐标系中用于给出天球上点的方向的坐标之一。 一个点的时角是两个平面之间的角度：一个平面包含地轴和天顶（子午面），另一个平面是穿过该点与极点（地轴）的球面大圆切圆所形成的平面（赤经圈）。如图4所示。</p>
-<p></p><p align="center">
-    <img src="images/HourAngle_Observer_en.png" width="80%" alt="时角">
-</p><p></p>
+<p align="center">
+    <img src="images/HourAngle_Observer_en.png" width="80%" alt="时角"/>
+</p>
 <center>图3 时角</center>
 
 
@@ -515,7 +529,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/笔记本/" rel="tag"># 笔记本</a>
+            <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
           
             <a href="/tags/C-C/" rel="tag"># C/C++</a>
           
@@ -530,7 +544,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/11/16/经纬高与北天东坐标之间的转换方法/" rel="next" title="经纬高与北天东坐标之间的转换方法">
+              <a href="/2019/11/16/%E7%BB%8F%E7%BA%AC%E9%AB%98%E4%B8%8E%E5%8C%97%E5%A4%A9%E4%B8%9C%E5%9D%90%E6%A0%87%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2%E6%96%B9%E6%B3%95/" rel="next" title="经纬高与北天东坐标之间的转换方法">
                 <i class="fa fa-chevron-left"></i> 经纬高与北天东坐标之间的转换方法
               </a>
             
@@ -540,7 +554,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/11/27/Eigen入门教程/" rel="prev" title="Eigen入门教程">
+              <a href="/2019/11/27/Eigen%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/" rel="prev" title="Eigen入门教程">
                 Eigen入门教程 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -610,7 +624,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">Jack Huang</p>
               <p class="site-description motion-element" itemprop="description"></p>
@@ -621,9 +635,9 @@
               
                 <div class="site-state-item site-state-posts">
                 
-                  <a href="/archives/">
+                  <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">240</span>
+                    <span class="site-state-item-count">241</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -762,13 +776,6 @@
             </nav>
           
 
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
           
 
           
@@ -1384,24 +1391,7 @@
         }
     });
 </script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config("");
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     
   

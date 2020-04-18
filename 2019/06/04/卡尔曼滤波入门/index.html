@@ -9,10 +9,10 @@
 
 
 <html class="theme-next muse use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.8.0">
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
 <meta name="theme-color" content="#222">
 
 
@@ -26,8 +26,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
 
 
@@ -50,9 +50,9 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css">
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
@@ -103,30 +103,29 @@
 
 
   <meta name="description" content="卡尔曼滤波（Kalman filter）是一种高效率的递归滤波器（自回归滤波器），它能够从一系列的不完全及包含噪声的测量中，估计动态系统的状态。卡尔曼滤波会根据各测量量在不同时间下的值，考虑各时间下的联合分布，再产生对未知变数的估计，因此会比只以单一测量量为基础的估计方式要准。卡尔曼滤波得名自主要贡献者之一的鲁道夫·卡尔曼。 卡尔曼滤波在技术领域有许多的应用。常见的有飞机及太空船的导引、导航及控制">
-<meta name="keywords" content="笔记本,计算机视觉">
 <meta property="og:type" content="article">
 <meta property="og:title" content="卡尔曼滤波入门">
-<meta property="og:url" content="https://huangwang.github.io/2019/06/04/卡尔曼滤波入门/index.html">
+<meta property="og:url" content="https://huangwang.github.io/2019/06/04/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%85%A5%E9%97%A8/index.html">
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
 <meta property="og:description" content="卡尔曼滤波（Kalman filter）是一种高效率的递归滤波器（自回归滤波器），它能够从一系列的不完全及包含噪声的测量中，估计动态系统的状态。卡尔曼滤波会根据各测量量在不同时间下的值，考虑各时间下的联合分布，再产生对未知变数的估计，因此会比只以单一测量量为基础的估计方式要准。卡尔曼滤波得名自主要贡献者之一的鲁道夫·卡尔曼。 卡尔曼滤波在技术领域有许多的应用。常见的有飞机及太空船的导引、导航及控制">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://huangwang.github.io/2019/06/04/卡尔曼滤波入门/images/kfmEquation.jpg">
-<meta property="og:image" content="https://huangwang.github.io/2019/06/04/卡尔曼滤波入门/images/kfmStep2.jpg">
-<meta property="og:image" content="https://huangwang.github.io/2019/06/04/卡尔曼滤波入门/images/kfmStep3.jpg">
-<meta property="og:updated_time" content="2019-07-01T12:52:00.441Z">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://huangwang.github.io/2019/06/04/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%85%A5%E9%97%A8/images/kfmEquation.jpg">
+<meta property="og:image" content="https://huangwang.github.io/2019/06/04/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%85%A5%E9%97%A8/images/kfmStep2.jpg">
+<meta property="og:image" content="https://huangwang.github.io/2019/06/04/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%85%A5%E9%97%A8/images/kfmStep3.jpg">
+<meta property="article:published_time" content="2019-06-04T15:27:07.000Z">
+<meta property="article:modified_time" content="2019-07-01T12:52:00.441Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="计算机视觉">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="卡尔曼滤波入门">
-<meta name="twitter:description" content="卡尔曼滤波（Kalman filter）是一种高效率的递归滤波器（自回归滤波器），它能够从一系列的不完全及包含噪声的测量中，估计动态系统的状态。卡尔曼滤波会根据各测量量在不同时间下的值，考虑各时间下的联合分布，再产生对未知变数的估计，因此会比只以单一测量量为基础的估计方式要准。卡尔曼滤波得名自主要贡献者之一的鲁道夫·卡尔曼。 卡尔曼滤波在技术领域有许多的应用。常见的有飞机及太空船的导引、导航及控制">
-<meta name="twitter:image" content="https://huangwang.github.io/2019/06/04/卡尔曼滤波入门/images/kfmEquation.jpg">
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Jack Huang's Blog" type="application/atom+xml">
+<meta name="twitter:image" content="https://huangwang.github.io/2019/06/04/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%85%A5%E9%97%A8/images/kfmEquation.jpg">
 
 
 
 
-  <link rel="canonical" href="https://huangwang.github.io/2019/06/04/卡尔曼滤波入门/">
+
+
+  <link rel="canonical" href="https://huangwang.github.io/2019/06/04/卡尔曼滤波入门/"/>
 
 
 
@@ -172,21 +171,21 @@
       .logo-line-after i { right: initial; }
     }
   </style>
-</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</noscript>
 
-</head>
+<meta name="generator" content="Hexo 4.2.0"></head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
   
   
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -225,7 +224,7 @@
           
           <li class="menu-item menu-item-home">
     <a href="/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
   </li>
         
         
@@ -233,7 +232,7 @@
           
           <li class="menu-item menu-item-tags">
     <a href="/tags/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
   </li>
         
         
@@ -241,7 +240,7 @@
           
           <li class="menu-item menu-item-archives">
     <a href="/archives/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
   </li>
 
       
@@ -251,7 +250,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
         </li>
       
     </ul>
@@ -274,7 +273,9 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -316,20 +317,20 @@
 
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/04/卡尔曼滤波入门/">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/04/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%85%A5%E9%97%A8/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jack Huang">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Jack Huang's Blog">
     </span>
 
@@ -394,8 +395,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/06/04/卡尔曼滤波入门/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2019/06/04/卡尔曼滤波入门/" itemprop="commentsCount"></span>
+                <a href="/2019/06/04/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%85%A5%E9%97%A8/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2019/06/04/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%85%A5%E9%97%A8/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -406,10 +407,11 @@
 
           
             <span class="post-meta-divider">|</span>
-            <span class="post-meta-item-icon">
+            <span class="post-meta-item-icon"
+            >
             <i class="fa fa-eye"></i>
              阅读次数： 
-            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
             </span>
           
 
@@ -433,9 +435,9 @@
         <p>卡尔曼滤波（Kalman filter）是一种高效率的递归滤波器（自回归滤波器），它能够从一系列的不完全及包含噪声的测量中，估计动态系统的状态。卡尔曼滤波会根据各测量量在不同时间下的值，考虑各时间下的联合分布，再产生对未知变数的估计，因此会比只以单一测量量为基础的估计方式要准。卡尔曼滤波得名自主要贡献者之一的鲁道夫·卡尔曼。</p>
 <p>卡尔曼滤波在技术领域有许多的应用。常见的有飞机及太空船的导引、导航及控制。卡尔曼滤波也广为使用在时间序列的分析中，例如信号处理及计量经济学中。卡尔曼滤波也是机器人运动规划及控制的重要主题之一，有时也包括在轨迹最佳化。卡尔曼滤波也用在中轴神经系统运动控制的建模中。因为从给与运动命令到收到感觉神经的回授之间有时间差，使用卡尔曼滤波有助于建立符合实际的系统，估计运动系统的目前状态，并且更新命令。</p>
 <h1 id="卡尔曼滤波原理解析"><a href="#卡尔曼滤波原理解析" class="headerlink" title="卡尔曼滤波原理解析"></a>卡尔曼滤波原理解析</h1><p>卡尔曼滤波器的状态矩阵方程如图1所示。</p>
-<p></p><p align="center">
-    <img src="images/kfmEquation.jpg" width="90%" alt="卡尔曼滤波器的状态矩阵方程">
-</p><p></p>
+<p align="center">
+    <img src="images/kfmEquation.jpg" width="90%" alt="卡尔曼滤波器的状态矩阵方程"/>
+</p>
 <center>图1  卡尔曼滤波器的状态矩阵方程</center>
 
 <p>其中，下角标上的k是状态。此处我们将其视为离散时间间隔，比如说k=1 代表 1ms, k=2 代表2ms。</p>
@@ -445,7 +447,8 @@
 <p>另一方面，假设 $K_k$ 等于0.5，我们会发现该式变成了一个简单的求平均值公式。换句话说，随着状态的变化，我们的 $K_k$ 值将越来越“聪明”。</p>
 <h1 id="卡尔曼滤波器的构造"><a href="#卡尔曼滤波器的构造" class="headerlink" title="卡尔曼滤波器的构造"></a>卡尔曼滤波器的构造</h1><h2 id="建立模型"><a href="#建立模型" class="headerlink" title="建立模型"></a>建立模型</h2><p>此步最为关键，你必须确保卡尔曼滤波器适用于你要解决的问题。</p>
 <p>卡尔曼滤波器的两个方程如下:</p>
-<script type="math/tex; mode=display">x_k=Ax_{k-1}+Bu_k+w_{k-1} \tag{1}</script><script type="math/tex; mode=display">z_k=Hx_k+v_k \tag{2}</script><p>式(1)表达的是每个 $x_k$ 都可以通过一个线性随机方程估计出来。任意 $x_k$ 都是其前一时刻的值与<strong>过程噪音</strong>的线性组合（这个很难概念化）。请记住，大部分情况下该式没有控制信号 $u_k$ 项。</p>
+<p>$$x_k=Ax_{k-1}+Bu_k+w_{k-1} \tag{1}$$<br>$$z_k=Hx_k+v_k \tag{2}$$</p>
+<p>式(1)表达的是每个 $x_k$ 都可以通过一个线性随机方程估计出来。任意 $x_k$ 都是其前一时刻的值与<strong>过程噪音</strong>的线性组合（这个很难概念化）。请记住，大部分情况下该式没有控制信号 $u_k$ 项。</p>
 <p>式(2)告诉我们任何测量值 $z_k$ （无法确定精确与否的测量值）都是信号值与<strong>测量噪声</strong>的线性组合。这两个分量符合高斯分布。</p>
 <p>过程噪声与测量噪声互相统计独立。</p>
 <p>$A, B, H$ 是一般形式的矩阵。但在大多数信号处理问题中，这些量仅为数值。而且虽然这些值在状态变换时会改变，大多数情况下我们都可以假设他们为定值。</p>
@@ -454,18 +457,18 @@
 <p>唯一需要记住的是：你估计出来的噪音参数越好（越接近实际），你估计的（输出真实值）就越好。</p>
 <h2 id="开始卡尔曼滤波"><a href="#开始卡尔曼滤波" class="headerlink" title="开始卡尔曼滤波"></a>开始卡尔曼滤波</h2><p>如果你的模型适用于卡尔曼滤波器，那么接下来的步骤就是决定一些必要的参数以及初始值。</p>
 <p>卡尔曼滤波器包含的方程可分为两个方程集：时间更新方程组（用于预测）以及测量更新方程组（用于修正）。这两个方程组在滤波器运行的每一步（每个状态）下都会执行，如图2所示。</p>
-<p></p><p align="center">
-    <img src="images/kfmStep2.jpg" width="70%" alt="卡尔曼滤波的两个步骤">
-</p><p></p>
+<p align="center">
+    <img src="images/kfmStep2.jpg" width="70%" alt="卡尔曼滤波的两个步骤"/>
+</p>
 <center>图2  卡尔曼滤波的两个步骤</center>
 
 <p>建模部分已经在步骤一完成了，所以矩阵A，B和H已知。这些矩阵很可能是一个常数，而且大部分情况下会等于1。</p>
 <p>剩下的最让人难受的部分就是决定R和Q的值了。R的值还是很容易找的，因为一般情况下我们对环境中的噪音还是能够确认的。（起码能用仪器测一下）。但是找Q的值就没那么直观了。</p>
 <p>为了使滤波器能够运行，我们需要知道 $x_0$ 和 $P_0$ 的估计值。</p>
 <h2 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h2><p>在获得了滤波器运行所需的所有信息后，我们就可以估值迭代了。记住：前一状态的估值将成为当前状态的输入。</p>
-<p></p><p align="center">
-    <img src="images/kfmStep3.jpg" width="70%" alt="卡尔曼滤波的迭代运行">
-</p><p></p>
+<p align="center">
+    <img src="images/kfmStep3.jpg" width="70%" alt="卡尔曼滤波的迭代运行"/>
+</p>
 <center>图3  卡尔曼滤波的迭代运行</center>
 
 <p>此处 $\hat{x}_k^-$ 是<strong>预估值</strong>，从某种角度来说是第二部分运行前对 x 的一个粗略估计值。</p>
@@ -500,9 +503,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/笔记本/" rel="tag"># 笔记本</a>
+            <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
           
-            <a href="/tags/计算机视觉/" rel="tag"># 计算机视觉</a>
+            <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" rel="tag"># 计算机视觉</a>
           
         </div>
       
@@ -515,7 +518,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/04/求解射线与三角形交点的算法/" rel="next" title="求解射线与三角形交点的算法">
+              <a href="/2019/06/04/%E6%B1%82%E8%A7%A3%E5%B0%84%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E4%BA%A4%E7%82%B9%E7%9A%84%E7%AE%97%E6%B3%95/" rel="next" title="求解射线与三角形交点的算法">
                 <i class="fa fa-chevron-left"></i> 求解射线与三角形交点的算法
               </a>
             
@@ -525,7 +528,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/06/06/ROS编译命令catkin简析/" rel="prev" title="ROS编译命令catkin简析">
+              <a href="/2019/06/06/ROS%E7%BC%96%E8%AF%91%E5%91%BD%E4%BB%A4catkin%E7%AE%80%E6%9E%90/" rel="prev" title="ROS编译命令catkin简析">
                 ROS编译命令catkin简析 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -595,7 +598,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">Jack Huang</p>
               <p class="site-description motion-element" itemprop="description"></p>
@@ -606,9 +609,9 @@
               
                 <div class="site-state-item site-state-posts">
                 
-                  <a href="/archives/">
+                  <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">240</span>
+                    <span class="site-state-item-count">241</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -747,13 +750,6 @@
             </nav>
           
 
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
           
 
           
@@ -1369,24 +1365,7 @@
         }
     });
 </script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config("");
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     
   

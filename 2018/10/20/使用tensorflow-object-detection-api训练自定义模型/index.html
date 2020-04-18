@@ -9,10 +9,10 @@
 
 
 <html class="theme-next muse use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.8.0">
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
 <meta name="theme-color" content="#222">
 
 
@@ -26,8 +26,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
 
 
@@ -50,9 +50,9 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css">
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
@@ -103,26 +103,25 @@
 
 
   <meta name="description" content="近期研究目标对象检测和识别，发现谷歌开源的基于tensorflow的object detection api模型效果不错，于是git clone下来测试一下。下面记录我在debian linux上安装配置object detection api模型，构建自定义数据集，训练和测试object detection api模型的过程，以及整个过程中遇到的一下问题，需要注意的事项。 准备工作docker安">
-<meta name="keywords" content="笔记本,tensorflow">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用tensorflow_object_detection_api训练自定义模型">
-<meta property="og:url" content="https://huangwang.github.io/2018/10/20/使用tensorflow-object-detection-api训练自定义模型/index.html">
+<meta property="og:url" content="https://huangwang.github.io/2018/10/20/%E4%BD%BF%E7%94%A8tensorflow-object-detection-api%E8%AE%AD%E7%BB%83%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A8%A1%E5%9E%8B/index.html">
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
 <meta property="og:description" content="近期研究目标对象检测和识别，发现谷歌开源的基于tensorflow的object detection api模型效果不错，于是git clone下来测试一下。下面记录我在debian linux上安装配置object detection api模型，构建自定义数据集，训练和测试object detection api模型的过程，以及整个过程中遇到的一下问题，需要注意的事项。 准备工作docker安">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-10-21T09:20:42.000Z">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-10-20T09:30:30.000Z">
+<meta property="article:modified_time" content="2018-10-21T09:20:42.000Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="tensorflow">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用tensorflow_object_detection_api训练自定义模型">
-<meta name="twitter:description" content="近期研究目标对象检测和识别，发现谷歌开源的基于tensorflow的object detection api模型效果不错，于是git clone下来测试一下。下面记录我在debian linux上安装配置object detection api模型，构建自定义数据集，训练和测试object detection api模型的过程，以及整个过程中遇到的一下问题，需要注意的事项。 准备工作docker安">
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Jack Huang's Blog" type="application/atom+xml">
 
 
 
 
-  <link rel="canonical" href="https://huangwang.github.io/2018/10/20/使用tensorflow-object-detection-api训练自定义模型/">
+
+
+  <link rel="canonical" href="https://huangwang.github.io/2018/10/20/使用tensorflow-object-detection-api训练自定义模型/"/>
 
 
 
@@ -168,21 +167,21 @@
       .logo-line-after i { right: initial; }
     }
   </style>
-</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</noscript>
 
-</head>
+<meta name="generator" content="Hexo 4.2.0"></head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
   
   
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -221,7 +220,7 @@
           
           <li class="menu-item menu-item-home">
     <a href="/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
   </li>
         
         
@@ -229,7 +228,7 @@
           
           <li class="menu-item menu-item-tags">
     <a href="/tags/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
   </li>
         
         
@@ -237,7 +236,7 @@
           
           <li class="menu-item menu-item-archives">
     <a href="/archives/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
   </li>
 
       
@@ -247,7 +246,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
         </li>
       
     </ul>
@@ -270,7 +269,9 @@
       <i class="fa fa-times-circle"></i>
     </span>
     <div class="local-search-input-wrapper">
-      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
     </div>
   </div>
   <div id="local-search-result"></div>
@@ -312,20 +313,20 @@
 
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/20/使用tensorflow-object-detection-api训练自定义模型/">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/20/%E4%BD%BF%E7%94%A8tensorflow-object-detection-api%E8%AE%AD%E7%BB%83%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A8%A1%E5%9E%8B/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jack Huang">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Jack Huang's Blog">
     </span>
 
@@ -390,8 +391,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/10/20/使用tensorflow-object-detection-api训练自定义模型/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/10/20/使用tensorflow-object-detection-api训练自定义模型/" itemprop="commentsCount"></span>
+                <a href="/2018/10/20/%E4%BD%BF%E7%94%A8tensorflow-object-detection-api%E8%AE%AD%E7%BB%83%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A8%A1%E5%9E%8B/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/10/20/%E4%BD%BF%E7%94%A8tensorflow-object-detection-api%E8%AE%AD%E7%BB%83%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A8%A1%E5%9E%8B/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -402,10 +403,11 @@
 
           
             <span class="post-meta-divider">|</span>
-            <span class="post-meta-item-icon">
+            <span class="post-meta-item-icon"
+            >
             <i class="fa fa-eye"></i>
              阅读次数： 
-            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
             </span>
           
 
@@ -433,19 +435,25 @@
 <li><p>安装docker<br>安装docker的方法可参考链接1。</p>
 </li>
 <li><p>安装nvidia-docker</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># Add the package repositories</span><br><span class="line">curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -</span><br><span class="line">curl -s -L https://nvidia.github.io/nvidia-docker/debian9/nvidia-docker.list | \</span><br><span class="line">  sudo tee /etc/apt/sources.list.d/nvidia-docker.list</span><br><span class="line">sudo apt-get update</span><br><span class="line"></span><br><span class="line"># Install nvidia-docker2 and reload the Docker daemon configuration</span><br><span class="line">sudo apt-get install -y nvidia-docker2</span><br><span class="line">sudo service docker restart</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># Add the package repositories</span><br><span class="line">curl -s -L https:&#x2F;&#x2F;nvidia.github.io&#x2F;nvidia-docker&#x2F;gpgkey | sudo apt-key add -</span><br><span class="line">curl -s -L https:&#x2F;&#x2F;nvidia.github.io&#x2F;nvidia-docker&#x2F;debian9&#x2F;nvidia-docker.list | \</span><br><span class="line">  sudo tee &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;nvidia-docker.list</span><br><span class="line">sudo apt-get update</span><br><span class="line"></span><br><span class="line"># Install nvidia-docker2 and reload the Docker daemon configuration</span><br><span class="line">sudo apt-get install -y nvidia-docker2</span><br><span class="line">sudo service docker restart</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>下载最新支持GPU和Python3的tensorflow映像<sup>[2]</sup></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull tensorflow/tensorflow:latest-gpu-py3</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull tensorflow&#x2F;tensorflow:latest-gpu-py3</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>测试tensorflow映像</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run --runtime=nvidia -it --rm tensorflow/tensorflow:latest-gpu-py3 \</span><br><span class="line">    python -c &quot;import tensorflow as tf; print(tf.contrib.eager.num_gpus())&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run --runtime&#x3D;nvidia -it --rm tensorflow&#x2F;tensorflow:latest-gpu-py3 \</span><br><span class="line">    python -c &quot;import tensorflow as tf; print(tf.contrib.eager.num_gpus())&quot;</span><br></pre></td></tr></table></figure>
+
 </li>
 </ol>
-<h2 id="下载TFModel库及其相关库"><a href="#下载TFModel库及其相关库" class="headerlink" title="下载TFModel库及其相关库"></a>下载TFModel库及其相关库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 基于tensorflow的模型和例子</span><br><span class="line">git clone https://github.com/tensorflow/models.git</span><br><span class="line"># raccoon数据集，可参考其中生成TFRecord格式数据的方法</span><br><span class="line">git clone https://github.com/datitran/raccoon_dataset.git</span><br></pre></td></tr></table></figure>
-<h2 id="安装Python虚拟环境管理工具"><a href="#安装Python虚拟环境管理工具" class="headerlink" title="安装Python虚拟环境管理工具"></a>安装Python虚拟环境管理工具</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 具体安装配置过程参见链接3</span><br><span class="line">sudo pip3 install virtualenv</span><br><span class="line">sudo pip3 install virtualenvwrapper</span><br><span class="line">mkvirtualenv object-detection --python=/usr/bin/python3# 创建python3虚拟环境</span><br></pre></td></tr></table></figure>
-<h2 id="数据标注"><a href="#数据标注" class="headerlink" title="数据标注"></a>数据标注</h2><p>以分类几何形状为例，收集相关图片后，需要对它们进行标注。推荐使用 LabelImg 进行标注，生成的文件是 PASCAL VOC 的 xml 格式。这个工具还可以加载标注文件，检查标注结果<sup>[3]</sup>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/tzutalin/labelImg.git</span><br><span class="line">workon object-detection</span><br><span class="line"># 启动python3虚拟环境</span><br><span class="line">workon object-detection</span><br><span class="line"># 安装配置labelImg</span><br><span class="line">sudo apt-get install pyqt5-dev-tools</span><br><span class="line">sudo pip3 install -r requirements/requirements-linux-python3.txt</span><br><span class="line">make qt5py3</span><br><span class="line">python3 labelImg.py</span><br></pre></td></tr></table></figure></p>
-<p>除了标注图片，还需创建一个 .pbtxt 文件用来说明标注的分类。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">item &#123;</span><br><span class="line">  id: 1</span><br><span class="line">  name: &apos;circle&apos;</span><br><span class="line">&#125;</span><br><span class="line">item &#123;</span><br><span class="line">  id: 2</span><br><span class="line">  name: &apos;square&apos;</span><br><span class="line">&#125;</span><br><span class="line">item &#123;</span><br><span class="line">  id: 3</span><br><span class="line">  name: &apos;triangle&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="下载TFModel库及其相关库"><a href="#下载TFModel库及其相关库" class="headerlink" title="下载TFModel库及其相关库"></a>下载TFModel库及其相关库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 基于tensorflow的模型和例子</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;tensorflow&#x2F;models.git</span><br><span class="line"># raccoon数据集，可参考其中生成TFRecord格式数据的方法</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;datitran&#x2F;raccoon_dataset.git</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装Python虚拟环境管理工具"><a href="#安装Python虚拟环境管理工具" class="headerlink" title="安装Python虚拟环境管理工具"></a>安装Python虚拟环境管理工具</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 具体安装配置过程参见链接3</span><br><span class="line">sudo pip3 install virtualenv</span><br><span class="line">sudo pip3 install virtualenvwrapper</span><br><span class="line">mkvirtualenv object-detection --python&#x3D;&#x2F;usr&#x2F;bin&#x2F;python3# 创建python3虚拟环境</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据标注"><a href="#数据标注" class="headerlink" title="数据标注"></a>数据标注</h2><p>以分类几何形状为例，收集相关图片后，需要对它们进行标注。推荐使用 LabelImg 进行标注，生成的文件是 PASCAL VOC 的 xml 格式。这个工具还可以加载标注文件，检查标注结果<sup>[3]</sup>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;tzutalin&#x2F;labelImg.git</span><br><span class="line">workon object-detection</span><br><span class="line"># 启动python3虚拟环境</span><br><span class="line">workon object-detection</span><br><span class="line"># 安装配置labelImg</span><br><span class="line">sudo apt-get install pyqt5-dev-tools</span><br><span class="line">sudo pip3 install -r requirements&#x2F;requirements-linux-python3.txt</span><br><span class="line">make qt5py3</span><br><span class="line">python3 labelImg.py</span><br></pre></td></tr></table></figure>
+
+<p>除了标注图片，还需创建一个 .pbtxt 文件用来说明标注的分类。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">item &#123;</span><br><span class="line">  id: 1</span><br><span class="line">  name: &#39;circle&#39;</span><br><span class="line">&#125;</span><br><span class="line">item &#123;</span><br><span class="line">  id: 2</span><br><span class="line">  name: &#39;square&#39;</span><br><span class="line">&#125;</span><br><span class="line">item &#123;</span><br><span class="line">  id: 3</span><br><span class="line">  name: &#39;triangle&#39;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>需要特别注意以下两点：</p>
 <ul>
 <li>name 不支持直接写中文，需要 UTF-8 编码</li>
@@ -459,45 +467,39 @@
 <ul>
 <li>raccoon_dataset中方法</li>
 </ul>
-<p>项目中使用xml_to_csv.py把xml合并成一个CSV文件，使用split labels.ipynb 随机划分训练集和测试集，以及使用generate_tfrecord.py 生成相对应的 TFRecord 训练集和测试集。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">workon object-detection</span><br><span class="line"># 将生成geometry_labels.csv</span><br><span class="line">python xml_to_csv.py</span><br><span class="line"># 打开split labels.ipynb生产训练集train_labels.csv和测试集test_labels.csv</span><br><span class="line">jupyter notebook</span><br><span class="line"># 创建训练用TFRecord文件:</span><br><span class="line">python generate_tfrecord.py --csv_input=data/train_labels.csv  --output_path=training/geometry_train.record</span><br><span class="line"># 创建测试用TFRecord文件:</span><br><span class="line">python generate_tfrecord.py --csv_input=data/test_labels.csv  --output_path=training/geometry_test.record</span><br></pre></td></tr></table></figure></p>
+<p>项目中使用xml_to_csv.py把xml合并成一个CSV文件，使用split labels.ipynb 随机划分训练集和测试集，以及使用generate_tfrecord.py 生成相对应的 TFRecord 训练集和测试集。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">workon object-detection</span><br><span class="line"># 将生成geometry_labels.csv</span><br><span class="line">python xml_to_csv.py</span><br><span class="line"># 打开split labels.ipynb生产训练集train_labels.csv和测试集test_labels.csv</span><br><span class="line">jupyter notebook</span><br><span class="line"># 创建训练用TFRecord文件:</span><br><span class="line">python generate_tfrecord.py --csv_input&#x3D;data&#x2F;train_labels.csv  --output_path&#x3D;training&#x2F;geometry_train.record</span><br><span class="line"># 创建测试用TFRecord文件:</span><br><span class="line">python generate_tfrecord.py --csv_input&#x3D;data&#x2F;test_labels.csv  --output_path&#x3D;training&#x2F;geometry_test.record</span><br></pre></td></tr></table></figure>
+
 <p>第二种方法比较直观，因此我采用第二种方法生产TFRecord数据。</p>
 <h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><h2 id="安装TFModel依赖"><a href="#安装TFModel依赖" class="headerlink" title="安装TFModel依赖"></a>安装TFModel依赖</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">workon object-detection</span><br><span class="line"># For CPU</span><br><span class="line">pip install tensorflow</span><br><span class="line"># For GPU</span><br><span class="line">pip install tensorflow-gpu</span><br><span class="line"></span><br><span class="line">pip install --user Cython</span><br><span class="line">pip install --user contextlib2</span><br><span class="line">pip install --user pillow</span><br><span class="line">pip install --user lxml</span><br><span class="line">pip install --user jupyter</span><br><span class="line">pip install --user matplotlib</span><br></pre></td></tr></table></figure>
-<h2 id="安装COCO-API"><a href="#安装COCO-API" class="headerlink" title="安装COCO API"></a>安装COCO API</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/cocodataset/cocoapi.git</span><br><span class="line">cd cocoapi/PythonAPI</span><br><span class="line">make</span><br><span class="line">cp -r pycocotools &lt;path_to_tensorflow&gt;/models/research/</span><br></pre></td></tr></table></figure>
-<h2 id="编译Protobuf"><a href="#编译Protobuf" class="headerlink" title="编译Protobuf"></a>编译Protobuf</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># From tensorflow/models/research/</span><br><span class="line">wget -O protobuf.zip https://github.com/google/protobuf/releases/download/v3.0.0/protoc-3.0.0-linux-x86_64.zip</span><br><span class="line">unzip protobuf.zip</span><br><span class="line"></span><br><span class="line"># From tensorflow/models/research/</span><br><span class="line">./bin/protoc object_detection/protos/*.proto --python_out=.</span><br></pre></td></tr></table></figure>
-<h2 id="添加库到PYTHONPATH"><a href="#添加库到PYTHONPATH" class="headerlink" title="添加库到PYTHONPATH"></a>添加库到PYTHONPATH</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># From tensorflow/models/research/</span><br><span class="line"># 每次调用TFModel的Object Detection API之前都要设置</span><br><span class="line">export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim</span><br></pre></td></tr></table></figure>
-<h2 id="安装测试"><a href="#安装测试" class="headerlink" title="安装测试"></a>安装测试</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># if all tests is ok, the installation is no problem.</span><br><span class="line">python object_detection/builders/model_builder_test.py</span><br></pre></td></tr></table></figure>
+<h2 id="安装COCO-API"><a href="#安装COCO-API" class="headerlink" title="安装COCO API"></a>安装COCO API</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;cocodataset&#x2F;cocoapi.git</span><br><span class="line">cd cocoapi&#x2F;PythonAPI</span><br><span class="line">make</span><br><span class="line">cp -r pycocotools &lt;path_to_tensorflow&gt;&#x2F;models&#x2F;research&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译Protobuf"><a href="#编译Protobuf" class="headerlink" title="编译Protobuf"></a>编译Protobuf</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># From tensorflow&#x2F;models&#x2F;research&#x2F;</span><br><span class="line">wget -O protobuf.zip https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;protobuf&#x2F;releases&#x2F;download&#x2F;v3.0.0&#x2F;protoc-3.0.0-linux-x86_64.zip</span><br><span class="line">unzip protobuf.zip</span><br><span class="line"></span><br><span class="line"># From tensorflow&#x2F;models&#x2F;research&#x2F;</span><br><span class="line">.&#x2F;bin&#x2F;protoc object_detection&#x2F;protos&#x2F;*.proto --python_out&#x3D;.</span><br></pre></td></tr></table></figure>
+
+<h2 id="添加库到PYTHONPATH"><a href="#添加库到PYTHONPATH" class="headerlink" title="添加库到PYTHONPATH"></a>添加库到PYTHONPATH</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># From tensorflow&#x2F;models&#x2F;research&#x2F;</span><br><span class="line"># 每次调用TFModel的Object Detection API之前都要设置</span><br><span class="line">export PYTHONPATH&#x3D;$PYTHONPATH:&#96;pwd&#96;:&#96;pwd&#96;&#x2F;slim</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装测试"><a href="#安装测试" class="headerlink" title="安装测试"></a>安装测试</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># if all tests is ok, the installation is no problem.</span><br><span class="line">python object_detection&#x2F;builders&#x2F;model_builder_test.py</span><br></pre></td></tr></table></figure>
+
 <h1 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h1><h2 id="数据准备-1"><a href="#数据准备-1" class="headerlink" title="数据准备"></a>数据准备</h2><ol>
-<li><p>将label_map文件、训练用TFRecord文件、测试用TFRecord文件复制到tensorflow/models/research/object_detection/data文件夹下。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 推荐的数据目录结构</span><br><span class="line">+ data</span><br><span class="line">  - geometry.pbtxt</span><br><span class="line">  - geometry_test.record</span><br><span class="line">  - geometry_train.record</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>下载COCO预训练模型用于迁移学习</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># From tensorflow/models/research/object-detection</span><br><span class="line">wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2018_01_28.tar.gz</span><br><span class="line">tar -xvf ssd_mobilenet_v1_coco_2018_01_28.tar.gz</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>修改解压后模型文件夹中pipeline.config</p>
-</li>
+<li>将label_map文件、训练用TFRecord文件、测试用TFRecord文件复制到tensorflow/models/research/object_detection/data文件夹下。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 推荐的数据目录结构</span><br><span class="line">+ data</span><br><span class="line">  - geometry.pbtxt</span><br><span class="line">  - geometry_test.record</span><br><span class="line">  - geometry_train.record</span><br></pre></td></tr></table></figure></li>
+<li>下载COCO预训练模型用于迁移学习<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># From tensorflow&#x2F;models&#x2F;research&#x2F;object-detection</span><br><span class="line">wget http:&#x2F;&#x2F;download.tensorflow.org&#x2F;models&#x2F;object_detection&#x2F;ssd_mobilenet_v1_coco_2018_01_28.tar.gz</span><br><span class="line">tar -xvf ssd_mobilenet_v1_coco_2018_01_28.tar.gz</span><br></pre></td></tr></table></figure></li>
+<li>修改解压后模型文件夹中pipeline.config</li>
 </ol>
 <p>解压ssd_mobilenet_v1_coco_2018_01_28模型后会看到一个 .config 文件，里面包含有模型的参数，训练的参数，评估的参数等。这里需要修改到的有，</p>
 <ul>
 <li>模型参数中的 num_classes，改成你的类别数，</li>
 <li>训练参数中的 fine_tune_checkpoint，采用迁移学习，这里路径的指向刚才下载的Pre-train模型，比如 ssd_mobilenet_v1_coco_11_06_2017/model.ckpt</li>
 <li>train_input_reader 下面的 input_path，改成你的训练数据，例如 data/train.record。label_map_path，改成你的 pbtxt 文件路径，例如 data/object.pbtxt</li>
-<li>eval_input_reader 下面的 input_path，也需要改成你的测试集，例如 data/test.record。同样，label_map_path，也改成你的 pbtxt 文件路径，例如 data/object.pbtxt<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">//pipeline.config修改示例</span><br><span class="line">model &#123;</span><br><span class="line">  ssd &#123;</span><br><span class="line">    num_classes: 3</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">train_config &#123;</span><br><span class="line">  ...</span><br><span class="line">  fine_tune_checkpoint: &quot;object_detection/ssd_mobilenet_v1_coco_2018_01_28/model.ckpt&quot;</span><br><span class="line">  from_detection_checkpoint: true</span><br><span class="line">  num_steps: 50000</span><br><span class="line">&#125;</span><br><span class="line">train_input_reader &#123;</span><br><span class="line">  label_map_path: &quot;object_detection/data/geometry.pbtxt&quot;</span><br><span class="line">  tf_record_input_reader &#123;</span><br><span class="line">    input_path: &quot;object_detection/data/geometry_train.record&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">eval_input_reader &#123;</span><br><span class="line">  label_map_path: &quot;object_detection/data/geometry.pbtxt&quot;</span><br><span class="line">  shuffle: false</span><br><span class="line">  num_epochs: 1</span><br><span class="line">  num_readers: 1</span><br><span class="line">  tf_record_input_reader &#123;</span><br><span class="line">    input_path: &quot;object_detection/data/geometry_test.record&quot;</span><br><span class="line">  &#125;</span><br><span class="line">  sample_1_of_n_examples: 1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
+<li>eval_input_reader 下面的 input_path，也需要改成你的测试集，例如 data/test.record。同样，label_map_path，也改成你的 pbtxt 文件路径，例如 data/object.pbtxt<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;pipeline.config修改示例</span><br><span class="line">model &#123;</span><br><span class="line">  ssd &#123;</span><br><span class="line">    num_classes: 3</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">train_config &#123;</span><br><span class="line">  ...</span><br><span class="line">  fine_tune_checkpoint: &quot;object_detection&#x2F;ssd_mobilenet_v1_coco_2018_01_28&#x2F;model.ckpt&quot;</span><br><span class="line">  from_detection_checkpoint: true</span><br><span class="line">  num_steps: 50000</span><br><span class="line">&#125;</span><br><span class="line">train_input_reader &#123;</span><br><span class="line">  label_map_path: &quot;object_detection&#x2F;data&#x2F;geometry.pbtxt&quot;</span><br><span class="line">  tf_record_input_reader &#123;</span><br><span class="line">    input_path: &quot;object_detection&#x2F;data&#x2F;geometry_train.record&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">eval_input_reader &#123;</span><br><span class="line">  label_map_path: &quot;object_detection&#x2F;data&#x2F;geometry.pbtxt&quot;</span><br><span class="line">  shuffle: false</span><br><span class="line">  num_epochs: 1</span><br><span class="line">  num_readers: 1</span><br><span class="line">  tf_record_input_reader &#123;</span><br><span class="line">    input_path: &quot;object_detection&#x2F;data&#x2F;geometry_test.record&quot;</span><br><span class="line">  &#125;</span><br><span class="line">  sample_1_of_n_examples: 1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="训练数据"><a href="#训练数据" class="headerlink" title="训练数据"></a>训练数据</h2>在GPU上训练TFModel，与在CPU上训练TFModel相比，要快五倍左右，因此推荐在GPU上训练TFModel。</li>
 </ul>
-<h2 id="训练数据"><a href="#训练数据" class="headerlink" title="训练数据"></a>训练数据</h2><p>在GPU上训练TFModel，与在CPU上训练TFModel相比，要快五倍左右，因此推荐在GPU上训练TFModel。</p>
 <ol>
-<li><p>启动docker</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 启动docker，并使用-v参数将目录/home/$USER挂载到容器上</span><br><span class="line">docker run --runtime=nvidia -v /home/$USER:/home/$USER -it tensorflow/tensorflow:latest-gpu-py3 bash</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>执行训练</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># From tensorflow/models/research/</span><br><span class="line">export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim</span><br><span class="line"># 开始训练</span><br><span class="line">python object_detection/model_main.py --pipeline_config_path=object_detection/ssd_mobilenet_v1_coco_2018_01_28/pipeline.config --model_dir=object_detection/ssd_mobilenet_v1_coco_2018_01_28/saved_model/ --num_train_steps=50000 --alsologtostderr</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用tensorboard查看训练进度</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># From tensorflow/models/research/</span><br><span class="line">tensorboard --logdir=object_detection/ssd_mobilenet_v1_coco_2018_01_28/saved_model/</span><br></pre></td></tr></table></figure>
-</li>
+<li>启动docker<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 启动docker，并使用-v参数将目录&#x2F;home&#x2F;$USER挂载到容器上</span><br><span class="line">docker run --runtime&#x3D;nvidia -v &#x2F;home&#x2F;$USER:&#x2F;home&#x2F;$USER -it tensorflow&#x2F;tensorflow:latest-gpu-py3 bash</span><br></pre></td></tr></table></figure></li>
+<li>执行训练<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># From tensorflow&#x2F;models&#x2F;research&#x2F;</span><br><span class="line">export PYTHONPATH&#x3D;$PYTHONPATH:&#96;pwd&#96;:&#96;pwd&#96;&#x2F;slim</span><br><span class="line"># 开始训练</span><br><span class="line">python object_detection&#x2F;model_main.py --pipeline_config_path&#x3D;object_detection&#x2F;ssd_mobilenet_v1_coco_2018_01_28&#x2F;pipeline.config --model_dir&#x3D;object_detection&#x2F;ssd_mobilenet_v1_coco_2018_01_28&#x2F;saved_model&#x2F; --num_train_steps&#x3D;50000 --alsologtostderr</span><br></pre></td></tr></table></figure></li>
+<li>使用tensorboard查看训练进度<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># From tensorflow&#x2F;models&#x2F;research&#x2F;</span><br><span class="line">tensorboard --logdir&#x3D;object_detection&#x2F;ssd_mobilenet_v1_coco_2018_01_28&#x2F;saved_model&#x2F;</span><br></pre></td></tr></table></figure>
+在CPU上训练只需执行第二步和第三步。</li>
 </ol>
-<p>在CPU上训练只需执行第二步和第三步。</p>
-<h2 id="导出模型"><a href="#导出模型" class="headerlink" title="导出模型"></a>导出模型</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># From tensorflow/models/research/</span><br><span class="line">python object_detection/export_inference_graph.py --input_type=image_tensor --pipeline_config_path=object_detection/ssd_mobilenet_v1_coco_2018_01_28/pipeline.config --trained_checkpoint_prefix=object_detection/ssd_mobilenet_v1_coco_2018_01_28/saved_model/model.ckpt-50000 --output_directory=../../../../ssd_mobilenet_v1_coco_2018_01_28</span><br></pre></td></tr></table></figure>
+<h2 id="导出模型"><a href="#导出模型" class="headerlink" title="导出模型"></a>导出模型</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># From tensorflow&#x2F;models&#x2F;research&#x2F;</span><br><span class="line">python object_detection&#x2F;export_inference_graph.py --input_type&#x3D;image_tensor --pipeline_config_path&#x3D;object_detection&#x2F;ssd_mobilenet_v1_coco_2018_01_28&#x2F;pipeline.config --trained_checkpoint_prefix&#x3D;object_detection&#x2F;ssd_mobilenet_v1_coco_2018_01_28&#x2F;saved_model&#x2F;model.ckpt-50000 --output_directory&#x3D;..&#x2F;..&#x2F;..&#x2F;..&#x2F;ssd_mobilenet_v1_coco_2018_01_28</span><br></pre></td></tr></table></figure>
 <p>运行完命令后模型就导出到 ssd_mobilenet_v1_coco_2018_01_28 文件夹中，其中的frozen_inference_graph.pb即是所需模型。 需要注意的是，参数中的 –trained_checkpoint_prefix 是需要指定到单个模型的，例如 model.ckpt-50000，这个50000就是训练了 50000 步后自动保存模型。</p>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
 <li><a href="https://huangwang.github.io/2018/10/18/Debian-Linux下安装Docker的方法/，">https://huangwang.github.io/2018/10/18/Debian-Linux下安装Docker的方法/，</a> by jack huang</li>
@@ -526,7 +528,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/笔记本/" rel="tag"># 笔记本</a>
+            <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
           
             <a href="/tags/tensorflow/" rel="tag"># tensorflow</a>
           
@@ -541,7 +543,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/19/Docker使用帮助/" rel="next" title="Docker使用帮助">
+              <a href="/2018/10/19/Docker%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/" rel="next" title="Docker使用帮助">
                 <i class="fa fa-chevron-left"></i> Docker使用帮助
               </a>
             
@@ -551,7 +553,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/11/01/Linux常用命令用法总结/" rel="prev" title="Linux常用命令用法总结">
+              <a href="/2018/11/01/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E7%94%A8%E6%B3%95%E6%80%BB%E7%BB%93/" rel="prev" title="Linux常用命令用法总结">
                 Linux常用命令用法总结 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -621,7 +623,7 @@
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">Jack Huang</p>
               <p class="site-description motion-element" itemprop="description"></p>
@@ -632,9 +634,9 @@
               
                 <div class="site-state-item site-state-posts">
                 
-                  <a href="/archives/">
+                  <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">240</span>
+                    <span class="site-state-item-count">241</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -773,13 +775,6 @@
             </nav>
           
 
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
           
 
           
@@ -1395,24 +1390,7 @@
         }
     });
 </script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config("");
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     
   

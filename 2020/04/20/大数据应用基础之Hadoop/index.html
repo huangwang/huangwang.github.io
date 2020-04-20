@@ -111,7 +111,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://huangwang.github.io/2020/04/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BA%94%E7%94%A8%E5%9F%BA%E7%A1%80%E4%B9%8BHadoop/images/hadoop.jpg">
 <meta property="article:published_time" content="2020-04-20T13:37:53.000Z">
-<meta property="article:modified_time" content="2020-04-20T14:04:34.981Z">
+<meta property="article:modified_time" content="2020-04-20T14:16:21.443Z">
 <meta property="article:author" content="Jack Huang">
 <meta property="article:tag" content="笔记本">
 <meta property="article:tag" content="大数据">
@@ -362,7 +362,7 @@
                 
               
 
-              <time title="创建时间：2020-04-20 21:37:53 / 修改时间：22:04:34" itemprop="dateCreated datePublished" datetime="2020-04-20T21:37:53+08:00">2020-04-20</time>
+              <time title="创建时间：2020-04-20 21:37:53 / 修改时间：22:16:21" itemprop="dateCreated datePublished" datetime="2020-04-20T21:37:53+08:00">2020-04-20</time>
             
 
             
@@ -423,15 +423,26 @@
 <h1 id="Hadoop历史"><a href="#Hadoop历史" class="headerlink" title="Hadoop历史"></a>Hadoop历史</h1><p>Hadoop最早由美国工程师Doug Cutting开发。Doug Cutting同样是用于全文检索和搜索的开放源码程序库Lucene和开源搜索引擎Nutch的作者。</p>
 <p>在Google发表的三篇有关GFS、MapReduce和BigTable的技术论文基础上，Doug Cutting分别开发了HDFS（Hadoop分布式文件系统）、MapReduce编程模型和用来处理海量数据的非关系型数据库HBase，它们共同构成了Hadoop。因此，本质上Hadoop是Google大数据系统的开源实现。</p>
 <p>各大公司包括Yahoo、IBM、Facebook、亚马逊、阿里巴巴、华为、百度、腾讯等都采用Hadoop构建自己的大数据系统，使Hadoop成为了分布式计算系统事实上的国际标准。</p>
-<h1 id="Hadoop框架"><a href="#Hadoop框架" class="headerlink" title="Hadoop框架"></a>Hadoop框架</h1><p>Hadoop框架构成如图1所示。</p>
+<h1 id="Hadoop框架"><a href="#Hadoop框架" class="headerlink" title="Hadoop框架"></a>Hadoop框架</h1><p>Hadoop框架构成如图1所示。下面简单介绍Hadoop框架中的重要组件。</p>
 <p align="center">
     <img src="images/hadoop.jpg" width="100%" alt="Hadoop框架构成"/>
 </p>
 <center>图1 Hadoop框架构成</center>
 
+<h2 id="HDFS"><a href="#HDFS" class="headerlink" title="HDFS"></a>HDFS</h2><p>Hadoop分布式文件系统(HDFS)被设计成适合运行在通用硬件(commodity hardware)上的分布式文件系统。它和现有的分布式文件系统有很多共同点。但同时，它和其他的分布式文件系统的区别也是很明显的。HDFS是一个高度容错性的系统，适合部署在廉价的机器上。HDFS能提供高吞吐量的数据访问，非常适合大规模数据集上的应用。HDFS放宽了一部分POSIX约束，来实现流式读取文件系统数据的目的。</p>
+<h2 id="HBASE"><a href="#HBASE" class="headerlink" title="HBASE"></a>HBASE</h2><p>Hbase是一种分布式存储的NoSQL数据库，它参考了谷歌的BigTable建模，实现的编程语言为Java。它是Apache软件基金会的Hadoop项目的一部分，运行于HDFS文件系统之上，为 Hadoop 提供类似于BigTable 规模的服务。因此，它可以对稀疏文件提供极高的容错率。</p>
+<h2 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h2><p>MapReduce是Google提出的一个软件架构，用于大规模数据集（大于1TB）的并行运算。概念“Map（映射）”和“Reduce（归纳）”，及他们的主要思想，都是从函数式编程语言借来的，还有从矢量编程语言借来的特性。</p>
+<p>当前的软件实现是指定一个Map（映射）函数，用来把一组键值对映射成一组新的键值对，指定并发的Reduce（归纳）函数，用来保证所有映射的键值对中的每一个共享相同的键组。</p>
+<h2 id="Spark"><a href="#Spark" class="headerlink" title="Spark"></a>Spark</h2><p>Apache Spark是一个开源集群运算框架，最初是由加州大学柏克莱分校AMPLab所开发。相对于Hadoop的MapReduce会在运行完工作后将中介数据存放到磁盘中，Spark使用了存储器内运算技术，能在数据尚未写入硬盘时即在存储器内分析运算。Spark在存储器内运行程序的运算速度能做到比Hadoop MapReduce的运算速度快上100倍，即便是运行程序于硬盘时，Spark也能快上10倍速度。Spark允许用户将数据加载至集群存储器，并多次对其进行查询，非常适合用于机器学习算法。</p>
+<h1 id="Storm"><a href="#Storm" class="headerlink" title="Storm"></a>Storm</h1><p>Storm是一个分布式计算框架，主要由Clojure编程语言编写。最初是由Nathan Marz及其团队创建于BackType，该项目在被Twitter取得后开源。它使用用户创建的“管（spouts）”和“螺栓（bolts）”来定义信息源和操作来允许批量、分布式处理流式数据。最初的版本发布于2011年9月17日。</p>
+<p>Storm应用被设计成为一个拓扑结构，其接口创建一个转换“流”。它提供与MapReduce作业类似的功能，当遇到异常时该拓扑结构理论上将不确定地运行，直到它被手动终止。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.zhihu.com/question/23036370" target="_blank" rel="noopener">hadoop和大数据的关系？和spark的关系？</a>,by 小枣君.</li>
 <li><a href="http://hadoop.apache.org/" target="_blank" rel="noopener">Apache Hadoop</a>,by hadoop.</li>
+<li><a href="https://www.ibm.com/developerworks/cn/analytics/library/ba-cn-bigdata-hbase/index.html" target="_blank" rel="noopener">HBase 深入浅出</a>,by 沈钊伟.</li>
+<li><a href="https://zh.wikipedia.org/wiki/MapReduce" target="_blank" rel="noopener">MapReduce</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/Apache_Spark" target="_blank" rel="noopener">Apache Spark</a>,by wikipedia.</li>
+<li><a href="">Storm (事件处理器)</a><a href="https://zh.wikipedia.org/wiki/Storm_(%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E5%99%A8),by">https://zh.wikipedia.org/wiki/Storm_(%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E5%99%A8),by</a> wikipedia.</li>
 </ol>
 
       
@@ -726,7 +737,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Hadoop历史"><span class="nav-number">1.</span> <span class="nav-text">Hadoop历史</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hadoop框架"><span class="nav-number">2.</span> <span class="nav-text">Hadoop框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Hadoop历史"><span class="nav-number">1.</span> <span class="nav-text">Hadoop历史</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hadoop框架"><span class="nav-number">2.</span> <span class="nav-text">Hadoop框架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS"><span class="nav-number">2.1.</span> <span class="nav-text">HDFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HBASE"><span class="nav-number">2.2.</span> <span class="nav-text">HBASE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MapReduce"><span class="nav-number">2.3.</span> <span class="nav-text">MapReduce</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spark"><span class="nav-number">2.4.</span> <span class="nav-text">Spark</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Storm"><span class="nav-number">3.</span> <span class="nav-text">Storm</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

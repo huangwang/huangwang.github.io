@@ -314,6 +314,230 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/06/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F%E4%B9%8B%E5%88%9A%E4%BD%93%E5%85%AD%E8%87%AA%E7%94%B1%E5%BA%A6%E6%96%B9%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/06/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F%E4%B9%8B%E5%88%9A%E4%BD%93%E5%85%AD%E8%87%AA%E7%94%B1%E5%BA%A6%E6%96%B9%E7%A8%8B/" itemprop="url">
+                  飞行仿真之刚体六自由度方程
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-06 18:50:47" itemprop="dateCreated datePublished" datetime="2019-01-06T18:50:47+08:00">2019-01-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-03-26 19:24:39" itemprop="dateModified" datetime="2020-03-26T19:24:39+08:00">2020-03-26</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在飞行仿真中，获取飞机的位姿是基本要求。将飞行器视为刚体，根据牛顿第二定律和动量矩定理，即可推导出飞机的质心运动方程和飞机绕质心转动的动力学方程，即刚体的六自由度方程。下面即从《航空飞行器飞行动力学》中摘抄刚体六自由度方程的推导过程。</p>
+<h1 id="飞行器质心运动方程"><a href="#飞行器质心运动方程" class="headerlink" title="飞行器质心运动方程"></a>飞行器质心运动方程</h1><p>根据牛顿第二定理：</p>
+<p>$$m\frac{dV}{dt}=F \tag{1}$$</p>
+<p>式中$m$为飞行器质量，$V$为飞行器飞行速度矢量，$F$为作用于质心处外力的合力矢量。</p>
+<p>具体研究飞行器质心运动规律时，工程上常建立投影正在一动坐标系的标量方程，并认为大气时静止的。</p>
+<h2 id="一般动坐标系中质心动力学方程"><a href="#一般动坐标系中质心动力学方程" class="headerlink" title="一般动坐标系中质心动力学方程"></a>一般动坐标系中质心动力学方程</h2><p>取原点位于飞行器质心的一动坐标系$Oxyz$，它相对惯性坐标系$O_gx_gy_gz_g$有一转动角速度$w$。质心的绝对速度为$V$，如图1所示。</p>
+<p align="center">
+    <img src="images/DynamicAxis.jpg" width="60%" alt="动系相对于惯性坐标系的关系"/>
+</p>
+<center>图1 动系相对于惯性坐标系的关系</center>
+
+<p>将速度$V$和角速度$w$分别在动坐标系上投影，则有</p>
+<p>$$V=V_xi+V_yj+V_zk \tag{2}$$<br>$$w=w_xi+w_yj+w_zk \tag{3}$$</p>
+<p>式中$i,j,k$为动坐标系$Oxyz$的单位矢量。由于$w$存在，其方向将随时间变化。</p>
+<p>将公式$(2)和(3)$带入公式$(1)$，则速度$V$的微分，即质心的绝对加速度为：</p>
+<p>$$<br>\frac{F}{m}=\frac{dV}{dt}=\frac{dV_x}{dt}i+\frac{dV_y}{dt}j+\frac{dV_z}{dt}k+V_x\frac{di}{dt}+V_y\frac{dj}{dt}+V_z\frac{dk}{dt} \tag{4}<br>$$</p>
+<p>式中单位矢量导数$di/dt$是矢量端点$i$的速度，此时矢端曲线是绕$w$旋转的圆，因此：</p>
+<p>$$\frac{di}{dt}=w\times i$$<br>$$\frac{dj}{dt}=w\times y$$<br>$$\frac{dk}{dt}=w\times z$$</p>
+<p>将上述关系代入公式$(4)$，即可知质心的绝对加速度可表示为</p>
+<p>$$\frac{F}{m}=\frac{dV}{dt}=\frac{\delta V}{\delta t}+w \times V  \tag{5}$$</p>
+<p>其中：</p>
+<p>$$\frac{\delta V}{\delta t}=\frac{dV_x}{dt}i+\frac{dV_y}{dt}j+\frac{dV_z}{dt}k$$</p>
+<p>式(5)中 $\frac{\delta V}{\delta t}$ 为动系角速度 $w=0$ 时的加速度，即相当于观察者站在动坐标系中所看到的质心加速度；$w\times V$为由于存在角速度 $w$ 使 $V$ 相对于动坐标系方向发生变化而产生的加速度；$\frac{dV}{dt}$ 为质心的绝对加速度，即观察者在地面坐标系上所看到的加速度。</p>
+<p>同样合力矢量$F$用动坐标系上投影表示为：</p>
+<p>$$F=F_xi+F_yj+F_zk$$</p>
+<p>于是式(5)在动坐标系$Oxyz$上投影的质心动力学标量方程如下：</p>
+<p>$$m(\frac{dV_x}{dt}+V_zw_y-V_yw_z)=F_x$$<br>$$m(\frac{dV_y}{dt}+V_xw_z-V_zw_x)=F_y$$<br>$$m(\frac{dV_z}{dt}+V_yw_x-V_xw_y)=F_z$$</p>
+<p>上述方程组适用于任何动坐标系。</p>
+<h1 id="飞行器绕质心的动力学方程"><a href="#飞行器绕质心的动力学方程" class="headerlink" title="飞行器绕质心的动力学方程"></a>飞行器绕质心的动力学方程</h1><p>根据动量矩定理，飞行器绕质心的转动运动可表示为：</p>
+<p>$$M=\frac{dh}{dt} \tag{6}$$</p>
+<p>式中$h$为飞行器对坐标系原点的动量矩；$M$为作用在飞行器上的外力对原点的合力矩。</p>
+<p align="center">
+    <img src="images/MomentumOfCentroid.jpg" width="60%" alt="对质心的动量矩"/>
+</p>
+
+<center>图2 对质心的动量矩</center>
+
+<p>根据动量矩定义，飞行器上任意微元质量为dm，对坐标系原点的动量矩为：</p>
+<p>$$\Delta h=r\times V dm$$</p>
+<p>式中$r$为微元质量到坐标系原点的矢径；$V$为该微元质量的速度矢量，则</p>
+<p>$$V=V_o+w\times r$$</p>
+<p>式中$V_o$为坐标系原点速度（如坐标原点取为飞行器质心，则为质心速度）；$w$为坐标系转动角速度。</p>
+<p>于是飞行器的总动量矩可积分得出</p>
+<p>$$h=\int r\times V dm=\int r dm \times V_o +\int r \times (w \times r) dm$$</p>
+<p>取坐标系原点为质心时，有</p>
+<p>$$\int r dm=0$$</p>
+<p>飞行器动量矩简化为</p>
+<p>$$h=\int r \times (w\times r) dm \tag{7}$$</p>
+<p>上式表明，飞行器的动量矩只取决于转动产生的速度部分，而与质心运动速度$V_o$无关。矢径$r$和角速度$w$用坐标系中投影分量表示为：</p>
+<p>$$r=xi+yj+zk$$<br>$$w=w_xi+w_yj+w_zk$$</p>
+<p>将上述关系式代入式$(7)$，经整理得：</p>
+<p>$$h_x=w_xI_x-w_yI_{xy}-w_zI_{zx}$$<br>$$h_y=w_yI_y-w_xI_{xy}-w_zI_{yz}$$<br>$$h_z=w_zI_z-w_xI_{zx}-w_yI_{yz}$$</p>
+<p>式中$I_x$,$I_y$,$I_z$分别为飞行器对$O_x$轴,$O_y$轴,$O_z$轴地惯性矩，分别为：</p>
+<p>$$I_x=\int (y^2+z^2) dm$$<br>$$I_y=\int (x^2+z^2) dm$$<br>$$I_z=\int (x^2+y^2) dm$$</p>
+<p>而$I_{xy}$, $I_{yz}$, $I_{zx}$ 则为对 $O_x$ 轴与 $O_y$ 轴，$O_y$ 轴与 $O_z$ 轴，$O_z$ 轴与 $O_x$ 轴的惯性积，分别为：</p>
+<p>$$I_{xy}=\int xy dm$$<br>$$I_{yz}=\int yz dm$$<br>$$I_{zx}=\int zx dm$$</p>
+<h2 id="一般动坐标系中绕质心转动动力学方程"><a href="#一般动坐标系中绕质心转动动力学方程" class="headerlink" title="一般动坐标系中绕质心转动动力学方程"></a>一般动坐标系中绕质心转动动力学方程</h2><p>具体研究飞行器绕质心转动规律时，矢量形式的式$(6)$使用不便。工程习惯上将其投影在一动坐标系上建成方程的标量形式。此时动坐标系在空中以$w$转动，类同于加速度$\frac{dV}{dt}$，动量矩可以表示为：</p>
+<p>$$M=\frac{dh}{dt}=\frac{\delta h}{\delta t}+w\times h$$</p>
+<p>类似一般动坐标系中质心动力学方程的推导，最终可得转动运动方程的标量形式为：</p>
+<p>$$\frac{dh_x}{dt}+h_zw_y-h_yw_z=M_x$$<br>$$\frac{dh_y}{dt}+h_xw_z-h_zw_x=M_y$$<br>$$\frac{dh_z}{dt}+h_yw_x-h_xw_y=M_z$$</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li>方振平,陈万春,张曙光. 航空飞行器飞行动力学[M]. 2015.</li>
+<li><a href="https://blog.csdn.net/csxiaoshui/article/details/65446125" target="_blank" rel="noopener">旋转变换（一）旋转矩阵</a>,by csxiaoshui.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/35051554" target="_blank" rel="noopener">飞行仿真–3.刚体六自由度方程、变换矩阵与四元数</a>,by WFYX.</li>
+<li><a href="http://wonderffee.github.io/blog/2013/10/17/a-simple-method-to-determine-positive-rotation-in-in-three-dimensional-space/" target="_blank" rel="noopener">判断三维坐标系旋转正方向的简单方法</a>,by Wonderffee.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/86464027" target="_blank" rel="noopener">（番外）姿态与旋转矩阵（I）</a>,by Tam Alex.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/47208814" target="_blank" rel="noopener">一点关于机器人学和计算机视觉中的坐标变换的理解</a>,by Kissrabbit.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/63903303" target="_blank" rel="noopener">飞机是怎么飞起来的</a>,by J Pan.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/69241244" target="_blank" rel="noopener">如何获得飞机运动方程</a>,by J Pan.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/23617272" target="_blank" rel="noopener">【自动控制原理】1.传递函数</a>,by 李寒潭.</li>
+<li><a href="http://www.360doc.com/content/19/1027/17/37844335_869385575.shtml" target="_blank" rel="noopener">空空导弹尾部的齿轮有什么用？</a>,by 不沉俾斯麦.</li>
+<li><a href="https://wenku.baidu.com/view/6833b77302768e9951e7383a.html" target="_blank" rel="noopener">导弹制导原理第4章</a>,by 张庆振.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/05/MathJax%E8%AF%AD%E6%B3%95%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1809,203 +2033,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/18/%E7%B3%BB%E7%BB%9F%E4%BB%BF%E7%9C%9F%E4%B8%AD%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E7%9A%84%E6%80%9D%E8%80%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/18/%E7%B3%BB%E7%BB%9F%E4%BB%BF%E7%9C%9F%E4%B8%AD%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E7%9A%84%E6%80%9D%E8%80%83/" itemprop="url">
-                  系统仿真中一些问题的思考
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-18 18:41:42 / 修改时间：22:49:50" itemprop="dateCreated datePublished" datetime="2018-12-18T18:41:42+08:00">2018-12-18</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>系统仿真（system simulation）就是根据系统分析的目的，在分析系统各要素性质及其相互关系的基础上，建立能描述系统结构或行为过程的、且具有一定逻辑关系或数量关系的仿真模型，据此进行试验或定量分析，以获得正确决策所需的各种信息。</p>
-<h1 id="系统仿真与仿真游戏的区别"><a href="#系统仿真与仿真游戏的区别" class="headerlink" title="系统仿真与仿真游戏的区别"></a>系统仿真与仿真游戏的区别</h1><p>系统仿真与仿真游戏本质上没有区别，都是计算机程序对现实的模拟，所不同的是各自对仿真保真度（Simulation Fidelity）的要求不同。</p>
-<p>仿真保真度（Simulation Fidelity）用于描述仿真精度，模拟真实对应物有多近似：</p>
-<ul>
-<li>低保真：对系统的最小模拟，接受输入产生输出</li>
-<li>中等保真：对刺激能自动响应，有限精度</li>
-<li>高保真：接近不可辨识或者尽可能地接近真实系统</li>
-</ul>
-<p>通常系统仿真对仿真保真度的要求比仿真游戏要高。</p>
-<h1 id="计算步长与采样周期"><a href="#计算步长与采样周期" class="headerlink" title="计算步长与采样周期"></a>计算步长与采样周期</h1><p>采用计算机进行数值模拟或系统仿真时，经常需要采用数值解法求解模型方程。系统模型一般采用微分方程描述（也有其它形式），采用数值方法求解，就是采用迭代法逐步逼近。</p>
-<h2 id="计算步长"><a href="#计算步长" class="headerlink" title="计算步长"></a>计算步长</h2><p>积分与微分是互逆。对一个曲线（包括直线）方程求积分，其实就是求曲线与横轴围成的面积。该面积可以用一系列间隔很小的面积块相加得到。这些小间隔的宽度就是计算步长。显然，纯粹从精度的角度考虑，步长越小越精确，因为近似面积更接近实际图形面积。</p>
-<h2 id="采样周期"><a href="#采样周期" class="headerlink" title="采样周期"></a>采样周期</h2><p>采样周期是对一个实际信号测量时，相邻两次测量之间的时间间隔。有时候，采样周期和计算步长相似，但采样周期要考虑实际限制，且是时间单位，而计算步长不一定是时间单位，且相对自由些。两者在数值上没必然联系。<strong>对于同一问题，且都是时间量纲的话，采样周期大于等于计算步长，前者是后者的整数倍</strong>。</p>
-<p>系统仿真包含系统模型求解，也就是在每个采样周期内，要解出模型方程。控制系统仿真时在采样周期内要解出两个模型方程：控制器模型和系统模型。</p>
-<p><strong>一个采样周期内可对系统模型迭代求解一次或多次</strong>。</p>
-<h2 id="计算步长和采样周期大小的选择"><a href="#计算步长和采样周期大小的选择" class="headerlink" title="计算步长和采样周期大小的选择"></a>计算步长和采样周期大小的选择</h2><p>关于采样周期和计算步长的选择，一般考虑以下因素：</p>
-<ul>
-<li><p>从求解精度考虑，越小越好。</p>
-</li>
-<li><p>从计算量考虑，越大越好。</p>
-</li>
-</ul>
-<h2 id="采样周期与每秒帧数-Frames-Per-Second，FPS"><a href="#采样周期与每秒帧数-Frames-Per-Second，FPS" class="headerlink" title="采样周期与每秒帧数(Frames Per Second，FPS)"></a>采样周期与每秒帧数(Frames Per Second，FPS)</h2><p>采样周期以秒为单位，则</p>
-<p>$$FPS=\frac{1}{采样周期}$$</p>
-<p>FPS是指每秒画面重绘的次数，用于衡量画面切换速度。FPS越大，则动画效果越平滑，当FPS小于20时，一般就能明显感受到画面的卡滞现象。</p>
-<p>当FPS足够大(比如达到60)，再增加帧数人眼也不会感受到明显的变化，反而相应地就要消耗更多资源(比如电影的胶片就需要更长了，或是电脑刷新画面需要消耗计算资源等等)。因此，选择一个适中的FPS即可。</p>
-<p>NTSC标准的电视FPS是30，PAL标准的电视FPS是25，电影的FPS标准为24。</p>
-<h1 id="WebGL动画"><a href="#WebGL动画" class="headerlink" title="WebGL动画"></a>WebGL动画</h1><p>WebGL是一种JavaScript API，用于在不使用插件的情况下在任何兼容的网页浏览器中呈现交互式2D和3D图形。但要产生WebGL动画，需要对运动的场景不停的采样，即不停地拍照。JavaScript的采样函数主要有setInterval方法和requestAnimationFrame方法。</p>
-<h2 id="setInterval方法"><a href="#setInterval方法" class="headerlink" title="setInterval方法"></a>setInterval方法</h2><blockquote>
-<p>如果要设置特定的FPS(虽然严格来说，即使使用这种方法，JavaScript也不能保证帧数精确性)，可以使用JavaScript DOM定义的方法：</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setInterval(fn,mesc)</span><br></pre></td></tr></table></figure>
-
-<p>其中，fn是每过msec毫秒执行的函数，如果将fn定义为重绘画面的函数，就能实现动画效果。setInterval函数返回一个变量timer，如果需要停止重绘，需要使用clearInterval方法，并传入该变量timer。</p>
-<h2 id="requestAnimationFrame方法"><a href="#requestAnimationFrame方法" class="headerlink" title="requestAnimationFrame方法"></a>requestAnimationFrame方法</h2><blockquote>
-<p>大多数时候，我们并不在意多久重绘一次，这时候就适合用requestAnimationFrame方法了。它告诉浏览器在合适的时候调用指定函数，通常可能达到60FPS。</p>
-</blockquote>
-<ul>
-<li>requestAnimationFrame同样有对应的cancelAnimationFrame取消动画</li>
-<li>和setInterval不同的是，由于requestAnimationFrame只请求一帧画面，因此，除了在init函数中需要调用，在被其调用的函数中需要再次调用requestAnimationFrame</li>
-</ul>
-<h2 id="使用stat-js记录FPS"><a href="#使用stat-js记录FPS" class="headerlink" title="使用stat.js记录FPS"></a>使用stat.js记录FPS</h2><p>stat.js是Three.js的作者Mr.Doob的另一个有用的JavaScript库。很多情况下，我们希望知道实时的FPS信息，从而更好地监测动画效果。这时候，stat.js就能提供一个很好的帮助，它占据屏幕中的一小块位置(如左上角)，显示实时的FPS信息。</p>
-<p>在HTML中引用stat.js:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type&#x3D;&quot;text&#x2F;javascript&quot; src&#x3D;&quot;&#x2F;&#x2F;mrdoob.github.io&#x2F;stats.js&#x2F;build&#x2F;stats.min.js&quot;&gt;&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
-
-<p>再使用如下代码监视实时FPS：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">var stats &#x3D; new Stats();</span><br><span class="line">stats.showPanel( 1 ); &#x2F;&#x2F; 0: fps, 1: ms, 2: mb, 3+: custom</span><br><span class="line">document.body.appendChild( stats.dom );</span><br><span class="line"></span><br><span class="line">function animate() &#123;</span><br><span class="line"></span><br><span class="line">	stats.begin();</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F; monitored code goes here</span><br><span class="line"></span><br><span class="line">	stats.end();</span><br><span class="line"></span><br><span class="line">	requestAnimationFrame( animate );</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">requestAnimationFrame( animate );</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://blog.sciencenet.cn/blog-341979-776318.html" target="_blank" rel="noopener">计算步长和采样周期</a>,by 王永林.</li>
-<li><a href="http://www.ufgame.com/5951.html" target="_blank" rel="noopener">离散和连续模拟之间的实际区别是什么？</a>,by UF Game.</li>
-<li><a href="https://baike.baidu.com/item/系统仿真" target="_blank" rel="noopener">系统仿真</a>,by 百度百科.</li>
-<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-physicsengines/index.html" target="_blank" rel="noopener">开源的物理引擎</a>,by M. Jones.</li>
-<li><a href="https://zh.wikipedia.org/wiki/数值分析" target="_blank" rel="noopener">数值分析</a>,by wikipedia.</li>
-<li><a href="https://segmentfault.com/a/1190000012238927" target="_blank" rel="noopener">three.js 入门详解(二)</a>,by Levi.</li>
-<li><a href="https://zh.wikipedia.org/wiki/WebGL" target="_blank" rel="noopener">WebGL</a>,by wikipedia.</li>
-<li><a href="https://github.com/mrdoob/stats.js" target="_blank" rel="noopener">stats.js</a>, by mydoob.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/33058983" target="_blank" rel="noopener">详解JavaScript中的Event Loop（事件循环）机制</a>,by 暮雨清秋.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2053,7 +2080,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">246</span>
+                    <span class="site-state-item-count">247</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2746,9 +2773,9 @@
   
     
       
-        
-      
     
+      
+        
       
     
       

@@ -314,6 +314,200 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/04/%E6%B1%82%E8%A7%A3%E5%B0%84%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E4%BA%A4%E7%82%B9%E7%9A%84%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/04/%E6%B1%82%E8%A7%A3%E5%B0%84%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E4%BA%A4%E7%82%B9%E7%9A%84%E7%AE%97%E6%B3%95/" itemprop="url">
+                  求解射线与三角形交点的算法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-04 19:46:52 / 修改时间：23:21:13" itemprop="dateCreated datePublished" datetime="2019-06-04T19:46:52+08:00">2019-06-04</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>求解射线与三角形的交点，在光线追踪、碰撞检测、目标拾取等场景中经常使用，是计算机图形学中最基本的操作。下面介绍常用的求解射线与三角形交点的算法。</p>
+<h1 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h1><p>求解射线与三角形交点示意图如图1所示。</p>
+<p align="center" style="display: flex;">
+    <img src="images/rayInterSection1.png" width="40%" alt="求解射线与三角形交点示意图"/>
+    <img src="images/rayInterSection2.png" width="40%" alt="求解射线与三角形交点示意图"/>
+</p>
+<center>图1  求解射线与三角形交点示意图</center>
+
+<p>射线的参数方程如下，其中O是射线的起点，D是射线的方向，t是常数。</p>
+<p>$$O+Dt$$</p>
+<p>该方程的含义是一个点从起点O开始，沿着方向D移动任意长度，得到终点R，根据t值的不同，得到的R值也不同，所有这些不同的R值便构成了整条射线，比如下面的射线，起点是P0，方向是u，p0 + tu也就构成了整条射线。</p>
+<p align="center">
+    <img src="images/ray.jpeg" width="50%" alt="射线方程示意图"/>
+</p>
+<center>图2  射线方程示意图</center>
+
+<p>三角形的参数方程如下，其中$V_0$，$V_1$和$V_2$是三角形的三个点，$u, v$是$V_1$和$V_2$的权重，$1-u-v$是$V_0$的权重，并且满足$u&gt;=0, v &gt;= 0,u+v&lt;=1$。</p>
+<p>$$(1-u-v)V_0+uV_1+vV_2$$</p>
+<p align="center">
+    <img src="images/triangle.png" width="50%" alt="三角形方程示意图"/>
+</p>
+<center>图3  三角形方程示意图</center>
+
+
+<h1 id="直观方法"><a href="#直观方法" class="headerlink" title="直观方法"></a>直观方法</h1><p>求解射线与三角形的交点最直观的方法如下：</p>
+<ol>
+<li>判断射线是否与平面相交</li>
+<li>判断点是否在三角形内</li>
+</ol>
+<p>但该方法需要额外计算三角形所在平面，效率不高。</p>
+<h1 id="Moller-Trumbore方法-Journal-of-Graphic-Tools-1997"><a href="#Moller-Trumbore方法-Journal-of-Graphic-Tools-1997" class="headerlink" title="Moller-Trumbore方法(Journal of Graphic Tools, 1997)"></a>Moller-Trumbore方法(Journal of Graphic Tools, 1997)</h1><p>Moller-Trumbore方法中，求射线与三角形的交点即求解如下方程:</p>
+<p>$$O+Dt=(1-u-v)V_0+uV_1+vV_2$$</p>
+<p>其中t,u,v是未知数，其他都是已知的。</p>
+<p>移项并整理，将t,u,v提取出来作为未知数，得到下面的线性方程组：</p>
+<p>$$\begin{bmatrix}<br>    -D&amp; V_1-V_0 &amp;V_2-V_0<br>\end{bmatrix}\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}=O-V_0$$</p>
+<p>现在开始解这个方程组，这里要用到两个知识点，一是克莱姆法则，二是向量的混合积。</p>
+<p>令$E_1 = V_1 - V_0，E_2 = V_2 - V_0，T = O - V_0$上式可以改写成:</p>
+<p>$$\begin{bmatrix}<br>    -D&amp; E_1 &amp; E_2<br>\end{bmatrix}\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}=T$$</p>
+<p>根据克莱姆法则，可得到t,u,v的解为：</p>
+<p>$$<br>\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}<br>=\frac{1}{\begin{vmatrix}<br>    -D &amp; E_1 &amp; E_2<br>\end{vmatrix} }<br>\begin{vmatrix}<br>    T&amp;E_1&amp;E_2\<br>    -D&amp; T&amp; E_2\<br>    -D &amp; E_1&amp; T<br>\end{vmatrix}<br>$$</p>
+<p>根据混合积公式:</p>
+<p>$$\begin{vmatrix}<br>    a&amp;b&amp;c<br>\end{vmatrix}<br>=a\times{b}\cdot{c}$$</p>
+<p>上式改写为：</p>
+<p>$$<br>\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}<br>=\frac{1}{\begin{bmatrix}<br>    -D \times E_2 \cdot E_1<br>\end{bmatrix} }<br>\begin{vmatrix}<br>    T \times E_1 \cdot E_2\<br>    D \times E_2 \cdot T\<br>    T \times E_1 \cdot D<br>\end{vmatrix}<br>$$</p>
+<p>令$P=D \times E_2$，$Q=T \times E_1$，得到最终的公式:</p>
+<p>$$\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}<br>=\frac{1}{\begin{bmatrix}<br>    P \cdot E_1<br>\end{bmatrix} }<br>\begin{vmatrix}<br>    Q \cdot E_2\<br>    P \cdot T\<br>    Q \cdot D<br>\end{vmatrix}<br>$$</p>
+<p>之所以提炼出P和Q是为了避免重复计算。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.cnblogs.com/graphics/archive/2010/08/09/1795348.html" target="_blank" rel="noopener">射线和三角形的相交检测（ray triangle intersection test）</a>,by zdd.</li>
+<li><a href="http://pkuwwt.github.io/scholarship/2014-04-03-ray-triangle-intersection-tests-for-dummies/" target="_blank" rel="noopener">光线-三角形求交测试算法[译]</a>, by PKUWWT.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%85%8B%E8%90%8A%E5%A7%86%E6%B3%95%E5%89%87" target="_blank" rel="noopener">克莱姆法则</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E4%B8%89%E9%87%8D%E7%A7%AF" target="_blank" rel="noopener">混合积</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E9%87%8D%E5%BF%83%E5%9D%90%E6%A0%87" target="_blank" rel="noopener">重心坐标</a>,by wikipedia.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/58199366" target="_blank" rel="noopener">重心坐标（Barycentric coordinates）</a>,by 杨超.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/04/PLY%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2083,168 +2277,6 @@ a\cdot b=a^{T}\cdot b = \sum_{i=1}^{3}a_{i}b_{i}=\left | a \right |\left | b \ri
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/11/Dell%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%AE%89%E8%A3%85Ubuntu16-04%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/11/Dell%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%AE%89%E8%A3%85Ubuntu16-04%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" itemprop="url">
-                  Dell笔记本安装Ubuntu16.04出现的问题及解决方案
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-05-11 11:50:55 / 修改时间：17:21:44" itemprop="dateCreated datePublished" datetime="2019-05-11T11:50:55+08:00">2019-05-11</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>PX4开发推荐在Ubuntu16.04上进行，然在一些带独立显卡的笔记本上安装时，进入安装界面就卡住了。问题产生原因显然与显卡驱动有关。</p>
-<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><p>解决方案可参考链接<a href="https://zhuanlan.zhihu.com/p/29209412" target="_blank" rel="noopener">Ubuntu16.04–64位安装及使用中出现的问题</a>。主要有两种方法：</p>
-<ul>
-<li>重新开机，光标选中“Install Ubuntu” ，按“e”，进入grub界面，将倒数第二行中的“quiet splash —”改为“nomodeset”。F10保存，就可以进入安装界面，进行安装。</li>
-<li>如果加入nomodeset参数不行，则试试加入nouveau.modeset=0，步骤一样。</li>
-</ul>
-<h1 id="后续维护"><a href="#后续维护" class="headerlink" title="后续维护"></a>后续维护</h1><p>如果能顺利安装，则安装好后，添加选项到/etc/default/grub文件。步骤如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit &#x2F;etc&#x2F;default&#x2F;grub</span><br></pre></td></tr></table></figure>
-
-<p>然后将nomodeset选项添加到 GRUB_CMDLINE_LINUX_DEFAULT:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">GRUB_DEFAULT&#x3D;0</span><br><span class="line">GRUB_HIDDEN_TIMEOUT&#x3D;0</span><br><span class="line">GRUB_HIDDEN_TIMEOUT_QUIET&#x3D;true</span><br><span class="line">GRUB_TIMEOUT&#x3D;5</span><br><span class="line">GRUB_DISTRIBUTOR&#x3D;&#96;lsb_release -i -s 2&gt; &#x2F;dev&#x2F;null || echo Debian&#96;</span><br><span class="line">GRUB_CMDLINE_LINUX_DEFAULT&#x3D;&quot;quiet splash nomodeset&quot;</span><br><span class="line">GRUB_CMDLINE_LINUX&#x3D;&quot;&quot;</span><br></pre></td></tr></table></figure>
-
-<p>最后更显grub启动文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo update-grub</span><br></pre></td></tr></table></figure>
-
-<h1 id="参数含义"><a href="#参数含义" class="headerlink" title="参数含义"></a>参数含义</h1><p>附内核显示参数的含义：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">nomodeset </span><br><span class="line">不载入所有关于显示卡的驱动</span><br><span class="line"></span><br><span class="line">nouveau.modeset&#x3D;0 </span><br><span class="line">关闭nvidia显卡的驱动，反之&#x3D;1为开启</span><br><span class="line"></span><br><span class="line">i915.modeset&#x3D;0 </span><br><span class="line">关闭Intel显卡的驱动，挺好奇对于Intel内显会有什么影响</span><br><span class="line"></span><br><span class="line">xforcevesa或radeon.modeset&#x3D;0 xforcevesa </span><br><span class="line">跟AMD显卡(ATI)有关的设定，我猜也是关闭</span><br><span class="line"></span><br><span class="line">acpi&#x3D;off </span><br><span class="line">回归旧时代，电源相关设定，OS无法控管，交给bios处理</span><br><span class="line">acpi功能失效，有不少硬体上奇怪的问题，可以用这参数解决</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/29209412" target="_blank" rel="noopener">Ubuntu16.04–64位安装及使用中出现的问题</a>,by 一部电影.</li>
-<li><a href="https://medium.com/caesars-study-review-on-web-development/acpi-osi-linux-nomodeset%E6%98%AF%E4%BB%80%E9%BA%BC%E6%84%8F%E6%80%9D-%E5%8A%9F%E8%83%BD-42d8e2c444c3" target="_blank" rel="noopener">acpi_osi=linux、 nomodeset是什么意思? 功能?</a>, by 峰Caesar.</li>
-<li><a href="https://askubuntu.com/questions/38780/how-do-i-set-nomodeset-after-ive-already-installed-ubuntu" target="_blank" rel="noopener">How do I set ‘nomodeset’ after I’ve already installed Ubuntu?</a>,by askubuntu.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2292,7 +2324,7 @@ a\cdot b=a^{T}\cdot b = \sum_{i=1}^{3}a_{i}b_{i}=\left | a \right |\left | b \ri
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">252</span>
+                    <span class="site-state-item-count">253</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2995,9 +3027,9 @@ a\cdot b=a^{T}\cdot b = \sum_{i=1}^{3}a_{i}b_{i}=\left | a \right |\left | b \ri
       
     
       
-        
-      
     
+      
+        
       
     
       

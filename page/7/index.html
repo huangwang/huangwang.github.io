@@ -314,6 +314,233 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/26/%E5%A4%AA%E9%98%B3%E4%BD%8D%E7%BD%AE%E5%8F%8A%E8%BE%90%E5%B0%84%E5%BC%BA%E5%BA%A6%E7%AD%89%E5%B1%9E%E6%80%A7%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/11/26/%E5%A4%AA%E9%98%B3%E4%BD%8D%E7%BD%AE%E5%8F%8A%E8%BE%90%E5%B0%84%E5%BC%BA%E5%BA%A6%E7%AD%89%E5%B1%9E%E6%80%A7%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95/" itemprop="url">
+                  太阳位置及辐射强度等属性的计算方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-26 20:48:12 / 修改时间：21:53:30" itemprop="dateCreated datePublished" datetime="2019-11-26T20:48:12+08:00">2019-11-26</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>太阳位置是从地球表面观察时，太阳在天空中的位置，它是时间和地理位置两者的函数。计算给定地点和时间的太阳位置要经过下列三个步骤：</p>
+<ul>
+<li>计算太阳在黄道坐标系的位置</li>
+<li>转换到赤道坐标系统</li>
+<li>依据观测者的位置和时间，转换到地平坐标系</li>
+</ul>
+<h1 id="计算太阳黄道坐标的方法"><a href="#计算太阳黄道坐标的方法" class="headerlink" title="计算太阳黄道坐标的方法"></a>计算太阳黄道坐标的方法</h1><p>黄道坐标系是以黄道作基准平面的天球坐标系统，多用作研究太阳系天体运动情况之用。如图1所示。</p>
+<p align="center">
+    <img src="images/Earths_orbit_and_ecliptic.png" width="80%" alt="黄道坐标系"/>
+</p>
+<center>图1 黄道坐标系</center>
+
+<p>黄道是由地球上观察太阳一年中在天球上的视运动所通过的路径，若以地球“不动”作参照的话就是太阳绕地球公转的轨道平面（黄道面）在天球上的投影。</p>
+<p>黄道与天赤道相交于两点：春分点与秋分点（这两点称二分点）；而黄道对应的两个几何极是北黄极（在天龙座）、与南黄极 (在剑鱼座)。</p>
+<p>在黄道上与黄道平行的小圆称黄纬，符号β，以由黄道面向北黄极方向为正值（0°至90°），向南黄极方向则为负值。垂直黄道的经度称黄经，符号为λ，由春分点起由西向东量度（0°至360°）。像赤道坐标系中的赤经一样，以春分点做为黄经的起点。</p>
+<p>此坐标系特别适合标示太阳系内天体的位置，大多数行星（水星和冥王星除外）与许多小行星轨道平面与黄道的倾角都很小，故其黄纬值（β）都不大。</p>
+<p>太阳黄道坐标的近似计算方法如下：</p>
+<p>先计算与格林尼治 2000.0年1月1日中午12:00（历元）相距的日数。如果你知道儒略日，则你的叙述会如下：</p>
+<p>$$ n = \mathrm{JD} - 2451545.0 $$</p>
+<p>以光行差修正太阳的平黄经，如下：</p>
+<p>$$ L = 280.460^\circ + 0.9856474^\circ n $$</p>
+<p>太阳的平近点角（实际上，是地球在轨道上绕着太阳，但是假设太阳绕着地球比较方便）如下：</p>
+<p>$$ g = 357.528^\circ + 0.9856003^\circ n $$</p>
+<p>根据需要将L和g多次加或减360°，让数值的范围调整到0°至 360°之间。</p>
+<p>最后，太阳的黄经是：</p>
+<p>$$ \lambda = L + 1.915^\circ \sin g + 0.020^\circ \sin 2g$$</p>
+<p>太阳的黄纬是:</p>
+<p>$$ \beta = 0 $$</p>
+<p>太阳的黄纬不超过0.00033，</p>
+<p>并且从太阳到地球的距离，以天文单位度量是：</p>
+<p>$$ R = 1.00014 - 0.01671 \cos g - 0.00014 \cos 2g $$</p>
+<h1 id="计算太阳赤道坐标的方法"><a href="#计算太阳赤道坐标的方法" class="headerlink" title="计算太阳赤道坐标的方法"></a>计算太阳赤道坐标的方法</h1><p>赤道坐标系统是使用得最广泛的天球坐标系统，他的元素是:</p>
+<ul>
+<li>赤纬（$\delta$）</li>
+<li>赤经（$\alpha$ ）－也记为RA</li>
+</ul>
+<p>他与地理坐标系统非常相似，因为两者使用相同的基准平面和相同的极点。地球的赤道在天球上的投影就称为天球赤道，相同的，地理极点在天球上的投影就是天极，如图2所示。</p>
+<p align="center">
+    <img src="images/AxialTiltObliquity.png" width="80%" alt="赤道坐标系"/>
+</p>
+<center>图2 赤道坐标系</center>
+
+<p>在经过一夜或数个夜晚，就能看出来星星在天空中的位置移动了，当然，这并非恒星在天球上的运动，只是地球运动造成的。因为岁差和章动的影响，在相当长的时间间隔下所做的观测，就必须注明所使用的特殊历元，为行星、恒星、星系等等的位置做记录。现在使用的历元是J2000.0分点，稍早期使用的是B1950.0分点。</p>
+<p>赤道坐标系统中与纬度相似的值是赤纬(缩写为Dec.)，是天体在天球赤道上方或下方的角度。与经度对应的是赤经(缩写为RA)，是与春分点的角度距离，不同于经度的是赤经以时、分、秒为单位，而非度、分、秒。</p>
+<p>$\lambda$、$\beta$ 和 $R$ 构成太阳在黄道座标完整的位置。通过黄赤交角 $ε$ 的计算可以转换成赤道座标，计算方法如下：</p>
+<p>赤经：</p>
+<p>$$ \alpha = \arctan(\cos \epsilon \tan \lambda)$$</p>
+<p>赤纬：</p>
+<p>$$ \delta = \arcsin(\sin \epsilon \sin \lambda)$$</p>
+<p>其中，黄赤交角不是固定不变的，它目前的值接近：</p>
+<p>$$  \epsilon = 23.439^\circ - 0.0000004^\circ n $$</p>
+<h1 id="计算太阳地平坐标的方法"><a href="#计算太阳地平坐标的方法" class="headerlink" title="计算太阳地平坐标的方法"></a>计算太阳地平坐标的方法</h1><p>地平坐标系，又作地平座标系，是天球坐标系统中的一种，以观测者所在地为中心点，所在地的地平线作为基础平面，将天球适当的分成能看见的上半球和看不见（被地球本身遮蔽）的下半球。上半球的顶点（最高点）称为天顶，下半球的顶点（最低点）称为地底。如图3所示。</p>
+<p align="center">
+    <img src="images/Horizontal_coordinate_system.png" width="80%" alt="地平坐标系"/>
+</p>
+<center>图3 地平坐标系</center>
+
+<p>地平坐标系统是：</p>
+<ul>
+<li>高度角（Altitude, Alt）或仰角又称地平纬度，是天体和观测者所在地的地平线的夹角，有时就称为高度或海拔标高（elevation, geometric height）。</li>
+<li>方位角（Azimuth, Az）又称地平经度，是沿着地平线测量的角度（由正北方为起点向东方测量）。</li>
+</ul>
+<p>因此地平坐标系有时也被称为高度/方位（Alt/Az）坐标系统。</p>
+<p>只要知道观测者的地理坐标与时间，就可以将地平坐标转换成赤道坐标，或是反过来将赤道坐标转换成地平坐标。（纬度在北极点是+90°，在赤道是0°，南极点是-90°。）</p>
+<p>在数学公式中，以$A$代表方位，$a$代表高度。</p>
+<p>以$\delta$ 表示赤纬，$H$ 表示时角。 $φ$ 为观测者所在地的纬度。</p>
+<p>赤道坐标转为地平坐标的计算方法如下：</p>
+<p>$$\sin a=\sin \phi \cdot \sin \delta +\cos \phi \cdot \cos \delta \cdot \cos H$$</p>
+<p>$${\displaystyle \cos A\cdot \cos a=-\cos \phi \cdot \sin \delta +\sin \phi \cdot \cos \delta \cdot \cos H}$$</p>
+<p>$${\displaystyle \sin A\cdot \cos a=\cos \delta \cdot \sin H}$$</p>
+<p>有些人或许会试图将最后两个公式相除来加以简化，以消除$\cos a$，而只剩下$\tan A$。但是正切函数不能清楚的区别出象限，例如45°和225°是完全不同的方位，分别指向相对的东北方和西南方。</p>
+<p>时角（HA）是天文学的名词，一个天体的时角被定义为该天体的赤经与当地的恒星时的差值。 在天文学和天文航海中，时角是在赤道坐标系中用于给出天球上点的方向的坐标之一。 一个点的时角是两个平面之间的角度：一个平面包含地轴和天顶（子午面），另一个平面是穿过该点与极点（地轴）的球面大圆切圆所形成的平面（赤经圈）。如图4所示。</p>
+<p align="center">
+    <img src="images/HourAngle_Observer_en.png" width="80%" alt="时角"/>
+</p>
+<center>图3 时角</center>
+
+
+<p>时角由天赤道平面上的橙色箭头指示。 箭头自天球天赤道的子午面至观测目标所在面的球面大圆处结束，该球面大圆也是赤经圈<br>时角由子午线确定，遵循的规则是在子午线的东边则为负时角，在子午线的西边则为正时角，或者向西为正的360度，时角与经度的换算方法为24h = 360°。</p>
+<p>一个天体的时角表示该天体是否通过了当地的子午圈（中天）。其数值则表示了该天体与当地子午圈的角距离，并借用时间的单位，以小时来计量（1HA = 15度）。例如，一个天体的时角是2.5HA，就表示他已经在2.5个小时之前通过当地的子午圈，并且在当地子午圈的西方37.5度的距离上。负数则表示在多少小时之后将通过当地的子午圈。当然，当时角为0时的意思就是这个天体就在当地的子午圈上。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%A4%AA%E9%99%BD%E4%BD%8D%E7%BD%AE" target="_blank" rel="noopener">太阳位置</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%84%92%E7%95%A5%E6%97%A5" target="_blank" rel="noopener">儒略日</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E9%BB%83%E9%81%93%E5%9D%90%E6%A8%99%E7%B3%BB" target="_blank" rel="noopener">黄道坐标系</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E8%B5%A4%E9%81%93%E5%9D%90%E6%A8%99%E7%B3%BB%E7%B5%B1" target="_blank" rel="noopener">赤道坐标系统</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%9C%B0%E5%B9%B3%E5%9D%90%E6%A8%99%E7%B3%BB" target="_blank" rel="noopener">地平坐标系</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%99%82%E8%A7%92" target="_blank" rel="noopener">时角</a>,by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/16/%E7%BB%8F%E7%BA%AC%E9%AB%98%E4%B8%8E%E5%8C%97%E5%A4%A9%E4%B8%9C%E5%9D%90%E6%A0%87%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2011,282 +2238,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/26/CPlusPlus%E9%AB%98%E6%80%A7%E8%83%BD%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/26/CPlusPlus%E9%AB%98%E6%80%A7%E8%83%BD%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" itemprop="url">
-                  C++高性能网络编程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-10-26 11:31:54" itemprop="dateCreated datePublished" datetime="2019-10-26T11:31:54+08:00">2019-10-26</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-11-02 12:50:17" itemprop="dateModified" datetime="2019-11-02T12:50:17+08:00">2019-11-02</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近需要用C++编写一个网络程序，因此将网络编程的相关知识整理学习一下。</p>
-<h1 id="Socket编程"><a href="#Socket编程" class="headerlink" title="Socket编程"></a>Socket编程</h1><p>Socket 是对 TCP/IP 协议族的一种封装，是应用层与TCP/IP协议族通信的中间软件抽象层。从设计模式的角度看来，Socket其实就是一个门面模式，它把复杂的TCP/IP协议族隐藏在Socket接口后面，对用户来说，一组简单的接口就是全部，让Socket去组织数据，以符合指定的协议。</p>
-<p>Socket 还可以认为是一种网络间不同计算机上的进程通信的一种方法，利用三元组（ip地址，协议，端口）就可以唯一标识网络中的进程，网络中的进程通信可以利用这个标志与其它进程进行交互。</p>
-<p>Socket 起源于 Unix ，Unix/Linux 基本哲学之一就是“一切皆文件”，都可以用“打开(open) –&gt; 读写(write/read) –&gt; 关闭(close)”模式来进行操作。因此 Socket 也被处理为一种特殊的文件。</p>
-<h2 id="Socket类型"><a href="#Socket类型" class="headerlink" title="Socket类型"></a>Socket类型</h2><p>创建 socket 的时候需要指定 socket 的类型，一般有三种：</p>
-<ul>
-<li>SOCK_STREAM：面向连接的稳定通信，底层是 TCP 协议，我们会一直使用这个。</li>
-<li>SOCK_DGRAM：无连接的通信，底层是 UDP 协议，需要上层的协议来保证可靠性。</li>
-<li>SOCK_RAW：更加灵活的数据控制，能让你指定 IP 头部</li>
-</ul>
-<h2 id="Socket编程接口"><a href="#Socket编程接口" class="headerlink" title="Socket编程接口"></a>Socket编程接口</h2><ul>
-<li>socket()：创建socket</li>
-<li>bind()：绑定socket到本地地址和端口，通常由服务端调用</li>
-<li>listen()：TCP专用，开启监听模式</li>
-<li>accept()：TCP专用，服务器等待客户端连接，一般是阻塞态</li>
-<li>connect()：TCP专用，客户端主动连接服务器</li>
-<li>send()：TCP专用，发送数据</li>
-<li>recv()：TCP专用，接收数据</li>
-<li>sendto()：UDP专用，发送数据到指定的IP地址和端口</li>
-<li>recvfrom()：UDP专用，接收数据，返回数据远端的IP地址和端口</li>
-<li>closesocket()：关闭socket</li>
-</ul>
-<h2 id="Socket通信流程"><a href="#Socket通信流程" class="headerlink" title="Socket通信流程"></a>Socket通信流程</h2><p align="center">
-    <img src="images/tcp.jpg" width="60%" alt="TCP通信流程"/>
-</p>
-<center>图1 TCP通信流程</center>
-
-<p align="center">
-    <img src="images/udp.png" width="60%" alt="UDP通信流程"/>
-</p>
-<center>图2 UDP通信流程</center>
-
-<h2 id="字节序"><a href="#字节序" class="headerlink" title="字节序"></a>字节序</h2><p>不同的计算机对数据的存储格式不一样，比如 32 位的整数 0x12345678，可以在内存里从高到低存储为 12-34-56-78 或者从低到高存储为 78-56-34-12。</p>
-<p>但是这对于网络中的数据来说就带来了一个严重的问题，当机器从网络中收到 12-34-56-78 的数据时，它怎么知道这个数据到底是什么意思？</p>
-<p>解决的方案也比较简单，在传输数据之前和接受数据之后，必须调用 htonl/htons 或 ntohl/ntohs 先把数据转换成网络字节序或者把网络字节序转换为机器的字节序。</p>
-<ul>
-<li>TCP 和 UDP 的端口是互不干扰的，也就是说系统可以同时开启 TCP 80 端口和 UDP 80 端口。</li>
-<li>socket 不属于任何一层网络协议，它是对 TCP 层的封装，方便网络编程。</li>
-</ul>
-<h1 id="网络编程模型"><a href="#网络编程模型" class="headerlink" title="网络编程模型"></a>网络编程模型</h1><h2 id="同步阻塞迭代模型"><a href="#同步阻塞迭代模型" class="headerlink" title="同步阻塞迭代模型"></a>同步阻塞迭代模型</h2><p>同步阻塞迭代模型是最简单的一种IO模型，其核心代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">bind(srvfd);</span><br><span class="line">listen(srvfd);</span><br><span class="line">for(;;)</span><br><span class="line">&#123;</span><br><span class="line">    clifd &#x3D; accept(srvfd,...); &#x2F;&#x2F;开始接受客户端来的连接</span><br><span class="line">    read(clifd,buf,...); &#x2F;&#x2F;从客户端读取数据</span><br><span class="line">    dosomthingonbuf(buf);</span><br><span class="line">    write(clifd,buf)&#x2F;&#x2F;发送数据到客户端</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面的程序存在如下一些弊端：</p>
-<ol>
-<li>如果没有客户端的连接请求，进程会阻塞在accept系统调用处，程序不能执行其他任何操作。(系统调用使得程序从用户态陷入内核态）</li>
-<li>在与客户端建立好一条链路后，通过read系统调用从客户端接受数据，而客户端合适发送数据过来是不可控的。如果客户端迟迟不发生数据过来，则程序同样会阻塞在read调用，此时，如果另外的客户端来尝试连接时，都会失败。</li>
-<li>同样的道理，write系统调用也会使得程序出现阻塞(例如：客户端接受数据异常缓慢，导致写缓冲区满，数据迟迟发送不出)。</li>
-</ol>
-<h2 id="多进程并发模型"><a href="#多进程并发模型" class="headerlink" title="多进程并发模型"></a>多进程并发模型</h2><p>多进程并发模型在同步阻塞迭代模型的基础上进行了一些改进，以避免是程序阻塞在read系统调用上。核心代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">bind(srvfd);</span><br><span class="line">listen(srvfd);</span><br><span class="line">for(;;)&#123;</span><br><span class="line">clifd &#x3D; accept(srvfd,...); &#x2F;&#x2F;开始接受客户端来的连接</span><br><span class="line">ret &#x3D; fork();</span><br><span class="line">switch( ret )</span><br><span class="line">&#123;</span><br><span class="line">    case -1 :</span><br><span class="line">        do_err_handler();</span><br><span class="line">        break;</span><br><span class="line">    case 0: &#x2F;&#x2F; 子进程</span><br><span class="line">        client_handler(clifd);</span><br><span class="line">        break ;</span><br><span class="line">    default : &#x2F;&#x2F; 父进程</span><br><span class="line">        close(clifd);</span><br><span class="line">        continue ;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">void client_handler(clifd)</span><br><span class="line">&#123;</span><br><span class="line">    read(clifd,buf,...); &#x2F;&#x2F;从客户端读取数据</span><br><span class="line">    dosomthingonbuf(buf);</span><br><span class="line">    write(clifd,buf)&#x2F;&#x2F;发送数据到客户端</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上述程序在accept系统调用时，如果没有客户端来建立连接，会阻塞在accept处。一旦某个客户端连接建立起来，则立即开启一个新的进程来处理与这个客户的数据交互。避免程序阻塞在read调用，而影响其他客户端的连接。</p>
-<h2 id="多线程并发模型"><a href="#多线程并发模型" class="headerlink" title="多线程并发模型"></a>多线程并发模型</h2><p>在多进程并发模型中，每一个客户端连接开启fork一个进程，若客户端连接较大，则系统依然将不堪负重。通过多线程(或线程池)并发模型，可以在一定程度上改善这一问题。</p>
-<p>在服务端的线程模型实现方式一般有三种：</p>
-<ul>
-<li>按需生成(来一个连接生成一个线程)</li>
-<li>线程池(预先生成很多线程)</li>
-<li>Leader follower（LF）</li>
-</ul>
-<p>以第一种为例，其核心代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">void *thread_callback( void *args ) &#x2F;&#x2F;线程回调函数</span><br><span class="line">&#123;</span><br><span class="line">    int clifd &#x3D; *(int *)args ;</span><br><span class="line">    client_handler(clifd);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void client_handler(clifd)</span><br><span class="line">&#123;</span><br><span class="line">    read(clifd,buf,...); &#x2F;&#x2F;从客户端读取数据</span><br><span class="line">    dosomthingonbuf(buf);</span><br><span class="line">    write(clifd,buf)&#x2F;&#x2F;发送数据到客户端</span><br><span class="line">&#125;</span><br><span class="line">bind(srvfd);</span><br><span class="line">listen(srvfd);</span><br><span class="line">for(;;)</span><br><span class="line">&#123;</span><br><span class="line">    clifd &#x3D; accept();</span><br><span class="line">    pthread_create(...,thread_callback,&amp;clifd);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>服务端分为主线程和工作线程，主线程负责accept()连接，而工作线程负责处理业务逻辑和流的读取等。因此，即使在工作线程阻塞的情况下，也只是阻塞在线程范围内，对继续接受新的客户端连接不会有影响。</p>
-<p>第二种实现方式，通过线程池的引入可以避免频繁的创建、销毁线程，能在很大程序上提升性能。</p>
-<p>但多线程模型先天具有如下缺点：</p>
-<ul>
-<li>稳定性相对较差。一个线程的崩溃会导致整个程序崩溃。</li>
-<li>临界资源的访问控制，在加大程序复杂性的同时，锁机制的引入会是严重降低程序的性能。性能上可能会出现“辛辛苦苦好几年，一夜回到解放前”的情况。</li>
-</ul>
-<h2 id="IO多路复用模型"><a href="#IO多路复用模型" class="headerlink" title="IO多路复用模型"></a>IO多路复用模型</h2><p>多进程模型和多线程(线程池)模型每个进程/线程只能处理一路IO，在服务器并发数较高的情况下，过多的进程/线程会使得服务器性能下降。而通过多路IO复用，能使得一个进程同时处理多路IO，提升服务器吞吐量。这是一种进程预先告知内核的能力，让内核发现进程指定的一个或多个IO条件就绪了，就通知进程。使得一个进程能在一连串的事件上等待。</p>
-<p>IO复用的实现方式目前主要有select、poll和epoll。</p>
-<p>select和poll的原理基本相同：</p>
-<ul>
-<li><p>注册待侦听的fd(这里的fd创建时最好使用非阻塞)</p>
-</li>
-<li><p>每次调用都去检查这些fd的状态，当有一个或者多个fd就绪的时候返回</p>
-</li>
-<li><p>返回结果中包括已就绪和未就绪的fd</p>
-</li>
-</ul>
-<p>相比select，poll解决了单个进程能够打开的文件描述符数量有限制这个问题：select受限于FD_SIZE的限制，如果修改则需要修改这个宏重新编译内核；而poll通过一个pollfd数组向内核传递需要关注的事件，避开了文件描述符数量限制。此外，select和poll共同具有的一个很大的缺点就是包含大量fd的数组被整体复制于用户态和内核态地址空间之间，开销会随着fd数量增多而线性增大。</p>
-<p>epoll的出现，解决了select、poll的缺点：</p>
-<ul>
-<li><p>基于事件驱动的方式，避免了每次都要把所有fd都扫描一遍。</p>
-</li>
-<li><p>epoll_wait只返回就绪的fd。</p>
-</li>
-<li><p>epoll使用nmap内存映射技术避免了内存复制的开销。</p>
-</li>
-<li><p>epoll的fd数量上限是操作系统的最大文件句柄数目,这个数目一般和内存有关，通常远大于1024。</p>
-</li>
-</ul>
-<p>总结：</p>
-<ul>
-<li>select：支持注册 FD_SETSIZE(1024) 个 socket。</li>
-<li>poll： poll 作为 select 的替代者，最大的区别就是，poll 不再限制 socket 数量。</li>
-<li>epoll：epoll 能直接返回具体的准备好的通道，时间复杂度 O(1)。</li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/u010913001/article/details/52487938" target="_blank" rel="noopener">C++网络框架和库</a>,by 帝王铠.</li>
-<li><a href="https://juejin.im/post/59e47ce36fb9a0451f2ffee8" target="_blank" rel="noopener">C++ 高性能服务器网络框架设计细节</a>,by 范蠡.</li>
-<li><a href="https://www.jianshu.com/p/ee5b34870eba" target="_blank" rel="noopener">值得推荐的C/C++框架和库 (真的很强大)</a>,by tibet889.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/71707672" target="_blank" rel="noopener">有哪些值得推荐的c/c++开源框架与库</a>,by 零声学院.</li>
-<li><a href="https://www.zhihu.com/question/20124494" target="_blank" rel="noopener">有什么适合提高 C/C++ 网络编程能力的开源项目推荐？</a>,by zhihu.</li>
-<li><a href="https://blog.csdn.net/lijinqi1987/article/details/71214974" target="_blank" rel="noopener">网络库libevent、libev、libuv对比</a>,by 小麒麟666.</li>
-<li><a href="https://blog.csdn.net/tjm1017/article/details/88219576" target="_blank" rel="noopener">libevent、libev、libuv、IOCP、asio、muduo优劣分析、QT下编译libevent静态库</a>,by 雒珣.</li>
-<li><a href="https://lotabout.me/2018/reactor-pattern/" target="_blank" rel="noopener">Reactor 模式简介</a>,by lotabou.</li>
-<li><a href="https://segmentfault.com/a/1190000002715832" target="_blank" rel="noopener">IO设计模式：Reactor和Proactor对比</a>,by 大CC.</li>
-<li><a href="https://www.jianshu.com/p/96c0b04941e2" target="_blank" rel="noopener">Proactor和Reactor模型</a>,by wiseAaron.</li>
-<li><a href="https://www.zhihu.com/question/26943938" target="_blank" rel="noopener">如何深刻理解reactor和proactor？</a>,by zhihu.</li>
-<li><a href="http://senlinzhan.github.io/2017/08/12/libevent/" target="_blank" rel="noopener">Libevent 编程指南</a>,by senlin.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/20315482" target="_blank" rel="noopener">网络编程（三）：从libevent到事件通知机制</a>,by auxten.</li>
-<li><a href="https://www.ibm.com/developerworks/cn/aix/library/au-libev/index.html" target="_blank" rel="noopener">使用 libevent 和 libev 提高网络应用性能</a>,by Martin C. Brown.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/50497450" target="_blank" rel="noopener">兄déi，libuv了解一下</a>,by 宋光宇.</li>
-<li><a href="http://blog.tubumu.com/2017/03/11/libuv-analysis-02/" target="_blank" rel="noopener">Libuv 源码分析(2):源码一览</a>,by Tubumu.</li>
-<li><a href="https://www.cnblogs.com/losophy/p/9202815.html" target="_blank" rel="noopener">IO设计模式：Actor、Reactor、Proactor</a>,by _raindrop.</li>
-<li><a href="http://www.thinkingyu.com/articles/Proactor/" target="_blank" rel="noopener">Proactor网络编程模式歪解</a>,by WUYU.</li>
-<li><a href="https://www.s0nnet.com/archives/deep-understanding-of-reactor-design-patterns" target="_blank" rel="noopener">深入理解Reactor模式</a>,by 独木の白帆.</li>
-<li><a href="https://cizixs.com/2015/03/29/basic-socket-programming/" target="_blank" rel="noopener">socket 编程基础知识</a>,by cizixs.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/43933717" target="_blank" rel="noopener">一文读懂高性能网络编程中的I/O模型</a>,by Jack Jiang.</li>
-<li><a href="https://blog.csdn.net/drdairen/article/details/53694550" target="_blank" rel="noopener">几种典型的服务器网络编程模型归纳(select poll epoll)</a>,by DrStream.</li>
-<li><a href="https://www.cnblogs.com/wade-luffy/p/6106030.html" target="_blank" rel="noopener">Linux IO模型和网络编程模型</a>,by wade&amp;luffy.</li>
-<li><a href="https://blog.csdn.net/weiwangchao_/article/details/8730199" target="_blank" rel="noopener">开源免费的C/C++网络库(c/c++ sockets library) 七剑下天山</a>,by 工程师WWW.</li>
-<li><a href="https://www.cnblogs.com/DOMLX/p/9601511.html" target="_blank" rel="noopener">c++ 网络编程（一）TCP/UDP windows/linux 下入门级socket通信 客户端与服务端交互代码</a>,by aircraft.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2334,7 +2285,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">262</span>
+                    <span class="site-state-item-count">263</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -314,6 +314,158 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/10/04/Cesium%E6%94%AF%E6%8C%81GLTF%E5%8A%A8%E7%94%BB%E7%A0%94%E7%A9%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/10/04/Cesium%E6%94%AF%E6%8C%81GLTF%E5%8A%A8%E7%94%BB%E7%A0%94%E7%A9%B6/" itemprop="url">
+                  Cesium支持GLTF动画研究
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-10-04 18:53:29 / 修改时间：19:18:38" itemprop="dateCreated datePublished" datetime="2020-10-04T18:53:29+08:00">2020-10-04</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Cesium在很早之前就支持GLTF模型动画，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">var czml &#x3D; [</span><br><span class="line">  &#123;</span><br><span class="line">    id: &quot;document&quot;,</span><br><span class="line">    name: &quot;CZML Model&quot;,</span><br><span class="line">    version: &quot;1.0&quot;,</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    id: &quot;aircraft model&quot;,</span><br><span class="line">    name: &quot;Cesium Air&quot;,</span><br><span class="line">    position: &#123;</span><br><span class="line">      cartographicDegrees: [-77, 37, 10000],</span><br><span class="line">    &#125;,</span><br><span class="line">    model: &#123;</span><br><span class="line">      gltf: &quot;..&#x2F;SampleData&#x2F;models&#x2F;CesiumAir&#x2F;Cesium_Air.glb&quot;,</span><br><span class="line">      scale: 2.0,</span><br><span class="line">      minimumPixelSize: 128,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">var viewer &#x3D; new Cesium.Viewer(&quot;cesiumContainer&quot;, &#123;</span><br><span class="line">  shouldAnimate: true,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">var dataSourcePromise &#x3D; viewer.dataSources.add(</span><br><span class="line">  Cesium.CzmlDataSource.load(czml)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>这种方法存在一定局限性，只能支持全局动画，不能控制动画的起止。但最近版本中，Cesium进行了一定改进，可以支持在一定程度上控制GLTF动画了。示例代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">var czml &#x3D; [</span><br><span class="line">  &#123;</span><br><span class="line">    id: &quot;document&quot;,</span><br><span class="line">    name: &quot;CZML Model&quot;,</span><br><span class="line">    version: &quot;1.0&quot;,</span><br><span class="line">    clock: &#123;</span><br><span class="line">      interval: &quot;2019-06-01T16:00:00Z&#x2F;2019-06-01T16:10:00Z&quot;,</span><br><span class="line">      currentTime: &quot;2019-06-01T16:00:00Z&quot;,</span><br><span class="line">      multiplier: 60,</span><br><span class="line">      range: &quot;LOOP_STOP&quot;,</span><br><span class="line">      step: &quot;SYSTEM_CLOCK_MULTIPLIER&quot;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    id: &quot;test model&quot;,</span><br><span class="line">    name: &quot;Cesium Air&quot;,</span><br><span class="line">    position: &#123;</span><br><span class="line">      cartographicDegrees: [-77, 37, 10000],</span><br><span class="line">    &#125;,</span><br><span class="line">    model: &#123;</span><br><span class="line">      gltf: &quot;https:&#x2F;&#x2F;assets.agi.com&#x2F;models&#x2F;launchvehicle.glb&quot;,</span><br><span class="line">      scale: 2.0,</span><br><span class="line">      minimumPixelSize: 128,</span><br><span class="line">      runAnimations: false,</span><br><span class="line">      articulations: &#123;</span><br><span class="line">        &quot;Fairing Open&quot;: &#123;</span><br><span class="line">          epoch: &quot;2019-06-01T16:00:00Z&quot;,</span><br><span class="line">          number: [0, 0, 600, 120],</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;Fairing Separate&quot;: &#123;</span><br><span class="line">          epoch: &quot;2019-06-01T16:00:00Z&quot;,</span><br><span class="line">          number: [0, 0, 400, -50],</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;Fairing Drop&quot;: &#123;</span><br><span class="line">          epoch: &quot;2019-06-01T16:00:00Z&quot;,</span><br><span class="line">          interpolationAlgorithm: &quot;LAGRANGE&quot;,</span><br><span class="line">          interpolationDegree: 2,</span><br><span class="line">          number: [0, 0, 80, 0, 100, 0, 120, -1, 600, -120],</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">var viewer &#x3D; new Cesium.Viewer(&quot;cesiumContainer&quot;, &#123;</span><br><span class="line">  shouldAnimate: true,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">var dataSourcePromise &#x3D; viewer.dataSources.add(</span><br><span class="line">  Cesium.CzmlDataSource.load(czml)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">dataSourcePromise</span><br><span class="line">  .then(function (dataSource) &#123;</span><br><span class="line">    viewer.trackedEntity &#x3D; dataSource.entities.getById(&quot;test model&quot;);</span><br><span class="line">  &#125;)</span><br><span class="line">  .otherwise(function (error) &#123;</span><br><span class="line">    console.error(error);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>这段示例代码的原理还有待分析，我将launchvehicle.glb导入blender 2.90中，但并没有看到上述代码中的三段动画。按照链接<a href="https://community.cesium.com/t/model-articulations-number-variable/10000" target="_blank" rel="noopener">Model Articulations “Number” variable</a>的说法，这三段动画是通过GLTF扩展实现。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://community.cesium.com/t/model-articulations-number-variable/10000" target="_blank" rel="noopener">Model Articulations “Number” variable</a>,by cesium.</li>
+<li><a href="https://www.khronos.org/files/gltf20-reference-guide.pdf" target="_blank" rel="noopener">glTF 2.0 Quick Reference Guide </a>,by KhronosGroup.</li>
+<li><a href="https://github.com/KhronosGroup/glTF" target="_blank" rel="noopener">glTF</a>,by KhronosGroup.</li>
+<li><a href="https://sandcastle.cesium.com/?src=CZML%20Model%20Articulations.html&label=All" target="_blank" rel="noopener">Cesium Model Articulations</a>,by cesium.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/09/28/Cesium%E5%8E%BB%E6%8E%89%E9%BB%91%E8%89%B2%E6%98%9F%E7%A9%BA%E8%83%8C%E6%99%AF%E5%B9%B6%E9%80%8F%E6%98%8E%E7%9A%84%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1961,148 +2113,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/07/02/%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%89%8D%E7%AB%AF%E5%BC%82%E5%B8%B8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/07/02/%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%89%8D%E7%AB%AF%E5%BC%82%E5%B8%B8/" itemprop="url">
-                  如何处理前端异常
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-07-02 12:18:44 / 修改时间：12:19:51" itemprop="dateCreated datePublished" datetime="2020-07-02T12:18:44+08:00">2020-07-02</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.fundebug.com/2018/12/07/how-to-handle-frontend-error/" target="_blank" rel="noopener">如何优雅处理前端异常？</a>,by Jartto.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2150,7 +2160,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">263</span>
+                    <span class="site-state-item-count">264</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

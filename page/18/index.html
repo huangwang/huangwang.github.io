@@ -314,6 +314,332 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/03/13/Python%E7%88%AC%E8%99%AB%E8%8E%B7%E5%8F%96%E7%BD%91%E9%A1%B5%E9%93%BE%E6%8E%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/13/Python%E7%88%AC%E8%99%AB%E8%8E%B7%E5%8F%96%E7%BD%91%E9%A1%B5%E9%93%BE%E6%8E%A5/" itemprop="url">
+                  Python爬虫获取网页链接
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-13 08:20:11 / 修改时间：18:18:02" itemprop="dateCreated datePublished" datetime="2019-03-13T08:20:11+08:00">2019-03-13</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近研究开源飞行模拟器，想将其世界地景全部下载下来。一个个手动下载太麻烦，于是想先用python的requests和Beautiful Soup组件获取地景链接，再以每行一个地景链接写入文本文档，最后使用axel多线程自动下载每一个地景包。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="requests组件"><a href="#requests组件" class="headerlink" title="requests组件"></a>requests组件</h2><p>Requests是一个Python HTTP库，在Apache 2许可证下发布。该项目的目标是使HTTP请求更简单，更人性化。</p>
+<p>下面是示例代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import requests</span><br><span class="line">&gt;&gt;&gt; r &#x3D; requests.get(&#39;https:&#x2F;&#x2F;api.github.com&#x2F;user&#39;, auth&#x3D;(&#39;user&#39;, &#39;pass&#39;))</span><br><span class="line">&gt;&gt;&gt; r.status_code</span><br><span class="line">200</span><br><span class="line">&gt;&gt;&gt; r.headers[&#39;content-type&#39;]</span><br><span class="line">&#39;application&#x2F;json; charset&#x3D;utf8&#39;</span><br><span class="line">&gt;&gt;&gt; r.encoding</span><br><span class="line">&#39;utf-8&#39;</span><br><span class="line">&gt;&gt;&gt; r.text # doctest: +ELLIPSIS</span><br><span class="line">u&#39;&#123;&quot;type&quot;:&quot;User&quot;...&#39;</span><br><span class="line">&gt;&gt;&gt; r.json() # doctest: +ELLIPSIS</span><br><span class="line">&#123;u&#39;private_gists&#39;: 419, u&#39;total_private_repos&#39;: 77, ...&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Beautiful-Soup组件"><a href="#Beautiful-Soup组件" class="headerlink" title="Beautiful Soup组件"></a>Beautiful Soup组件</h2><p>Beautiful Soup 是一个可以从HTML或XML文件中提取数据的Python库。它能够通过你喜欢的转换器实现惯用的文档导航，查找，修改文档的方式。Beautiful Soup会帮你节省数小时甚至数天的工作时间。</p>
+<p>Beautiful Soup支持Python标准库中的HTML解析器，还支持一些第三方的解析器，其中一个是 lxml。</p>
+<p>Beautiful Soup将复杂HTML文档转换成一个复杂的树形结构,每个节点都是Python对象,所有对象可以归纳为4种: Tag , NavigableString , BeautifulSoup , Comment。</p>
+<ul>
+<li>Tag 对象与XML或HTML原生文档中的tag相同，有最重要的属性: name和attributes。</li>
+<li>BeautifulSoup 对象表示的是一个文档的全部内容，但并不是真正的HTML或XML的tag，所以它没有name和attribute属性。</li>
+<li>Beautiful Soup用 NavigableString 类来包装tag中的字符串。</li>
+<li>Comment 对象是一个特殊类型的 NavigableString 对象:</li>
+</ul>
+<p>下面是BeautifulSoup的一个简单示例。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">soup &#x3D; BeautifulSoup(html_doc)</span><br><span class="line"></span><br><span class="line">print(soup.prettify())</span><br><span class="line"># &lt;html&gt;</span><br><span class="line">#  &lt;head&gt;</span><br><span class="line">#   &lt;title&gt;</span><br><span class="line">#    The Dormouse&#39;s story</span><br><span class="line">#   &lt;&#x2F;title&gt;</span><br><span class="line">#  &lt;&#x2F;head&gt;</span><br><span class="line">#  &lt;body&gt;</span><br><span class="line">#   &lt;p class&#x3D;&quot;title&quot;&gt;</span><br><span class="line">#    &lt;b&gt;</span><br><span class="line">#     The Dormouse&#39;s story</span><br><span class="line">#    &lt;&#x2F;b&gt;</span><br><span class="line">#   &lt;&#x2F;p&gt;</span><br><span class="line">#   &lt;p class&#x3D;&quot;story&quot;&gt;</span><br><span class="line">#    Once upon a time there were three little sisters; and their names were</span><br><span class="line">#    &lt;a class&#x3D;&quot;sister&quot; href&#x3D;&quot;http:&#x2F;&#x2F;example.com&#x2F;elsie&quot; id&#x3D;&quot;link1&quot;&gt;</span><br><span class="line">#     Elsie</span><br><span class="line">#    &lt;&#x2F;a&gt;</span><br><span class="line">#    ,</span><br><span class="line">#    &lt;a class&#x3D;&quot;sister&quot; href&#x3D;&quot;http:&#x2F;&#x2F;example.com&#x2F;lacie&quot; id&#x3D;&quot;link2&quot;&gt;</span><br><span class="line">#     Lacie</span><br><span class="line">#    &lt;&#x2F;a&gt;</span><br><span class="line">#    and</span><br><span class="line">#    &lt;a class&#x3D;&quot;sister&quot; href&#x3D;&quot;http:&#x2F;&#x2F;example.com&#x2F;tillie&quot; id&#x3D;&quot;link2&quot;&gt;</span><br><span class="line">#     Tillie</span><br><span class="line">#    &lt;&#x2F;a&gt;</span><br><span class="line">#    ; and they lived at the bottom of a well.</span><br><span class="line">#   &lt;&#x2F;p&gt;</span><br><span class="line">#   &lt;p class&#x3D;&quot;story&quot;&gt;</span><br><span class="line">#    ...</span><br><span class="line">#   &lt;&#x2F;p&gt;</span><br><span class="line">#  &lt;&#x2F;body&gt;</span><br><span class="line"># &lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="axel工具"><a href="#axel工具" class="headerlink" title="axel工具"></a>axel工具</h2><p>axel是Linux下一个不错的HTTP/ftp高速下载工具。支持多线程下载、断点续传，且可以从多个地址或者从一个地址的多个连接来下载同一个文件。适合网速不给力时多线程下载提高下载速度。</p>
+<p>axel语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">axel [options] url1 [url2] [url...]</span><br></pre></td></tr></table></figure>
+
+<p>axel选项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">--max-speed&#x3D;x , -s x         最高速度x</span><br><span class="line">--num-connections&#x3D;x , -n x   连接数x</span><br><span class="line">--output&#x3D;f , -o f            下载为本地文件f</span><br><span class="line">--search[&#x3D;x] , -S [x]        搜索镜像</span><br><span class="line">--header&#x3D;x , -H x            添加头文件字符串x（指定 HTTP header）</span><br><span class="line">--user-agent&#x3D;x , -U x        设置用户代理（指定 HTTP user agent）</span><br><span class="line">--no-proxy ， -N             不使用代理服务器</span><br><span class="line">--quiet ， -q                静默模式</span><br><span class="line">--verbose ，-v               更多状态信息</span><br><span class="line">--alternate ， -a            Alternate progress indicator</span><br><span class="line">--help ，-h                  帮助</span><br><span class="line">--version ，-V               版本信息</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><h2 id="获取地景链接"><a href="#获取地景链接" class="headerlink" title="获取地景链接"></a>获取地景链接</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line"></span><br><span class="line"># 下载指定URI链接</span><br><span class="line">def getUriContent(uri):</span><br><span class="line">    try:</span><br><span class="line">        fgWorldScenery &#x3D; requests.get(link, timeout&#x3D;10)</span><br><span class="line">    except requests.exceptions.HTTPError as errh:</span><br><span class="line">        print (&quot;Http Error:&quot;,errh)</span><br><span class="line">    except requests.exceptions.ConnectionError as errc:</span><br><span class="line">        print (&quot;Error Connecting:&quot;,errc)</span><br><span class="line">    except requests.exceptions.Timeout as errt:</span><br><span class="line">        print (&quot;Timeout Error:&quot;,errt)  </span><br><span class="line">    except requests.exceptions.RequestException as err:</span><br><span class="line">        print (&quot;OOps: Something Else&quot;,err)</span><br><span class="line">    else:    </span><br><span class="line">        print(&quot;Http Request Success!&quot;)</span><br><span class="line">        return fgWorldScenery.text</span><br><span class="line"></span><br><span class="line"># 获取所有地景链接，存入列表</span><br><span class="line">def getTargetLinks(html):</span><br><span class="line">    soup &#x3D; BeautifulSoup(html)</span><br><span class="line">    list&#x3D;[]</span><br><span class="line">    #print(soup.prettify())</span><br><span class="line">    for child in soup.find_all(&#39;area&#39;):</span><br><span class="line">        list.append(child[&#39;href&#39;])</span><br><span class="line">    print(&quot;Get Target Links Success!&quot;)</span><br><span class="line">    return list</span><br><span class="line"></span><br><span class="line"># 将地景链接逐行写入文件</span><br><span class="line">def writeToFile(linkList):</span><br><span class="line">    file &#x3D; open(&#39;.&#x2F;sceneLink.txt&#39;,&#39;w&#39;)</span><br><span class="line">    for link in linkList:</span><br><span class="line">        file.write(link)</span><br><span class="line">        file.write(&#39;\t\n&#39;)</span><br><span class="line">    print(&quot;Write Target Link To File Success!&quot;)</span><br><span class="line">    file.close()</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D; &quot;__main__&quot;:</span><br><span class="line">    link &#x3D; &quot;http:&#x2F;&#x2F;www.flightgear.org&#x2F;legacy-Downloads&#x2F;scenery-v2.12.html&quot;</span><br><span class="line">    html&#x3D;getUriContent(link)</span><br><span class="line">    linkList&#x3D;getTargetLinks(html)</span><br><span class="line">    writeToFile(linkList)</span><br></pre></td></tr></table></figure>
+
+<h2 id="下载世界地景"><a href="#下载世界地景" class="headerlink" title="下载世界地景"></a>下载世界地景</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for line in $(cat sceneLink.txt)</span><br><span class="line">do </span><br><span class="line">    axel -n 10 $line</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://docs.python-requests.org/zh_CN/latest/user/quickstart.html" target="_blank" rel="noopener">requests快速上手</a>,by requests.</li>
+<li><a href="http://www.runoob.com/python/python-tutorial.html" target="_blank" rel="noopener">Python 基础教程</a>, by runoob.</li>
+<li><a href="http://codingpy.com/article/guido-shows-how-to-write-main-function/" target="_blank" rel="noopener">Python之父教你写main()函数</a>,by 编程派.</li>
+<li><a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/index.zh.html" target="_blank" rel="noopener">Beautiful Soup 4.2.0 文档</a>,by BeautifulSoup.</li>
+<li><a href="https://huangwang.github.io/2019/03/13/FlightGear安装飞机和场景的方法/">FlightGear安装飞机和场景的方法</a>,by jack huang.</li>
+<li><a href="http://man.linuxde.net/axel" target="_blank" rel="noopener">axel命令</a>,by Linux命令大全.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/03/09/Git-Clone%E5%A4%A7%E9%A1%B9%E7%9B%AE%E8%B6%85%E8%BF%871G%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/09/Git-Clone%E5%A4%A7%E9%A1%B9%E7%9B%AE%E8%B6%85%E8%BF%871G%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" itemprop="url">
+                  Git_Clone大项目超过1G失败解决方案
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-09 08:59:46 / 修改时间：20:19:21" itemprop="dateCreated datePublished" datetime="2019-03-09T08:59:46+08:00">2019-03-09</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>SourceForge.net，又称SF.net，是开源软件的开发者进行开发管理的集中式场所，也是全球最大开源软件开发平台和仓库。FlightGear的源代码就托管在该平台。最近在使用Git克隆FlightGear的子项目fgdata时，老是到1G时失败。具体情况如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># git clone fgdata大项目时超过1G就会出错</span><br><span class="line">$ git clone https:&#x2F;&#x2F;git.code.sf.net&#x2F;p&#x2F;flightgear&#x2F;fgdata</span><br><span class="line">Cloning into &#39;fgdata&#39;...</span><br><span class="line">remote: Counting objects: 61455, done.</span><br><span class="line">remote: Compressing objects: 100% (27321&#x2F;27321), done.</span><br><span class="line">error: RPC failed; curl 56 GnuTLS recv error (-110): The TLS connection was non-properly terminated.</span><br><span class="line">fatal: The remote end hung up unexpectedly</span><br><span class="line">fatal: early EOF</span><br><span class="line">fatal: index-pack failed</span><br></pre></td></tr></table></figure>
+
+<p>经多种方案尝试，使用如下方法可避免该问题：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git clone git:&#x2F;&#x2F;git.code.sf.net&#x2F;p&#x2F;flightgear&#x2F;fgdata</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://forum.flightgear.org/viewtopic.php?f=20&t=33620&p=329768&hilit=clone+fgdata+fail#p329768" target="_blank" rel="noopener">FGdata downloading error</a>,by flightgear forum.</li>
+<li><a href="https://sourceforge.net/p/forge/documentation/Git/#anonymous-access-read-only" target="_blank" rel="noopener">SourceForge Support</a>,by sourceforge.</li>
+<li><a href="https://www.aneasystone.com/archives/2015/08/git-clone-faster.html" target="_blank" rel="noopener">git clone 太慢怎么办？</a>, by aneasystone.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/03/08/Flightgear%E5%9C%A8Linux-Debian%E4%B8%AD%E7%9A%84%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1761,350 +2087,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/26/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/26/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E5%85%A5%E9%97%A8/" itemprop="url">
-                  依赖注入入门
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-26 20:34:08 / 修改时间：20:50:01" itemprop="dateCreated datePublished" datetime="2019-01-26T20:34:08+08:00">2019-01-26</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="依赖注入定义"><a href="#依赖注入定义" class="headerlink" title="依赖注入定义"></a>依赖注入定义</h1><p>在软件工程中，依赖注入是种实现控制反转用于解决依赖性设计模式。一个依赖关系指的是可被利用的一种对象（即服务提供端） 。依赖注入是将所依赖的传递给将使用的从属对象（即客户端）。该服务是将会变成客户端的状态的一部分。 传递服务给客户端，而非允许客户端来建立或寻找服务，是本设计模式的基本要求。</p>
-<h1 id="依赖注入意义"><a href="#依赖注入意义" class="headerlink" title="依赖注入意义"></a>依赖注入意义</h1><h2 id="依赖存在的问题"><a href="#依赖存在的问题" class="headerlink" title="依赖存在的问题"></a>依赖存在的问题</h2><p>如果在 Class A 中，有 Class B 的实例，则称 Class A 对 Class B 有一个依赖。例如下面类 Human 中用到一个 Father 对象，我们就说类 Human 对类 Father 有一个依赖。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class Human &#123;</span><br><span class="line">    ...</span><br><span class="line">    Father father;</span><br><span class="line">    ...</span><br><span class="line">    public Human() &#123;</span><br><span class="line">        father &#x3D; new Father();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>仔细看这段代码我们会发现存在一些问题：</p>
-<ul>
-<li>如果现在要改变 father 生成方式，如需要用new Father(String name)初始化 father，需要修改 Human 代码；</li>
-<li>如果想测试不同 Father 对象对 Human 的影响很困难，因为 father 的初始化被写死在了 Human 的构造函数中；</li>
-<li>如果new Father()过程非常缓慢，单测时我们希望用已经初始化好的 father 对象 Mock 掉这个过程也很困难。</li>
-</ul>
-<h2 id="依赖注入的好处"><a href="#依赖注入的好处" class="headerlink" title="依赖注入的好处"></a>依赖注入的好处</h2><p>上面将依赖在构造函数中直接初始化是一种 Hard init 方式，弊端在于两个类不够独立，不方便测试。我们还有另外一种 Init 方式，如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class Human &#123;</span><br><span class="line">    ...</span><br><span class="line">    Father father;</span><br><span class="line">    ...</span><br><span class="line">    public Human(Father father) &#123;</span><br><span class="line">        this.father &#x3D; father;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面代码中，我们将 father 对象作为构造函数的一个参数传入。在调用 Human 的构造方法之前外部就已经初始化好了 Father 对象。像这种非自己主动初始化依赖，而通过外部来传入依赖的方式，我们就称为依赖注入。</p>
-<p>现在我们发现上面 1 中存在的两个问题都很好解决了，简单的说依赖注入主要有两个好处：</p>
-<ul>
-<li>解耦，将依赖之间解耦。</li>
-<li>因为已经解耦，所以方便做单元测试，尤其是 Mock 测试。</li>
-</ul>
-<h1 id="依赖注入实现"><a href="#依赖注入实现" class="headerlink" title="依赖注入实现"></a>依赖注入实现</h1><h2 id="Java中的依赖注入"><a href="#Java中的依赖注入" class="headerlink" title="Java中的依赖注入"></a>Java中的依赖注入</h2><p>依赖注入的实现有多种途径，而在 Java 中，使用注解是最常用的。通过在字段的声明前添加 @Inject 注解进行标记，来实现依赖对象的自动注入。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class Human &#123;</span><br><span class="line">    ...</span><br><span class="line">    @Inject Father father;</span><br><span class="line">    ...</span><br><span class="line">    public Human() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面这段代码看起来很神奇：只是增加了一个注解，Father 对象就能自动注入了？这个注入过程是怎么完成的？</p>
-<p>实质上，如果你只是写了一个 @Inject 注解，Father 并不会被自动注入。你还需要使用一个依赖注入框架，并进行简单的配置。现在 Java 语言中较流行的依赖注入框架有 Google Guice、Spring 等，而在 Android 上比较流行的有 RoboGuice、Dagger 等。</p>
-<h2 id="PHP中的依赖注入"><a href="#PHP中的依赖注入" class="headerlink" title="PHP中的依赖注入"></a>PHP中的依赖注入</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class Application</span><br><span class="line">&#123;</span><br><span class="line">    function __construct(Auth $auth, Session $session)</span><br><span class="line">    &#123;</span><br><span class="line">        $this-&gt;auth    &#x3D; $auth;</span><br><span class="line">        $this-&gt;session &#x3D; $session;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; ... 程式 ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$auth        &#x3D; new Auth(&#39;localhost&#39;, &#39;root&#39;, &#39;&#39;);</span><br><span class="line">$session     &#x3D; new Session();</span><br><span class="line">$application &#x3D; new Application($auth, $session);</span><br><span class="line"></span><br><span class="line">$application-&gt;login(&#39;admin&#39;, &#39;admin&#39;);</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/依赖注入" target="_blank" rel="noopener">依赖注入</a>,by wikipedia.</li>
-<li><a href="https://github.com/android-cn/blog/tree/master/java/dependency-injection" target="_blank" rel="noopener">依赖注入</a>,by android-cn.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/26/%E6%A8%A1%E4%BB%BF%E5%AD%A6%E4%B9%A0%E7%A0%94%E7%A9%B6%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/26/%E6%A8%A1%E4%BB%BF%E5%AD%A6%E4%B9%A0%E7%A0%94%E7%A9%B6%E7%AC%94%E8%AE%B0/" itemprop="url">
-                  模仿学习研究笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-26 11:31:05" itemprop="dateCreated datePublished" datetime="2019-01-26T11:31:05+08:00">2019-01-26</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-30 22:16:55" itemprop="dateModified" datetime="2019-01-30T22:16:55+08:00">2019-01-30</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="模仿学习定义"><a href="#模仿学习定义" class="headerlink" title="模仿学习定义"></a>模仿学习定义</h1><p>模仿学习是指从示教者提供的范例中学习，一般提供人类专家的决策数据</p>
-<p>$${ \tau_1,\tau_2,\ldots,\tau_m }$$</p>
-<p>，每个决策包含状态和动作序列  </p>
-<p>$$\tau_i = &lt;s_1^i,a_1^i,s_2^i,a_2^i,\ldots,s_{n_ni+1}^i&gt;$$ </p>
-<p>，将所有「状态-动作对」抽取出来构造新的集合 </p>
-<p>$$\mathcal{D}={ (s_1,a_1),(s_2,a_2),(s_3,a_3),\ldots }$$ </p>
-<p>。之后就可以把状态作为特征（feature），动作作为标记（label）进行分类（对于离散动作）或回归（对于连续动作）的学习从而得到最优策略模型。模型的训练目标是使模型生成的状态-动作轨迹分布和输入的轨迹分布相匹配。</p>
-<h1 id="模仿学习意义"><a href="#模仿学习意义" class="headerlink" title="模仿学习意义"></a>模仿学习意义</h1><p>在传统的强化学习任务中，通常通过计算累积奖赏来学习最优策略（policy），这种方式简单直接，而且在可以获得较多训练数据的情况下有较好的表现。然而在多步决策（sequential decision）中，学习器不能频繁地得到奖励，且这种基于累积奖赏及学习方式存在非常巨大的搜索空间。而模仿学习（Imitation Learning）的方法经过多年的发展，已经能够很好地解决多步决策问题，在机器人、 NLP 等领域也有很多的应用。</p>
-<h1 id="模仿学习实现"><a href="#模仿学习实现" class="headerlink" title="模仿学习实现"></a>模仿学习实现</h1><p>当前主要以下几种方法实现模型学习：</p>
-<h2 id="行为克隆（Behavior-Cloning）"><a href="#行为克隆（Behavior-Cloning）" class="headerlink" title="行为克隆（Behavior Cloning）"></a>行为克隆（Behavior Cloning）</h2><p>行为克隆（Behavior Cloning）根据人类提供的状态动作对来习得策略，是作为监督学习的模仿学习。</p>
-<h2 id="逆强化学习（Inverse-Reinforcement-Learning-）"><a href="#逆强化学习（Inverse-Reinforcement-Learning-）" class="headerlink" title="逆强化学习（Inverse Reinforcement Learning ）"></a>逆强化学习（Inverse Reinforcement Learning ）</h2><p>IRL 是 反过来的 RL，RL 是根据 reward 进行参数的调整，然后得到一个 policy。</p>
-<p>但是， IRL 就不同了，因为他没有显示的 reward，只能根据 人类行为，进行 reward的估计（反推 reward 的函数）。在得到 reward 函数估计出来之后，再进行 策略函数的估计。</p>
-<p>逆强化学习是在给定一个专家之后（expert policy），通过不断地寻找 reward function 来满足给定的 statement（即，解释专家的行为，explaining expert behavior）。</p>
-<h2 id="结构化预测（Structured-prediction）"><a href="#结构化预测（Structured-prediction）" class="headerlink" title="结构化预测（Structured prediction）"></a>结构化预测（Structured prediction）</h2><p>在机器学习过程中，对数据的拟合其实就是在找一个拟合函数f，比如对于回归问题（Regression）来说，这个函数输出一个标量（scalar），对于分类问题（Classification）来说，这个函数输出一个类别（一个one-hot的向量），但是有一类的预测，它并不是输出一个标量或者一个类别，而是输出些有结构的输出，比如，一个序列，一个句子，一个图，一颗树。</p>
-<h2 id="生成对抗网络（GAN-for-Imitation-Learning）"><a href="#生成对抗网络（GAN-for-Imitation-Learning）" class="headerlink" title="生成对抗网络（GAN for Imitation Learning）"></a>生成对抗网络（GAN for Imitation Learning）</h2><p>那么如何用 GAN 来做这个事情呢？对应到这件事情上，我们知道，我们想得到的 轨迹 是属于某一个高维的空间中，而 expert 给定的那些轨迹，我们假设是属于一个 distribution，我们想让我们的 model，也去 predict 一个分布出来，然后使得这两者之间尽可能的接近。从而完成 actor 的训练过程。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/25688750" target="_blank" rel="noopener">模仿学习（Imitation Learning）完全介绍（一）</a>,by 我勒个矗.</li>
-<li><a href="https://yq.aliyun.com/articles/310760" target="_blank" rel="noopener">深度强化学习之：模仿学习（imitation learning）</a>,by wangxiaocvpr.</li>
-<li><a href="https://blog.csdn.net/c2a2o2/article/details/77336551" target="_blank" rel="noopener">机器人学习Robot Learning之模仿学习Imitation Learning的发展</a>,by c2a2o2.</li>
-<li><a href="https://hewangxing.gitee.io/行为克隆/" target="_blank" rel="noopener">行为克隆</a>,by XINGYES.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/45845001" target="_blank" rel="noopener">最前沿：用模仿学习来学习增强学习</a>,by Flood Sung.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/33789604" target="_blank" rel="noopener">机器人学习最前沿：一眼模仿学习（One-Shot Imitation Learning）的三级跳</a>,by Flood Sung.</li>
-<li><a href="https://www.cnblogs.com/wangxiaocvpr/p/8016414.html" target="_blank" rel="noopener">深度学习课程笔记（七）：模仿学习（imitation learning）</a>,by WangXiao.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2152,7 +2134,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">264</span>
+                    <span class="site-state-item-count">266</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2859,11 +2841,11 @@
       
     
       
+    
+      
+    
+      
         
-      
-    
-      
-    
       
     
       

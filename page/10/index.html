@@ -314,6 +314,389 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/09/16/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E%E4%B8%8E%E7%89%A9%E7%90%86%E5%BC%95%E6%93%8E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/16/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E%E4%B8%8E%E7%89%A9%E7%90%86%E5%BC%95%E6%93%8E/" itemprop="url">
+                  游戏引擎与物理引擎
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-16 21:44:49" itemprop="dateCreated datePublished" datetime="2019-09-16T21:44:49+08:00">2019-09-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-10-07 21:24:42" itemprop="dateModified" datetime="2019-10-07T21:24:42+08:00">2019-10-07</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>游戏引擎提供一系列可视化开发工具和可重用组件。这些工具通过与开发环境进行集成，方便开发者简单、快速进行数据驱动方式的游戏开发。为了提高游戏开发人员的开发效率，引擎开发者会开发出大量的游戏所需要的软件组件。大多数引擎集成了图形、声音、物理和人工智能等功能部件。游戏引擎会被称为“中间件”，因为它们可以提供灵活和重用平台，向游戏开发者提供所需要的全部核心功能，从而节省大量的游戏开发费用，降低开发的复杂性，缩短游戏的上市时间，所有这些对于高竞争性的游戏产业来说都是关键因素。诸如虚幻系列引擎、Unity3D、Frostbite Engine、zerodin引擎、Doom3引擎、CryENGINE、3DGame Studio、RenderWare、Gamebryo、Virtools以及Source引擎等引擎。</p>
+<p>物理引擎是一个计算机程序模拟牛顿力学模型，使用质量、速度、摩擦力和空气阻力等变量。可以用来预测这种不同情况下的效果。它主要用在计算物理学和电子游戏以及计算机动画当中。物理引擎可作为游戏引擎的一个组件。</p>
+<p>物理引擎有两种类型常见的型类：实时物理引擎和高精度物理引擎。高精度的物理引擎需要更多的处理能力来计算非常精确的物理，通常使用在科学研究（计算物理学）和计算机动画电影制作。实时物理引擎使用通常使用在电子游戏并且简化运算，降低精确度增以减少计算时间，得到在电子游戏当中可以接受的的处理速度。常用的物理引擎有：ODE、Box2D、PhysX、Bullet、Havok引擎。</p>
+<h1 id="游戏主循环"><a href="#游戏主循环" class="headerlink" title="游戏主循环"></a>游戏主循环</h1><p>FPS(Frame Per Second)游戏帧速60帧是指游戏每秒循环更新60次。  </p>
+<p>一个游戏程序的基本结构像是这样:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	updateEverything();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="固定拖时间更新法"><a href="#固定拖时间更新法" class="headerlink" title="固定拖时间更新法"></a>固定拖时间更新法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	updateEverything();</span><br><span class="line">	sleep(1.0&#x2F;60);&#x2F;&#x2F;程序进程等待1&#x2F;60秒</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="累积时间更新法"><a href="#累积时间更新法" class="headerlink" title="累积时间更新法"></a>累积时间更新法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* getCurrentTime()每次调用返回当前的时间 *&#x2F;</span><br><span class="line">float lastUpdateTime &#x3D; getCurrentTime();</span><br><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	float currentTime &#x3D; getCurrentTime();</span><br><span class="line">	float deltaTime &#x3D; currentTime - lastUpdateTime;</span><br><span class="line">    &#x2F;* 每调用updateEverything()后检查时间，</span><br><span class="line">     直到过去的时间达到1&#x2F;60秒就进行下一次更新 *&#x2F;</span><br><span class="line">	if (deltaTime &gt;&#x3D; 1.0&#x2F;60)</span><br><span class="line">	&#123;</span><br><span class="line">		lastUpdateTime &#x3D; currentTime;</span><br><span class="line">		updateEverything();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="图形更新调用法"><a href="#图形更新调用法" class="headerlink" title="图形更新调用法"></a>图形更新调用法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	updateEverything();</span><br><span class="line">	&#x2F;* 等待垂直同步信号间的空白时间，程序执行到这里会进入等待</span><br><span class="line">	 一般会被封装在类似swapBuffer之类的图形API中执行，</span><br><span class="line">	 但是程序要开启了垂直同步的功能才有效。</span><br><span class="line">	 不过貌似现在的智能手机都默认有垂直同步的效果，</span><br><span class="line">	 当然手机和PC的硬件技术不同，可能也不叫这个名字了。*&#x2F;</span><br><span class="line">	waitForVerticalBlank();</span><br><span class="line">	drawEverything();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="死循环并计算时间差用于更新法"><a href="#死循环并计算时间差用于更新法" class="headerlink" title="死循环并计算时间差用于更新法"></a>死循环并计算时间差用于更新法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">float lastUpdateTime &#x3D; getCurrentTime();</span><br><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	float currentTime &#x3D; getCurrentTime();</span><br><span class="line">	float deltaTime &#x3D; currentTime - lastUpdateTime;</span><br><span class="line">	lastUpdateTime &#x3D; currentTime;</span><br><span class="line">	updateEverything(deltaTime);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void updateMove(float deltaTime)</span><br><span class="line">&#123;</span><br><span class="line">	position.x +&#x3D; speedX * deltaTime;</span><br><span class="line">	position.y +&#x3D; speedY * deltaTime;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="累积时间半固定时长等图形更新并将时间差用于更新法"><a href="#累积时间半固定时长等图形更新并将时间差用于更新法" class="headerlink" title="累积时间半固定时长等图形更新并将时间差用于更新法"></a>累积时间半固定时长等图形更新并将时间差用于更新法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;假设目标是60帧&#x2F;秒更新的游戏</span><br><span class="line">float lastUpdateTime &#x3D; getCurrentTime();</span><br><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	float currentTime &#x3D; getCurrentTime();</span><br><span class="line">	float deltaTime &#x3D; currentTime - lastUpdateTime;</span><br><span class="line">	lastUpdateTime &#x3D; currentTime;</span><br><span class="line">    &#x2F;* 如果游戏太卡，过长的时间差可能会导致跳过一些不能跳过的游戏逻辑，所以做一些人为限制 *&#x2F;</span><br><span class="line">    if (deltaTime &gt; 1.0&#x2F;30) deltaTime &#x3D; 1.0&#x2F;30;</span><br><span class="line">	updateEverything(deltaTime);</span><br><span class="line">	waitForVerticalBlank();</span><br><span class="line">	drawEverything();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述方法只针对单机游戏有效，如果是网络游戏，考虑客户端之间的同步问题的话，帧速不稳定地变来变去是不好的，我们可以记录过去的时间里跑过的帧数，如果达不到目标帧数就连续进行更新直到赶上需要的帧数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;假设目标是60帧&#x2F;秒更新的游戏</span><br><span class="line">float startTime &#x3D; getCurrentTime();</span><br><span class="line">long passedFrames &#x3D; 0;</span><br><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	float currentTime &#x3D; getCurrentTime();</span><br><span class="line">	float totalTime &#x3D; currentTime - startTime;</span><br><span class="line">	long targetTotalFrames &#x3D; totalTime&#x2F;(1.0&#x2F;60);</span><br><span class="line">	&#x2F;* 如果某一次更新耗时太久，则会导致passedFrames和targetTotalFrames差太多，所以就连续更新好几次逻辑来赶上目标的更新次数，以保证游戏的进度稳定*&#x2F;</span><br><span class="line">	while (passedFrames &lt; targetTotalFrames)</span><br><span class="line">	&#123;</span><br><span class="line">		updateEverything();</span><br><span class="line">		passedFrames++;</span><br><span class="line">	&#125;</span><br><span class="line">	&#x2F;* 图形更新应该在逻辑完全完成更新以后才进行 *&#x2F;</span><br><span class="line">	drawEverything();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="游戏时间"><a href="#游戏时间" class="headerlink" title="游戏时间"></a>游戏时间</h1><p>计算机是通过高分辨率计时器来衡量现实时间的，而游戏时间显然不能和真实事件的时间线一致，每个游戏都会有自身的时间线，该时间线和真实时间是两个平行的世界。开发者可以暂停游戏，冻结时间线，也可以通过某种指令来加速时间线，这些对于游戏的调试非常有帮助。一些游戏也会有一些类似时光倒流或者时间变慢的特殊特效，而这些都是通过操作时间线来完成的。</p>
+<p>现在假设游戏程序以 60 FPS 在运行，则每帧的处理时间大约为16毫秒。如果想要确保帧率稳定运行，每次循环的处理时间都应该小于这个值，剩余的时间，程序进入睡眠状态：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">while(true)</span><br><span class="line">&#123;</span><br><span class="line">    double start &#x3D; getCurrentTime();</span><br><span class="line"></span><br><span class="line">    processInput();</span><br><span class="line">    udpate();</span><br><span class="line">    render();</span><br><span class="line"></span><br><span class="line">    sleep(start + MS_PER_FRAME - getCurrentTime());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果每帧的处理时间小于16毫秒，sleep 可以保证游戏不会运行的太快。但是如果游戏的每帧超过16毫秒则会出现卡顿现象。</p>
+<p>上面的代码中如果正常的情况下，可以确保每帧推进游戏进程16毫秒，但是因为每帧执行的时间无法固定，会导致帧处理时间超出固定的16毫秒而将游戏拖慢。在无法保证帧处理时间的情况下，我们尝试动态的更新策略，让每帧推进的时间不再是固定的16毫秒，而是根据帧处理的时间来动态调整：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">double lastTime &#x3D; getCurrentTime();</span><br><span class="line">while (true)</span><br><span class="line">&#123;</span><br><span class="line">    double current &#x3D; getCurrentTime();</span><br><span class="line">    double elapsed &#x3D; current - lastTime;</span><br><span class="line">    processInput();</span><br><span class="line">    update(elapsed);</span><br><span class="line">    render();</span><br><span class="line">    lastTime &#x3D; current;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每一帧我们都计算花费的真实时间（elapsed），而这条根据真实时间测量的时间线被称为全局时间线，所有的游戏内部 update() 逻辑都是基于这条全局时间线。update() 函数内部的处理逻辑会根据传入的时间间隔来驱动所有物体的动态效果，每个物体都有自己的局部时间线，这个局部时间线和全局时间线之间存在着一定的比例关系。例如游戏中存在一个飞行的子弹，子弹的飞行距离 = 子弹的飞行速度 * 子弹的飞行时间。这里的飞行时间并不一定是上面提到的全局时间线，可能是它的1/2或者2倍都是可以的，具体的快慢比例完全取决于你的游戏配置，这条和全局时间线比例不同的时间线也就是局部时间线。</p>
+<p>游戏中渲染通常并不会被时间所影响，因为渲染引擎只是单纯的渲染某一时刻的数据逻辑，一般和时间没有关系。受影响的主要是游戏的逻辑更新部分，为了保证不会出现不同硬件的游戏效果不一致，我们可以固定游戏逻辑的更新时间间隔，确保更新频率保持一致。这样做虽然可能导致在配置好的机器上相同的逻辑被渲染多次，但是这显然并不会影响游戏逻辑。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">double previous &#x3D; getCurrentTime();</span><br><span class="line">double lag &#x3D; 0.0; </span><br><span class="line">while (true) &#123; </span><br><span class="line">	double current &#x3D; getCurrentTime(); </span><br><span class="line">	double elapsed &#x3D; current - previous; </span><br><span class="line">	previous &#x3D; current; </span><br><span class="line">	lag +&#x3D; elapsed;</span><br><span class="line"></span><br><span class="line">	processInput();</span><br><span class="line">	while (lag &gt;&#x3D; MS_PER_UPDATE)</span><br><span class="line">	&#123;</span><br><span class="line">		update();</span><br><span class="line">		lag -&#x3D; MS_PER_UPDATE;</span><br><span class="line">	&#125;</span><br><span class="line">    render();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在<strong>游戏渲染时间线和游戏的更新时间线</strong>已经分离，代码中保持游戏的更新时间线以固定的时间间隔推进，这个时间间隔越短，update() 更新的频率越快，越慢更新的频率越低，过慢的更新频率会导致游戏产生抖动现象，不过因为时间步长和硬件不相关，这种现象只会出现在低端机器上。</p>
+<p>通过上面的代码基本上已经可以解决游戏循环的大部分问题了，但是还会出现一种现象，就是当一次循环消耗过长的时间，在下一次游戏渲染的时候，渲染的数据仍然是上一个时间点的数据，而不是真实时间点的数据，这听起来不太容易理解，可以看下面的示意图：</p>
+<p align="center">
+    <img src="images/game-loop-timeline.png" width="100%" alt="游戏更新与渲染"/>
+</p>
+<center>图1 游戏更新与渲染不一致</center>
+
+<p>在图中可以看出这是一个游戏的更新渲染序列，这里看第三次渲染（红点的位置）。因为上一帧的时间花费过长，导致在一帧的逻辑中调用了 update() 两次，进行了两次更新，这时渲染和更新的时间线发生偏移，渲染的真实位置在两次更新逻辑的中间，而渲染的结果却是上一次更新的结果（绿点的位置）。这显然是不对的，因为渲染的结果和现在真实的更新结果并不一样，这时候我们需要计算出二者时间线的偏移值，让渲染的结果符合真实的更新逻辑，也就是说需要计算出从绿点到红点位置的数据变化情况，只有这样渲染的结果才符合常理。</p>
+<p>解决这个问题其实很简单，只需要将偏移的大小告诉渲染逻辑即可，渲染逻辑怎样处理这个偏移时间还需要程序自己来决定。</p>
+<p>将渲染的代码改为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">render(lag &#x2F; MS_PER_UPDATE);</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://blog.jmecn.net/chapter-16-physics-engine/" target="_blank" rel="noopener">第十六章：物理引擎</a>,by 冰点.</li>
+<li><a href="https://www.zhihu.com/question/277300055" target="_blank" rel="noopener">为什么单机游戏中的碰撞很不真实？物理引擎真的很难做到和现实一样吗？</a>,by zhihu.</li>
+<li><a href="http://blog.gifplane.com/2018/10/08/1-UnityOpt14.html" target="_blank" rel="noopener">5.1、Faster Physics(一)</a>,by GIFPlane.</li>
+<li><a href="http://www.luvfight.me/game-loop/" target="_blank" rel="noopener">游戏主循环、帧速控制</a>,by luvfight.</li>
+<li><a href="http://www.luvfight.me/update-components/" target="_blank" rel="noopener">一些游戏程序的基础知识（一）</a>,by luvfight.</li>
+<li><a href="http://www.luvfight.me/draw-components/" target="_blank" rel="noopener">一些游戏程序的基础知识（二）</a>,by luvfight.</li>
+<li><a href="https://www.cnblogs.com/murongxiaopifu/p/7683140.html" target="_blank" rel="noopener">FixedUpdate真的是固定的时间间隔执行吗？聊聊游戏定时器</a>,by 嘉栋.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E6%96%B9%E6%B3%95" target="_blank" rel="noopener">欧拉方法</a>,by wikipedia.</li>
+<li><a href="https://wangzhechao.com/2dgames/chapter11/game%20loop.html" target="_blank" rel="noopener">游戏循环</a>,by 没事造轮子.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/09/15/CPlusPlus%E8%99%9A%E5%87%BD%E6%95%B0%E4%B8%8E%E7%BA%AF%E8%99%9A%E5%87%BD%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/15/CPlusPlus%E8%99%9A%E5%87%BD%E6%95%B0%E4%B8%8E%E7%BA%AF%E8%99%9A%E5%87%BD%E6%95%B0/" itemprop="url">
+                  C++虚函数与纯虚函数
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-15 21:19:43" itemprop="dateCreated datePublished" datetime="2019-09-15T21:19:43+08:00">2019-09-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-01-21 11:42:02" itemprop="dateModified" datetime="2020-01-21T11:42:02+08:00">2020-01-21</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在面向对象程序设计领域，C++、Object Pascal 等语言中有<strong>虚函数</strong>（英语：virtual function）或虚方法（英语：virtual method）的概念。这种函数或方法可以被子类继承和覆盖，通常使用动态调度实现。</p>
+<p><strong>纯虚函数或纯虚方法</strong>是一个需要被非抽象的派生类覆盖（override）的虚函数. 包含纯虚方法的类被称作抽象类; 抽象类不能被直接实例化。 一个抽象基类的一个子类只有在所有的纯虚函数在该类(或其父类)内给出实现时, 才能直接实例化. 纯虚方法通常只有声明(签名)而没有定义(实现)，但有特例情形要求纯虚函数必须给出函数体定义.</p>
+<h1 id="虚函数示例"><a href="#虚函数示例" class="headerlink" title="虚函数示例"></a>虚函数示例</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"># include &lt;iostream&gt;</span><br><span class="line"># include &lt;vector&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line">class Animal</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    virtual void eat() const &#123; cout &lt;&lt; &quot;I eat like a generic Animal.&quot; &lt;&lt; endl; &#125;</span><br><span class="line">    virtual ~Animal() &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">class Wolf : public Animal</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    void eat() const &#123; cout &lt;&lt; &quot;I eat like a wolf!&quot; &lt;&lt; endl; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">class Fish : public Animal</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    void eat() const &#123; cout &lt;&lt; &quot;I eat like a fish!&quot; &lt;&lt; endl; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">class GoldFish : public Fish</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    void eat() const &#123; cout &lt;&lt; &quot;I eat like a goldfish!&quot; &lt;&lt; endl; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">class OtherAnimal : public Animal</span><br><span class="line">&#123;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    std::vector&lt;Animal*&gt; animals;</span><br><span class="line">    animals.push_back( new Animal() );</span><br><span class="line">    animals.push_back( new Wolf() );</span><br><span class="line">    animals.push_back( new Fish() );</span><br><span class="line">    animals.push_back( new GoldFish() );</span><br><span class="line">    animals.push_back( new OtherAnimal() );</span><br><span class="line"> </span><br><span class="line">    for( std::vector&lt;Animal*&gt;::const_iterator it &#x3D; animals.begin();</span><br><span class="line">       it !&#x3D; animals.end(); ++it) </span><br><span class="line">    &#123;</span><br><span class="line">        (*it)-&gt;eat();</span><br><span class="line">        delete *it;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">   return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以下是虚函数 Animal::eat() 的输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">I eat like a generic Animal.</span><br><span class="line">I eat like a wolf!</span><br><span class="line">I eat like a fish!</span><br><span class="line">I eat like a goldfish!</span><br><span class="line">I eat like a generic Animal.</span><br></pre></td></tr></table></figure>
+
+<h1 id="纯虚函数示例"><a href="#纯虚函数示例" class="headerlink" title="纯虚函数示例"></a>纯虚函数示例</h1><p>在C++语言中, 纯虚函数用一种特别的语法[=0]定义。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class Abstract &#123;</span><br><span class="line">public:</span><br><span class="line">   virtual void pure_virtual() &#x3D; 0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>纯虚函数的定义仅提供方法的原型. 虽然在抽象类中通常不提供纯虚函数的实现, 但是抽象类中可以包含其实现, 而且可以不在声明的同时给出定义[2]. 每个非抽象子类仍然需要重载该方法, 抽象类中实现的调用可以采用以下这种形式:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">void Abstract::pure_virtual() &#123;</span><br><span class="line">  &#x2F;&#x2F; do something</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Child : public Abstract &#123;</span><br><span class="line">  virtual void pure_virtual(); &#x2F;&#x2F; no longer abstract, this class may be</span><br><span class="line">                               &#x2F;&#x2F; instantiated.</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">void Child::pure_virtual() &#123;</span><br><span class="line">  Abstract::pure_virtual(); &#x2F;&#x2F; the implementation in the abstract class </span><br><span class="line">                            &#x2F;&#x2F; is executed</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/Hackbuteer1/article/details/7558868" target="_blank" rel="noopener">虚函数和纯虚函数的区别</a>,by hackbuteer1.</li>
+<li><a href="https://zh.wikipedia.org/wiki/虚函数" target="_blank" rel="noopener">虚函数</a>,by wikipedia.</li>
+<li><a href="https://blog.csdn.net/starlee/article/details/619827" target="_blank" rel="noopener">C++中虚析构函数的作用</a>,by StarLee.</li>
+<li><a href="https://blog.csdn.net/weiwangchao_/article/details/8730199" target="_blank" rel="noopener">开源免费的C/C++网络库(c/c++ sockets library) 七剑下天山</a>,by 工程师WWW.</li>
+<li><a href="https://www.cnblogs.com/JMLiu/p/6241427.html" target="_blank" rel="noopener">VS2010中属性页中，C/C++ –&gt;预处理器定义</a>,by J.M.Liu.</li>
+<li><a href="https://blog.csdn.net/zzwdkxx/article/details/44244535" target="_blank" rel="noopener">深入理解C/C++混合编程（关于#ifdef __cplusplus extern “C” {…}的用法）</a>,by zzwdkxx.</li>
+<li><a href="https://wiki.jikexueyuan.com/project/visual-studio/11.html" target="_blank" rel="noopener">带你玩转 Visual Studio——带你多工程开发</a>,by luoweifu.</li>
+<li><a href="https://www.cnblogs.com/carsonzhu/p/5275909.html" target="_blank" rel="noopener">c++中冒号（：）和双冒号（::）的用法</a>,by 小金乌会发光－Z&amp;M.</li>
+<li><a href="https://blog.csdn.net/chaipp0607/article/details/71525599" target="_blank" rel="noopener">C++ 构造函数总结</a>,by chaibubble.</li>
+<li><a href="http://c.biancheng.net/cpp/biancheng/view/229.html" target="_blank" rel="noopener">详谈C++保护成员和保护继承</a>,by C语言中文网.</li>
+<li><a href="https://blog.csdn.net/BjarneCpp/article/details/76044493" target="_blank" rel="noopener">c++ 内联函数（一看就懂）</a>,by 兴趣斗士.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/09/14/Ubuntu16-04%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85OSG/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1650,605 +2033,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/08/17/%E5%85%B3%E7%B3%BB%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E5%AD%98%E5%82%A8%E6%A0%91%E7%BB%93%E6%9E%84%E5%8F%8A%E5%89%8D%E7%AB%AF%E8%BF%98%E5%8E%9F%E7%9A%84%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/17/%E5%85%B3%E7%B3%BB%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E5%AD%98%E5%82%A8%E6%A0%91%E7%BB%93%E6%9E%84%E5%8F%8A%E5%89%8D%E7%AB%AF%E8%BF%98%E5%8E%9F%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
-                  关系数据库中存储树结构及前端还原的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-08-17 08:04:48 / 修改时间：18:12:58" itemprop="dateCreated datePublished" datetime="2019-08-17T08:04:48+08:00">2019-08-17</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>树形结构很常见，例如组织结构图、线性化讨论等。树形结构中，实例被称为节点（node），每个节点有多个子节点和一个父节点。最上层的节点叫根（root）节点，它没有父节点。最底层的节点叫叶（leaf）节点，它没有子节点。本文主要介绍如何在关系数据库中存储树结构，以及如何从关系数据库中恢复树结构。</p>
-<h1 id="关系数据库中存储树结构的方法"><a href="#关系数据库中存储树结构的方法" class="headerlink" title="关系数据库中存储树结构的方法"></a>关系数据库中存储树结构的方法</h1><h2 id="层级数据设计方案"><a href="#层级数据设计方案" class="headerlink" title="层级数据设计方案"></a>层级数据设计方案</h2><p>在关系数据库中存储树结构主要有以下几种方案：</p>
-<ul>
-<li>邻接表模型</li>
-</ul>
-<p>最常见的解决方案，在数据库表中添加parent_id字段，再引用同一张表中的其他记录的id。可通过一个外键约束维护这种关系。</p>
-<p>优点：增加叶节点、修改节点或子树位置很方便。</p>
-<p>缺点：查询节点的所有后代、删除子树很困难。</p>
-<ul>
-<li>路径枚举</li>
-</ul>
-<p>路径枚举是一个由连续的直接层级关系组成的完整路径。例如/usr/local/lib。</p>
-<p>优点：查询节点所有后代、插入新节点很方便。<br>缺点：依赖应用程序逻辑代码维护路径字符串，验证字符串正确性开销大。受限于字符串长度，树结构无法无限扩展。</p>
-<ul>
-<li>嵌套集</li>
-</ul>
-<p>嵌套集解决方案是存储子孙节点的相关信息，而不是节点的直接祖先。通常使用两个数字nsleft和nsright编码每个节点，以表示子孙节点信息。</p>
-<p>nsleft的数值小于该节点所有后代的ID，同时nsright的值大于该节点所有后代的ID。</p>
-<p>确定这三个值（nsleft，ID，nsright）的简单方法是对树进行一次深度优先遍历，在逐层深入过程中依次递增地分配nsleft的值，并在返回时依次递增地分配nsright的值。</p>
-<p>优点：查询给定节点祖先和后代很容易，删除非叶子节点，其后代会自动代替被删除节点成为其祖先节点的直接后代。</p>
-<p>缺点：不易理解，插入和移动节点复杂。</p>
-<ul>
-<li>闭包表</li>
-</ul>
-<p>闭包表通过额外的数据库表记录树中节点间父子的关系，包括直接的父子关系、间接的父子关系和指向自己的关系。</p>
-<h2 id="层级数据设计比较"><a href="#层级数据设计比较" class="headerlink" title="层级数据设计比较"></a>层级数据设计比较</h2><center>层级数据设计比较</center>
-
-<table>
-<thead>
-<tr>
-<th>设计</th>
-<th>表</th>
-<th>查询子</th>
-<th>查询树</th>
-<th>插入</th>
-<th>删除</th>
-<th>引用完整性</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>邻接表</td>
-<td>1</td>
-<td>简单</td>
-<td>困难</td>
-<td>简单</td>
-<td>简单</td>
-<td>是</td>
-</tr>
-<tr>
-<td>邻接表+递归查询</td>
-<td>1</td>
-<td>简单</td>
-<td>简单</td>
-<td>简单</td>
-<td>简单</td>
-<td>否</td>
-</tr>
-<tr>
-<td>路径枚举</td>
-<td>1</td>
-<td>简单</td>
-<td>简单</td>
-<td>简单</td>
-<td>简单</td>
-<td>否</td>
-</tr>
-<tr>
-<td>嵌套集</td>
-<td>1</td>
-<td>困难</td>
-<td>简单</td>
-<td>困难</td>
-<td>困难</td>
-<td>否</td>
-</tr>
-<tr>
-<td>闭包集</td>
-<td>2</td>
-<td>简单</td>
-<td>简单</td>
-<td>简单</td>
-<td>简单</td>
-<td>是</td>
-</tr>
-</tbody></table>
-<ul>
-<li>邻接表设计最简单，如果使用的数据库支持WITH或CONNECT BY PRIOR的递归查询，将使得邻接表查询更为高效。</li>
-</ul>
-<h1 id="前端从关系数据库中还原树结构"><a href="#前端从关系数据库中还原树结构" class="headerlink" title="前端从关系数据库中还原树结构"></a>前端从关系数据库中还原树结构</h1><p>表结构，使用sequelize的对象表示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&#39;use strict&#39;;</span><br><span class="line">module.exports &#x3D; (sequelize, DataTypes) &#x3D;&gt; &#123;</span><br><span class="line">  const Role &#x3D; sequelize.define(&#39;Role&#39;, &#123;</span><br><span class="line">    id: &#123;</span><br><span class="line">      type: DataTypes.STRING(50),</span><br><span class="line">      primaryKey: true</span><br><span class="line">    &#125;,</span><br><span class="line">    roleName: &#123;</span><br><span class="line">      type: DataTypes.STRING(128),</span><br><span class="line">      allowNull: false</span><br><span class="line">    &#125;,</span><br><span class="line">    path: &#123;</span><br><span class="line">      type: DataTypes.STRING(512),</span><br><span class="line">      allowNull: false,</span><br><span class="line">      unique: true,</span><br><span class="line">      comment: &#39;角色路径唯一！&#39;</span><br><span class="line">    &#125;,</span><br><span class="line">    deleteFlag:&#123;</span><br><span class="line">      type: DataTypes.BOOLEAN,</span><br><span class="line">      defaultValue: false</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, &#123;&#125;);</span><br><span class="line">  Role.associate &#x3D; function(models) &#123;</span><br><span class="line">    &#x2F;&#x2F; associations can be defined here</span><br><span class="line">    Role.hasMany(models.User)</span><br><span class="line">  &#125;;</span><br><span class="line">  return Role;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>递归生成角色树：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 获取第一层节点</span><br><span class="line">function getFirstLevel(recordList)&#123;</span><br><span class="line">    var firstLevelList&#x3D;[];</span><br><span class="line">    for(let i&#x3D;0;i&lt; recordList.length;i++)&#123;</span><br><span class="line">        let record&#x3D;recordList[i]</span><br><span class="line">        if (record.path.length &#x3D;&#x3D;&#x3D; 2 &amp;&amp; record.path.split(&#39;&#39;)[1] &#x3D;&#x3D;&#x3D; &#39;&#x2F;&#39; &amp;&amp; parseInt(record.path.split(&#39;&#39;)[0])&gt;&#x3D;0)&#123;</span><br><span class="line">            record.label&#x3D;record.roleName</span><br><span class="line">            firstLevelList.push(record)</span><br><span class="line">        &#125;        </span><br><span class="line">    &#125;</span><br><span class="line">    return firstLevelList</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 指定根节点，递归生成角色树</span><br><span class="line">function recursiveTree(parentRecord,recordList)&#123;</span><br><span class="line">    for (let i &#x3D; 0; i &lt; recordList.length; i++)&#123;</span><br><span class="line">        let record &#x3D; recordList[i]</span><br><span class="line">        if(parentRecord.path&#x3D;&#x3D;record.path.slice(0,-2))&#123;</span><br><span class="line">            record&#x3D;recursiveTree(record,recordList)</span><br><span class="line">            if (parentRecord.children&#x3D;&#x3D;undefined)&#123;</span><br><span class="line">                parentRecord.children&#x3D;[]</span><br><span class="line">            &#125;</span><br><span class="line">            parentRecord.children.push(record)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    parentRecord.label &#x3D; parentRecord.roleName</span><br><span class="line">    return parentRecord</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 生成角色树</span><br><span class="line">export function parseRoleTree(recordList)&#123;</span><br><span class="line">    var result &#x3D; getFirstLevel(recordList);</span><br><span class="line"></span><br><span class="line">    for (let i&#x3D;0;i&lt;result.length;i++)&#123;</span><br><span class="line">        parent &#x3D; result[i]</span><br><span class="line">        parent &#x3D; recursiveTree(parent, recordList)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/LDY1016/article/details/85784001" target="_blank" rel="noopener">java递归生成树形结构菜单</a>,by 伊宇紫.</li>
-<li>Bill Karwin著,谭振林,Push Chen译. SQL反模式[M].人民邮电出版社.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/08/10/%E7%BD%91%E9%A1%B5%E5%B8%83%E5%B1%80%E6%96%B9%E6%B3%95%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/10/%E7%BD%91%E9%A1%B5%E5%B8%83%E5%B1%80%E6%96%B9%E6%B3%95%E5%85%A5%E9%97%A8/" itemprop="url">
-                  网页布局方法入门
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-08-10 08:56:46" itemprop="dateCreated datePublished" datetime="2019-08-10T08:56:46+08:00">2019-08-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-11-05 20:56:22" itemprop="dateModified" datetime="2019-11-05T20:56:22+08:00">2019-11-05</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>使用CSS对网页布局进行设计是前端工程师的重要工作。下面即介绍各种CSS网页布局的方法，以及相应的技术。</p>
-<h1 id="居中方法"><a href="#居中方法" class="headerlink" title="居中方法"></a>居中方法</h1><p>居中在布局中很常见，假设DOM文档结构如下，子元素要在父元素中居中：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class&#x3D;&quot;parent&quot;&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;child&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="水平居中"><a href="#水平居中" class="headerlink" title="水平居中"></a>水平居中</h2><p>子元素为行内元素还是块状元素，宽度一定还是宽度未定，采取的布局方案不同。以下即根据子元素的类型给出对应水平居中方法：</p>
-<ul>
-<li><strong>行内元素</strong>：对父元素设置text-align:center;</li>
-<li><strong>定宽块状元素</strong>: 设置左右margin值为auto;</li>
-<li><strong>不定宽块状元素</strong>: 设置子元素为display:inline,然后在父元素上设置text-align:center;</li>
-<li><strong>通用方案</strong>: flex布局，对父元素设置display:flex;justify-content:center;</li>
-</ul>
-<h2 id="垂直居中"><a href="#垂直居中" class="headerlink" title="垂直居中"></a>垂直居中</h2><p>垂直居中对于子元素是单行内联文本、多行内联文本以及块状元素采用的方案是不同的。具体方法如下：</p>
-<ul>
-<li><strong>父元素一定，子元素为单行内联文本</strong>：设置父元素的height等于行高line-height</li>
-<li><strong>父元素一定，子元素为多行内联文本</strong>：设置父元素的display:table-cell或inline-block，再设置vertical-align:middle;</li>
-<li><strong>块状元素</strong>:设置子元素position:absolute 并设置top、bottom为0，父元素要设置定位为static以外的值，margin:auto;</li>
-</ul>
-<h1 id="单列布局"><a href="#单列布局" class="headerlink" title="单列布局"></a>单列布局</h1><p>单列布局如图1所示，可分成两种类型，有定宽、水平居中的特点。</p>
-<ul>
-<li>一种是header、content、footer宽度都相同，其一般不会占满浏览器的最宽宽度，但当浏览器宽度缩小低于其最大宽度时，宽度会自适应。</li>
-<li>一种是header、footer宽度为浏览器宽度，但content以及header和footer里的内容却不会占满浏览器宽度。</li>
-</ul>
-<p align="center">
-    <img src="images/layout1.png" width="60%" alt="单列布局的两种形式"/>
-</p>
-<center>图1 单列布局的两种形式</center>
-
-<p>对于第一种，对header、content、footer统一设置width或max-width，并通过margin:auto实现居中。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class&#x3D;&quot;layout&quot;&gt;</span><br><span class="line">  &lt;div id&#x3D;&quot;header&quot;&gt;头部&lt;&#x2F;div&gt;</span><br><span class="line">  &lt;div id&#x3D;&quot;content&quot;&gt;内容&lt;&#x2F;div&gt;</span><br><span class="line">  &lt;div id&#x3D;&quot;footer&quot;&gt;尾部&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.layout&#123;</span><br><span class="line">  &#x2F;*   width: 960px; *&#x2F;&#x2F;*设置width当浏览器窗口宽度小于960px时，单列布局不会自适应。*&#x2F;</span><br><span class="line">    max-width: 960px;</span><br><span class="line">    margin: 0 auto;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-<p>对于第二种，header、footer的内容宽度为100%，但header、footer的内容区以及content统一设置width 或 max-width，并通过margin:auto实现居中。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id&#x3D;&quot;header&quot;&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;layout&quot;&gt;头部&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div id&#x3D;&quot;content&quot; class&#x3D;&quot;layout&quot;&gt;内容&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div id&#x3D;&quot;footer&quot;&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;layout&quot;&gt;尾部&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.layout&#123;</span><br><span class="line">  &#x2F;*   width: 960px; *&#x2F;&#x2F;*设置width当浏览器窗口宽度小于960px时，单列布局不会自适应。*&#x2F;</span><br><span class="line">    max-width: 960px;</span><br><span class="line">    margin: 0 auto;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="二列-amp-三列布局"><a href="#二列-amp-三列布局" class="headerlink" title="二列&amp;三列布局"></a>二列&amp;三列布局</h1><p><strong>二列布局的特征是侧栏固定宽度，主栏自适应宽度。三列布局的特征是两侧两列固定宽度，中间列自适应宽度。</strong> 之所以将二列布局和三列布局写在一起，是因为二列布局可以看做去掉一个侧栏的三列布局，其布局的思想有异曲同工之妙。</p>
-<p>对于传统的实现方法，主要讨论上图2中前三种布局，经典的带有侧栏的二栏布局以及带有左右侧栏的三栏布局。使用flex技术，可实现图2的五种布局。</p>
-<p align="center">
-    <img src="images/layout2.png" width="60%" alt="二列&三列布局"/>
-</p>
-<center>图2  二列&三列布局</center>
-
-<p>实现二列&amp;三列布局的CSS技术主要有：</p>
-<h2 id="float-margin"><a href="#float-margin" class="headerlink" title="float+margin"></a>float+margin</h2><p>原理说明：设置两个侧栏分别向左向右浮动，中间列通过外边距给两个侧栏腾出空间，中间列的宽度根据浏览器窗口自适应。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id&#x3D;&quot;content&quot;&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;sub&quot;&gt;sub&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;extra&quot;&gt;extra&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;main&quot;&gt;main&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">.sub&#123;</span><br><span class="line">    width: 100px;</span><br><span class="line">    float: left;</span><br><span class="line">&#125;</span><br><span class="line">.extra&#123;</span><br><span class="line">    width: 200px;</span><br><span class="line">    float: right;</span><br><span class="line">&#125;</span><br><span class="line">.main&#123;</span><br><span class="line">    margin-left: 100px; </span><br><span class="line">    margin-right: 200px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>注意：</p>
-<ul>
-<li>DOM文档的书写顺序，先写两侧栏，再写主面板，更换后则侧栏会被挤到下一列（圣杯布局和双飞翼布局都会用到）。 　</li>
-<li>这种布局方式比较简单明了，但缺点是渲染时先渲染了侧边栏，而不是比较重要的主面板。</li>
-</ul>
-<h2 id="position-margin"><a href="#position-margin" class="headerlink" title="position+margin"></a>position+margin</h2><p>原理说明：通过绝对定位将两个侧栏固定，同样通过外边距给两个侧栏腾出空间，中间列自适应。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class&#x3D;&quot;sub&quot;&gt;left&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;main&quot;&gt;main&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;extra&quot;&gt;right&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">.sub, .extra &#123;</span><br><span class="line">    position: absolute;</span><br><span class="line">    top: 0; </span><br><span class="line">    width: 200px;</span><br><span class="line">&#125;</span><br><span class="line">.sub &#123; </span><br><span class="line">    left: 0;</span><br><span class="line">&#125;</span><br><span class="line">.extra &#123; </span><br><span class="line">    right: 0; </span><br><span class="line">&#125;</span><br><span class="line">.main &#123; </span><br><span class="line">    margin: 0 200px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>注意：</p>
-<ul>
-<li>本方法不限制DOM书写顺序，先写主面板会使主面板部分优先渲染（一般主面板会比侧栏内容重要）。</li>
-<li>与上一种方法相比，本种方法是通过定位来实现侧栏的位置固定。</li>
-<li>如果中间栏含有最小宽度限制，或是含有宽度的内部元素，则浏览器窗口小到一定程度，主面板与侧栏会发生重叠。</li>
-</ul>
-<h2 id="圣杯布局-float-负margin"><a href="#圣杯布局-float-负margin" class="headerlink" title="圣杯布局(float + 负margin)"></a>圣杯布局(float + 负margin)</h2><p>原理说明：</p>
-<p>主面板设置宽度为100%，主面板与两个侧栏都设置浮动，常见为左浮动，这时两个侧栏会被主面板挤下去。通过负边距将浮动的侧栏拉上来，左侧栏的负边距为100%，刚好是窗口的宽度，因此会从主面板下面的左边跑到与主面板对齐的左边，右侧栏此时浮动在主面板下面的左边，设置负边距为负的自身宽度刚好浮动到主面板对齐的右边。为了避免侧栏遮挡主面板内容，在外层设置左右padding值为左右侧栏的宽度，给侧栏腾出空间，此时主面板的宽度减小。由于侧栏的负margin都是相对主面板的，两个侧栏并不会像我们理想中的停靠在左右两边，而是跟着缩小的主面板一起向中间靠拢。此时使用相对布局，调整两个侧栏到相应的位置。</p>
-<h2 id="双飞翼布局-float-负margin"><a href="#双飞翼布局-float-负margin" class="headerlink" title="双飞翼布局(float + 负margin )"></a>双飞翼布局(float + 负margin )</h2><p>原理说明：</p>
-<p>双飞翼布局和圣杯布局的思想有些相似，都利用了浮动和负边距，但双飞翼布局在圣杯布局上做了改进，在main元素上加了一层div, 并设置margin,由于两侧栏的负边距都是相对于main-wrap而言，main的margin值变化便不会影响两个侧栏，因此省掉了对两侧栏设置相对布局的步骤。</p>
-<h2 id="flex布局"><a href="#flex布局" class="headerlink" title="flex布局"></a>flex布局</h2><p>与之前所讲的几种传统布局方案相比，flex布局的代码可谓异常简洁，而且非常通用，利用简单的三行CSS即实现了常见的五种布局。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class&#x3D;&quot;layout&quot;&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;main&quot;&gt;主内容栏宽度自适应&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;layout&quot;&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;main&quot;&gt;主内容栏宽度自适应&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;layout&quot;&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;左侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;main&quot;&gt;主内容栏宽度自适应&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;右侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;layout&quot;&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;第1个侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;第2个侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;main&quot;&gt;主内容栏宽度自适应&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;layout&quot;&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;main&quot;&gt;主内容栏宽度自适应&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;第1个侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;第2个侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.layout &#123;</span><br><span class="line">    display: flex;</span><br><span class="line">&#125;</span><br><span class="line">.main &#123;</span><br><span class="line">    flex: 1;</span><br><span class="line">&#125;</span><br><span class="line">.aside &#123;</span><br><span class="line">    width: 200px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="自适应与响应式布局"><a href="#自适应与响应式布局" class="headerlink" title="自适应与响应式布局"></a>自适应与响应式布局</h1><p>自适应是为了解决如何才能在不同大小的设备上呈现同样的网页，实现一次设计，普遍适用而提出的技术，以避免维护多个版本的针对不同分辨率设备的网页。</p>
-<p>但自适应存在一个问题，如果屏幕太小，即使网页能够根据屏幕大小进行适配，但是会感觉在小屏幕上查看，内容过于拥挤。响应式正是为了解决这个问题而衍生出来的概念。它可以自动识别屏幕宽度、并做出相应调整的网页设计，布局和展示的内容可能会有所变动。</p>
-<p>目前网页的响应式布局解决方案成为当前主流，并因 twitter 开源的 bootstrap 而被大家熟知。响应式布局的实现原理如下：</p>
-<ul>
-<li>允许网页宽度自动调整</li>
-</ul>
-<p>网页代码的头部，加入一行viewport元标签。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;meta name&#x3D;&quot;viewport&quot; content&#x3D;&quot;width&#x3D;device-width, initial-scale&#x3D;1&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure>
-<p>viewport是网页默认的宽度和高度，上面这行代码的意思是，网页宽度默认等于屏幕宽度（width=device-width），原始缩放比例（initial-scale=1）为1.0，即网页初始大小占屏幕面积的100%。</p>
-<ul>
-<li>尽量少使用绝对宽度</li>
-</ul>
-<p>由于网页会根据屏幕宽度调整布局，所以不能使用绝对宽度的布局，也不能使用具有绝对宽度的元素。这一条非常重要。具体说，CSS代码不能指定像素宽度：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">width:xxx px;</span><br></pre></td></tr></table></figure>
-
-<p>通过指定百分比宽度来替代：同时还可以配合css的cal，进行计算宽度。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">width: xx%;</span><br><span class="line">width:auto;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>相对大小的字体</li>
-</ul>
-<p>字体也不能使用绝对大小（px），而只能使用相对大小（em）或者高清方案（rem）,rem不局限于字体大小，前面的宽度width也可以使用，代替百分比。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">body &#123;</span><br><span class="line">  font: normal 100% Helvetica, Arial, sans-serif;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面的代码指定，字体大小是页面默认大小的100%，即16像素。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">h1 &#123;</span><br><span class="line">　　font-size: 1.5em; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后，h1的大小是默认大小的1.5倍，即24像素（24/16=1.5）。</p>
-<ul>
-<li>流动布局（fluid grid）</li>
-</ul>
-<p>“流动布局”的含义是，各个区块的位置都是浮动的，不是固定不变的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.main &#123;</span><br><span class="line">　　float: right;</span><br><span class="line">　　width: 70%; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.leftBar &#123;</span><br><span class="line">　　float: left;</span><br><span class="line">　　width: 25%;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>float的好处是，如果宽度太小，放不下两个元素，后面的元素会自动滚动到前面元素的下方，不会在水平方向overflow（溢出），避免了水平滚动条的出现。</p>
-<ul>
-<li>选择加载CSS</li>
-</ul>
-<p>“自适应网页设计”的核心，就是CSS3引入的Media Query模块。</p>
-<p>它的意思就是，自动探测屏幕宽度，然后加载相应的CSS文件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;link rel&#x3D;&quot;stylesheet&quot; type&#x3D;&quot;text&#x2F;css&quot;</span><br><span class="line">　　　　media&#x3D;&quot;screen and (max-device-width: 400px)&quot;</span><br><span class="line">　　　　href&#x3D;&quot;tinyScreen.css&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;link rel&#x3D;&quot;stylesheet&quot; type&#x3D;&quot;text&#x2F;css&quot;</span><br><span class="line">　　　　media&#x3D;&quot;screen and (min-width: 400px) and (max-device-width: 600px)&quot;</span><br><span class="line">　　　　href&#x3D;&quot;smallScreen.css&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure>
-
-<p>除了用html标签加载CSS文件，还可以在现有CSS文件中加载。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@import  url(&quot;tinyScreen.css&quot;) screen and (max-device-width: 400px);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>CSS的@media规则</li>
-</ul>
-<p>同一个CSS文件中，也可以根据不同的屏幕分辨率，选择应用不同的CSS规则。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@media  screen and (max-device-width: 400px) &#123;</span><br><span class="line">　　.column &#123;</span><br><span class="line">　　　　float: none;</span><br><span class="line">　　　　width:auto;</span><br><span class="line">　　&#125;</span><br><span class="line"></span><br><span class="line">　　#sidebar &#123;</span><br><span class="line">　　　　display:none;</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>图片的自适应（fluid image）</li>
-</ul>
-<p>除了布局和文本，”自适应网页设计”还必须实现图片的自动缩放。这只要一行CSS代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">img &#123; max-width: 100%;&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="布局相关CSS"><a href="#布局相关CSS" class="headerlink" title="布局相关CSS"></a>布局相关CSS</h1><h2 id="display"><a href="#display" class="headerlink" title="display"></a>display</h2><p>display CSS 属性指定了元素的显示类型，它包含两类基础特征，用于指定元素怎样生成盒模型——<strong>外部显示类型</strong>定义了元素怎样参与流式布局的处理，<strong>内部显示类型</strong>定义了元素内子元素的布局方式。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* &lt;display-outside&gt; values *&#x2F;</span><br><span class="line">display: block;</span><br><span class="line">display: inline;</span><br><span class="line">display: run-in;</span><br><span class="line"></span><br><span class="line">&#x2F;* &lt;display-inside&gt; values *&#x2F;</span><br><span class="line">display: flow;</span><br><span class="line">display: flow-root;</span><br><span class="line">display: table;</span><br><span class="line">display: flex;</span><br><span class="line">display: grid;</span><br><span class="line">display: ruby;</span><br><span class="line"></span><br><span class="line">&#x2F;* &lt;display-outside&gt; plus &lt;display-inside&gt; values *&#x2F;</span><br><span class="line">display: block flow;</span><br><span class="line">display: inline table;</span><br><span class="line">display: flex run-in;</span><br><span class="line"></span><br><span class="line">&#x2F;* &lt;display-listitem&gt; values *&#x2F;</span><br><span class="line">display: list-item;</span><br><span class="line">display: list-item block;</span><br><span class="line">display: list-item inline;</span><br><span class="line">display: list-item flow;</span><br><span class="line">display: list-item flow-root;</span><br><span class="line">display: list-item block flow;</span><br><span class="line">display: list-item block flow-root;</span><br><span class="line">display: flow list-item block;</span><br><span class="line"></span><br><span class="line">&#x2F;* &lt;display-internal&gt; values *&#x2F;</span><br><span class="line">display: table-row-group;</span><br><span class="line">display: table-header-group;</span><br><span class="line">display: table-footer-group;</span><br><span class="line">display: table-row;</span><br><span class="line">display: table-cell;</span><br><span class="line">display: table-column-group;</span><br><span class="line">display: table-column;</span><br><span class="line">display: table-caption;</span><br><span class="line">display: ruby-base;</span><br><span class="line">display: ruby-text;</span><br><span class="line">display: ruby-base-container;</span><br><span class="line">display: ruby-text-container;</span><br><span class="line"></span><br><span class="line">&#x2F;* &lt;display-box&gt; values *&#x2F;</span><br><span class="line">display: contents;</span><br><span class="line">display: none;</span><br><span class="line"></span><br><span class="line">&#x2F;* &lt;display-legacy&gt; values *&#x2F;</span><br><span class="line">display: inline-block;</span><br><span class="line">display: inline-table;</span><br><span class="line">display: inline-flex;</span><br><span class="line">display: inline-grid;</span><br><span class="line"></span><br><span class="line">&#x2F;* Global values *&#x2F;</span><br><span class="line">display: inherit;</span><br><span class="line">display: initial;</span><br><span class="line">display: unset;</span><br></pre></td></tr></table></figure>
-
-<h2 id="position"><a href="#position" class="headerlink" title="position"></a>position</h2><p>CSS position属性用于指定一个元素在文档中的定位方式。top，right，bottom 和 left 属性则决定了该元素的最终位置。position 属性被指定为从下面的值列表中选择的单个关键字：</p>
-<ul>
-<li>static</li>
-</ul>
-<p>该关键字指定元素使用正常的布局行为，即元素在文档常规流中当前的布局位置。此时 top, right, bottom, left 和 z-index 属性无效。</p>
-<ul>
-<li>relative</li>
-</ul>
-<p>该关键字下，元素先放置在未添加定位时的位置，再在不改变页面布局的前提下调整元素位置（因此会在此元素未添加定位时所在位置留下空白）。position:relative 对 table-*-group, table-row, table-column, table-cell, table-caption 元素无效。</p>
-<ul>
-<li>absolute</li>
-</ul>
-<p>不为元素预留空间，通过指定元素相对于最近的非 static 定位祖先元素的偏移，来确定元素位置。绝对定位的元素可以设置外边距（margins），且不会与其他边距合并。</p>
-<ul>
-<li>fixed</li>
-</ul>
-<p>不为元素预留空间，而是通过指定元素相对于屏幕视口（viewport）的位置来指定元素位置。元素的位置在屏幕滚动时不会改变。打印时，元素会出现在的每页的固定位置。fixed 属性会创建新的层叠上下文。当元素祖先的 transform  属性非 none 时，容器由视口改为该祖先。</p>
-<ul>
-<li>sticky </li>
-</ul>
-<p>盒位置根据正常流计算(这称为正常流动中的位置)，然后相对于该元素在流中的 flow root（BFC）和 containing block（最近的块级祖先元素）定位。在所有情况下（即便被定位元素为 table 时），该元素定位均不对后续元素造成影响。当元素 B 被粘性定位时，后续元素的位置仍按照 B 未定位时的位置来确定。position: sticky 对 table 元素的效果与 position: relative 相同。</p>
-<h2 id="float"><a href="#float" class="headerlink" title="float"></a>float</h2><p>float CSS属性指定一个元素应沿其容器的左侧或右侧放置，允许文本和内联元素环绕它。该元素从网页的正常流动(文档流)中移除，尽管仍然保持部分的流动性（与绝对定位相反）。float 属性的值被指定为单一的关键字，值从下面的值列表中选择:</p>
-<ul>
-<li>left</li>
-</ul>
-<p>表明元素必须浮动在其所在的块容器左侧的关键字。</p>
-<ul>
-<li>right</li>
-</ul>
-<p>表明元素必须浮动在其所在的块容器右侧的关键字。</p>
-<ul>
-<li>none</li>
-</ul>
-<p>表明元素不进行浮动的关键字。</p>
-<ul>
-<li>inline-start</li>
-</ul>
-<p>关键字，表明元素必须浮动在其所在块容器的开始一侧，在ltr脚本中是左侧，在rtl脚本中是右侧。</p>
-<ul>
-<li>inline-end</li>
-</ul>
-<p>关键字，表明元素必须浮动在其所在块容器的结束一侧，在ltr脚本中是右侧，在rtl脚本中是左侧。</p>
-<p>float属性具有<strong>包裹性和高度欺骗</strong>两个特性。</p>
-<h3 id="包裹性"><a href="#包裹性" class="headerlink" title="包裹性"></a>包裹性</h3><p>block元素不指定width的话，默认是100%，一旦让该div浮动起来，立刻会像inline元素一样产生包裹性，宽度会跟随内容自适应。（这也是通常float元素需要手动指定width的原因）。</p>
-<p align="center">
-    <img src="images/float1.png" width="60%" alt="float的包裹性"/>
-</p>
-<center>图3  float的包裹性</center>
-
-<p>效果非常近似于display:inline-block。但相比之下，浮动能设定为左浮和右浮，但display:inline-block都是从左到右排列的。（还有些细微差别，两个display:inline-block间会有空隙，但两个float间没有。）</p>
-<h3 id="高度欺骗性"><a href="#高度欺骗性" class="headerlink" title="高度欺骗性"></a>高度欺骗性</h3><p align="center">
-    <img src="images/float2.png" width="60%" alt="float的高度欺骗性"/>
-</p>
-<center>图4  float的高度欺骗性</center>
-
-<p>外层div在没有手动设定height的前提下，其高度是由内部content的最大高度决定的，由于img的float使得img具有高度塌陷的欺骗性，让div误以为img的line-height为0，因此div的高度就是文字的匿名inline-box的inline-height。</p>
-<h3 id="闭合浮动"><a href="#闭合浮动" class="headerlink" title="闭合浮动"></a>闭合浮动</h3><p>闭合浮动的实现方法很多，最合理的方法是用:after伪元素，思路是用:after元素在div后面插入一个隐藏文本”.”，隐藏文本用clear来实现闭合浮动。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.clearfix:after &#123;</span><br><span class="line">    clear: both;</span><br><span class="line">    content: &quot;.&quot;;   &#x2F;&#x2F;你头可以改成其他任意文本如“abc”</span><br><span class="line">    display: block;</span><br><span class="line">    height: 0;      &#x2F;&#x2F;高度为0且hidden让该文本彻底隐藏</span><br><span class="line">    visibility: hidden;</span><br><span class="line">&#125;</span><br><span class="line">.clearfix &#123;</span><br><span class="line">    *zoom: 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;div style&#x3D;&quot;border:4px solid blue;&quot; class&#x3D;&quot;clearfix&quot;&gt;</span><br><span class="line">    &lt;div style&#x3D;&quot;width:200px; border:4px solid red; float:left;&quot;&gt;</span><br><span class="line">        我是浮动元素1</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">    &lt;div style&#x3D;&quot;width:200px; border:4px solid yellow; float:left;&quot;&gt;</span><br><span class="line">        我是浮动元素2</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div style&#x3D;&quot;border:4px solid gray;&quot;&gt;我是页脚&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/25565751" target="_blank" rel="noopener">CSS布局十八般武艺都在这里了</a>,by Shelley Lee.</li>
-<li><a href="http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html?utm_source=tuicool" target="_blank" rel="noopener">Flex 布局教程：语法篇</a>,by 阮一峰.</li>
-<li><a href="http://www.ruanyifeng.com/blog/2015/07/flex-examples.html" target="_blank" rel="noopener">Flex 布局教程：实例篇</a>,by 阮一峰.</li>
-<li><a href="http://www.ruanyifeng.com/blog/2018/10/flexbox-form.html" target="_blank" rel="noopener">Flexbox 布局的最简单表单</a>,by 阮一峰.</li>
-<li><a href="http://www.ruanyifeng.com/blog/2012/05/responsive_web_design.html" target="_blank" rel="noopener">自适应网页设计（Responsive Web Design）</a>,by 阮一峰.</li>
-<li><a href="http://www.ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html" target="_blank" rel="noopener">CSS Grid 网格布局教程</a>,by 阮一峰.</li>
-<li><a href="https://juejin.im/entry/58b6414a128fe1006421bfa7" target="_blank" rel="noopener">响应式和自适应的区别</a>,by LorinLuo.</li>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/display" target="_blank" rel="noopener">display</a>,by mozilla.</li>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/position" target="_blank" rel="noopener">position</a>,by mozilla.</li>
-<li><a href="https://www.jianshu.com/p/07eb19957991" target="_blank" rel="noopener">CSS浮动float详解</a>,by 张歆琳.</li>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/CSS/float" target="_blank" rel="noopener">float</a>,by mozilla.</li>
-<li><a href="https://stackoverflow.com/questions/21515042/scrolling-a-flexbox-with-overflowing-content" target="_blank" rel="noopener">Scrolling a flexbox with overflowing content</a>,by stackoverflow.</li>
-<li><a href="https://moduscreate.com/blog/how-to-fix-overflow-issues-in-css-flex-layouts/" target="_blank" rel="noopener">How to Fix Overflow Issues in CSS Flex Layouts</a>,by moduscreate.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2296,7 +2080,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">264</span>
+                    <span class="site-state-item-count">266</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

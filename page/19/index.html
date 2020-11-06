@@ -314,6 +314,350 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/26/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/26/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E5%85%A5%E9%97%A8/" itemprop="url">
+                  依赖注入入门
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-26 20:34:08 / 修改时间：20:50:01" itemprop="dateCreated datePublished" datetime="2019-01-26T20:34:08+08:00">2019-01-26</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="依赖注入定义"><a href="#依赖注入定义" class="headerlink" title="依赖注入定义"></a>依赖注入定义</h1><p>在软件工程中，依赖注入是种实现控制反转用于解决依赖性设计模式。一个依赖关系指的是可被利用的一种对象（即服务提供端） 。依赖注入是将所依赖的传递给将使用的从属对象（即客户端）。该服务是将会变成客户端的状态的一部分。 传递服务给客户端，而非允许客户端来建立或寻找服务，是本设计模式的基本要求。</p>
+<h1 id="依赖注入意义"><a href="#依赖注入意义" class="headerlink" title="依赖注入意义"></a>依赖注入意义</h1><h2 id="依赖存在的问题"><a href="#依赖存在的问题" class="headerlink" title="依赖存在的问题"></a>依赖存在的问题</h2><p>如果在 Class A 中，有 Class B 的实例，则称 Class A 对 Class B 有一个依赖。例如下面类 Human 中用到一个 Father 对象，我们就说类 Human 对类 Father 有一个依赖。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class Human &#123;</span><br><span class="line">    ...</span><br><span class="line">    Father father;</span><br><span class="line">    ...</span><br><span class="line">    public Human() &#123;</span><br><span class="line">        father &#x3D; new Father();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>仔细看这段代码我们会发现存在一些问题：</p>
+<ul>
+<li>如果现在要改变 father 生成方式，如需要用new Father(String name)初始化 father，需要修改 Human 代码；</li>
+<li>如果想测试不同 Father 对象对 Human 的影响很困难，因为 father 的初始化被写死在了 Human 的构造函数中；</li>
+<li>如果new Father()过程非常缓慢，单测时我们希望用已经初始化好的 father 对象 Mock 掉这个过程也很困难。</li>
+</ul>
+<h2 id="依赖注入的好处"><a href="#依赖注入的好处" class="headerlink" title="依赖注入的好处"></a>依赖注入的好处</h2><p>上面将依赖在构造函数中直接初始化是一种 Hard init 方式，弊端在于两个类不够独立，不方便测试。我们还有另外一种 Init 方式，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class Human &#123;</span><br><span class="line">    ...</span><br><span class="line">    Father father;</span><br><span class="line">    ...</span><br><span class="line">    public Human(Father father) &#123;</span><br><span class="line">        this.father &#x3D; father;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，我们将 father 对象作为构造函数的一个参数传入。在调用 Human 的构造方法之前外部就已经初始化好了 Father 对象。像这种非自己主动初始化依赖，而通过外部来传入依赖的方式，我们就称为依赖注入。</p>
+<p>现在我们发现上面 1 中存在的两个问题都很好解决了，简单的说依赖注入主要有两个好处：</p>
+<ul>
+<li>解耦，将依赖之间解耦。</li>
+<li>因为已经解耦，所以方便做单元测试，尤其是 Mock 测试。</li>
+</ul>
+<h1 id="依赖注入实现"><a href="#依赖注入实现" class="headerlink" title="依赖注入实现"></a>依赖注入实现</h1><h2 id="Java中的依赖注入"><a href="#Java中的依赖注入" class="headerlink" title="Java中的依赖注入"></a>Java中的依赖注入</h2><p>依赖注入的实现有多种途径，而在 Java 中，使用注解是最常用的。通过在字段的声明前添加 @Inject 注解进行标记，来实现依赖对象的自动注入。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class Human &#123;</span><br><span class="line">    ...</span><br><span class="line">    @Inject Father father;</span><br><span class="line">    ...</span><br><span class="line">    public Human() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面这段代码看起来很神奇：只是增加了一个注解，Father 对象就能自动注入了？这个注入过程是怎么完成的？</p>
+<p>实质上，如果你只是写了一个 @Inject 注解，Father 并不会被自动注入。你还需要使用一个依赖注入框架，并进行简单的配置。现在 Java 语言中较流行的依赖注入框架有 Google Guice、Spring 等，而在 Android 上比较流行的有 RoboGuice、Dagger 等。</p>
+<h2 id="PHP中的依赖注入"><a href="#PHP中的依赖注入" class="headerlink" title="PHP中的依赖注入"></a>PHP中的依赖注入</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class Application</span><br><span class="line">&#123;</span><br><span class="line">    function __construct(Auth $auth, Session $session)</span><br><span class="line">    &#123;</span><br><span class="line">        $this-&gt;auth    &#x3D; $auth;</span><br><span class="line">        $this-&gt;session &#x3D; $session;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; ... 程式 ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$auth        &#x3D; new Auth(&#39;localhost&#39;, &#39;root&#39;, &#39;&#39;);</span><br><span class="line">$session     &#x3D; new Session();</span><br><span class="line">$application &#x3D; new Application($auth, $session);</span><br><span class="line"></span><br><span class="line">$application-&gt;login(&#39;admin&#39;, &#39;admin&#39;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/依赖注入" target="_blank" rel="noopener">依赖注入</a>,by wikipedia.</li>
+<li><a href="https://github.com/android-cn/blog/tree/master/java/dependency-injection" target="_blank" rel="noopener">依赖注入</a>,by android-cn.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/26/%E6%A8%A1%E4%BB%BF%E5%AD%A6%E4%B9%A0%E7%A0%94%E7%A9%B6%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/26/%E6%A8%A1%E4%BB%BF%E5%AD%A6%E4%B9%A0%E7%A0%94%E7%A9%B6%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  模仿学习研究笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-26 11:31:05" itemprop="dateCreated datePublished" datetime="2019-01-26T11:31:05+08:00">2019-01-26</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-30 22:16:55" itemprop="dateModified" datetime="2019-01-30T22:16:55+08:00">2019-01-30</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="模仿学习定义"><a href="#模仿学习定义" class="headerlink" title="模仿学习定义"></a>模仿学习定义</h1><p>模仿学习是指从示教者提供的范例中学习，一般提供人类专家的决策数据</p>
+<p>$${ \tau_1,\tau_2,\ldots,\tau_m }$$</p>
+<p>，每个决策包含状态和动作序列  </p>
+<p>$$\tau_i = &lt;s_1^i,a_1^i,s_2^i,a_2^i,\ldots,s_{n_ni+1}^i&gt;$$ </p>
+<p>，将所有「状态-动作对」抽取出来构造新的集合 </p>
+<p>$$\mathcal{D}={ (s_1,a_1),(s_2,a_2),(s_3,a_3),\ldots }$$ </p>
+<p>。之后就可以把状态作为特征（feature），动作作为标记（label）进行分类（对于离散动作）或回归（对于连续动作）的学习从而得到最优策略模型。模型的训练目标是使模型生成的状态-动作轨迹分布和输入的轨迹分布相匹配。</p>
+<h1 id="模仿学习意义"><a href="#模仿学习意义" class="headerlink" title="模仿学习意义"></a>模仿学习意义</h1><p>在传统的强化学习任务中，通常通过计算累积奖赏来学习最优策略（policy），这种方式简单直接，而且在可以获得较多训练数据的情况下有较好的表现。然而在多步决策（sequential decision）中，学习器不能频繁地得到奖励，且这种基于累积奖赏及学习方式存在非常巨大的搜索空间。而模仿学习（Imitation Learning）的方法经过多年的发展，已经能够很好地解决多步决策问题，在机器人、 NLP 等领域也有很多的应用。</p>
+<h1 id="模仿学习实现"><a href="#模仿学习实现" class="headerlink" title="模仿学习实现"></a>模仿学习实现</h1><p>当前主要以下几种方法实现模型学习：</p>
+<h2 id="行为克隆（Behavior-Cloning）"><a href="#行为克隆（Behavior-Cloning）" class="headerlink" title="行为克隆（Behavior Cloning）"></a>行为克隆（Behavior Cloning）</h2><p>行为克隆（Behavior Cloning）根据人类提供的状态动作对来习得策略，是作为监督学习的模仿学习。</p>
+<h2 id="逆强化学习（Inverse-Reinforcement-Learning-）"><a href="#逆强化学习（Inverse-Reinforcement-Learning-）" class="headerlink" title="逆强化学习（Inverse Reinforcement Learning ）"></a>逆强化学习（Inverse Reinforcement Learning ）</h2><p>IRL 是 反过来的 RL，RL 是根据 reward 进行参数的调整，然后得到一个 policy。</p>
+<p>但是， IRL 就不同了，因为他没有显示的 reward，只能根据 人类行为，进行 reward的估计（反推 reward 的函数）。在得到 reward 函数估计出来之后，再进行 策略函数的估计。</p>
+<p>逆强化学习是在给定一个专家之后（expert policy），通过不断地寻找 reward function 来满足给定的 statement（即，解释专家的行为，explaining expert behavior）。</p>
+<h2 id="结构化预测（Structured-prediction）"><a href="#结构化预测（Structured-prediction）" class="headerlink" title="结构化预测（Structured prediction）"></a>结构化预测（Structured prediction）</h2><p>在机器学习过程中，对数据的拟合其实就是在找一个拟合函数f，比如对于回归问题（Regression）来说，这个函数输出一个标量（scalar），对于分类问题（Classification）来说，这个函数输出一个类别（一个one-hot的向量），但是有一类的预测，它并不是输出一个标量或者一个类别，而是输出些有结构的输出，比如，一个序列，一个句子，一个图，一颗树。</p>
+<h2 id="生成对抗网络（GAN-for-Imitation-Learning）"><a href="#生成对抗网络（GAN-for-Imitation-Learning）" class="headerlink" title="生成对抗网络（GAN for Imitation Learning）"></a>生成对抗网络（GAN for Imitation Learning）</h2><p>那么如何用 GAN 来做这个事情呢？对应到这件事情上，我们知道，我们想得到的 轨迹 是属于某一个高维的空间中，而 expert 给定的那些轨迹，我们假设是属于一个 distribution，我们想让我们的 model，也去 predict 一个分布出来，然后使得这两者之间尽可能的接近。从而完成 actor 的训练过程。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/25688750" target="_blank" rel="noopener">模仿学习（Imitation Learning）完全介绍（一）</a>,by 我勒个矗.</li>
+<li><a href="https://yq.aliyun.com/articles/310760" target="_blank" rel="noopener">深度强化学习之：模仿学习（imitation learning）</a>,by wangxiaocvpr.</li>
+<li><a href="https://blog.csdn.net/c2a2o2/article/details/77336551" target="_blank" rel="noopener">机器人学习Robot Learning之模仿学习Imitation Learning的发展</a>,by c2a2o2.</li>
+<li><a href="https://hewangxing.gitee.io/行为克隆/" target="_blank" rel="noopener">行为克隆</a>,by XINGYES.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/45845001" target="_blank" rel="noopener">最前沿：用模仿学习来学习增强学习</a>,by Flood Sung.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/33789604" target="_blank" rel="noopener">机器人学习最前沿：一眼模仿学习（One-Shot Imitation Learning）的三级跳</a>,by Flood Sung.</li>
+<li><a href="https://www.cnblogs.com/wangxiaocvpr/p/8016414.html" target="_blank" rel="noopener">深度学习课程笔记（七）：模仿学习（imitation learning）</a>,by WangXiao.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/25/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1871,336 +2215,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/05/MathJax%E8%AF%AD%E6%B3%95%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/05/MathJax%E8%AF%AD%E6%B3%95%E7%AC%94%E8%AE%B0/" itemprop="url">
-                  MathJax语法笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-05 18:05:32" itemprop="dateCreated datePublished" datetime="2019-01-05T18:05:32+08:00">2019-01-05</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-26 16:00:26" itemprop="dateModified" datetime="2019-01-26T16:00:26+08:00">2019-01-26</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>MathJax是一个跨浏览器的JavaScript库，它使用MathML、LaTeX和ASCIIMathML标记在Web浏览器中显示数学符号。MathJax是在Apache许可证下作为开源软件发布的。</p>
-<h1 id="安装MathJax"><a href="#安装MathJax" class="headerlink" title="安装MathJax"></a>安装MathJax</h1><p>MathJax有三种安装方式：最简单的方法就是使用分布式网络服务中的MathJax的副本，它位于 cdn.mathjax.org ,但是你也可以下载并安装一个MathJax的副本到你的服务器,或者使用在你本地硬盘的副本（这样是不需要使用网络）。 官方文档里有详细的描述。</p>
-<h1 id="MathJax语法"><a href="#MathJax语法" class="headerlink" title="MathJax语法"></a>MathJax语法</h1><h2 id="如何插入公式"><a href="#如何插入公式" class="headerlink" title="如何插入公式"></a>如何插入公式</h2><p>LaTeX的数学公式有两种：行中公式和独立公式。行中公式放在文中与其它文字混编，独立公式单独成行。</p>
-<p>行中公式可以用如下两种方法表示：</p>
-<blockquote>
-<p>(数学公式)　或　$数学公式$</p>
-</blockquote>
-<p>独立公式可以用如下两种方法表示：</p>
-<blockquote>
-<p>[数学公式]　或　$$数学公式$$</p>
-</blockquote>
-<h2 id="打Tag和引用公式"><a href="#打Tag和引用公式" class="headerlink" title="打Tag和引用公式"></a>打Tag和引用公式</h2><p>如果在某个公式之后，又想要引用原公式并说明原公式的出处，可以用 tagging/labelling/referencing system来做。 </p>
-<p>可以用 \tag{yourtag} 来给原公式打 Tag。</p>
-<p>$$m\frac{dV}{dt}=F \tag{1}$$</p>
-<p>如果在后面需要引用它，就在 \tag 后面加上 \label{somelabel}，yourtag 和 somelabel不一定要一样，但最好一样。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/MathJax" target="_blank" rel="noopener">MathJax</a>, by wikipedia.</li>
-<li><a href="https://www.zybuluo.com/knight/note/96093" target="_blank" rel="noopener">MathJax使用LaTeX语法编写数学公式教程</a>, by knight.</li>
-<li><a href="https://www.mathjax.org/" target="_blank" rel="noopener">MathJax Home</a>, by mathjax.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/05/Markdown%E8%AF%AD%E6%B3%95%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/05/Markdown%E8%AF%AD%E6%B3%95%E7%AC%94%E8%AE%B0/" itemprop="url">
-                  Markdown语法笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-05 18:04:18 / 修改时间：19:55:32" itemprop="dateCreated datePublished" datetime="2019-01-05T18:04:18+08:00">2019-01-05</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>一直使用Markdown编辑文档，偶尔会遇到使用一些特殊Markdown语法，为了防止遗忘，特在此记录一下。</p>
-<h1 id="强调"><a href="#强调" class="headerlink" title="强调"></a>强调</h1><p>在Markdown中，可以使用 * 和  _  表示斜体，用 ** 表示加粗。例如：</p>
-<p><em>Coding，让开发更简单</em></p>
-<p><em>Coding，让开发更简单</em></p>
-<p><strong>Coding，让开发更简单</strong></p>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p>Markdown 标记区块引用和 email 中用 『&gt;』的引用方式类似，只需要在整个段落的第一行最前面加上 『&gt;』 ：</p>
-<blockquote>
-<p>Coding.net 为软件开发者提供基于云计算技术的软件开发平台，包括项目管理，代码托管，运行空间和质量控制等等。</p>
-</blockquote>
-<p>区块引用可以嵌套，只要根据层次加上不同数量的『&gt;』：</p>
-<blockquote>
-<p>这是第一级引用。</p>
-<blockquote>
-<p>这是第二级引用。</p>
-</blockquote>
-<p>现在回到第一级引用。</p>
-</blockquote>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://coding.net/help/doc/project/markdown.html#i-6" target="_blank" rel="noopener">Markdown 语法介绍</a>, by coding.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2248,7 +2262,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">264</span>
+                    <span class="site-state-item-count">266</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2947,15 +2961,15 @@
       
     
       
-    
-      
-    
-      
-    
-      
-    
-      
         
+      
+    
+      
+    
+      
+    
+      
+    
       
     
       

@@ -314,6 +314,447 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/08/Cookie-Session%E5%92%8CToken%E4%BC%9A%E8%AF%9D%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/08/Cookie-Session%E5%92%8CToken%E4%BC%9A%E8%AF%9D%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/" itemprop="url">
+                  Cookie,Session和Token会话知识整理
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-08 10:50:44" itemprop="dateCreated datePublished" datetime="2018-07-08T10:50:44+08:00">2018-07-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-07-23 16:25:37" itemprop="dateModified" datetime="2019-07-23T16:25:37+08:00">2019-07-23</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>HTTP是一种无状态的协议，然而当服务器端需要判断用户能否访问某些资源，记录用户的购物车内容等场景时，就需要一种机制维护会话状态，这时候Cookie、Session和Token就派上了用场。</p>
+<h1 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h1><p>Cookie技术最早用于解决HTTP的会话问题， 它是 http 协议的一部分，它的处理分为如下几步：</p>
+<ul>
+<li>服务器向客户端发送 cookie。<ul>
+<li>通常使用 HTTP 协议规定的 set-cookie 头操作。</li>
+<li>规范规定 cookie 的格式为 name = value 格式，且必须包含这部分。</li>
+</ul>
+</li>
+<li>浏览器将 cookie 保存。</li>
+<li>每次请求浏览器都会将 cookie 发向服务器。</li>
+</ul>
+<h2 id="可选的Cookie参数"><a href="#可选的Cookie参数" class="headerlink" title="可选的Cookie参数"></a>可选的Cookie参数</h2><p>其他可选的 cookie 参数会影响将 cookie 发送给服务器端的过程，主要有以下几种：</p>
+<ul>
+<li>path：表示 cookie 影响到的路径，匹配该路径才发送这个 cookie。</li>
+<li>expires 和 maxAge：告诉浏览器这个 cookie 什么时候过期，expires 是 UTC 格式时间，maxAge 是 cookie 多久后过期的相对时间。当不设置这两个选项时，会产生 session cookie，session cookie 是 transient 的，当用户关闭浏览器时，就被清除。一般用来保存 session 的 session_id。</li>
+<li>secure：当 secure 值为 true 时，cookie 在 HTTP 中是无效，在 HTTPS 中才有效。</li>
+<li>httpOnly：浏览器不允许脚本操作 document.cookie 去更改 cookie。一般情况下都应该设置这个为 true，这样可以避免被 xss 攻击拿到 cookie。</li>
+</ul>
+<h2 id="常用场景"><a href="#常用场景" class="headerlink" title="常用场景"></a>常用场景</h2><p>当给Cookie设置expires和maxAge后，在未到期前，浏览器端的Cookie不会因为浏览器的关闭而消失。该特性常用于自动登录，记录用户浏览信息。例如很多购物网站常用该特性记录用户的喜好和购买的物品。</p>
+<h2 id="Cookie安全隐患"><a href="#Cookie安全隐患" class="headerlink" title="Cookie安全隐患"></a>Cookie安全隐患</h2><p>Cookie提供了一种手段使得HTTP请求可以附加当前状态， 大多数网站就是靠Cookie来标识用户的登录状态的，例如：</p>
+<ol>
+<li>用户提交用户名和密码的表单，这通常是一个POST HTTP请求。</li>
+<li>服务器验证用户名与密码，如果合法则返回200（OK）并设置Set-Cookie为authed=true。</li>
+<li>浏览器存储该Cookie。</li>
+<li>浏览器发送请求时，设置Cookie字段为authed=true。</li>
+<li>服务器收到第二次请求，从Cookie字段得知该用户已经登录。 按照已登录用户的权限来处理此次请求。</li>
+</ol>
+<p>上述认证流程存在安全隐患，因为Cookie是可以被篡改的。如果使用一些HTTP客户端软件，设置Cookie字段为authed=true并发送该HTTP请求，服务器就会被欺骗。</p>
+<h2 id="Cookie防篡改机制"><a href="#Cookie防篡改机制" class="headerlink" title="Cookie防篡改机制"></a>Cookie防篡改机制</h2><p>服务器为每个Cookie项生成签名，可有效地防止Cookie被篡改。因为用户篡改Cookie后无法生成对应的签名， 服务器便可得知用户对Cookie进行了篡改。一个简单的校验过程可能是这样的：</p>
+<ol>
+<li>在服务器中配置一个不为人知的字符串（我们叫它Secret），比如：x$sfz32。</li>
+<li>当服务器需要设置Cookie时（比如authed=false），不仅设置authed的值为false， 在值的后面进一步设置一个签名，最终设置的Cookie是authed=false|6hTiBl7lVpd1P。</li>
+<li>签名6hTiBl7lVpd1P是这样生成的：Hash(‘x$sfz32’+’false’)。 要设置的值与Secret相加再取哈希。</li>
+<li>用户收到HTTP响应并发现头字段Set-Cookie: authed=false|6hTiBl7lVpd1P。</li>
+<li>用户在发送HTTP请求时，篡改了authed值，设置头字段Cookie: authed=true|???。 因为用户不知道Secret，无法生成签名，只能随便填一个。</li>
+<li>服务器收到HTTP请求，发现Cookie: authed=true|???。服务器开始进行校验： Hash(‘true’+’x$sfz32’)，便会发现用户提供的签名不正确。</li>
+</ol>
+<p>通过给Cookie添加签名，使得服务器得以知道Cookie被篡改。然而故事并未结束。</p>
+<p>因为Cookie是明文传输的， 只要服务器设置过一次authed=true|xxxx我不就知道true的签名是xxxx了么， 以后就可以用这个签名来欺骗服务器了。因此Cookie中最好不要放敏感数据。 一般来讲Cookie中只会放一个Session Id，而Session存储在服务器端。</p>
+<h1 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h1><p>为了解决Cookie的安全隐患，Session机制应运而生。session机制是一种服务器端的机制，它存储在服务器端的，避免了在客户端Cookie中存储敏感数据。Session可以存储在HTTP服务器的内存中，也可以存在内存数据库（如redis）中， 对于重量级的应用甚至可以存储在数据库中。 </p>
+<p>客户端对服务端请求时,服务端会检查请求中是否包含一个session标识( 称为session id ).</p>
+<ul>
+<li>如果没有,那么服务端就生成一个随机的session以及和它匹配的session id,并将session id返回给客户端.</li>
+<li>如果有,那么服务器就在存储中根据session id 查找到对应的session.</li>
+</ul>
+<h2 id="基于Session的登录流程"><a href="#基于Session的登录流程" class="headerlink" title="基于Session的登录流程"></a>基于Session的登录流程</h2><p>一个简单的使用Session机制的登录流程可能是这样的：</p>
+<ol>
+<li>用户提交包含用户名和密码的表单，发送HTTP请求。</li>
+<li>服务器验证用户发来的用户名密码。</li>
+<li>如果正确则把当前用户名（通常是用户对象）存储到redis中，并生成它在redis中的ID。这个ID称为Session ID，通过Session ID可以从Redis中取出对应的用户对象， 敏感数据（比如authed=true）都存储在这个用户对象中。</li>
+<li>设置Cookie为sessionId=xxxxxx|checksum并发送HTTP响应， 仍然为每一项Cookie都设置签名。</li>
+<li>用户收到HTTP响应后，便看不到任何敏感数据了。在此后的请求中发送该Cookie给服务器。</li>
+<li>服务器收到此后的HTTP请求后，发现Cookie中有SessionID，进行放篡改验证。</li>
+<li>如果通过了验证，根据该ID从Redis中取出对应的用户对象， 查看该对象的状态并继续执行业务逻辑。</li>
+</ol>
+<h2 id="Session安全隐患"><a href="#Session安全隐患" class="headerlink" title="Session安全隐患"></a>Session安全隐患</h2><p>Session ID作为Cookie存储在浏览器端，因此存在被劫持的风险，尤其是开发者没有正确的关闭会话。用户关闭会话时，应删除传递 Session ID 的 Cookie，同时撤销服务器端的Session内容。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* 普通用户登出 *&#x2F;</span><br><span class="line">router.post(&#39;&#x2F;signout&#39;, function(req, res, next) &#123;</span><br><span class="line">    if (_.isEmpty(req.body) &#x3D;&#x3D;&#x3D; false) &#123;</span><br><span class="line">        req.session.account &#x3D; null; &#x2F;&#x2F; 删除session</span><br><span class="line">        res.json(&#123;</span><br><span class="line">            message: &#39;登出成功！&#39;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        res.send(406, &#123; message: &#39;The params is not correct!&#39; &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="Token"><a href="#Token" class="headerlink" title="Token"></a>Token</h1><p>Token是用户的验证方式,最简单的token组成:uid(用户唯一的身份标识)、time(当前时间的时间戳)、sign(签名，由token的前几位+盐以哈希算法压缩成一定长的十六进制字符串，可以防止恶意第三方拼接token请求服务器)。</p>
+<h2 id="基于Token的身份验证流程"><a href="#基于Token的身份验证流程" class="headerlink" title="基于Token的身份验证流程"></a>基于Token的身份验证流程</h2><p>使用基于 Token 的身份验证方法，在服务端不需要存储用户的登录记录。大概的流程是这样的：</p>
+<ol>
+<li>客户端使用用户名跟密码请求登录</li>
+<li>服务端收到请求，去验证用户名与密码</li>
+<li>验证成功后，服务端会签发一个 Token，再把这个 Token 发送给客户端</li>
+<li>客户端收到 Token 以后可以把它存储起来，比如放在 Cookie 里或者 Local Storage 里</li>
+<li>客户端每次向服务端请求资源的时候需要带着服务端签发的 Token</li>
+<li>服务端收到请求，然后去验证客户端请求里面带着的 Token，如果验证成功，就向客户端返回请求的数据</li>
+</ol>
+<h2 id="基于Token方法的优势"><a href="#基于Token方法的优势" class="headerlink" title="基于Token方法的优势"></a>基于Token方法的优势</h2><ul>
+<li>JWT 方法允许我们进行AJAX调用任何服务器或域。由于HTTP头是用来传输用户信息的。</li>
+<li>没必要在服务器存储一个单独的session。JWT本身传达全部的信息。</li>
+<li>服务器端减少到只是一个API和可以通过CDN服务的静态资源（HTML，CSS，JS)。</li>
+<li>认证系统是手机兼容的，任何设备上可以生成令牌。</li>
+<li>由于已经消除了cookie的需要，也不再需要保护跨站请求。</li>
+<li>API密钥提供非此即彼的解决方案，然而JWT提供更颗粒度的控制，它可以用于任何调试目的的检查。</li>
+<li>API密钥依赖于中央存储和服务。JWT可以自发行或者外部服务在允许的范围和期限发布它。</li>
+</ul>
+<h2 id="JWT结构"><a href="#JWT结构" class="headerlink" title="JWT结构"></a>JWT结构</h2><p>Json web token (JWT), 是为了在网络应用环境间传递声明而执行的一种基于JSON的开放标准（(RFC 7519).该token被设计为紧凑且安全的，特别适用于分布式站点的单点登录（SSO）场景。JWT的声明一般被用来在身份提供者和服务提供者间传递被认证的用户身份信息，以便于从资源服务器获取资源，也可以增加一些额外的其它业务逻辑所必须的声明信息，该token也可直接被用于认证，也可被加密。</p>
+<p>一个JWT实际上就是一个字符串，它由三部分组成，头部、载荷与签名。</p>
+<h1 id="Cookie、Session和Token对比"><a href="#Cookie、Session和Token对比" class="headerlink" title="Cookie、Session和Token对比"></a>Cookie、Session和Token对比</h1><h2 id="cookie与session的区别"><a href="#cookie与session的区别" class="headerlink" title="cookie与session的区别"></a>cookie与session的区别</h2><ol>
+<li>cookie数据存放在客户端上，session数据放在服务器上。</li>
+<li>cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗。考虑到安全应当使用session。</li>
+<li>session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能。考虑到减轻服务器性能方面，应当使用COOKIE。</li>
+</ol>
+<h2 id="session与token的区别"><a href="#session与token的区别" class="headerlink" title="session与token的区别"></a>session与token的区别</h2><p>作为身份认证token安全性比session好，因为每个请求都有签名还能防止监听以及重放攻击。</p>
+<p>Session 是一种HTTP存储机制，目的是为无状态的HTTP提供的持久机制。Session 认证只是简单的把User 信息存储到Session 里，因为SID 的不可预测性，暂且认为是安全的。这是一种认证手段。 但是如果有了某个User的SID,就相当于拥有该User的全部权利.SID不应该共享给其他网站或第三方。</p>
+<p>Token, 如果指的是OAuth Token 或类似的机制的话，提供的是 认证 和 授权，认证是针对用户，授权是针对App。其目的是让某App有权利访问某用户的信息。这里的Token是唯一的。不可以转移到其它App上，也不可以转到其它用户上。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://wiki.jikexueyuan.com/project/node-lessons/cookie-session.html" target="_blank" rel="noopener">cookie 和 session</a>, by 极客学院.</li>
+<li><a href="https://harttle.land/2015/08/10/cookie-session.html" target="_blank" rel="noopener">Cookie/Session的机制与安全</a>, by Harttle Land.</li>
+<li><a href="https://python.freelycode.com/contribution/detail/84" target="_blank" rel="noopener">Python中关于JSON网络令牌的实例教程</a>, by Python部落.</li>
+<li><a href="https://www.jianshu.com/p/576dbf44b2ae" target="_blank" rel="noopener">什么是 JWT – JSON WEB TOKEN</a>, by Dearmadman</li>
+<li><a href="http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html" target="_blank" rel="noopener">JSON Web Token 入门教程</a>,by 阮一峰.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/02/%E5%85%BC%E5%AE%B9%E5%89%8D%E5%90%8E%E7%AB%AF%E5%A4%9A%E7%A7%8DJS%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83%E7%9A%84%E4%BB%A3%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/02/%E5%85%BC%E5%AE%B9%E5%89%8D%E5%90%8E%E7%AB%AF%E5%A4%9A%E7%A7%8DJS%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83%E7%9A%84%E4%BB%A3%E7%A0%81/" itemprop="url">
+                  兼容前后端多种JS模块规范的代码
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-02 22:11:23" itemprop="dateCreated datePublished" datetime="2018-07-02T22:11:23+08:00">2018-07-02</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-25 12:55:45" itemprop="dateModified" datetime="2019-09-25T12:55:45+08:00">2019-09-25</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近研究如何在前后端调用同一份js代码。该问题本质是如何兼容前后端各类JS模块规范。上网一搜，已经有很多详细的解决方案和JS模块规范介绍，在这里简单记录一下。</p>
+<h1 id="JS模块规范"><a href="#JS模块规范" class="headerlink" title="JS模块规范"></a>JS模块规范</h1><p>JS模块规范前端主要有AMD、CMD，后端主要有CommonJS。此外还有最新的ES2015模块规范。</p>
+<h2 id="AMD"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</h2><p>AMD（异步模块定义，Asynchronous Module Definition）格式总体的目标是为现在的开发者提供一个可用的模块化 JavaScript 的解决方案。它诞生于 Dojo 在使用 XHR+eval 时的实践经验，其支持者希望未来的解决方案都可以免受由于过去方案的缺陷所带来的麻烦。</p>
+<p>AMD风格模块定义通常包括：一个用来进行模块定义的 define 方法以及一个用来处理依赖项加载的 require 方法。define 根据如下的方法签名来定义具名或匿名的模块：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define(</span><br><span class="line">    module_id &#x2F;*可选*&#x2F;, </span><br><span class="line">    [dependencies] &#x2F;*可选*&#x2F;, </span><br><span class="line">    definition function &#x2F;*用来初始化模块或对象的函数*&#x2F;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h2 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h2><p>CMD(Common Module Definition)表示通用模块定义，该规范是国内发展出来的，由阿里的玉伯提出。就像AMD有个requireJS，CMD有个浏览器的实现SeaJS，SeaJS和requireJS一样，都是javascript的前端模块化解决方案。<br>CMD规范简单到只有一个API，即define函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define(function(require, exports, module) &#123;</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; The module code goes here</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>CMD 与 AMD 挺相近，二者区别如下： </p>
+<ul>
+<li>对于依赖的模块 CMD 是延迟执行，而 AMD 是提前执行（不过 RequireJS 从 2.0 开始，也改成可以延迟执行。 ）</li>
+<li>CMD 推崇依赖就近，AMD 推崇依赖前置。</li>
+<li>AMD 的 api 默认是一个当多个用，CMD 严格的区分推崇职责单一，其每个 API 都简单纯粹。例如：AMD 里 require 分全局的和局部的。CMD 里面没有全局的 require，提供 seajs.use() 来实现模块系统的加载启动。</li>
+</ul>
+<h2 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h2><p>CommonJS是一个志愿性质的工作组，它致力于设计、规划并标准化 JavaScript API。至今为止他们已经尝试着认可了模块标准以及程序包标准。CommonJS 的模块提案为在服务器端声明模块指定了一个简单的 API。不像 AMD，它试图覆盖更宽泛的方面比如 IO、文件系统、promise 模式等等。CommonJS风格模块在nodejs中得到广泛的应用。</p>
+<p>CommonJS风格模块是一段可重用的 JavaScript，它导出一系列特定的对象给依赖它的代码调用——通常来说这样的模块外围没有函数包裹（所以你在这里的例子中不会看到 define）。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; package&#x2F;lib 是我们须要的一个依赖项</span><br><span class="line">var lib &#x3D; require(&#39;package&#x2F;lib&#39;);</span><br><span class="line"> </span><br><span class="line">&#x2F;&#x2F; 我们的模块的一些行为</span><br><span class="line">function foo()&#123;</span><br><span class="line">    lib.log(&#39;hello world!&#39;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">&#x2F;&#x2F; 把 foo 导出（暴露）给其它模块</span><br><span class="line">exports.foo &#x3D; foo;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ES2015模块规范"><a href="#ES2015模块规范" class="headerlink" title="ES2015模块规范"></a>ES2015模块规范</h2><p>2015 年 6 月， ES2015（即 ECMAScript 6、ES6） 正式发布。ES2015 是该语言的一个显著更新，也是自 2009 年 ES5 标准确定后的第一个重大更新。</p>
+<p>ES2015的模块规范如下：</p>
+<ul>
+<li>一个模块就是一个独立的文件。该文件内部的所有变量，外部无法获取。</li>
+<li>export 命令用于规定模块的对外接口。</li>
+<li>import 命令用于输入其他模块提供的功能。</li>
+<li>ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量。</li>
+</ul>
+<p>ES2015模块示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;circle.js</span><br><span class="line">&#x2F;&#x2F;圆面积计算</span><br><span class="line">export function area(radius) &#123;</span><br><span class="line">  return Math.PI * radius * radius;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;main.js</span><br><span class="line">import &#123;area&#125; from &#39;.&#x2F;hangge&#39;;</span><br><span class="line">console.log(&#39;圆面积：&#39; + area(10));</span><br></pre></td></tr></table></figure>
+
+<h1 id="兼容多种模块规范"><a href="#兼容多种模块规范" class="headerlink" title="兼容多种模块规范"></a>兼容多种模块规范</h1><p>需要指出的是下面兼容多种JS模块规范的代码并不支持最新的ES2015模块规范。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">;(function (name, definition) &#123;</span><br><span class="line">  &#x2F;&#x2F; 检测上下文环境是否为AMD或CMD</span><br><span class="line">  var hasDefine &#x3D; typeof define &#x3D;&#x3D;&#x3D; &#39;function&#39;,</span><br><span class="line">    &#x2F;&#x2F; 检查上下文环境是否为Node</span><br><span class="line">    hasExports &#x3D; typeof module !&#x3D;&#x3D; &#39;undefined&#39; &amp;&amp; module.exports;</span><br><span class="line"></span><br><span class="line">  if (hasDefine) &#123;</span><br><span class="line">    &#x2F;&#x2F; AMD环境或CMD环境</span><br><span class="line">    define(definition);</span><br><span class="line">  &#125; else if (hasExports) &#123;</span><br><span class="line">    &#x2F;&#x2F; 定义为普通Node模块</span><br><span class="line">    module.exports &#x3D; definition();</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    &#x2F;&#x2F; 将模块的执行结果挂在window变量中，在浏览器中this指向window对象</span><br><span class="line">    this[name] &#x3D; definition();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)(&#39;hello&#39;, function () &#123;</span><br><span class="line">  var hello &#x3D; function () &#123;&#125;;</span><br><span class="line">  return hello;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="Webpack兼容所有JS模块规范"><a href="#Webpack兼容所有JS模块规范" class="headerlink" title="Webpack兼容所有JS模块规范"></a>Webpack兼容所有JS模块规范</h1><p>webpack根据webpack.config.js中的入口文件，在入口文件里识别模块依赖，不管这里的模块依赖是用CommonJS写的，还是ES6 Module规范写的，webpack会自动进行分析，并通过转换、编译代码，打包成最终的文件。最终文件中的模块实现是基于webpack自己实现的webpack_require（es5代码），所以打包后的文件可以跑在浏览器上。</p>
+<p>同时以上意味着在webapck环境下，你可以只使用ES6 模块语法书写代码（通常我们都是这么做的），也可以使用CommonJS模块语法，甚至可以两者混合使用。因为从webpack2开始，内置了对ES6、CommonJS、AMD 模块化语句的支持，webpack会对各种模块进行语法分析，并做转换编译。</p>
+<p>具体Webpack兼容所有JS模块规范的原理分析参见<a href="https://juejin.im/post/5c94a2f36fb9a070fc623df4" target="_blank" rel="noopener">Webpack 模块打包原理</a>。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://i.jakeyu.top/2017/09/14/兼容前后端共用模块代码/" target="_blank" rel="noopener">兼容前后端共用模块代码(摘自《深入浅出Node.js》)</a>, by Jake.</li>
+<li><a href="https://segmentfault.com/a/1190000011633813" target="_blank" rel="noopener">兼容多种模块规范(AMD,CMD,Node)的代码</a>, by CodeMan.</li>
+<li><a href="http://justineo.github.io/singles/writing-modular-js/" target="_blank" rel="noopener">使用 AMD、CommonJS 及 ES Harmony 编写模块化的 JavaScript</a>, by ADDY OSMANI.</li>
+<li><a href="http://www.hangge.com/blog/cache/detail_1686.html" target="_blank" rel="noopener">JS - CommonJS、ES2015、AMD、CMD模块规范对比与介绍（附样例）</a>,by hangge.</li>
+<li><a href="https://babeljs.io/docs/en/" target="_blank" rel="noopener">What is Babel?</a>,by Babel.</li>
+<li><a href="https://webpack.js.org/concepts/" target="_blank" rel="noopener">Webpack Concepts</a>,by webpack.</li>
+<li><a href="https://segmentfault.com/a/1190000012386576" target="_blank" rel="noopener">import、require、export、module.exports 混合使用详解</a>,by lv_DaDa.</li>
+<li><a href="https://juejin.im/post/5c94a2f36fb9a070fc623df4" target="_blank" rel="noopener">Webpack 模块打包原理</a>,by lq782655835.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/22/sequelize-cli%E4%BD%BF%E7%94%A8%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1853,346 +2294,6 @@ console.log(y);</code></pre></li>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/09/Cesium%E5%B0%8F%E9%83%A8%E4%BB%B6animation%E5%92%8Ctimeline%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4%E6%98%BE%E7%A4%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/09/Cesium%E5%B0%8F%E9%83%A8%E4%BB%B6animation%E5%92%8Ctimeline%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4%E6%98%BE%E7%A4%BA/" itemprop="url">
-                  Cesium小部件animation和timeline的系统时间显示
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-09 22:50:22" itemprop="dateCreated datePublished" datetime="2018-06-09T22:50:22+08:00">2018-06-09</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-12-26 20:02:54" itemprop="dateModified" datetime="2019-12-26T20:02:54+08:00">2019-12-26</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Cesium的小部件animation和timeline显示UTC系统时间，需要将其改为本地系统时间。修改方法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">this.viewer.animation.viewModel.dateFormatter &#x3D; localeDateTimeFormatter</span><br><span class="line">this.viewer.animation.viewModel.timeFormatter &#x3D; localeTimeFormatter</span><br><span class="line">this.viewer.timeline.makeLabel &#x3D; function (time) &#123; return localeDateTimeFormatter(time) &#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Date formatting to a global form</span><br><span class="line">function localeDateTimeFormatter(datetime, viewModel, ignoredate) &#123;</span><br><span class="line">    var julianDT &#x3D; new Cesium.JulianDate(); </span><br><span class="line">    Cesium.JulianDate.addHours(datetime,8,julianDT)</span><br><span class="line">    var gregorianDT&#x3D; Cesium.JulianDate.toGregorianDate(julianDT)</span><br><span class="line">    var objDT;</span><br><span class="line">    if (ignoredate)</span><br><span class="line">        objDT &#x3D; &#39;&#39;;</span><br><span class="line">    else &#123;</span><br><span class="line">        objDT &#x3D; new Date(gregorianDT.year, gregorianDT.month - 1, gregorianDT.day);</span><br><span class="line">        objDT &#x3D; gregorianDT.year  + &#39;年&#39; +objDT.toLocaleString(&quot;zh-cn&quot;, &#123; month: &quot;short&quot; &#125;)+ gregorianDT.day + &#39;日&#39; ;</span><br><span class="line">        if (viewModel || gregorianDT.hour + gregorianDT.minute &#x3D;&#x3D;&#x3D; 0)</span><br><span class="line">        return objDT;</span><br><span class="line">        objDT +&#x3D; &#39; &#39;;</span><br><span class="line">    &#125;</span><br><span class="line">    return objDT + Cesium.sprintf(&quot;%02d:%02d:%02d&quot;, gregorianDT.hour, gregorianDT.minute, gregorianDT.second);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function localeTimeFormatter(time, viewModel) &#123;</span><br><span class="line">    return localeDateTimeFormatter(time, viewModel, true);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上述代码还存在一个问题，当timeline小部件不活动时，其仍然显示UTC标准系统时间。</p>
-<p>Cesium的credit十分碍眼，采用如下方法去掉：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;去除版权信息</span><br><span class="line">viewer._cesiumWidget._creditContainer.style.display &#x3D; &quot;none&quot;;</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/chienchia/article/details/29185479" target="_blank" rel="noopener">EST，CST，PST，GMT，UTC，EDT等等时间缩写</a>, by chienchia.</li>
-<li><a href="https://stackoverflow.com/questions/45875490/change-utc-timezone-to-sgt-timezone-in-cesiumjs" target="_blank" rel="noopener">Change UTC timezone to SGT timezone in Cesiumjs</a>, by stackoverflow.</li>
-<li><a href="https://blog.csdn.net/dyxcome/article/details/82818412" target="_blank" rel="noopener">Cesium去掉logo</a>,by 跃然实验室.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/03/Matplotlib%E8%9C%A1%E7%83%9B%E5%9B%BE%E7%BB%98%E5%88%B6%E6%95%99%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/03/Matplotlib%E8%9C%A1%E7%83%9B%E5%9B%BE%E7%BB%98%E5%88%B6%E6%95%99%E7%A8%8B/" itemprop="url">
-                  Matplotlib蜡烛图绘制教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-03 09:41:25" itemprop="dateCreated datePublished" datetime="2018-06-03T09:41:25+08:00">2018-06-03</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-01-01 11:52:05" itemprop="dateModified" datetime="2020-01-01T11:52:05+08:00">2020-01-01</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>股票分析离不开各种图表的绘制，尤其是最常用的蜡烛图。下面介绍python中使用matplotlib绘制蜡烛图的过程。</p>
-<h1 id="环境及配置"><a href="#环境及配置" class="headerlink" title="环境及配置"></a>环境及配置</h1><p>使用的环境如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ python3 --version</span><br><span class="line">Python 3.6.5rc1</span><br><span class="line">$ ipython3</span><br><span class="line">In [1]: import matplotlib</span><br><span class="line">In [2]: matplotlib.__version__</span><br><span class="line">Out[2]: &#39;2.2.2&#39;</span><br><span class="line">In [3]: import tushare as ts</span><br><span class="line">In [4]: ts.__version__</span><br><span class="line">Out[4]: &#39;1.1.9&#39;</span><br><span class="line">In [5]: import talib</span><br><span class="line">In [6]: talib.__version__</span><br><span class="line">Out[6]: &#39;0.4.17&#39;</span><br></pre></td></tr></table></figure>
-
-<p>绘制蜡烛图通常使用matplotlib.finance库，但这个库在matplotlib 2.0后已经被废弃，并被移到一个名叫mpl_finance的库中。可使用如下命令安装mpl_finance。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install https:&#x2F;&#x2F;github.com&#x2F;matplotlib&#x2F;mpl_finance&#x2F;archive&#x2F;master.zip</span><br></pre></td></tr></table></figure>
-
-<p>mpl_finance使用雅虎接口获取股票数据，但是不稳定，因此推荐使用tushare库获取股票数据。另外使用talib计算股票各种技术分析指标，例如常用的均线数据。需要注意的是通过pip3按照的talib库是对C/C++版talib的包装，因此需先安装C/C++版talib。</p>
-<h1 id="蜡烛图绘制"><a href="#蜡烛图绘制" class="headerlink" title="蜡烛图绘制"></a>蜡烛图绘制</h1><h2 id="蜡烛图绘制函数简介"><a href="#蜡烛图绘制函数简介" class="headerlink" title="蜡烛图绘制函数简介"></a>蜡烛图绘制函数简介</h2><p>mpl_finance库中蜡烛图的绘制主要有以下四个函数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">candlestick2_ochl(ax, opens, closes, highs, lows, width&#x3D;4, colorup&#x3D;&#39;k&#39;, colordown&#x3D;&#39;r&#39;, alpha&#x3D;0.75)</span><br><span class="line">candlestick2_ohlc(ax, opens, highs, lows, closes, width&#x3D;4, colorup&#x3D;&#39;k&#39;, colordown&#x3D;&#39;r&#39;, alpha&#x3D;0.75)</span><br><span class="line">candlestick_ochl(ax, quotes, width&#x3D;0.2, colorup&#x3D;&#39;k&#39;, colordown&#x3D;&#39;r&#39;, alpha&#x3D;1.0)</span><br><span class="line">candlestick_ohlc(ax, quotes, width&#x3D;0.2, colorup&#x3D;&#39;k&#39;, colordown&#x3D;&#39;r&#39;, alpha&#x3D;1.0)</span><br></pre></td></tr></table></figure>
-
-<p>在这四个函数的使用过程中需要注意的是：</p>
-<ul>
-<li><p>candlestick2_ohlc函数假定opens, highs, lows, closes中任意一个值不存在，则其他值也不存在。</p>
-</li>
-<li><p>candlestick_ochl和candlestick_ohlc的输入参数quotes是(time, open, close, high, low, …)元组序列，其中time必须是浮点日期格式，具体参见date2num。</p>
-</li>
-</ul>
-<p>蜡烛图绘制函数存在日线图的时间间隔问题（非交易日无法跳过，导致图像断裂）。常用解决方法是建议重新调整横坐标，被动地过滤掉非交易时间段<sup>[2]</sup>。例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ax.set_xticks(range(0, len(data[&#39;date&#39;]), 10))</span><br><span class="line">ax.set_xticklabels(data[&#39;date&#39;][::10])</span><br></pre></td></tr></table></figure>
-
-<h2 id="蜡烛图的简单绘制"><a href="#蜡烛图的简单绘制" class="headerlink" title="蜡烛图的简单绘制"></a>蜡烛图的简单绘制</h2><p>蜡烛图的简单例子如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import talib</span><br><span class="line">import tushare as ts</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import mpl_finance as mpf</span><br><span class="line"> </span><br><span class="line">data &#x3D; ts.get_k_data(&#39;002320&#39;)</span><br><span class="line">sma_10 &#x3D; talib.SMA(np.array(data[&#39;close&#39;]), 10)</span><br><span class="line">sma_30 &#x3D; talib.SMA(np.array(data[&#39;close&#39;]), 30)</span><br><span class="line">fig &#x3D; plt.figure(figsize&#x3D;(24, 8))</span><br><span class="line">ax &#x3D; fig.add_subplot(1, 1, 1)</span><br><span class="line">ax.set_xticks(range(0, len(data[&#39;date&#39;]), 50))</span><br><span class="line">ax.set_xticklabels(data[&#39;date&#39;][::50])</span><br><span class="line">ax.plot(sma_10, label&#x3D;&#39;10 日均线&#39;)</span><br><span class="line">ax.plot(sma_30, label&#x3D;&#39;30 日均线&#39;)</span><br><span class="line">ax.legend(loc&#x3D;&#39;upper left&#39;)</span><br><span class="line">mpf.candlestick2_ochl(ax, data[&#39;open&#39;], data[&#39;close&#39;], data[&#39;high&#39;], data[&#39;low&#39;],width&#x3D;0.5, colorup&#x3D;&#39;r&#39;, colordown&#x3D;&#39;green&#39;,alpha&#x3D;0.6)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://matplotlib.org/api/finance_api.html" target="_blank" rel="noopener">finance api</a>, by matplotlib</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2240,7 +2341,7 @@ console.log(y);</code></pre></li>
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">264</span>
+                    <span class="site-state-item-count">266</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

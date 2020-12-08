@@ -314,6 +314,172 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/28/Mock%E6%95%B0%E6%8D%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/28/Mock%E6%95%B0%E6%8D%AE/" itemprop="url">
+                  Mock数据
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-28 23:38:30" itemprop="dateCreated datePublished" datetime="2019-07-28T23:38:30+08:00">2019-07-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-08 20:56:08" itemprop="dateModified" datetime="2019-08-08T20:56:08+08:00">2019-08-08</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在实际开发中，最理想的前后端交互方式当然是后端先帮前端 mock 数据，然后前端开发，但现实很骨感，总会因为种种原因，前端需要自己来 mock 假数据。常用的伪造假数据的库有：Mockjs和easy-mock。这两个库有各自问题，因此需要一种新的 mock 假数据方案。</p>
+<h1 id="Mockjs"><a href="#Mockjs" class="headerlink" title="Mockjs"></a>Mockjs</h1><p>原理是: 拦截了所有的请求并代理到本地，然后进行数据模拟，所以你会发现 network 中没有发出任何的请求。</p>
+<p>但它的最大的问题是就是它的实现机制。它会重写浏览器的XMLHttpRequest对象，从而才能拦截所有请求，代理到本地。</p>
+<p>大部分情况下用起来还是蛮方便的，但就因为它重写了XMLHttpRequest对象，所以比如progress方法，或者一些底层依赖XMLHttpRequest的库都会和它发生不兼容。</p>
+<p>另外，因为是它是本地模拟数据，实际上不会走任何网络请求。所以本地调试起来很蛋疼，只能通过console.log来调试。</p>
+<h1 id="easy-mock"><a href="#easy-mock" class="headerlink" title="easy-mock"></a>easy-mock</h1><p>天然支持跨域，还是支持MockJs的所有语法。但因为用的人多了，它的免费服务会经常的挂，可以说天天挂。官方的建议是自己搭建服务。如果你的公司整体搭建一个这样的 mock 服务的话也是一个不错的选择。但大部分人可能还是没有这个技术条件的。</p>
+<h1 id="新的Mock假数据方案"><a href="#新的Mock假数据方案" class="headerlink" title="新的Mock假数据方案"></a>新的Mock假数据方案</h1><p>本地会启动一个mock-server来模拟数据，线上环境还是继续使用mockjs来进行模拟(因为本项目是一个纯前端项目，你也可以自己搭建一个线上 server 来提供数据)。不管是本地还是线上所以的数据模拟都是基于mockjs生成的，所以只要写一套 mock 数据，就可以在多环境中使用。</p>
+<p>该方案的好处是，在保留 mockjs 的优势的同时，解决之前的痛点。由于我们的 mock 是完全基于webpack-dev-serve来实现的，所以在你启动前端服务的同时，mock-server就会自动启动，这里还通过 chokidar 来观察 mock 文件夹内容的变化。在发生变化时会清除之前注册的mock-api接口，重新动态挂载新的接口，从而支持热更新。有兴趣的可以自己看一下代码 mock-server.js。由于是一个真正的server，所以你可以通过控制台中的network，清楚的知道接口返回的数据结构。并且同时解决了之前mockjs会重写 XMLHttpRequest对象，导致很多第三方库失效的问题。</p>
+<p>vue.config.js中配置本地mock-server服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">    port: port,</span><br><span class="line">    open: true,</span><br><span class="line">    overlay: &#123;</span><br><span class="line">      warnings: false,</span><br><span class="line">      errors: true</span><br><span class="line">    &#125;,</span><br><span class="line">    proxy: &#123;</span><br><span class="line">      &#x2F;&#x2F; change xxx-api&#x2F;login &#x3D;&gt; mock&#x2F;login</span><br><span class="line">      &#x2F;&#x2F; detail: https:&#x2F;&#x2F;cli.vuejs.org&#x2F;config&#x2F;#devserver-proxy</span><br><span class="line">      [process.env.VUE_APP_BASE_API]: &#123;</span><br><span class="line">        target: &#96;http:&#x2F;&#x2F;127.0.0.1:$&#123;port&#125;&#x2F;mock&#96;,</span><br><span class="line">        changeOrigin: true,</span><br><span class="line">        pathRewrite: &#123;</span><br><span class="line">          [&#39;^&#39; + process.env.VUE_APP_BASE_API]: &#39;&#39;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;&#x2F; 输入app为exress实例，即var app &#x3D; express();</span><br><span class="line">    &#x2F;&#x2F; after: function(app, server) &#123;</span><br><span class="line">       &#x2F;&#x2F; do fancy stuff</span><br><span class="line">    &#x2F;&#x2F; &#125;</span><br><span class="line">    after: require(&#39;.&#x2F;mock&#x2F;mock-server.js&#39;)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://juejin.im/post/5c92ff94f265da6128275a85#heading-5" target="_blank" rel="noopener">手摸手，带你用vue撸后台 系列五(v4.0新版本)</a>,by 花裤衩.</li>
+<li><a href="https://github.com/nuysoft/Mock/wiki/Getting-Started" target="_blank" rel="noopener">Getting Started</a>,by mockjs.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/28/JavaScript%E6%9C%80%E6%96%B0%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1937,188 +2103,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/23/RESTful-API%E8%AE%BE%E8%AE%A1%E5%8F%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/23/RESTful-API%E8%AE%BE%E8%AE%A1%E5%8F%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/" itemprop="url">
-                  RESTful_API设计及测试入门
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-07-23 17:01:34" itemprop="dateCreated datePublished" datetime="2019-07-23T17:01:34+08:00">2019-07-23</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-07-24 22:27:50" itemprop="dateModified" datetime="2019-07-24T22:27:50+08:00">2019-07-24</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>RESTful API是目前比较成熟的一套互联网应用程序的API设计理论，提供了一种统一的机制，方便不同的前端设备与后端进行通信，以应对前端设备层出不穷（手机、平板、桌面电脑、其他专用设备……）的状况。同时对开发人员而言，提供了一种规范，方便协作开发，降低了API接口设计的难度。</p>
-<h1 id="RESTful-API设计规范"><a href="#RESTful-API设计规范" class="headerlink" title="RESTful API设计规范"></a>RESTful API设计规范</h1><p>请参考阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html" target="_blank" rel="noopener">RESTful API 设计指南</a>。</p>
-<h1 id="RESTful-API的测试方法"><a href="#RESTful-API的测试方法" class="headerlink" title="RESTful API的测试方法"></a>RESTful API的测试方法</h1><p>RESTful API设计好了之后，需要测试其可用性。常用的API测试工具有Postman。简单入门可参考<a href="https://www.cnblogs.com/mafly/p/postman.html" target="_blank" rel="noopener">Postman 安装及使用入门教程</a>。</p>
-<p>Postman中使用HTTP POST方法测试RESTful API时，需要了解POST提交数据的方法。</p>
-<h2 id="POST提交数据的方法"><a href="#POST提交数据的方法" class="headerlink" title="POST提交数据的方法"></a>POST提交数据的方法</h2><p>POST 几种请求主要包括 application/x-www-form-urlencoded、 multipart/form-data、 application/json、text/xml 四种的方法。</p>
-<p>服务端通常是根据请求头（Request Headers）中的 Content-Type 字段来获知请求中的消息主体是用何种方式编码，再对主体进行解析。<br>POST 提交数据方案，包含了 Content-Type 和消息主体编码方式两部分。</p>
-<ul>
-<li>application/x-www-form-urlencoded (默认常用)</li>
-</ul>
-<p>这是最常见的 POST 提交数据的方式。浏览器的原生表单，如果不设置Content-type属性，就会默认该方式提交数据，并且提交的数据按照 key1=val1&amp;key2=val2 的方式进行编码，key 和 val 都进行了 URL 转码。</p>
-<ul>
-<li>multipart/form-data</li>
-</ul>
-<p>这是另一个常见的 POST 数据提交的方式。我们使用表单上传文件时，必须让表单的enctyped等于 multipart/form-data。</p>
-<ul>
-<li>application/json</li>
-</ul>
-<p>application/json 这种方案，可以方便的提交复杂的结构化数据，这种POST提交方式越来越多，用来告诉服务端消息主体是序列化后的 JSON 字符串。</p>
-<p>由于JSON规范的流行，出了低版本的IE之外，各大浏览器都支持 JSON.stringify 将JSON数据字符串化（编码）传到服务器，还可以通过  JSON.parse 将字符串转化（解码）为JSON数据供前端渲染或者其他处理。</p>
-<ul>
-<li>text/xml</li>
-</ul>
-<p>现在基本不用。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html" target="_blank" rel="noopener">RESTful API 设计指南</a>,by 阮一峰.</li>
-<li><a href="https://juejin.im/entry/59e460c951882542f578f2f0" target="_blank" rel="noopener">RESTful API 设计最佳实践</a>,by Philipp Hauer.</li>
-<li><a href="https://github.com/aisuhua/restful-api-design-references" target="_blank" rel="noopener">restful-api-design-references</a>,by aisuhua.</li>
-<li><a href="https://learning.getpostman.com/docs/postman/launching_postman/installation_and_updates/" target="_blank" rel="noopener">Postman Doc</a>,by postman homepage.</li>
-<li><a href="https://www.cnblogs.com/mafly/p/postman.html" target="_blank" rel="noopener">Postman 安装及使用入门教程</a>,by Mafly.</li>
-<li><a href="https://imququ.com/post/four-ways-to-post-data-in-http.html" target="_blank" rel="noopener">四种常见的 POST 提交数据方式</a>,by Jerry Qu.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2166,7 +2150,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">268</span>
+                    <span class="site-state-item-count">269</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -314,6 +314,169 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/10/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E8%BF%90%E8%A1%8C3D%E6%B8%B8%E6%88%8F%E7%9A%84%E6%80%9D%E8%80%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/10/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E8%BF%90%E8%A1%8C3D%E6%B8%B8%E6%88%8F%E7%9A%84%E6%80%9D%E8%80%83/" itemprop="url">
+                  浏览器中运行3D游戏的思考
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-10 21:02:56" itemprop="dateCreated datePublished" datetime="2018-07-10T21:02:56+08:00">2018-07-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-20 23:31:43" itemprop="dateModified" datetime="2018-11-20T23:31:43+08:00">2018-11-20</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Web技术突飞猛进，几乎无所不能，无所不在。然而在3D游戏领域，web技术乏善可陈，性能瓶颈问题制约其发展。但是开发者们没有放弃这个梦想，不断努力，孜孜不倦地改进和增强浏览器中运行3D游戏性能的方法和技术，目前已能看到一丝曙光。</p>
+<p>对C/S架构的3D游戏而言，渲染和计算通常都在客户端，服务器端负责用户状态的管理和分发。同样对B/S架构的运行在浏览器中的3D游戏，所有的渲染和计算也应该在浏览器端。如果渲染和计算放在服务器端，将导致可怕的延迟，并严重损害3D游戏的可伸缩性。</p>
+<p>当前很多3D游戏使用C/C++语言编写，如果能够将C/C++语言编译成JavaScript语言，可大大促进Web 3D游戏的开发。而编译器项目Emscripten正是一个这样的工具。它能将C/C++代码编译成一种叫做asm.js的Javascript变体。需要指出的是，Emscripten的输入，即C/C++代码最好是开放源代码的，因为Emscripten不支持闭源代码的编译。例如Emscripten不支持mfc程序的转换，因为mfc是闭源的<sup>[4]</sup>。</p>
+<p>asm.js是一个JavaScript的严格子集，它只提供32位带符号整数和64位带符号浮点数两种数据类型，其他Javascript类型如字符串、布尔值等以数值形式存在，保存在内存中，通过TypedArray调用。另外asm.js没有垃圾回收机制，所有内存操作都由程序员自己控制。asm.js是优化后的JavaScript，它在浏览器中的运行速度大约是原生代码的一倍左右<sup>[1]</sup>。</p>
+<p>asm.js虽然比原生javascript运行速度快了一倍左右，但是相比C/C++代码，运行速度还是有差距。幸运的是出现了名为WebAssembly的技术。WebAssembly或称wasm是一个实验性的低级编程语言，应用于浏览器内的客户端<sup>[5]</sup>。WebAssembly是便携式的抽象语法树，被设计来提供比JavaScript更快速的编译及运行。WebAssembly将让开发者能运用自己熟悉的编程语言（最初以C/C++作为实现目标）编译，再藉虚拟机引擎在浏览器内运行。WebAssembly的开发团队分别来自Mozilla、Google、Microsoft、Apple，代表着四大网络浏览器Firefox、Chrome、Microsoft Edge、Safari。2017年11月，所有以上四个浏览器都开始实验性的支持WebAssembly。目前，最新版本的Emscripten已支持将C/C++代码编译成wasm。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html</a>. by 阮一峰.</li>
+<li><a href="https://www.cnblogs.com/slly/p/6639173.html" target="_blank" rel="noopener">https://www.cnblogs.com/slly/p/6639173.html</a>. by 李某龙.</li>
+<li><a href="http://kripken.github.io/emscripten-site/" target="_blank" rel="noopener">http://kripken.github.io/emscripten-site/</a>. by emscripten.</li>
+<li><a href="https://github.com/kripken/emscripten/issues/941" target="_blank" rel="noopener">https://github.com/kripken/emscripten/issues/941</a>. by emscripten.</li>
+<li><a href="https://zh.wikipedia.org/wiki/WebAssembly" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/WebAssembly</a>. by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/08/Cookie-Session%E5%92%8CToken%E4%BC%9A%E8%AF%9D%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2138,165 +2301,6 @@ console.log(y);</code></pre></li>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/09/%E6%98%A5%E6%B1%9F%E8%8A%B1%E6%9C%88%E5%A4%9C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/09/%E6%98%A5%E6%B1%9F%E8%8A%B1%E6%9C%88%E5%A4%9C/" itemprop="url">
-                  春江花月夜
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-09 23:30:32 / 修改时间：23:32:38" itemprop="dateCreated datePublished" datetime="2018-06-09T23:30:32+08:00">2018-06-09</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <center>
-作者：张若虚
-春江潮水连海平，海上明月共潮生。
-滟滟随波千万里，何处春江无月明？
-江流宛转绕芳甸，月照花林皆似霰。
-空里流霜不觉飞，汀上白沙看不见。
-江天一色无纤尘，皎皎空中孤月轮。
-江畔何人初见月，江月何年初照人？
-人生代代无穷已，江月年年祇相似。
-不知江月待何人？但见长江送流水。
-白云一片去悠悠，青枫浦上不胜愁。
-谁家今夜扁舟子，何处相思明月楼？
-可怜楼上月徘徊，应照离人妆镜台。
-玉户帘中卷不去，捣衣砧上拂还来。
-此时相望不相闻，愿逐月华流照君。
-鸿雁长飞光不度，鱼龙潜跃水成文。
-昨夜闲潭梦落花，可怜春半不还家。
-江水流春去欲尽，江潭落月复西斜。
-斜月沉沉藏海雾，碣石潇湘无限路。
-不知乘月几人归，落月摇情满江树。
-</center>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2344,7 +2348,7 @@ console.log(y);</code></pre></li>
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">276</span>
+                    <span class="site-state-item-count">277</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

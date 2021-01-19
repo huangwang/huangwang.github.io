@@ -314,6 +314,161 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/05/%E4%B8%89%E7%BB%B4%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95%E7%AE%80%E4%BB%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/05/%E4%B8%89%E7%BB%B4%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95%E7%AE%80%E4%BB%8B/" itemprop="url">
+                  三维建模方法简介
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-05 21:17:42 / 修改时间：21:39:26" itemprop="dateCreated datePublished" datetime="2018-12-05T21:17:42+08:00">2018-12-05</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>三维建模是一种常用技术，奈何心向往之，却没有时间去系统学习，也没有做出过一个作品。下面将我看到的一些好的有关三维建模的资料记录一下，以做备忘。</p>
+<h1 id="三维建模方法"><a href="#三维建模方法" class="headerlink" title="三维建模方法"></a>三维建模方法</h1><h2 id="选择软件"><a href="#选择软件" class="headerlink" title="选择软件"></a>选择软件</h2><p>当前三维软件层出不穷，既有商业级的3ds MAX、MAYA、Creator，也有免费使用的Blender、MilkShape。</p>
+<h2 id="下载蓝图"><a href="#下载蓝图" class="headerlink" title="下载蓝图"></a>下载蓝图</h2><p>飞行仿真的三维模型主要有飞行器、机场建筑等。和大多数虚拟现实中使用的模型一样，并不需要CAD级别的精度，一般是下载一些图片或飞机整体蓝图作为蓝本，采用多边形建模的方法分部建模。蓝图下载网址首推：</p>
+<p><a href="http://www.the-blueprints.com/" target="_blank" rel="noopener">the‑blueprints.com</a></p>
+<p>这里免费提供各种汽车、国内外飞机、船舶的三视图图纸下载。</p>
+<h2 id="多边形建模"><a href="#多边形建模" class="headerlink" title="多边形建模"></a>多边形建模</h2><p>采用下载的蓝图，作为贴图放置在相应的投影平面上，然后采用多边形建模的方法画出各部分细节。多边形建模的思想就是采用一个诸如一个最接近的多边形，进行点线面的操作就可以绘制出复杂的飞机外形。</p>
+<p>多边形建模从最基本的外形开始变形，可以从点线面及整体四个级别的操作，在越需要突出外形细节处用越多的点，通过建立网格模型，然后使用网格平滑功能生成平滑的曲面模型。</p>
+<p>建模时不能有重复的点线面等几何体，否则即使表面上已经贴好了材质，但载入程序后，往往会因为Z向深度冲突的原因产生闪烁效果。其细节取决于您的需求，需要花费大量的时间。</p>
+<h2 id="贴图"><a href="#贴图" class="headerlink" title="贴图"></a>贴图</h2><p>真实世界的模型带有各种彩色并具有光泽度。完成了几何体的建模对于一个模型来说只完成了一小半工作，还需要给模型添加材质。</p>
+<p>与一般的模型不同，飞行器出于气动设计的考虑，其表面模型一般成流线型的曲面，且部件组成复杂，界线较难区分，即使是UVW贴图也难以胜任。因此，对飞行器的贴图主要采用3ds MAX的UVW展开贴图技术贴图。</p>
+<p>一个模型最好只有一个贴图，因为贴图数目过多零散会影响计算机载入三维模型时间和效率。因此，一般将整个模型各个部件组合为一个多边形，各部件为元素，待完成UVW贴图后再分离成单独的部件。UVW展开贴图有多重形式，如长方体展开（即按六个视图投影）、平面展开等，按需选择。</p>
+<p>在一张贴图上展开整个模型的UV坐标显然是有限的，需要根据现实精度调整各个部分的贴图大小。保存这些展开的贴图坐标并渲染输出UV模板图像文件。UV模板图像其实就是整个模型的贴图的界线图像，通过Photoshop等图像处理软件处理，采用尽可能真实的图像放置在对应的区域。最后将材质赋给对象即完成贴图渲染。</p>
+<h2 id="数据导出"><a href="#数据导出" class="headerlink" title="数据导出"></a>数据导出</h2><p>直接采用3ds MAX绘制的三维模型当然是<em>.max格式，它不能为外界程序读取。这时就需要根据自己的开发环境选择导出的数据格式，比如用开源的OSG做仿真开发，就需要OSGExp插件的支持，导成</em>.ive、<em>.osg、</em>.osgb等格式即可。但无论导出何种格式，<strong>切记保证模型质心与建模的原点不能相差不远，还要注意光照、贴图格式以及单位问题</strong>。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/34555581" target="_blank" rel="noopener">飞行仿真–1.三维建模篇</a>,by WFYX.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/26/%E6%B7%B1%E5%BA%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%A0%94%E7%A9%B6%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2756,201 +2911,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/08/Cesium%E6%91%84%E5%83%8F%E5%A4%B4%E8%B7%9F%E8%B8%AA%E9%A3%9E%E6%9C%BA%E5%AE%9E%E4%BD%93%E6%97%B6%E6%99%83%E5%8A%A8%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/08/Cesium%E6%91%84%E5%83%8F%E5%A4%B4%E8%B7%9F%E8%B8%AA%E9%A3%9E%E6%9C%BA%E5%AE%9E%E4%BD%93%E6%97%B6%E6%99%83%E5%8A%A8%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/" itemprop="url">
-                  Cesium摄像头跟踪飞机实体时晃动问题分析
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-08 09:41:32" itemprop="dateCreated datePublished" datetime="2018-11-08T09:41:32+08:00">2018-11-08</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-01-13 20:38:45" itemprop="dateModified" datetime="2020-01-13T20:38:45+08:00">2020-01-13</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在3D场景下使用Cesium跟踪飞机时会出现摄像头晃动问题，导致地图背景不断晃动，影响观看。下面以最新的Cesium1.51源码为例，解析Cesium 渲染过程原理，分析跟踪实体时摄像头晃动的原因，找出可能的解决方法。</p>
-<h1 id="Cesium渲染过程分析"><a href="#Cesium渲染过程分析" class="headerlink" title="Cesium渲染过程分析"></a>Cesium渲染过程分析</h1><p>使用Cesium最简单示例代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var viewer &#x3D; new Cesium.Viewer(&#39;cesiumContainer&#39;);</span><br></pre></td></tr></table></figure>
-<p>Viewer是Cesium构建应用的最基础的组件。它又是其他组件的容器，包括：</p>
-<ul>
-<li>animation:控制时间前进、倒退、暂停以及前进和倒退速度的组件</li>
-<li>baseLayerPicker：图层选择组件</li>
-<li>fullscreenButton：控制是否全屏的组件</li>
-<li>vrButton：控制是否VR显示的组件</li>
-<li>geocoder：地理位置搜索组件</li>
-<li>homeButton：返回摄像头默认位置按钮组建</li>
-<li>infoBox：信息框组件</li>
-<li>sceneModePicker：场景模式选择组件</li>
-<li>selectionIndicator：选择指示组件</li>
-<li>timeline：时间线组件</li>
-<li>navigationHelpButton：导航帮助按钮，告诉使用者如何使用鼠标和触摸屏操纵虚拟地球</li>
-<li>CesiumWidget：虚拟地球组件</li>
-</ul>
-<p>其中，虚拟地球组件CesiumWidget是Viewer包含核心组件，在Viewer中创建CesiumWidget对象时，将设置其useDefaultRenderLoop属性。设置该属性将启动渲染函数startRenderLoop。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;from Source&#x2F;Widgets&#x2F;CesiumWidget&#x2F;CesiumWidget.js</span><br><span class="line">useDefaultRenderLoop : &#123;</span><br><span class="line">    get : function() &#123;</span><br><span class="line">        return this._useDefaultRenderLoop;</span><br><span class="line">    &#125;,</span><br><span class="line">    set : function(value) &#123;</span><br><span class="line">        if (this._useDefaultRenderLoop !&#x3D;&#x3D; value) &#123;</span><br><span class="line">            this._useDefaultRenderLoop &#x3D; value;</span><br><span class="line">            if (value &amp;&amp; !this._renderLoopRunning) &#123;</span><br><span class="line">                startRenderLoop(this);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-<p>函数startRenderLoop是Cesium渲染的开始，其代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">function startRenderLoop(widget) &#123;</span><br><span class="line">    widget._renderLoopRunning &#x3D; true;</span><br><span class="line"></span><br><span class="line">    var lastFrameTime &#x3D; 0;</span><br><span class="line">    function render(frameTime) &#123;</span><br><span class="line">        if (widget.isDestroyed()) &#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (widget._useDefaultRenderLoop) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                var targetFrameRate &#x3D; widget._targetFrameRate;</span><br><span class="line">                if (!defined(targetFrameRate)) &#123;</span><br><span class="line">                    widget.resize();</span><br><span class="line">                    widget.render();</span><br><span class="line">                    requestAnimationFrame(render);</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    var interval &#x3D; 1000.0 &#x2F; targetFrameRate;</span><br><span class="line">                    var delta &#x3D; frameTime - lastFrameTime;</span><br><span class="line"></span><br><span class="line">                    if (delta &gt; interval) &#123;</span><br><span class="line">                        widget.resize();</span><br><span class="line">                        widget.render();</span><br><span class="line">                        lastFrameTime &#x3D; frameTime - (delta % interval);</span><br><span class="line">                    &#125;</span><br><span class="line">                    requestAnimationFrame(render);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; catch (error) &#123;</span><br><span class="line">                ...</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            widget._renderLoopRunning &#x3D; false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    requestAnimationFrame(render);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>CesiumWidget组件的render方法随后调用Scene的render方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">Scene.prototype.render &#x3D; function(time) &#123;</span><br><span class="line">        if (!defined(time)) &#123;</span><br><span class="line">            time &#x3D; JulianDate.now();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        var frameState &#x3D; this._frameState;</span><br><span class="line">        this._jobScheduler.resetBudgets();</span><br><span class="line"></span><br><span class="line">        var cameraChanged &#x3D; this._view.checkForCameraUpdates(this);</span><br><span class="line">        var shouldRender &#x3D; !this.requestRenderMode || this._renderRequested || cameraChanged || this._logDepthBufferDirty || (this.mode &#x3D;&#x3D;&#x3D; SceneMode.MORPHING);</span><br><span class="line">        if (!shouldRender &amp;&amp; defined(this.maximumRenderTimeChange) &amp;&amp; defined(this._lastRenderTime)) &#123;</span><br><span class="line">            var difference &#x3D; Math.abs(JulianDate.secondsDifference(this._lastRenderTime, time));</span><br><span class="line">            shouldRender &#x3D; shouldRender || difference &gt; this.maximumRenderTimeChange;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (shouldRender) &#123;</span><br><span class="line">            this._lastRenderTime &#x3D; JulianDate.clone(time, this._lastRenderTime);</span><br><span class="line">            this._renderRequested &#x3D; false;</span><br><span class="line">            this._logDepthBufferDirty &#x3D; false;</span><br><span class="line">            var frameNumber &#x3D; CesiumMath.incrementWrap(frameState.frameNumber, 15000000.0, 1.0);</span><br><span class="line">            updateFrameNumber(this, frameNumber, time);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; Update</span><br><span class="line">        this._preUpdate.raiseEvent(this, time);</span><br><span class="line">        tryAndCatchError(this, update);</span><br><span class="line">        this._postUpdate.raiseEvent(this, time);</span><br><span class="line"></span><br><span class="line">        if (shouldRender) &#123;</span><br><span class="line">            &#x2F;&#x2F; Render</span><br><span class="line">            this._preRender.raiseEvent(this, time);</span><br><span class="line">            tryAndCatchError(this, render);</span><br><span class="line"></span><br><span class="line">            RequestScheduler.update();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        updateDebugShowFramesPerSecond(this, shouldRender);</span><br><span class="line">        callAfterRenderFunctions(this);</span><br><span class="line"></span><br><span class="line">        if (shouldRender) &#123;</span><br><span class="line">            this._postRender.raiseEvent(this, time);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
-<p>Scene的render方法中tryAndCatchError函数将调用render函数。在该render函数中，地球的主要要素（地形&amp;影像）的渲染，将在Globe的beginFrame和endFrame之间完成的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">function render(scene) &#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    if (defined(scene.globe)) &#123;</span><br><span class="line">        scene.globe.beginFrame(frameState);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    updateEnvironment(scene);</span><br><span class="line">    updateAndExecuteCommands(scene, passState, backgroundColor);</span><br><span class="line">    resolveFramebuffers(scene, passState);</span><br><span class="line"></span><br><span class="line">    passState.framebuffer &#x3D; undefined;</span><br><span class="line">    executeOverlayCommands(scene, passState);</span><br><span class="line"></span><br><span class="line">    if (defined(scene.globe)) &#123;</span><br><span class="line">        scene.globe.endFrame(frameState);</span><br><span class="line"></span><br><span class="line">        if (!scene.globe.tilesLoaded) &#123;</span><br><span class="line">            scene._renderRequested &#x3D; true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>其中updateAndExecuteCommands负责数据的调度，比如哪些Tile需要创建，这些Tile相关的地形数据，以及涉及到的影像数据之间的调度，都是在该函数中维护。而scene.globe.endFrame中，会对该帧所涉及的GlobeTile的下载，解析等进行处理。</p>
-<h1 id="Cesium跟踪实体"><a href="#Cesium跟踪实体" class="headerlink" title="Cesium跟踪实体"></a>Cesium跟踪实体</h1><p>在Viewer组件构造函数内，Viewer订阅了场景组件Scene的渲染后事件postRender，以执行Viewer自己的_postRender函数。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eventHelper.add(scene.postRender, Viewer.prototype._postRender, this);</span><br></pre></td></tr></table></figure>
-<p>Viewer的_postRender函数代码如下，其中updateTrackedEntity函数将更新被跟踪实体的摄像头位置：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Viewer.prototype._postRender &#x3D; function() &#123;</span><br><span class="line">    updateZoomTarget(this);</span><br><span class="line">    updateTrackedEntity(this);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>updateTrackedEntity函数代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">function updateTrackedEntity(viewer) &#123;</span><br><span class="line">    if (!viewer._needTrackedEntityUpdate) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var trackedEntity &#x3D; viewer._trackedEntity;</span><br><span class="line">    var currentTime &#x3D; viewer.clock.currentTime;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;Verify we have a current position at this time. This is only triggered if a position</span><br><span class="line">    &#x2F;&#x2F;has become undefined after trackedEntity is set but before the boundingSphere has been</span><br><span class="line">    &#x2F;&#x2F;computed. In this case, we will track the entity once it comes back into existence.</span><br><span class="line">    var currentPosition &#x3D; Property.getValueOrUndefined(trackedEntity.position, currentTime);</span><br><span class="line"></span><br><span class="line">    if (!defined(currentPosition)) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var scene &#x3D; viewer.scene;</span><br><span class="line"></span><br><span class="line">    var state &#x3D; viewer._dataSourceDisplay.getBoundingSphere(trackedEntity, false, boundingSphereScratch);</span><br><span class="line">    if (state &#x3D;&#x3D;&#x3D; BoundingSphereState.PENDING) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var sceneMode &#x3D; scene.mode;</span><br><span class="line">    if (sceneMode &#x3D;&#x3D;&#x3D; SceneMode.COLUMBUS_VIEW || sceneMode &#x3D;&#x3D;&#x3D; SceneMode.SCENE2D) &#123;</span><br><span class="line">        scene.screenSpaceCameraController.enableTranslate &#x3D; false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (sceneMode &#x3D;&#x3D;&#x3D; SceneMode.COLUMBUS_VIEW || sceneMode &#x3D;&#x3D;&#x3D; SceneMode.SCENE3D) &#123;</span><br><span class="line">        scene.screenSpaceCameraController.enableTilt &#x3D; false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var bs &#x3D; state !&#x3D;&#x3D; BoundingSphereState.FAILED ? boundingSphereScratch : undefined;</span><br><span class="line">    viewer._entityView &#x3D; new EntityView(trackedEntity, scene, scene.mapProjection.ellipsoid);</span><br><span class="line">    viewer._entityView.update(currentTime, bs);</span><br><span class="line">    viewer._needTrackedEntityUpdate &#x3D; false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>除此之外，Viewer组件订阅了Clock组建的onTick事件，以执行其自身的_onTick事件处理函数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eventHelper.add(clock.onTick, Viewer.prototype._onTick, this);</span><br></pre></td></tr></table></figure>
-<p>在Viewer组件的_onTick事件处理函数中，同样会更新被跟踪实体的摄像头位置。而Cesium摄像头跟踪飞机实体时产生晃动的根源即在此处。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Viewer.prototype._onTick &#x3D; function(clock) &#123;</span><br><span class="line">        var time &#x3D; clock.currentTime;</span><br><span class="line"></span><br><span class="line">        var isUpdated &#x3D; this._dataSourceDisplay.update(time);</span><br><span class="line">        if (this._allowDataSourcesToSuspendAnimation) &#123;</span><br><span class="line">            this._clockViewModel.canAnimate &#x3D; isUpdated;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        var entityView &#x3D; this._entityView;</span><br><span class="line">        if (defined(entityView)) &#123;</span><br><span class="line">            var trackedEntity &#x3D; this._trackedEntity;</span><br><span class="line">            var trackedState &#x3D; this._dataSourceDisplay.getBoundingSphere(trackedEntity, false, boundingSphereScratch);</span><br><span class="line">            if (trackedState &#x3D;&#x3D;&#x3D; BoundingSphereState.DONE) &#123;</span><br><span class="line">                entityView.update(time, boundingSphereScratch);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">       ...</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
-
-<h1 id="可行的解决方案"><a href="#可行的解决方案" class="headerlink" title="可行的解决方案"></a>可行的解决方案</h1><p>在Viewer组件的_onTick函数做如下修改：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Viewer.prototype._onTick &#x3D; function(clock) &#123;</span><br><span class="line">        var time &#x3D; clock.currentTime;</span><br><span class="line"></span><br><span class="line">        var isUpdated &#x3D; this._dataSourceDisplay.update(time);</span><br><span class="line">        if (this._allowDataSourcesToSuspendAnimation) &#123;</span><br><span class="line">            this._clockViewModel.canAnimate &#x3D; isUpdated;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        var entityView &#x3D; this._entityView;</span><br><span class="line">        if (defined(entityView)) &#123;</span><br><span class="line">            var trackedEntity &#x3D; this._trackedEntity;</span><br><span class="line">            var trackedState &#x3D; this._dataSourceDisplay.getBoundingSphere(trackedEntity, false, boundingSphereScratch);</span><br><span class="line">            if (trackedState &#x3D;&#x3D;&#x3D; BoundingSphereState.DONE) &#123;</span><br><span class="line">                &#x2F;&#x2F;entityView.update(time, boundingSphereScratch);</span><br><span class="line">                var range&#x3D;this.camera.distanceToBoundingSphere(boundingSphereScratch);</span><br><span class="line">                var targetRange&#x3D;range&gt;boundingSphereScratch.radius*10?range:boundingSphereScratch.radius*10;</span><br><span class="line">                var offset&#x3D;new HeadingPitchRange(0.0,-Math.toRadians(45.0),targetRange);</span><br><span class="line">                this.camera.viewBoundingSphere(boundingSphereScratch,offset)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">       ...</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="http://www.cnblogs.com/fuckgiser/p/5744509.html" target="_blank" rel="noopener">Cesium原理篇：1最长的一帧之渲染调度</a>, by 法克鸡丝</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2998,7 +2958,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">276</span>
+                    <span class="site-state-item-count">277</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -3695,9 +3655,9 @@
   
     
       
-        
-      
     
+      
+        
       
     
       

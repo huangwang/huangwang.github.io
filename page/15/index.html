@@ -314,6 +314,213 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/18/Vue-cli-3%E9%9B%86%E6%88%90Cesium/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/18/Vue-cli-3%E9%9B%86%E6%88%90Cesium/" itemprop="url">
+                  Vue-cli 3集成Cesium
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-18 23:48:35" itemprop="dateCreated datePublished" datetime="2019-07-18T23:48:35+08:00">2019-07-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-09-08 21:36:27" itemprop="dateModified" datetime="2020-09-08T21:36:27+08:00">2020-09-08</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>之前记录了在Vue-Cli 2的基础上集成了Cesium，但现在Vue-Cli已更新到3，之前方法已不适用。在参考<a href="https://www.jianshu.com/p/0815c76d949f" target="_blank" rel="noopener">Vue-cli 3.0 + cesium 构建</a>的基础上，验证记录Vue-Cli 3脚手架工具中集成Cesium的过程。</p>
+<h1 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h1><ul>
+<li>node.js: v10.16.0</li>
+<li>npm: 6.9.0</li>
+<li>vue: 2.6.10</li>
+<li>cesium: 1.45.0</li>
+<li>vue-cli: 3.9.2</li>
+<li>webpack: 4.28.4</li>
+</ul>
+<h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><ul>
+<li><p>安装nodejs</p>
+</li>
+<li><p>安装vue-cli脚手架</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install -g @vue&#x2F;cli</span><br><span class="line">vue create my-project</span><br><span class="line">cd my-project</span><br><span class="line">npm run serve</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装 cesium</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i cesium --save</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>新建 vue.config.js 文件，配置内容如下:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">const CopyWebpackPlugin &#x3D; require(&#39;copy-webpack-plugin&#39;)</span><br><span class="line">const webpack &#x3D; require(&#39;webpack&#39;)</span><br><span class="line">const path &#x3D; require(&#39;path&#39;)</span><br><span class="line"></span><br><span class="line">const debug &#x3D; process.env.NODE_ENV !&#x3D;&#x3D; &#39;production&#39;</span><br><span class="line">let cesiumSource &#x3D; &#39;.&#x2F;node_modules&#x2F;cesium&#x2F;Source&#39;</span><br><span class="line">let cesiumWorkers &#x3D; &#39;..&#x2F;Build&#x2F;Cesium&#x2F;Workers&#39;</span><br><span class="line">module.exports &#x3D; &#123;</span><br><span class="line">    baseUrl: &#39;&#39;,</span><br><span class="line">    devServer: &#123;</span><br><span class="line">        port: 9999</span><br><span class="line">    &#125;,</span><br><span class="line">    configureWebpack: &#123;</span><br><span class="line">        output: &#123;</span><br><span class="line">            sourcePrefix: &#39; &#39;</span><br><span class="line">        &#125;,</span><br><span class="line">        amd: &#123;</span><br><span class="line">            toUrlUndefined: true</span><br><span class="line">        &#125;,</span><br><span class="line">        resolve: &#123;</span><br><span class="line">            alias: &#123;</span><br><span class="line">                &#39;vue$&#39;: &#39;vue&#x2F;dist&#x2F;vue.esm.js&#39;,</span><br><span class="line">                &#39;@&#39;: path.resolve(&#39;src&#39;),</span><br><span class="line">                &#39;cesium&#39;: path.resolve(__dirname, cesiumSource)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        plugins: [</span><br><span class="line">            new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, cesiumWorkers), to: &#39;Workers&#39;&#125;]),</span><br><span class="line">            new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &#39;Assets&#39;), to: &#39;Assets&#39;&#125;]),</span><br><span class="line">            new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &#39;Widgets&#39;), to: &#39;Widgets&#39;&#125;]),</span><br><span class="line">            new CopyWebpackPlugin([ &#123; from: path.join(cesiumSource, &#39;ThirdParty&#x2F;Workers&#39;), to: &#39;ThirdParty&#x2F;Workers&#39;&#125;]),</span><br><span class="line">            new webpack.DefinePlugin(&#123;</span><br><span class="line">                CESIUM_BASE_URL: JSON.stringify(&#39;.&#x2F;&#39;)</span><br><span class="line">            &#125;)</span><br><span class="line">        ],</span><br><span class="line">        module: &#123;</span><br><span class="line">            unknownContextCritical: &#x2F;^.\&#x2F;.*$&#x2F;,</span><br><span class="line">            unknownContextCritical: false</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在 src/components 下新建 CesiumViewer.vue 文件，内容如下:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div id&#x3D;&quot;cesiumContainer&quot; class&#x3D;&quot;fullSize&quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">    name: &quot;CesiumViewer&quot;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line">.fullSize &#123;</span><br><span class="line">    display: block;</span><br><span class="line">    position: absolute;</span><br><span class="line">    top: 0;</span><br><span class="line">    left: 0;</span><br><span class="line">    border: none;</span><br><span class="line">    width: 100%;</span><br><span class="line">    height: 100%;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>修改 router.js ，引入 CesiumViewer组件，内容如下:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &#39;vue&#39;</span><br><span class="line">import Router from &#39;vue-router&#39;</span><br><span class="line">import CesiumViewer from &#39;.&#x2F;components&#x2F;CesiumViewer.vue&#39;</span><br><span class="line"></span><br><span class="line">Vue.use(Router)</span><br><span class="line"></span><br><span class="line">export default new Router(&#123;</span><br><span class="line">  routes: [</span><br><span class="line">    &#123;</span><br><span class="line">      path: &#39;&#x2F;&#39;,</span><br><span class="line">      name: &#39;CesiumViewer&#39;,</span><br><span class="line">      component: CesiumViewer</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>修改App.vue ，内容如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id&#x3D;&quot;app&quot;&gt;</span><br><span class="line">    &lt;router-view&#x2F;&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line"></span><br><span class="line">&lt;style lang&#x3D;&quot;css&quot;&gt;</span><br><span class="line">  html, body, #cesiumContainer &#123;</span><br><span class="line">    width: 100%;</span><br><span class="line">    height: 100%;</span><br><span class="line">    margin: 0;</span><br><span class="line">    padding: 0;</span><br><span class="line">    overflow: hidden;</span><br><span class="line">  &#125;</span><br><span class="line">  #app &#123;</span><br><span class="line">    font-family: &#39;Avenir&#39;, Helvetica, Arial, sans-serif;</span><br><span class="line">    -webkit-font-smoothing: antialiased;</span><br><span class="line">    -moz-osx-font-smoothing: grayscale;</span><br><span class="line">    text-align: center;</span><br><span class="line">    color: #2c3e50;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>最后修改 main.js 内容如下:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &#39;vue&#39;</span><br><span class="line">import App from &#39;.&#x2F;App.vue&#39;</span><br><span class="line">import router from &#39;.&#x2F;router&#39;</span><br><span class="line">import store from &#39;.&#x2F;store&#39;</span><br><span class="line">import Cesium from &#39;cesium&#x2F;Cesium&#39;</span><br><span class="line">&#x2F;&#x2F; noinspection ES6UnusedImports</span><br><span class="line">import widget from &#39;cesium&#x2F;Widgets&#x2F;widgets.css&#39;</span><br><span class="line"></span><br><span class="line">Vue.config.productionTip &#x3D; false</span><br><span class="line"></span><br><span class="line">new Vue(&#123;</span><br><span class="line">  router,</span><br><span class="line">  store,</span><br><span class="line">  render: h &#x3D;&gt; h(App),</span><br><span class="line">  mounted () &#123;</span><br><span class="line">    var viewer &#x3D; new Cesium.Viewer(&#39;cesiumContainer&#39;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).$mount(&#39;#app&#39;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>最后 npm serve ，打开浏览器输入localhost:8080查看效果。</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.jianshu.com/p/0815c76d949f" target="_blank" rel="noopener">Vue-cli 3.0 + cesium 构建</a>,by QingMings.</li>
+<li><a href="http://cesium.marsgis.cn/forcesium/tutorials/cesium-and-webpack/" target="_blank" rel="noopener">cesium-and-webpack</a>,by marsgis.</li>
+<li><a href="https://huangwang.github.io/2018/05/11/Vue-js%E9%9B%86%E6%88%90Cesium/">Vue.js集成Cesium</a>,by jack huang.</li>
+<li><a href="https://segmentfault.com/a/1190000022714154" target="_blank" rel="noopener">Cesium笔记 — Vue+Cesium开发环境搭建（基于Cesium1.69）</a>,by 芒果香蕉.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/18/Vue-js%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%E7%AE%80%E6%98%93%E6%95%99%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2148,182 +2355,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/26/CPlusPlus%E6%A0%87%E5%87%86%E6%BC%94%E5%8C%96%E7%AE%80%E4%BB%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/26/CPlusPlus%E6%A0%87%E5%87%86%E6%BC%94%E5%8C%96%E7%AE%80%E4%BB%8B/" itemprop="url">
-                  C++标准演化简介
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-26 19:45:12 / 修改时间：20:36:16" itemprop="dateCreated datePublished" datetime="2019-06-26T19:45:12+08:00">2019-06-26</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近阅读采用C++编写的MAVROS源码，遇到很多C++语言的新特性，理解起来很费劲，因此，特地分析一下C++标准演变过程，学习其进化过程中引入的新特性，提高C++源码阅读效率。</p>
-<h1 id="C-标准演变"><a href="#C-标准演变" class="headerlink" title="C++标准演变"></a>C++标准演变</h1><p>2017年12月05日，ISO C++ 委员会正式发布了 C++ 17 标准，官方名称为 ISO/IEC 14882:2017。之前发布的C++标准有C++14、C++11、C++03、C++98。</p>
-<h2 id="C-98"><a href="#C-98" class="headerlink" title="C++98"></a>C++98</h2><p>C++98是第一个C++标准。它分为两个部分：核心语言和C++标准程序库；后者包含了大部分标准模板库和C标准程序库的稍加修改版本。存在许多不属于标准部分的C++程序库，且使用外部链接，程序库甚至可以用C撰写。</p>
-<p>C++标准程序库充分吸收了C标准程序库，并佐以少许的修改，使其与C++良好的运作。另一个大型的程序库部分，是以标准模板库（STL）为基础，STL于1994年2月正式成为ANSI/ISO C++。它提供了实用的工具，如容器类（如：Array和Vector），迭代器（广义指针）提供容器以类似数组的访问方式，以及泛型算法进行搜索和排序的运算。此外还提供了(multi)map和(multi)set，它们都共享相似的成员函数。因此，以下成为可能，使用模板撰写泛型算法，它可以和任何容器或在任何以迭代器定义的序列上运作。如同C，使用#include指令包含标准表头，即可访问程序库里的功能。C++提供69个标准表头，其中19个不再赞成使用。</p>
-<p>使用标准模板库（例如：使用std::vector或std::string来取代C风格的数组或字符数组）有助于导向更安全和更灵活的软件。</p>
-<p>在STL在纳入C++标准以前，是来自HP和后来的SGI的第三方程式库，标准中并未称之为“STL”，它只是标准库中的一部分，但仍有许多人使用这个名称，以别于其它的标准库（输入／输出流、国际化、诊断、C程序库子集，等等）。 另外，如std::basic_string此类标准委员会添加的接口，有时也被误认为STL；实际上它们并不存在于原始的SGI STL中，在标准化后SGI STL才从标准库吸收加入其中。</p>
-<h2 id="C-03"><a href="#C-03" class="headerlink" title="C++03"></a>C++03</h2><p>C++03 是 C++ 语言国际标准的一个版本，正式名称是 ISO/IEC 14882:2003。该标准由国际标准化组织（ISO）和国际电工委员会（IEC）共同制定。</p>
-<p>C++03 取代了 C++ 标准的前一个版本 C++98，后被 C++11 所取代。C++03 主要是在前一个版本的基础上针对实现方的一些问题进行了修复，从而在各个实现间达到一致、保持了可移植性。该版本共涉及 92 项核心语言缺陷报告、125 项库缺陷报告，所提供的新特性只有一项：值初始化（英语：value initialization）。</p>
-<p>C++03 的第 69 号库缺陷报告非常值得一提，为了解决该问题，标准中加入了“std::vector 中的元素必须连续存储”的要求。</p>
-<h2 id="C-11"><a href="#C-11" class="headerlink" title="C++11"></a>C++11</h2><p>C++11，先前被称作C++0x，即ISO/IEC 14882:2011，是C++编程语言的一个标准。它取代第二版标准ISO/IEC 14882:2003（第一版ISO/IEC 14882:1998公开于1998年，第二版于2003年更新，分别通称C++98以及C++03，两者差异很小），且已被C++14取代。相比于C++03，C++11标准包含核心语言的新机能，而且扩展C++标准程序库，并入了大部分的C++ Technical Report 1程序库（数学的特殊函数除外）。 ISO／IEC JTC1/SC22/WG21 C++标准委员会计划在2010年8月之前完成对最终委员会草案的投票，以及于2011年3月召开的标准会议完成国际标准的最终草案。然而，WG21预期ISO将要花费六个月到一年的时间才能正式发布新的C++标准。为了能够如期完成，委员会决定致力于直至2006年为止的提案，忽略新的提案。最终于2011年8月12日公布，并于2011年9月出版。</p>
-<p>2012年2月28日的国际标准草案是最接近于C++11标准的草案，差异仅有编辑上的修正。</p>
-<p>像C++这样的编程语言，透过一种演化的的过程来发展其定义。这个过程不可避免地将引发与现有代码的兼容问题，在C++的发展过程中偶尔会发生。不过根据比雅尼·斯特劳斯特鲁普（C++的创始人并且是委员会的一员）表示，新的标准将几乎100%兼容于现有标准。</p>
-<h2 id="C-14"><a href="#C-14" class="headerlink" title="C++14"></a>C++14</h2><p>C++14是C++的现行标准的非正式名称，正式名称为”International Standard ISO/IEC 14882:2014(E) Programming Language C++”。C++14旨在作为C++11的一个小扩展，主要提供漏洞修复和小的改进。C++14标准的委员会草案（Committee Draft）N3690于2013年5月15日发表。工作草案（Working Draft）N3936已于2014年3月2日完成。最终的投票期结束于2014年8月15日，结果（一致通过）已于8月18日公布。</p>
-<h2 id="C-17"><a href="#C-17" class="headerlink" title="C++17"></a>C++17</h2><p>C++17又称C++1z，是C++的现行标准的非正式名称，正式名称为”International Standard ISO/IEC Programming Language C++”。C++17旨在作为大型扩展，最终的投票期将于2017年结束。</p>
-<p>当前不少著名C++编译器已支持C++17仍未定案的草案（draft），例如最新的GCC6已支持C++ concept的C++事务型内存（Transactional Memory），Visual Studio与Clang当前都提供了modules。</p>
-<h1 id="C-新语言特性"><a href="#C-新语言特性" class="headerlink" title="C++新语言特性"></a>C++新语言特性</h1><h2 id="Lambda函数与表示式"><a href="#Lambda函数与表示式" class="headerlink" title="Lambda函数与表示式"></a>Lambda函数与表示式</h2><p>在标准C++，特别是当使用C++标准程序库算法函数诸如sort和find，用户经常希望能够在算法函数调用的附近定义一个临时的述部函数（又称谓词函数，predicate function）。由于语言本身允许在函数内部定义类别，可以考虑使用函数对象，然而这通常既麻烦又冗赘，也阻碍了代码的流程。此外，标准C++不允许定义于函数内部的类别被用于模板，所以前述的作法是不可行的。</p>
-<p><strong>C++11对lambda（即匿名函数）的支持可以解决上述问题</strong>。</p>
-<p>一个lambda函数可以用如下的方式定义：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[](int x, int y) &#123; return x + y; &#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个不具名函数的回返类型是decltype(x+y)。只有在lambda函数匹配”return expression”的形式下，它的回返类型才能被忽略。在前述的情况下，lambda函数仅能为一个述句。</p>
-<p>在一个更为复杂的例子中，回返类型可以被明确的指定如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[](int x, int y) -&gt; int &#123; int z &#x3D; x + y; return z + x; &#125;</span><br></pre></td></tr></table></figure>
-
-<p>本例中，一个临时的参数z被创建用来存储中间结果。如同一般的函数，z的值不会保留到下一次该不具名函数再次被调用时。</p>
-<p>如果lambda函数没有传回值（例如void），其回返类型可被完全忽略。</p>
-<p>定义在与lambda函数相同作用域的参数引用也可以被使用。这种的参数集合一般被称作closure（闭包）。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[]      &#x2F;&#x2F; 沒有定义任何变量。使用未定义变量会引发错误。</span><br><span class="line">[x, &amp;y] &#x2F;&#x2F; x以传值方式传入（默认），y以引用方式传入。</span><br><span class="line">[&amp;]     &#x2F;&#x2F; 任何被使用到的外部变量都隐式地以引用方式加以引用。</span><br><span class="line">[&#x3D;]     &#x2F;&#x2F; 任何被使用到的外部变量都隐式地以传值方式加以引用。</span><br><span class="line">[&amp;, x]  &#x2F;&#x2F; x显式地以传值方式加以引用。其余变量以引用方式加以引用。</span><br><span class="line">[&#x3D;, &amp;z] &#x2F;&#x2F; z显式地以引用方式加以引用。其余变量以传值方式加以引用。</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B" target="_blank" rel="noopener">C++</a>,by wikipedia.</li>
-<li><a href="https://zh.cppreference.com/w/cpp/language/history" target="_blank" rel="noopener">C++ 的历史</a>,by cppreference.</li>
-<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B03" target="_blank" rel="noopener">C++03</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B11" target="_blank" rel="noopener">C++11</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B14" target="_blank" rel="noopener">C++14</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B17" target="_blank" rel="noopener">C++17</a>,by wikipedia.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2371,7 +2402,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">285</span>
+                    <span class="site-state-item-count">286</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

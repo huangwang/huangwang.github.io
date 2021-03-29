@@ -314,6 +314,162 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/12/11/GSL%E6%8F%92%E5%80%BC%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5%E5%87%BA%E9%94%99%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/11/GSL%E6%8F%92%E5%80%BC%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5%E5%87%BA%E9%94%99%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" itemprop="url">
+                  GSL插值函数编译链接出错解决方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-12-11 20:14:51 / 修改时间：20:26:27" itemprop="dateCreated datePublished" datetime="2019-12-11T20:14:51+08:00">2019-12-11</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在Windows平台使用VS2017社区版将开源数学库GSL编译链接成DLL后，使用官方示例测试其插值函数。在编译链接该示例过程中报</p>
+<blockquote>
+<p>LNK2001: unresolved external symbol _gsl_interp_cspline</p>
+</blockquote>
+<p>的错误。</p>
+<p>解决方法如下，在示例开始处定义如下宏即可。</p>
+<blockquote>
+<p>#define GSL_DLL</p>
+</blockquote>
+<p>完整可运行示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">#define GSL_DLL</span><br><span class="line"></span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;math.h&gt;</span><br><span class="line">#include &lt;gsl&#x2F;gsl_errno.h&gt;</span><br><span class="line">#include &lt;gsl&#x2F;gsl_spline.h&gt;</span><br><span class="line"></span><br><span class="line">int</span><br><span class="line">main (void)</span><br><span class="line">&#123;</span><br><span class="line">  int i;</span><br><span class="line">  double xi, yi, x[10], y[10];</span><br><span class="line"></span><br><span class="line">  printf (&quot;#m&#x3D;0,S&#x3D;17\n&quot;);</span><br><span class="line"></span><br><span class="line">  for (i &#x3D; 0; i &lt; 10; i++)</span><br><span class="line">    &#123;</span><br><span class="line">      x[i] &#x3D; i + 0.5 * sin (i);</span><br><span class="line">      y[i] &#x3D; i + cos (i * i);</span><br><span class="line">      printf (&quot;%g %g\n&quot;, x[i], y[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  printf (&quot;#m&#x3D;1,S&#x3D;0\n&quot;);</span><br><span class="line"></span><br><span class="line">  &#123;</span><br><span class="line">    gsl_interp_accel *acc</span><br><span class="line">      &#x3D; gsl_interp_accel_alloc ();</span><br><span class="line">    gsl_spline *spline</span><br><span class="line">      &#x3D; gsl_spline_alloc (gsl_interp_cspline, 10);</span><br><span class="line"></span><br><span class="line">    gsl_spline_init (spline, x, y, 10);</span><br><span class="line"></span><br><span class="line">    for (xi &#x3D; x[0]; xi &lt; x[9]; xi +&#x3D; 0.01)</span><br><span class="line">      &#123;</span><br><span class="line">        yi &#x3D; gsl_spline_eval (spline, xi, acc);</span><br><span class="line">        printf (&quot;%g %g\n&quot;, xi, yi);</span><br><span class="line">      &#125;</span><br><span class="line">    gsl_spline_free (spline);</span><br><span class="line">    gsl_interp_accel_free (acc);</span><br><span class="line">  &#125;</span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.gnu.org/software/gsl/doc/html/interp.html" target="_blank" rel="noopener">Interpolation</a>,by gsl homepage.</li>
+<li><a href="https://lists.gnu.org/archive/html/help-gsl/2008-01/msg00034.html" target="_blank" rel="noopener">[Help-gsl] LNK2001: unresolved external symbol _gsl_interp_cspline</a>,by lists.gnu.org.</li>
+<li><a href="https://lists.gnu.org/archive/html/help-gsl/2008-01/msg00036.html" target="_blank" rel="noopener">[Help-gsl] Re: LNK2001: unresolved external symbol _gsl_interp_cspline</a>,by lists.gnu.org.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/12/08/%E4%BC%81%E4%BA%8B%E4%B8%9A%E5%8D%95%E4%BD%8DIT%E6%9E%B6%E6%9E%84%E7%9A%84%E6%B6%85%E6%A7%83%E4%B8%8E%E9%87%8D%E7%94%9F%E4%B9%8B%E4%B8%AD%E5%8F%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2024,208 +2180,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/10/CPlusPlus%E6%A0%87%E5%87%86%E6%A8%A1%E6%9D%BF%E5%BA%93STL%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/11/10/CPlusPlus%E6%A0%87%E5%87%86%E6%A8%A1%E6%9D%BF%E5%BA%93STL%E5%85%A5%E9%97%A8/" itemprop="url">
-                  C++标准模板库STL入门
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-11-10 12:26:15 / 修改时间：17:53:15" itemprop="dateCreated datePublished" datetime="2019-11-10T12:26:15+08:00">2019-11-10</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近C++编程中需要管理多个由同一个类实例化的对象，于是想到了C++的标准模板库STL，在此将STL的相关知识记录一下。</p>
-<h1 id="STL的来龙去脉"><a href="#STL的来龙去脉" class="headerlink" title="STL的来龙去脉"></a>STL的来龙去脉</h1><p>STL 历史可以追溯到 1972 年 C 语言在 UNIX 计算机上的首次使用。直到 1994 年，STL 才被正式纳入 C++ 标准中。</p>
-<p>标准模板库（STL）是 C ++编程语言的软件库，影响了C ++标准库的许多部分。它提供了四个组件，分别称为<strong>算法，容器，仿函数和迭代器</strong>。</p>
-<p>STL为 C ++提供了一组通用类，例如容器和关联数组，可以与任何内置类型和支持某些基本操作（例如复制和赋值）的任何用户定义类型一起使用。 STL算法独立于容器，从而大大降低了库的复杂性。</p>
-<p>STL通过使用模板来实现其结果。这种方法提供的编译时多态性通常比传统的运行时多态性更有效。对现代 C ++编译器进行了调整，以最大程度地减少由于大量使用STL而引起的抽象损失。</p>
-<p>STL是创建的第一个C ++通用算法和数据结构库，它牢记四个想法：通用编程，不损失效率的抽象性，冯·诺依曼计算模型和值语义。</p>
-<h1 id="STL-组件"><a href="#STL-组件" class="headerlink" title="STL 组件"></a>STL 组件</h1><p>STL 将“在数据上执行的操作”与“要执行操作的数据分开”，分别以如下概念指代：</p>
-<ul>
-<li>容器：包含、放置数据的地方。</li>
-<li>迭代器：在容器中指出一个位置、或成对使用以划定一个区域，用来限定操作所涉及到的数据范围。</li>
-<li>算法：要执行的操作。</li>
-</ul>
-<h2 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h2><p>容器即用来存储并管理某类对象的集合。例如鱼缸是用来盛放金鱼的容器。标准模板库中容器主要分为序列容器（sequence containers）与关系容器（associative containers）。</p>
-<p>序列容器包括：</p>
-<ul>
-<li>vector</li>
-<li>list</li>
-<li>forward_list</li>
-<li>deque</li>
-<li>array</li>
-</ul>
-<p>关联容器包括：</p>
-<ul>
-<li>set</li>
-<li>multiset</li>
-<li>map</li>
-<li>multimap</li>
-<li>unordered_set</li>
-<li>unordered_multiset</li>
-<li>unordered_map</li>
-<li>unordered_multimap</li>
-</ul>
-<p>其他类型的容器包括：</p>
-<ul>
-<li>bitset</li>
-<li>valarray</li>
-</ul>
-<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><p>迭代器用于在一个对象群集的元素上进行遍历动作。对象群集可能是容器，也可能是容器的一部分。</p>
-<p>迭代器的主要用途是为容器提供一组很小的公共接口。利用这个接口，某项操作可以行进至群集内的下一个元素。</p>
-<p>每种容器都提供了各自的迭代器。迭代器了解该容器的内部结构，所以能够正确行进。迭代器的接口和一般指针类似。</p>
-<p>迭代器的作用就是提供一个遍历容器内部所有元素的接口，因此迭代器的内部必须保存一个与容器相关联的指针，然后重载各种运算操作来方便遍历，其中最重要的就是∗运算符和-&gt;运算符，以及++，–等可能需要的运算符重载。</p>
-<p>根据迭代器的操作方式的不同，迭代器分为五种：</p>
-<ul>
-<li>输入迭代器</li>
-<li>输出迭代器</li>
-<li>前向迭代器</li>
-<li>双向迭代器</li>
-<li>随机访问迭代器</li>
-</ul>
-<p>迭代器的示例代码如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    vector&lt;int&gt; v;        &#x2F;&#x2F; 定义一个vector容器</span><br><span class="line"></span><br><span class="line">    v.push_back(1);        &#x2F;&#x2F; 向容器中添加3个元素</span><br><span class="line">    v.push_back(2);</span><br><span class="line">    v.push_back(3);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 遍历向量的元素</span><br><span class="line">    vector&lt;int&gt;::iterator b &#x3D; v.begin();        &#x2F;&#x2F; 指向容器的第一个元素</span><br><span class="line">    vector&lt;int&gt;::iterator e &#x3D; v.end();            &#x2F;&#x2F; 指向容器尾元素的下一个位置</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; C++11新标准的写法, auto关键字为类型推断，由编译器自动完成</span><br><span class="line">    &#x2F;&#x2F; auto b &#x3D; v.begin();</span><br><span class="line">    &#x2F;&#x2F; auto e &#x3D; v.end();</span><br><span class="line"></span><br><span class="line">    for (vector&lt;int&gt;::iterator iter &#x3D; b; iter !&#x3D; e; ++iter)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; *iter &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>算法用来处理群集内的元素，可以出于不同目的搜寻、排序、修改、使用那些元素。所有容器的迭代器都提供一致的接口，通过迭代器的协助，算法程序可以用于任意容器。</p>
-<p>STL 的一个特性是将数据和操作分离。数据由容器类别加以管理，操作则由可定制的算法定义。迭代器在两者之间充当“粘合剂”，以使算法可以和容器交互运作。</p>
-<p>STL 的另一个特性即组件可以针对任意型别运作。“标准模板库”这一名称即表示“可接受任意型别”的模板，并且这些型别均可执行必要操作。</p>
-<h2 id="仿函数"><a href="#仿函数" class="headerlink" title="仿函数"></a>仿函数</h2><p>STL中大量运用了仿函数。仿函数具有泛型编程强大的威力，是纯粹抽象概念的例证。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://c.biancheng.net/stl/" target="_blank" rel="noopener">STL教程：C++ STL快速入门</a>,by C语言中文网.</li>
-<li><a href="http://c.biancheng.net/view/1436.html" target="_blank" rel="noopener">STL是什么（STL简介）</a>,by C语言中文网.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E6%A0%87%E5%87%86%E6%A8%A1%E6%9D%BF%E5%BA%93" target="_blank" rel="noopener">标准模板库</a>,by wikipedia.</li>
-<li><a href="https://www.jianshu.com/p/77d0dd2fa3ee" target="_blank" rel="noopener">C++ STL初识及整理</a>,by thinkChao.</li>
-<li><a href="https://blog.csdn.net/wutao1530663/article/details/64922389" target="_blank" rel="noopener">C++标准模板库(STL)迭代器的原理与实现</a>,by wutao02.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2273,7 +2227,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">286</span>
+                    <span class="site-state-item-count">287</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

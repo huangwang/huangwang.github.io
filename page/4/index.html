@@ -314,6 +314,282 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/09/03/js%E6%8B%96%E6%94%BE%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/09/03/js%E6%8B%96%E6%94%BE%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/" itemprop="url">
+                  js拖放功能的实现
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-09-03 09:45:06" itemprop="dateCreated datePublished" datetime="2020-09-03T09:45:06+08:00">2020-09-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-10-01 21:42:08" itemprop="dateModified" datetime="2020-10-01T21:42:08+08:00">2020-10-01</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>拖放是网页中一种很常见的交互手段。下面简单介绍使用js实现拖放功能的方法。</p>
+<h1 id="拖放流程"><a href="#拖放流程" class="headerlink" title="拖放流程"></a>拖放流程</h1><p>拖放元素的流程如下：</p>
+<p>选中元素—&gt;拖动元素—&gt;释放元素</p>
+<p>下面介绍上述拖放元素流程的具体实现方法。</p>
+<h2 id="选中元素"><a href="#选中元素" class="headerlink" title="选中元素"></a>选中元素</h2><p>在HTML5标准中，为了使元素可拖动，把draggable属性设置为true。文本、图片和链接是默认可以拖放的，它们的draggable属性自动被设置成了true。图片和链接按住鼠标左键选中，就可以拖放。文本只有在被选中的情况下才能拖放。如果显示设置文本的draggable属性为true，按住鼠标左键也可以直接拖放。</p>
+<p>draggable属性：设置元素是否可拖动。语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;element draggable&#x3D;&quot;true | false | auto&quot; &gt;</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li>true: 可以拖动  </li>
+<li>false: 禁止拖动  </li>
+<li>auto: 跟随浏览器定义是否可以拖动</li>
+</ul>
+<h2 id="拖动元素"><a href="#拖动元素" class="headerlink" title="拖动元素"></a>拖动元素</h2><p>每一个可拖动的元素，在拖动过程中，都会经历三个过程，拖动开始–&gt;拖动过程中–&gt; 拖动结束。</p>
+<table>
+<thead>
+<tr>
+<th>针对对象</th>
+<th>事件名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>被拖动的元素</td>
+<td>dragstart</td>
+<td>在元素开始被拖动时候触发</td>
+</tr>
+<tr>
+<td></td>
+<td>drag</td>
+<td>在元素被拖动时反复触发</td>
+</tr>
+<tr>
+<td></td>
+<td>dragend</td>
+<td>在拖动操作完成时触发</td>
+</tr>
+<tr>
+<td>目的地对象</td>
+<td>dragenter</td>
+<td>当被拖动元素进入目的地元素所占据的屏幕空间时触发</td>
+</tr>
+<tr>
+<td></td>
+<td>dragover</td>
+<td>当被拖动元素在目的地元素内时触发</td>
+</tr>
+<tr>
+<td></td>
+<td>dragleave</td>
+<td>当被拖动元素没有放下就离开目的地元素时触发</td>
+</tr>
+</tbody></table>
+<h2 id="释放"><a href="#释放" class="headerlink" title="释放"></a>释放</h2><p>到达目的地之后，释放元素事件</p>
+<table>
+<thead>
+<tr>
+<th>针对对象</th>
+<th>事件名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>目的地对象</td>
+<td>drop</td>
+<td>当被拖动元素在目的地元素里放下时触发，一般需要取消浏览器的默认行为。</td>
+</tr>
+</tbody></table>
+<h1 id="DataTransfer对象"><a href="#DataTransfer对象" class="headerlink" title="DataTransfer对象"></a>DataTransfer对象</h1><p>与拖放操作所触发的事件同时派发的对象是DragEvent，它派生于MouseEvent，具有Event与MouseEvent对象的所有功能，并增加了dataTransfer属性。该属性用于保存拖放的数据和交互信息，返回DataTransfer对象。</p>
+<p>DataTransfer对象常用的属性和方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>types</td>
+<td>只读属性。它返回一个我们在dragstart事件中设置的拖动数据格式的数组。 格式顺序与拖动操作中包含的数据顺序相同。IE10+、Edge、safari3.1、Firefox3.5+ 和Chrome4以上支持该属性</td>
+</tr>
+<tr>
+<td>files</td>
+<td>返回拖动操作中的文件列表。包含一个在数据传输上所有可用的本地文件列表。如果拖动操作不涉及拖动文件，此属性是一个空列表。</td>
+</tr>
+<tr>
+<td>dropEffect</td>
+<td>获取当前选定的拖放操作的类型或将操作设置为新类型。它应该始终设置成effectAllowed的可能值之一【none、move、copy、link】。dragover事件处理程序中针对放置目标来设置dropEffect。</td>
+</tr>
+<tr>
+<td>effectAllowed</td>
+<td>指定拖放操作所允许的效果。必须是其中之一【 none, copy, copyLink, copyMove, link, linkMove, move, all, uninitialized】默认为uninitialized 表示允许所有的效果。ondragstart处理程序中设置effectAllowed属性</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>void setData(format, data)</td>
+<td>将拖动操作的拖动数据设置为指定的数据和类型。format可以是MIME类型</td>
+</tr>
+<tr>
+<td>String getData(format)</td>
+<td>返回指定格式的数据，format与setData()中一致</td>
+</tr>
+<tr>
+<td>void clearData([format])</td>
+<td>删除给定类型的拖动操作的数据。如果给定类型的数据不存在，此方法不执行任何操作。如果不给定参数，则删除所有类型的数据。</td>
+</tr>
+<tr>
+<td>void setDragImage(img, xOffset, yOffset)</td>
+<td>指定一副图像，当拖动发生时，显示在光标下方。大多数情况下不用设置，因为被拖动的节点被创建成默认图片。x,y参数分别指示图像的水平、垂直偏移量</td>
+</tr>
+</tbody></table>
+<h1 id="浏览器文件拖拽示例"><a href="#浏览器文件拖拽示例" class="headerlink" title="浏览器文件拖拽示例"></a>浏览器文件拖拽示例</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">document.addEventListener(&quot;dragenter&quot;,function(e) &#123;</span><br><span class="line">    e.preventDefault();</span><br><span class="line">    e.stopPropagation();</span><br><span class="line">&#125;,false);</span><br><span class="line"></span><br><span class="line">document.addEventListener(&quot;dragover&quot;,function(e) &#123;</span><br><span class="line">    e.preventDefault();</span><br><span class="line">    e.stopPropagation();</span><br><span class="line">&#125;,false);</span><br><span class="line"></span><br><span class="line">document.addEventListener(&quot;dragleave&quot;,function(e) &#123;</span><br><span class="line">    e.preventDefault();</span><br><span class="line">    e.stopPropagation();</span><br><span class="line">&#125;,false);</span><br><span class="line"></span><br><span class="line">document.addEventListener(&quot;drop&quot;,function(e) &#123;</span><br><span class="line">    e.preventDefault();</span><br><span class="line">    e.stopPropagation();</span><br><span class="line"></span><br><span class="line">    var  df &#x3D; e.dataTransfer;</span><br><span class="line">    var dropFiles&#x3D;[];</span><br><span class="line"></span><br><span class="line">    if (df.items !&#x3D;&#x3D;undefined)&#123;</span><br><span class="line">        for(var i&#x3D;0;i&lt;df.items.length;i++)&#123;</span><br><span class="line">            var item&#x3D; df.items[i];</span><br><span class="line">            if(item.kind&#x3D;&#x3D;&#x3D;&quot;file&quot; &amp;&amp; item.getAsEntry().isFile)&#123;</span><br><span class="line">                var file &#x3D;item.getAsFile();</span><br><span class="line">                dropFiles.push(file);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;,false);</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://segmentfault.com/a/1190000013298317" target="_blank" rel="noopener">js控制文件拖拽，获取拖拽内容。</a>,by segmentfault.</li>
+<li><a href="https://juejin.im/post/6844903513491767303" target="_blank" rel="noopener">HTML5原生拖拽/拖放 Drag &amp; Drop 详解</a>,by weiqinl.</li>
+<li><a href="https://segmentfault.com/a/1190000019554950" target="_blank" rel="noopener">原生JS快速实现拖放（drag and drop）效果</a>,by MudOnTire.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/08/14/Simulink%E6%A8%A1%E5%9D%97%E5%8F%82%E6%95%B0%E5%9C%A8%E7%BA%BF%E4%BF%AE%E6%94%B9%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1750,172 +2026,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/05/24/Matlab%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/05/24/Matlab%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/" itemprop="url">
-                  Matlab学习笔记之基本知识
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-05-24 23:07:17" itemprop="dateCreated datePublished" datetime="2020-05-24T23:07:17+08:00">2020-05-24</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-07-30 10:19:31" itemprop="dateModified" datetime="2020-07-30T10:19:31+08:00">2020-07-30</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>本文梳理记录Matlab的基本知识，为Simulink仿真打下基础。</p>
-<h1 id="基本数据结构"><a href="#基本数据结构" class="headerlink" title="基本数据结构"></a>基本数据结构</h1><ul>
-<li><p>标量：1*1的矩阵</p>
-</li>
-<li><p>向量、数组（这两个词在matlab中可认为同义）：1*n的矩阵</p>
-</li>
-<li><p>矩阵：矩阵</p>
-</li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/u013303743/article/details/48134795" target="_blank" rel="noopener">【Matlab学习笔记】（六）基本数据结构（矩阵定义方法）</a>,by 末树之墨.</li>
-<li><a href="https://cloud.tencent.com/developer/ask/81165" target="_blank" rel="noopener">MATLAB中是否有“队列”？</a>,by tencent.</li>
-<li><a href="https://ww2.mathworks.cn/help/matlab/ref/containers.map.html" target="_blank" rel="noopener">containers.Map</a>, by mathworks.</li>
-<li><a href="https://www.ilovematlab.cn/thread-60582-1-1.html" target="_blank" rel="noopener">Matlab的memory模块消除代数环</a>,by ilovematlab.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1963,7 +2073,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">287</span>
+                    <span class="site-state-item-count">288</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -314,6 +314,212 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/08/25/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E5%9B%BE%E6%A0%87icon/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/25/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E5%9B%BE%E6%A0%87icon/" itemprop="url">
+                  如何使用图标icon
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-25 16:46:07 / 修改时间：18:01:35" itemprop="dateCreated datePublished" datetime="2019-08-25T16:46:07+08:00">2019-08-25</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在前端网页的世界里，Icon是最基本的元素之一。使用Icon已成为前端开发者最基本的技能。下面将主要介绍利用SVG Sprites技术在前端中使用Icon的方法。</p>
+<h1 id="Icon的演化史"><a href="#Icon的演化史" class="headerlink" title="Icon的演化史"></a>Icon的演化史</h1><p>Icon最早用img实现，后为了提高效率，减少img请求，出现image sprite技术，实现将多个图片合成一个图片，然后利用 css 的 background-position 定位显示不同的 icon 图标。但该技术维护困难。</p>
+<p>随后出现了<strong>font库</strong>实现页面图标，例如<a href="https://fontawesome.com/" target="_blank" rel="noopener"> Font Awesome</a>。目前最常用的是<a href="https://www.iconfont.cn/" target="_blank" rel="noopener">iconfont</a>，里面图标应有尽有，且开源。</p>
+<h1 id="iconfont的使用方法"><a href="#iconfont的使用方法" class="headerlink" title="iconfont的使用方法"></a>iconfont的使用方法</h1><h2 id="unicode"><a href="#unicode" class="headerlink" title="unicode"></a>unicode</h2><p>优势：</p>
+<ul>
+<li>兼容性最好，支持ie6+</li>
+<li>支持按字体的方式去动态调整图标大小，颜色等等</li>
+</ul>
+<p>劣势:</p>
+<ul>
+<li>不支持多色图标</li>
+<li>在不同的设备浏览器字体的渲染会略有差别</li>
+</ul>
+<p>具体使用方法参考<a href="https://juejin.im/post/59bb864b5188257e7a427c09" target="_blank" rel="noopener">手摸手，带你优雅的使用 icon</a>，不建议使用。</p>
+<h2 id="font-class"><a href="#font-class" class="headerlink" title="font-class"></a>font-class</h2><p>与unicode使用方式相比，具有如下特点：</p>
+<ul>
+<li>兼容性良好，支持ie8+</li>
+<li>相比于unicode语意明确，书写更直观。可以很容易分辨这个icon是什么。</li>
+</ul>
+<h2 id="symbol"><a href="#symbol" class="headerlink" title="symbol"></a>symbol</h2><p>随着IE浏览器逐渐淡出历史舞台，svg-icon 使用形式慢慢成为主流和推荐的方法，请参考<a href="https://www.zhangxinxu.com/wordpress/2014/07/introduce-svg-sprite-technology/?spm=a313x.7781069.1998910419.50" target="_blank" rel="noopener">未来必热：SVG Sprites技术介绍</a>。其优点有：</p>
+<ul>
+<li>支持多色图标了，不再受单色限制。</li>
+<li>支持像字体那样通过font-size,color来调整样式。</li>
+<li>支持 ie9+</li>
+<li>可利用CSS实现动画。</li>
+<li>减少HTTP请求。</li>
+<li>矢量，缩放不失真</li>
+<li>可以很精细的控制SVG图标的每一部分</li>
+</ul>
+<p>具体使用方法如下：</p>
+<ul>
+<li>使用SVG Sprite生成SVG雪碧图</li>
+</ul>
+<p align="center">
+    <img src="images/svg_sprite.png" width="90%" alt="SVG雪碧图"/>
+</p>
+<center>图1  SVG雪碧图</center>
+
+<ul>
+<li>加入通用css代码（引入一次就行）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;style type&#x3D;&quot;text&#x2F;css&quot;&gt;</span><br><span class="line">    .icon &#123;</span><br><span class="line">       width: 1em; height: 1em;</span><br><span class="line">       vertical-align: -0.15em;</span><br><span class="line">       fill: currentColor;</span><br><span class="line">       overflow: hidden;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>挑选相应图标并获取类名，应用于页面</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;svg class&#x3D;&quot;icon&quot; aria-hidden&#x3D;&quot;true&quot;&gt;</span><br><span class="line">    &lt;use xlink:href&#x3D;&quot;#icon-xxx&quot;&gt;&lt;&#x2F;use&gt;</span><br><span class="line">&lt;&#x2F;svg&gt;</span><br></pre></td></tr></table></figure>
+
+<p>使用svg-icon的好处是再也不用发送woff|eot|ttf| 这些很多个字体库请求了，所有的svg都可以内联在html内。且svg 是一个真正的矢量，不管再怎么的放缩它都不会失真模糊，而且svg可以控制的属性也更加的丰富，也能做出更加生动和复杂的图标。</p>
+<h1 id="生成SVG-sprite的方法"><a href="#生成SVG-sprite的方法" class="headerlink" title="生成SVG sprite的方法"></a>生成SVG sprite的方法</h1><p>推荐使用<a href="https://github.com/kisenka/svg-sprite-loader" target="_blank" rel="noopener">svg-sprite-loader </a>,它是一个Webpack loader。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import &#39;@&#x2F;src&#x2F;icons&#x2F;qq.svg; &#x2F;&#x2F;引入图标</span><br><span class="line">&lt;svg&gt;&lt;use xlink:href&#x3D;&quot;#qq&quot; &#x2F;&gt;&lt;&#x2F;svg&gt;  &#x2F;&#x2F;使用图标</span><br></pre></td></tr></table></figure>
+
+<h1 id="自动导入多个SVG"><a href="#自动导入多个SVG" class="headerlink" title="自动导入多个SVG"></a>自动导入多个SVG</h1><p>使用 webpack 的 <a href="https://webpack.js.org/guides/dependency-management/#require-context" target="_blank" rel="noopener">require.context</a> 实现自动导入多个SVG Icon，避免手动一个个引入。</p>
+<p>require.context有三个参数：</p>
+<ul>
+<li>directory：说明需要检索的目录</li>
+<li>useSubdirectories：是否检索子目录</li>
+<li>regExp: 匹配文件的正则表达式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const requireAll &#x3D; requireContext &#x3D;&gt; requireContext.keys().map(requireContext)</span><br><span class="line">const req &#x3D; require.context(&#39;.&#x2F;svg&#39;, false, &#x2F;\.svg$&#x2F;)</span><br><span class="line">requireAll(req)</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://juejin.im/post/59bb864b5188257e7a427c09" target="_blank" rel="noopener">手摸手，带你优雅的使用 icon</a>,by 花裤衩.</li>
+<li><a href="https://www.zhangxinxu.com/wordpress/2014/07/introduce-svg-sprite-technology/?spm=a313x.7781069.1998910419.50" target="_blank" rel="noopener">未来必热：SVG Sprites技术介绍</a>,by 张鑫旭.</li>
+<li><a href="https://juejin.im/post/5c049a28f265da61273d2317" target="_blank" rel="noopener">如何在vue项目中优雅的使用SVG</a>,by SilentLove.</li>
+<li><a href="https://juejin.im/post/5c10dbcbf265da61441fe8e2" target="_blank" rel="noopener">关于webpack的require.context</a>,by yeyan1996.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/08/20/USB%E4%BE%9B%E7%94%B5%E8%83%BD%E5%8A%9B%E7%AE%80%E4%BB%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2106,172 +2312,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/28/Mock%E6%95%B0%E6%8D%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/28/Mock%E6%95%B0%E6%8D%AE/" itemprop="url">
-                  Mock数据
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-07-28 23:38:30" itemprop="dateCreated datePublished" datetime="2019-07-28T23:38:30+08:00">2019-07-28</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-08-08 20:56:08" itemprop="dateModified" datetime="2019-08-08T20:56:08+08:00">2019-08-08</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在实际开发中，最理想的前后端交互方式当然是后端先帮前端 mock 数据，然后前端开发，但现实很骨感，总会因为种种原因，前端需要自己来 mock 假数据。常用的伪造假数据的库有：Mockjs和easy-mock。这两个库有各自问题，因此需要一种新的 mock 假数据方案。</p>
-<h1 id="Mockjs"><a href="#Mockjs" class="headerlink" title="Mockjs"></a>Mockjs</h1><p>原理是: 拦截了所有的请求并代理到本地，然后进行数据模拟，所以你会发现 network 中没有发出任何的请求。</p>
-<p>但它的最大的问题是就是它的实现机制。它会重写浏览器的XMLHttpRequest对象，从而才能拦截所有请求，代理到本地。</p>
-<p>大部分情况下用起来还是蛮方便的，但就因为它重写了XMLHttpRequest对象，所以比如progress方法，或者一些底层依赖XMLHttpRequest的库都会和它发生不兼容。</p>
-<p>另外，因为是它是本地模拟数据，实际上不会走任何网络请求。所以本地调试起来很蛋疼，只能通过console.log来调试。</p>
-<h1 id="easy-mock"><a href="#easy-mock" class="headerlink" title="easy-mock"></a>easy-mock</h1><p>天然支持跨域，还是支持MockJs的所有语法。但因为用的人多了，它的免费服务会经常的挂，可以说天天挂。官方的建议是自己搭建服务。如果你的公司整体搭建一个这样的 mock 服务的话也是一个不错的选择。但大部分人可能还是没有这个技术条件的。</p>
-<h1 id="新的Mock假数据方案"><a href="#新的Mock假数据方案" class="headerlink" title="新的Mock假数据方案"></a>新的Mock假数据方案</h1><p>本地会启动一个mock-server来模拟数据，线上环境还是继续使用mockjs来进行模拟(因为本项目是一个纯前端项目，你也可以自己搭建一个线上 server 来提供数据)。不管是本地还是线上所以的数据模拟都是基于mockjs生成的，所以只要写一套 mock 数据，就可以在多环境中使用。</p>
-<p>该方案的好处是，在保留 mockjs 的优势的同时，解决之前的痛点。由于我们的 mock 是完全基于webpack-dev-serve来实现的，所以在你启动前端服务的同时，mock-server就会自动启动，这里还通过 chokidar 来观察 mock 文件夹内容的变化。在发生变化时会清除之前注册的mock-api接口，重新动态挂载新的接口，从而支持热更新。有兴趣的可以自己看一下代码 mock-server.js。由于是一个真正的server，所以你可以通过控制台中的network，清楚的知道接口返回的数据结构。并且同时解决了之前mockjs会重写 XMLHttpRequest对象，导致很多第三方库失效的问题。</p>
-<p>vue.config.js中配置本地mock-server服务：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">    port: port,</span><br><span class="line">    open: true,</span><br><span class="line">    overlay: &#123;</span><br><span class="line">      warnings: false,</span><br><span class="line">      errors: true</span><br><span class="line">    &#125;,</span><br><span class="line">    proxy: &#123;</span><br><span class="line">      &#x2F;&#x2F; change xxx-api&#x2F;login &#x3D;&gt; mock&#x2F;login</span><br><span class="line">      &#x2F;&#x2F; detail: https:&#x2F;&#x2F;cli.vuejs.org&#x2F;config&#x2F;#devserver-proxy</span><br><span class="line">      [process.env.VUE_APP_BASE_API]: &#123;</span><br><span class="line">        target: &#96;http:&#x2F;&#x2F;127.0.0.1:$&#123;port&#125;&#x2F;mock&#96;,</span><br><span class="line">        changeOrigin: true,</span><br><span class="line">        pathRewrite: &#123;</span><br><span class="line">          [&#39;^&#39; + process.env.VUE_APP_BASE_API]: &#39;&#39;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;&#x2F; 输入app为exress实例，即var app &#x3D; express();</span><br><span class="line">    &#x2F;&#x2F; after: function(app, server) &#123;</span><br><span class="line">       &#x2F;&#x2F; do fancy stuff</span><br><span class="line">    &#x2F;&#x2F; &#125;</span><br><span class="line">    after: require(&#39;.&#x2F;mock&#x2F;mock-server.js&#39;)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://juejin.im/post/5c92ff94f265da6128275a85#heading-5" target="_blank" rel="noopener">手摸手，带你用vue撸后台 系列五(v4.0新版本)</a>,by 花裤衩.</li>
-<li><a href="https://github.com/nuysoft/Mock/wiki/Getting-Started" target="_blank" rel="noopener">Getting Started</a>,by mockjs.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2319,7 +2359,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">288</span>
+                    <span class="site-state-item-count">289</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

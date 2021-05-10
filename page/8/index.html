@@ -314,6 +314,191 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/01/15/CPlusPlus%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6Catch%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/01/15/CPlusPlus%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6Catch%E5%85%A5%E9%97%A8/" itemprop="url">
+                  CPlusPlus单元测试框架Catch入门
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-01-15 23:06:19" itemprop="dateCreated datePublished" datetime="2020-01-15T23:06:19+08:00">2020-01-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-01-21 09:39:52" itemprop="dateModified" datetime="2020-01-21T09:39:52+08:00">2020-01-21</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近在编写一个飞行力学的类库，随着类数量的增加，代码越来越复杂，质量越来越难以控制，因此引入单元测试，通过自动化测试以保障代码质量，防止因代码修改引入新的Bug。C++已经有一些成熟的代码测试框架，例如：Google Test, Boost.Test, CppUnit, Cute，等等。通过综合分析和比较，最终选择Catch2测试框架。选择该测试框架的原因是其够轻量级，够简单。</p>
+<h1 id="Catch2简介"><a href="#Catch2简介" class="headerlink" title="Catch2简介"></a>Catch2简介</h1><p>Catch2是轻量级的C++的多范式测试框架。 它也支持Objective-C（也许还有C）。 它主要作为单个头文件分发，尽管某些扩展可能需要其他头文件。</p>
+<h2 id="关键特征"><a href="#关键特征" class="headerlink" title="关键特征"></a>关键特征</h2><ul>
+<li>快速且非常容易上手。 只需下载catch.hpp，＃include它就可以了。</li>
+<li>没有外部依赖性。 只要您可以编译C ++ 11并拥有C ++标准库即可。</li>
+<li>将测试用例编写为自注册函数（或方法，如果您愿意的话）。</li>
+<li>将测试用例划分为几个部分，每个部分都是独立运行的（消除了对夹具的需求）。</li>
+<li>使用BDD样式的“时准时限”部分以及传统的单元测试用例。</li>
+<li>仅一个核心声明宏可以进行比较。 使用标准C / C ++运算符进行比较-但是完整的表达式已分解，并且记录了lhs和rhs值。</li>
+<li>测试使用自由格式的字符串命名-合法标识符中没有其他名称。</li>
+</ul>
+<h2 id="核心特征"><a href="#核心特征" class="headerlink" title="核心特征"></a>核心特征</h2><ul>
+<li>可以对测试进行标记，以方便地运行临时的测试组。</li>
+<li>故障可能（可选）进入Windows和Mac上的调试器。</li>
+<li>输出通过模块化报告器对象。 包括基本的文本和XML报告程序。 自定义记者可以轻松添加。</li>
+<li>支持JUnit xml输出以与第三方工具（例如CI服务器）集成。</li>
+<li>提供了默认的main（）函数，但您可以提供自己的控件来进行完全控制（例如，集成到自己的测试运行器GUI中）。</li>
+<li>提供了命令行解析器，如果您选择提供自己的main（）函数，该解析器仍可以使用。</li>
+<li>Catch可以测试自己。</li>
+<li>替代性断言宏报告失败，但不中止测试用例</li>
+<li>浮点公差比较是使用表达性的Approx（）语法构建的。</li>
+<li>内部和友好的宏是隔离的，因此可以管理名称冲突</li>
+<li>匹配器</li>
+</ul>
+<h1 id="Catch示例"><a href="#Catch示例" class="headerlink" title="Catch示例"></a>Catch示例</h1><p>使用Catch进行单元测试，只需简单掌握TEST_CASE、REQUIRE、SECTION三个宏即可编写绝大部分的测试用例。简单示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">TEST_CASE( &quot;vectors can be sized and resized&quot;, &quot;[vector]&quot; ) &#123;</span><br><span class="line"></span><br><span class="line">    std::vector&lt;int&gt; v( 5 );</span><br><span class="line"></span><br><span class="line">    REQUIRE( v.size() &#x3D;&#x3D; 5 );</span><br><span class="line">    REQUIRE( v.capacity() &gt;&#x3D; 5 );</span><br><span class="line"></span><br><span class="line">    SECTION( &quot;resizing bigger changes size and capacity&quot; ) &#123;</span><br><span class="line">        v.resize( 10 );</span><br><span class="line"></span><br><span class="line">        REQUIRE( v.size() &#x3D;&#x3D; 10 );</span><br><span class="line">        REQUIRE( v.capacity() &gt;&#x3D; 10 );</span><br><span class="line">    &#125;</span><br><span class="line">    SECTION( &quot;resizing smaller changes size but not capacity&quot; ) &#123;</span><br><span class="line">        v.resize( 0 );</span><br><span class="line"></span><br><span class="line">        REQUIRE( v.size() &#x3D;&#x3D; 0 );</span><br><span class="line">        REQUIRE( v.capacity() &gt;&#x3D; 5 );</span><br><span class="line">    &#125;</span><br><span class="line">    SECTION( &quot;reserving bigger changes capacity but not size&quot; ) &#123;</span><br><span class="line">        v.reserve( 10 );</span><br><span class="line"></span><br><span class="line">        REQUIRE( v.size() &#x3D;&#x3D; 5 );</span><br><span class="line">        REQUIRE( v.capacity() &gt;&#x3D; 10 );</span><br><span class="line">    &#125;</span><br><span class="line">    SECTION( &quot;reserving smaller does not change size or capacity&quot; ) &#123;</span><br><span class="line">        v.reserve( 0 );</span><br><span class="line"></span><br><span class="line">        REQUIRE( v.size() &#x3D;&#x3D; 5 );</span><br><span class="line">        REQUIRE( v.capacity() &gt;&#x3D; 5 );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述示例中，对于每个SECTION，TEST_CASE都是从头开始执行的，因此，当我们进入每个部分时，我们知道vector的大小为5，容量至少为5。通过REQUIRE宏在顶层确保vector大小和容量的正确性。这是可行的，因为SECTION宏包含一个if语句，该语句回调Catch来查看是否应执行该节。 通过TEST_CASE，每次运行都会执行一个叶子部分。 其他部分将被跳过。 下次执行下一个部分，依此类推，直到没有新的部分为止。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://filebox.ece.vt.edu/~ECE2574/testing.html" target="_blank" rel="noopener">Writing Unit Tests with Catch and CMake</a>,by filebox.</li>
+<li><a href="https://schneide.blog/2017/12/11/integrating-catch2-with-cmake-and-jenkins/" target="_blank" rel="noopener">Integrating catch2 with CMake and Jenkins</a>,by mariuselvert.</li>
+<li><a href="https://github.com/catchorg/Catch2" target="_blank" rel="noopener">Catch2</a>,by catchorg.</li>
+<li><a href="https://segmentfault.com/q/1010000002412786" target="_blank" rel="noopener">C++单元测试入门</a>,by pezy.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/01/15/%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2081,181 +2266,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/12/25/gltf2-0%E6%A0%BC%E5%BC%8F%E8%A7%A3%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/12/25/gltf2-0%E6%A0%BC%E5%BC%8F%E8%A7%A3%E6%9E%90/" itemprop="url">
-                  glTF2.0格式解析
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-12-25 23:13:58" itemprop="dateCreated datePublished" datetime="2019-12-25T23:13:58+08:00">2019-12-25</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-12-27 23:18:44" itemprop="dateModified" datetime="2019-12-27T23:18:44+08:00">2019-12-27</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>glTF（GL传输格式的衍生简称）是一种使用JSON标准的3D场景和模型的文件格式。 它是Khronos Group 3D格式工作组开发的一种与API无关的运行时资产交付格式。 它在HTML5DevConf 2016上宣布。此格式旨在成为一种高效，可互操作的格式，具有最小的文件大小和应用程序对运行时的处理。 因此，其创建者将其描述为“3D JPEG”。 glTF还为3D内容工具和服务定义了一种通用的发布格式。本文旨通过对glTF2.0格式的解析，进一步加深对3D建模的理解。</p>
-<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p>在对glTF2.0格式解析之前，应先了解一些3D建模或glTF独有的基本概念：</p>
-<ul>
-<li>scenes, nodes：场景的基本结构</li>
-<li>cameras：场景的可视配置</li>
-<li>meshes：构成3D对象的几何</li>
-<li>buﬀers, buﬀerViews, accessors：数据参考和布局描述</li>
-<li>materials：定义数据如何被渲染</li>
-<li>textures, images, samplers：对象表面显示</li>
-<li>skins：顶点蒙皮信息</li>
-<li>animations：随时间改变的属性</li>
-</ul>
-<p align="center">
-    <img src="images/concept_relation.jpg" width="60%" alt="glTF概念之间的关系"/>
-</p>
-<center>图1 glTF概念之间的关系</center>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://github.com/KhronosGroup/glTF" target="_blank" rel="noopener">glTF</a>,by KhronosGroup.</li>
-<li><a href="https://en.wikipedia.org/wiki/GlTF" target="_blank" rel="noopener">glTF</a>,by wikipedia.</li>
-<li><a href="https://www.khronos.org/files/gltf20-reference-guide.pdf" target="_blank" rel="noopener">glTF Overview</a>,by KhronosGroup.</li>
-<li><a href="https://gameinstitute.qq.com/community/detail/127900" target="_blank" rel="noopener">骨骼蒙皮动画(SkinnedMesh)的原理解析</a>,by feng.</li>
-<li><a href="https://blog.csdn.net/yongh701/article/details/73001312" target="_blank" rel="noopener">【Unity3D】3D模型的使用——FBX的使用与Animation设置</a>,by yongh701.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2303,7 +2313,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">292</span>
+                    <span class="site-state-item-count">293</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -2035,7 +2035,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2021-05-14 22:49:13" itemprop="dateModified" datetime="2021-05-14T22:49:13+08:00">2021-05-14</time>
+                <time title="修改时间：2021-05-14 22:50:17" itemprop="dateModified" datetime="2021-05-14T22:50:17+08:00">2021-05-14</time>
               
             
           </span>
@@ -2161,14 +2161,14 @@
 <p align="center">
     <img src="images/policy_iteration.png" width="90%" alt="策略迭代算法示意图"/>
 </p>
-<center>图2 策略迭代算法示意图</center>
+<center>图4 策略迭代算法示意图</center>
 
 <p>本质上就是使用当前策略产生新的样本，然后使用新的样本更好的估计策略的价值，然后利用策略的价值更新策略，然后不断反复。理论可以证明最终策略将收敛到最优。</p>
 <p>具体算法：</p>
 <p align="center">
     <img src="images/policy_iteration_method.png" width="90%" alt="策略迭代算法"/>
 </p>
-<center>图3 策略迭代算法</center>
+<center>图5 策略迭代算法</center>
 
 <p>那么这里要注意的是policy evaluation部分。这里的迭代很重要的一点是需要知道state状态转移概率p。也就是说依赖于model模型。而且按照算法要反复迭代直到收敛为止。所以一般需要做限制。比如到某一个比率或者次数就停止迭代。那么需要特别说明的是不管是策略迭代还是值迭代都是在理想化的情况下（上帝视角）推导出来的算法，本质上并不能直接应用，因为依赖Model。</p>
 <h3 id="Value-Iteration-价值迭代"><a href="#Value-Iteration-价值迭代" class="headerlink" title="Value Iteration 价值迭代"></a>Value Iteration 价值迭代</h3><p>Value Iteration则是使用Bellman 最优方程得到:<br>$$<br>\begin{aligned}<br>v_{<em>}(s) &amp; = \max_{a} \mathbb E_{\pi}[R_{t+1}+\gamma v _{</em>}(S_{t+1})|S_t=s,A_t=a]\\<br>&amp; = \max_{a} \sum_{s^\prime,r}p(s^\prime,r|s,a)[r+\gamma v_*(s^\prime)]<br>\end{aligned}<br>$$</p>
@@ -2178,7 +2178,7 @@
 <p align="center">
     <img src="images/value_iteration.png" width="90%" alt="值迭代算法"/>
 </p>
-<center>图4 值迭代算法</center>
+<center>图6 值迭代算法</center>
 
 <p>Policy Iteration和Value Iteration有什么本质区别？</p>
 <p>policy iteration使用bellman方程来更新value，最后收敛的value 即$v_\pi$是当前policy下的value值（所以叫做对policy进行评估），目的是为了后面的policy improvement得到新的policy。</p>
@@ -2191,7 +2191,7 @@
 <p align="center">
     <img src="images/qlearning.png" width="90%" alt="Q学习算法"/>
 </p>
-<center>图5 Q学习算法</center>
+<center>图7 Q学习算法</center>
 
 <h3 id="Exploration-and-Exploitation-探索与利用"><a href="#Exploration-and-Exploitation-探索与利用" class="headerlink" title="Exploration and Exploitation 探索与利用"></a>Exploration and Exploitation 探索与利用</h3><p>回到policy的问题，那么要选择怎样的policy来生成action呢？有两种做法：</p>
 <ul>
@@ -2226,14 +2226,14 @@
 <p align="center">
     <img src="images/loss_function.png" width="80%" alt="DQN损失函数"/>
 </p>
-<center>图6 DQN损失函数</center>
+<center>图8 DQN损失函数</center>
 
 <p>上面公式是$s^\prime$, $a^\prime$即下一个状态和动作。这里用了David Silver的表示方式，看起来比较清晰。<br>既然确定了损失函数，也就是cost，确定了获取样本的方式。那么DQN的整个算法也就成型了！</p>
 <p>这里分析第一个版本的DQN，也就是NIPS 2013提出的DQN。</p>
 <p align="center">
     <img src="images/dqn_method.png" width="90%" alt="DQN算法"/>
 </p>
-<center>图7 DQN算法</center>
+<center>图9 DQN算法</center>
 
 <p>具体的算法主要涉及到Experience Replay，也就是经验池的技巧，就是如何存储样本及采样问题。</p>
 <p>由于玩Atari采集的样本是一个时间序列，样本之间具有连续性，如果每次得到样本就更新Q值，受样本分布影响，效果会不好。因此，一个很直接的想法就是把样本先存起来，然后随机采样如何？这就是Experience Replay的意思。按照脑科学的观点，人的大脑也具有这样的机制，就是在回忆中学习。</p>

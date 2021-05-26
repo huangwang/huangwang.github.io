@@ -14619,4 +14619,34 @@ console.log(y);</code></pre></li>
         <tag>科研</tag>
       </tags>
   </entry>
+  <entry>
+    <title>软件签名验证的方法</title>
+    <url>/2021/05/26/%E8%BD%AF%E4%BB%B6%E7%AD%BE%E5%90%8D%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>GNU Privacy Guard（GnuPG或GPG）是一个密码学软件，用于加密、签名通信内容及管理非对称密码学的密钥。GnuPG是自由软件，遵循IETF订定的OpenPGP技术标准设计，并与PGP保持兼容。</p>
+<h1 id="安装-GnuPG"><a href="#安装-GnuPG" class="headerlink" title="安装 GnuPG"></a>安装 GnuPG</h1><p>对于 Windows 的用户：</p>
+<p>如果您使用 Windows， 下载 Gpg4win并运行其安装包。</p>
+<p>为了验证签名，您需要在 Windows 命令行（“cmd.exe”）中输入一些命令。</p>
+<p>对于 macOS 的用户：</p>
+<p>如果您正在使用 macOS，您可以安装 GPGTools。</p>
+<p>为了验证签名，您需要在（“应用程序”下的）终端中输入一些命令</p>
+<p>对于 GNU/Linux 的用户：</p>
+<p>如果你使用 GNU/Linux，那么可能在你的系统中已经安装了 GnuPG，因为大多数 Linux 发行版都预装了它。</p>
+<h1 id="使用GnuPG"><a href="#使用GnuPG" class="headerlink" title="使用GnuPG"></a>使用GnuPG</h1><h2 id="生成密钥对"><a href="#生成密钥对" class="headerlink" title="生成密钥对"></a>生成密钥对</h2><p>GnuPG使用非对称密码体制算法生成一对密钥对，其中公钥可公开，私钥必须保密。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gpg --gen-key</span><br></pre></td></tr></table></figure>
+
+<h2 id="验证软件签名"><a href="#验证软件签名" class="headerlink" title="验证软件签名"></a>验证软件签名</h2><p>验证下载文件的第一步是与任何提供文件下载的人建立信任。出于此，需要下载这个文件的公钥，并且验证公钥的拥有者是否是他或者她自称的。</p>
+<p>在下载完文件拥有者的公钥后，使用 gpg 命令导入公钥到你的 keyring 中：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gpg --import signing-key.asc</span><br><span class="line">gpg --fingerprint 3DBDC284</span><br><span class="line">gpg --edit-key 3DBDC284</span><br><span class="line">gpg --list-keys</span><br><span class="line">gpg --verify openSUSE-Tumbleweed-DVD-x86_64-Snapshot20170529-Media.iso.sha256</span><br><span class="line">gpg --verify file.ext.asc file.ext</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.ruanyifeng.com/blog/2013/07/gpg.html" target="_blank" rel="noopener">GPG入门教程</a>,by 阮一峰.</li>
+<li><a href="https://blog.chaos.run/dreams/gpg-verify/" target="_blank" rel="noopener">利用 GPG 签名验证文件的完整及可靠性</a>,by Silearner.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>计算机安全</tag>
+        <tag>网络安全</tag>
+      </tags>
+  </entry>
 </search>

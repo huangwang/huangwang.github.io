@@ -377,7 +377,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2021-06-08 22:06:52" itemprop="dateModified" datetime="2021-06-08T22:06:52+08:00">2021-06-08</time>
+                <time title="修改时间：2021-06-08 22:18:40" itemprop="dateModified" datetime="2021-06-08T22:18:40+08:00">2021-06-08</time>
               
             
           </span>
@@ -413,6 +413,39 @@
         
           
             <p>OpenAI的Spinning Up项目仅在 Linux 和 OSX 上支持Spinning Up，因此想在Win10系统中安装Linux子系统，以便将Spinning Up项目运行起来，学习一下强化学习。</p>
+<h1 id="安装Linux子系统"><a href="#安装Linux子系统" class="headerlink" title="安装Linux子系统"></a>安装Linux子系统</h1><p>步骤如下：</p>
+<ol>
+<li>打开控制面板，选择应用，点击左上角的程序和功能，在弹出窗口中点击启动或关闭Windows功能，勾选适用Linux的Windows子系统。</li>
+<li>打开Store商店，安装Ubuntu 20.04操作系统。</li>
+</ol>
+<h1 id="配置Spinning-Up项目"><a href="#配置Spinning-Up项目" class="headerlink" title="配置Spinning Up项目"></a>配置Spinning Up项目</h1><p>步骤如下：</p>
+<ul>
+<li>打开cmd，输入wsl命令，进入ubuntu系统。</li>
+<li>下载并安装miniconda。</li>
+<li>创建Python虚拟环境。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda create -n spinningup python&#x3D;3.6</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>激活Python虚拟环境。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda activate spinningup</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装openmpi组件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update &amp;&amp; sudo apt-get install libopenmpi-dev</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下载Spinning Up项目</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;openai&#x2F;spinningup.git</span><br><span class="line">cd spinningup</span><br><span class="line">pip install -e .</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试项目</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m spinup.run ppo --hid &quot;[32,32]&quot; --env LunarLander-v2 --exp_name installtest --gamma 0.999</span><br></pre></td></tr></table></figure>
+
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://segmentfault.com/a/1190000022865557" target="_blank" rel="noopener">WSL Linux 子系统，真香！附完整实操</a>,by 猴哥一一.</li>
 <li><a href="https://www.cnblogs.com/csu-lmw/p/10074746.html" target="_blank" rel="noopener">在 Windows 10 中使用 OpenAI Spinning Up </a>,by csu.</li>

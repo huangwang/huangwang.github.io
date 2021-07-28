@@ -314,6 +314,199 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/04/26/PX4%E7%BC%96%E8%AF%91%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/26/PX4%E7%BC%96%E8%AF%91%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" itemprop="url">
+                  PX4编译开发环境配置
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-26 20:50:05" itemprop="dateCreated datePublished" datetime="2019-04-26T20:50:05+08:00">2019-04-26</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-19 18:34:21" itemprop="dateModified" datetime="2019-06-19T18:34:21+08:00">2019-06-19</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>拟在基于NuttX的硬件平台如Pixhawk系列开源硬件平台上运行自定义的Px4自驾仪软件，因此需要建立Px4的编译开发环境。以官方文档推荐，在Ubuntu 16.04 LTS操作系统上建立Px4编译开发环境为例，记录整个配置过程。</p>
+<h1 id="安装Ubuntu-16-04-LTS"><a href="#安装Ubuntu-16-04-LTS" class="headerlink" title="安装Ubuntu 16.04 LTS"></a>安装Ubuntu 16.04 LTS</h1><p>官方推荐在Mac OS和Linux上进行开发，因此选择安装Ubuntu 16.04 LTS作为Px4开发的操作系统。主要步骤如下：</p>
+<ol>
+<li>安装VirtualBox系统虚拟机</li>
+<li>在VirtualBox创建虚拟机</li>
+<li>在虚拟机中安装Ubuntu 16.04 LTS操作系统</li>
+</ol>
+<h1 id="Ubuntu中安装工具链"><a href="#Ubuntu中安装工具链" class="headerlink" title="Ubuntu中安装工具链"></a>Ubuntu中安装工具链</h1><h2 id="权限设置"><a href="#权限设置" class="headerlink" title="权限设置"></a>权限设置</h2><p>为了使当前用户能够访问串口，将当前用户添加到dialout组。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo usermod -a -G dialout $USER</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装工具链"><a href="#安装工具链" class="headerlink" title="安装工具链"></a>安装工具链</h2><h3 id="Pixhawk-NuttX-and-jMAVSim"><a href="#Pixhawk-NuttX-and-jMAVSim" class="headerlink" title="Pixhawk/NuttX (and jMAVSim)"></a>Pixhawk/NuttX (and jMAVSim)</h3><p>针对基于NuttX的硬件平台如Pixhawk构建开发工具链，步骤如下：</p>
+<ol>
+<li>下载ubuntu_sim_nuttx.sh</li>
+<li>运行脚本ubuntu_sim_nuttx.sh</li>
+<li>完成后重启</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;PX4&#x2F;Devguide&#x2F;master&#x2F;build_scripts&#x2F;ubuntu_sim_nuttx.sh</span><br><span class="line">source ubuntu_sim_nuttx.sh</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<h1 id="编译Px4软件"><a href="#编译Px4软件" class="headerlink" title="编译Px4软件"></a>编译Px4软件</h1><h2 id="下载Px4源代码"><a href="#下载Px4源代码" class="headerlink" title="下载Px4源代码"></a>下载Px4源代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~&#x2F;src</span><br><span class="line">cd ~&#x2F;src</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;PX4&#x2F;Firmware.git</span><br><span class="line"></span><br><span class="line">cd Firmware</span><br><span class="line"></span><br><span class="line"># list the releases (tags)</span><br><span class="line">git tag -l</span><br><span class="line"></span><br><span class="line"># Checkout code for particular tag (e.g. for tag v1.8.2 stable version)</span><br><span class="line">git checkout v1.8.2</span><br><span class="line"></span><br><span class="line">git submodule update --init --recursive</span><br></pre></td></tr></table></figure>
+
+<p>现在可以通过编译源代码来构建二进制文件。在直接使用硬件前，推荐先<strong>进行仿真</strong>。</p>
+<h2 id="jMAVSim仿真器"><a href="#jMAVSim仿真器" class="headerlink" title="jMAVSim仿真器"></a>jMAVSim仿真器</h2><p>在直接使用硬件之前，以jMAVSim仿真器为目标平台构建PX4，验证PX4的正确性。<strong>注意在virtualbox中启动3D图形加速，防止jMAVSim运行出错！</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">make posix jmavsim</span><br><span class="line"></span><br><span class="line"># 起飞四旋翼无人机</span><br><span class="line">pxh&gt; commander takeoff</span><br></pre></td></tr></table></figure>
+
+<h2 id="基于NuttX-Pixhawk的硬件板"><a href="#基于NuttX-Pixhawk的硬件板" class="headerlink" title="基于NuttX / Pixhawk的硬件板"></a>基于NuttX / Pixhawk的硬件板</h2><p>以Pixhawk为目标平台，构建PX4。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd Firmware</span><br><span class="line">make px4fmu-v2_default</span><br></pre></td></tr></table></figure>
+
+<p>注意到“make”是一个字符命令编译工具，“px4fmu-v2”是硬件/ardupilot版本，“default”是默认配置，所有的PX4编译目标遵循这个规则。</p>
+<p>成功编译的最后输出是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[100%] Linking CXX executable firmware_nuttx</span><br><span class="line">[100%] Built target firmware_nuttx</span><br><span class="line">Scanning dependencies of target build&#x2F;firmware_px4fmu-v2</span><br><span class="line">[100%] Generating nuttx-px4fmu-v2-default.px4</span><br><span class="line">[100%] Built target build&#x2F;firmware_px4fmu-v2</span><br></pre></td></tr></table></figure>
+
+<p>通过在命令后面添加‘upload’，编译的二进制程序就会通过USB上传到飞控硬件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make px4fmu-v2_default upload</span><br></pre></td></tr></table></figure>
+
+<p>上传成功时输出情况如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Erase  : [&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;] 100.0%</span><br><span class="line">Program: [&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;] 100.0%</span><br><span class="line">Verify : [&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;] 100.0%</span><br><span class="line">Rebooting.</span><br><span class="line"></span><br><span class="line">[100%] Built target upload</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://dev.px4.io/en/" target="_blank" rel="noopener">PX4 Development Guide (STABLE - v1.8.2)</a>,by Dronecode.</li>
+<li><a href="https://dev.px4.io/zh/" target="_blank" rel="noopener">PX4开发指南</a>, by Dronecode.</li>
+<li><a href="https://github.com/DrTon/jMAVSim/issues/42" target="_blank" rel="noopener">running JMAVSim in vmware fails</a>, by jMAVSim issues.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/04/25/%E7%A1%AC%E4%BB%B6%E5%9C%A8%E7%8E%AF%E4%B8%8E%E8%BD%AF%E4%BB%B6%E5%9C%A8%E7%8E%AF%E6%A6%82%E5%BF%B5%E8%BE%A8%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1963,182 +2156,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/03/13/Python%E7%88%AC%E8%99%AB%E8%8E%B7%E5%8F%96%E7%BD%91%E9%A1%B5%E9%93%BE%E6%8E%A5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/13/Python%E7%88%AC%E8%99%AB%E8%8E%B7%E5%8F%96%E7%BD%91%E9%A1%B5%E9%93%BE%E6%8E%A5/" itemprop="url">
-                  Python爬虫获取网页链接
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-03-13 08:20:11 / 修改时间：18:18:02" itemprop="dateCreated datePublished" datetime="2019-03-13T08:20:11+08:00">2019-03-13</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近研究开源飞行模拟器，想将其世界地景全部下载下来。一个个手动下载太麻烦，于是想先用python的requests和Beautiful Soup组件获取地景链接，再以每行一个地景链接写入文本文档，最后使用axel多线程自动下载每一个地景包。</p>
-<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="requests组件"><a href="#requests组件" class="headerlink" title="requests组件"></a>requests组件</h2><p>Requests是一个Python HTTP库，在Apache 2许可证下发布。该项目的目标是使HTTP请求更简单，更人性化。</p>
-<p>下面是示例代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import requests</span><br><span class="line">&gt;&gt;&gt; r &#x3D; requests.get(&#39;https:&#x2F;&#x2F;api.github.com&#x2F;user&#39;, auth&#x3D;(&#39;user&#39;, &#39;pass&#39;))</span><br><span class="line">&gt;&gt;&gt; r.status_code</span><br><span class="line">200</span><br><span class="line">&gt;&gt;&gt; r.headers[&#39;content-type&#39;]</span><br><span class="line">&#39;application&#x2F;json; charset&#x3D;utf8&#39;</span><br><span class="line">&gt;&gt;&gt; r.encoding</span><br><span class="line">&#39;utf-8&#39;</span><br><span class="line">&gt;&gt;&gt; r.text # doctest: +ELLIPSIS</span><br><span class="line">u&#39;&#123;&quot;type&quot;:&quot;User&quot;...&#39;</span><br><span class="line">&gt;&gt;&gt; r.json() # doctest: +ELLIPSIS</span><br><span class="line">&#123;u&#39;private_gists&#39;: 419, u&#39;total_private_repos&#39;: 77, ...&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Beautiful-Soup组件"><a href="#Beautiful-Soup组件" class="headerlink" title="Beautiful Soup组件"></a>Beautiful Soup组件</h2><p>Beautiful Soup 是一个可以从HTML或XML文件中提取数据的Python库。它能够通过你喜欢的转换器实现惯用的文档导航，查找，修改文档的方式。Beautiful Soup会帮你节省数小时甚至数天的工作时间。</p>
-<p>Beautiful Soup支持Python标准库中的HTML解析器，还支持一些第三方的解析器，其中一个是 lxml。</p>
-<p>Beautiful Soup将复杂HTML文档转换成一个复杂的树形结构,每个节点都是Python对象,所有对象可以归纳为4种: Tag , NavigableString , BeautifulSoup , Comment。</p>
-<ul>
-<li>Tag 对象与XML或HTML原生文档中的tag相同，有最重要的属性: name和attributes。</li>
-<li>BeautifulSoup 对象表示的是一个文档的全部内容，但并不是真正的HTML或XML的tag，所以它没有name和attribute属性。</li>
-<li>Beautiful Soup用 NavigableString 类来包装tag中的字符串。</li>
-<li>Comment 对象是一个特殊类型的 NavigableString 对象:</li>
-</ul>
-<p>下面是BeautifulSoup的一个简单示例。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">soup &#x3D; BeautifulSoup(html_doc)</span><br><span class="line"></span><br><span class="line">print(soup.prettify())</span><br><span class="line"># &lt;html&gt;</span><br><span class="line">#  &lt;head&gt;</span><br><span class="line">#   &lt;title&gt;</span><br><span class="line">#    The Dormouse&#39;s story</span><br><span class="line">#   &lt;&#x2F;title&gt;</span><br><span class="line">#  &lt;&#x2F;head&gt;</span><br><span class="line">#  &lt;body&gt;</span><br><span class="line">#   &lt;p class&#x3D;&quot;title&quot;&gt;</span><br><span class="line">#    &lt;b&gt;</span><br><span class="line">#     The Dormouse&#39;s story</span><br><span class="line">#    &lt;&#x2F;b&gt;</span><br><span class="line">#   &lt;&#x2F;p&gt;</span><br><span class="line">#   &lt;p class&#x3D;&quot;story&quot;&gt;</span><br><span class="line">#    Once upon a time there were three little sisters; and their names were</span><br><span class="line">#    &lt;a class&#x3D;&quot;sister&quot; href&#x3D;&quot;http:&#x2F;&#x2F;example.com&#x2F;elsie&quot; id&#x3D;&quot;link1&quot;&gt;</span><br><span class="line">#     Elsie</span><br><span class="line">#    &lt;&#x2F;a&gt;</span><br><span class="line">#    ,</span><br><span class="line">#    &lt;a class&#x3D;&quot;sister&quot; href&#x3D;&quot;http:&#x2F;&#x2F;example.com&#x2F;lacie&quot; id&#x3D;&quot;link2&quot;&gt;</span><br><span class="line">#     Lacie</span><br><span class="line">#    &lt;&#x2F;a&gt;</span><br><span class="line">#    and</span><br><span class="line">#    &lt;a class&#x3D;&quot;sister&quot; href&#x3D;&quot;http:&#x2F;&#x2F;example.com&#x2F;tillie&quot; id&#x3D;&quot;link2&quot;&gt;</span><br><span class="line">#     Tillie</span><br><span class="line">#    &lt;&#x2F;a&gt;</span><br><span class="line">#    ; and they lived at the bottom of a well.</span><br><span class="line">#   &lt;&#x2F;p&gt;</span><br><span class="line">#   &lt;p class&#x3D;&quot;story&quot;&gt;</span><br><span class="line">#    ...</span><br><span class="line">#   &lt;&#x2F;p&gt;</span><br><span class="line">#  &lt;&#x2F;body&gt;</span><br><span class="line"># &lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="axel工具"><a href="#axel工具" class="headerlink" title="axel工具"></a>axel工具</h2><p>axel是Linux下一个不错的HTTP/ftp高速下载工具。支持多线程下载、断点续传，且可以从多个地址或者从一个地址的多个连接来下载同一个文件。适合网速不给力时多线程下载提高下载速度。</p>
-<p>axel语法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">axel [options] url1 [url2] [url...]</span><br></pre></td></tr></table></figure>
-
-<p>axel选项：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">--max-speed&#x3D;x , -s x         最高速度x</span><br><span class="line">--num-connections&#x3D;x , -n x   连接数x</span><br><span class="line">--output&#x3D;f , -o f            下载为本地文件f</span><br><span class="line">--search[&#x3D;x] , -S [x]        搜索镜像</span><br><span class="line">--header&#x3D;x , -H x            添加头文件字符串x（指定 HTTP header）</span><br><span class="line">--user-agent&#x3D;x , -U x        设置用户代理（指定 HTTP user agent）</span><br><span class="line">--no-proxy ， -N             不使用代理服务器</span><br><span class="line">--quiet ， -q                静默模式</span><br><span class="line">--verbose ，-v               更多状态信息</span><br><span class="line">--alternate ， -a            Alternate progress indicator</span><br><span class="line">--help ，-h                  帮助</span><br><span class="line">--version ，-V               版本信息</span><br></pre></td></tr></table></figure>
-
-
-<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><h2 id="获取地景链接"><a href="#获取地景链接" class="headerlink" title="获取地景链接"></a>获取地景链接</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line"></span><br><span class="line"># 下载指定URI链接</span><br><span class="line">def getUriContent(uri):</span><br><span class="line">    try:</span><br><span class="line">        fgWorldScenery &#x3D; requests.get(link, timeout&#x3D;10)</span><br><span class="line">    except requests.exceptions.HTTPError as errh:</span><br><span class="line">        print (&quot;Http Error:&quot;,errh)</span><br><span class="line">    except requests.exceptions.ConnectionError as errc:</span><br><span class="line">        print (&quot;Error Connecting:&quot;,errc)</span><br><span class="line">    except requests.exceptions.Timeout as errt:</span><br><span class="line">        print (&quot;Timeout Error:&quot;,errt)  </span><br><span class="line">    except requests.exceptions.RequestException as err:</span><br><span class="line">        print (&quot;OOps: Something Else&quot;,err)</span><br><span class="line">    else:    </span><br><span class="line">        print(&quot;Http Request Success!&quot;)</span><br><span class="line">        return fgWorldScenery.text</span><br><span class="line"></span><br><span class="line"># 获取所有地景链接，存入列表</span><br><span class="line">def getTargetLinks(html):</span><br><span class="line">    soup &#x3D; BeautifulSoup(html)</span><br><span class="line">    list&#x3D;[]</span><br><span class="line">    #print(soup.prettify())</span><br><span class="line">    for child in soup.find_all(&#39;area&#39;):</span><br><span class="line">        list.append(child[&#39;href&#39;])</span><br><span class="line">    print(&quot;Get Target Links Success!&quot;)</span><br><span class="line">    return list</span><br><span class="line"></span><br><span class="line"># 将地景链接逐行写入文件</span><br><span class="line">def writeToFile(linkList):</span><br><span class="line">    file &#x3D; open(&#39;.&#x2F;sceneLink.txt&#39;,&#39;w&#39;)</span><br><span class="line">    for link in linkList:</span><br><span class="line">        file.write(link)</span><br><span class="line">        file.write(&#39;\t\n&#39;)</span><br><span class="line">    print(&quot;Write Target Link To File Success!&quot;)</span><br><span class="line">    file.close()</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D; &quot;__main__&quot;:</span><br><span class="line">    link &#x3D; &quot;http:&#x2F;&#x2F;www.flightgear.org&#x2F;legacy-Downloads&#x2F;scenery-v2.12.html&quot;</span><br><span class="line">    html&#x3D;getUriContent(link)</span><br><span class="line">    linkList&#x3D;getTargetLinks(html)</span><br><span class="line">    writeToFile(linkList)</span><br></pre></td></tr></table></figure>
-
-<h2 id="下载世界地景"><a href="#下载世界地景" class="headerlink" title="下载世界地景"></a>下载世界地景</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for line in $(cat sceneLink.txt)</span><br><span class="line">do </span><br><span class="line">    axel -n 10 $line</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://docs.python-requests.org/zh_CN/latest/user/quickstart.html" target="_blank" rel="noopener">requests快速上手</a>,by requests.</li>
-<li><a href="http://www.runoob.com/python/python-tutorial.html" target="_blank" rel="noopener">Python 基础教程</a>, by runoob.</li>
-<li><a href="http://codingpy.com/article/guido-shows-how-to-write-main-function/" target="_blank" rel="noopener">Python之父教你写main()函数</a>,by 编程派.</li>
-<li><a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/index.zh.html" target="_blank" rel="noopener">Beautiful Soup 4.2.0 文档</a>,by BeautifulSoup.</li>
-<li><a href="https://huangwang.github.io/2019/03/13/FlightGear安装飞机和场景的方法/">FlightGear安装飞机和场景的方法</a>,by jack huang.</li>
-<li><a href="http://man.linuxde.net/axel" target="_blank" rel="noopener">axel命令</a>,by Linux命令大全.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2186,7 +2203,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">305</span>
+                    <span class="site-state-item-count">306</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

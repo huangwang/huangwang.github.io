@@ -314,6 +314,201 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/08/27/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8JS%E5%AF%BC%E5%87%BACSV%E6%96%87%E4%BB%B6%E5%8F%8A%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/27/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8JS%E5%AF%BC%E5%87%BACSV%E6%96%87%E4%BB%B6%E5%8F%8A%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" itemprop="url">
+                  客户端使用JS导出CSV文件及中文乱码问题解决方案
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-27 17:29:11" itemprop="dateCreated datePublished" datetime="2019-08-27T17:29:11+08:00">2019-08-27</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-05-14 16:39:16" itemprop="dateModified" datetime="2020-05-14T16:39:16+08:00">2020-05-14</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在浏览器端无需服务器端支持，直接将JS Array数据导出成CSV文件并下载，是一个常见的开发需求。具体方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var csvContent&#x3D; this.$refs.flightInfoGrid.exportdata(&#39;csv&#39;)</span><br><span class="line">var link &#x3D; document.createElement(&#39;a&#39;);</span><br><span class="line">&#x2F;&#x2F; &quot;\ufeff&quot;是为了解决CSV中文乱码问题</span><br><span class="line">var blob &#x3D; new Blob([&quot;\ufeff&quot; +csvContent],&#123;type: &#39;text&#x2F;csv;charset&#x3D;utf-8;&#39;&#125;);</span><br><span class="line">var url &#x3D; URL.createObjectURL(blob);</span><br><span class="line">link.href &#x3D; url;</span><br><span class="line">link.setAttribute(&#39;download&#39;, &#39;FlightInfo.csv&#39;);</span><br><span class="line">link.click();</span><br><span class="line">document.body.removeChild(link);</span><br></pre></td></tr></table></figure>
+
+<h1 id="中文乱码问题分析"><a href="#中文乱码问题分析" class="headerlink" title="中文乱码问题分析"></a>中文乱码问题分析</h1><p>utf-8保存的csv格式要让Excel正常打开的话，必须加入在文件最前面加入BOM(Byte order mark)。</p>
+<p>ANSI的话是可以做到正常显示和保存，但是这是有前提的，就是必须在你的电脑（区域和语言设置）把对非Unicode字符处理设置为Chinese，如果是English的话，显示照样是乱码。</p>
+<p>Unicode的csv，Excel就根本不支持，打开虽然可以显示不乱码，但是已经不是按逗号显示在不同的单元格里面了，而是按行显示在第一个单元格里面。</p>
+<p> BOM（byte-order mark），即字节顺序标记，它是插入到以UTF-8、UTF16或UTF-32编码Unicode文件开头的特殊标记，用来识别Unicode文件的编码类型。具体编码如下表：</p>
+<table>
+<thead>
+<tr>
+<th>BOM</th>
+<th>Encoding</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>EF BB BF</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>FE FF</td>
+<td>UTF-16 (big-endian)</td>
+</tr>
+<tr>
+<td>FF FE</td>
+<td>UTF-16 (little-endian)</td>
+</tr>
+<tr>
+<td>00 00 FE FF</td>
+<td>UTF-32 (big-endian)</td>
+</tr>
+<tr>
+<td>FF FE 00 00</td>
+<td>UTF-32 (little-endian)</td>
+</tr>
+</tbody></table>
+<p>微软建议所有的 Unicode 文件应该以 ZERO WIDTH NOBREAK SPACE（U+FEFF）字符开头。这作为一个“特征符”来识别文件中使用的编码和字节顺序。BOM的本意不错，但它并不是一个通用标准，从而导致了很多不兼容的问题。</p>
+<h1 id="UTF-8"><a href="#UTF-8" class="headerlink" title="UTF-8"></a>UTF-8</h1><p>UTF-8（8-bit Unicode Transformation Format）是一种针对Unicode的可变长度字元编码，也是一种前缀码。它可以用一至四个字节对Unicode字符集中的所有有效编码点进行编码，属于Unicode标准的一部分，最初由肯·汤普逊和罗布·派克提出。</p>
+<p>由于较小值的编码点一般使用频率较高，直接使用Unicode编码效率低下，大量浪费内存空间。UTF-8就是为了解决向后兼容ASCII码而设计，Unicode中前128个字符（与ASCII码一一对应），使用与ASCII码相同的二进制值的单个字节进行编码，这使得原来处理ASCII字元的软体无须或只须做少部份修改，即可继续使用。因此，它逐渐成为电子邮件、网页及其他储存或传送文字优先采用的编码方式。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/oyi319/article/details/6406506" target="_blank" rel="noopener">Excel 2007 打开 UTF-8 编码 CSV 文件的BUG</a>,by oyi319.</li>
+<li><a href="https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side" target="_blank" rel="noopener">How to export JavaScript array info to csv (on client side)?</a>,by stackoverflow.</li>
+<li><a href="https://my.oschina.net/dawd/blog/801323" target="_blank" rel="noopener">blob 导出csv 用execl打开出现乱码</a>,by 黑魔法.</li>
+<li><a href="https://zh.wikipedia.org/zh/UTF-8" target="_blank" rel="noopener">UTF-8</a>,by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/08/25/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E5%9B%BE%E6%A0%87icon/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2158,160 +2353,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/31/Nodejs%E8%B0%83%E8%AF%95%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/31/Nodejs%E8%B0%83%E8%AF%95%E5%85%A5%E9%97%A8/" itemprop="url">
-                  Nodejs调试入门
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-07-31 22:01:28 / 修改时间：22:16:03" itemprop="dateCreated datePublished" datetime="2019-07-31T22:01:28+08:00">2019-07-31</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>调试是每个程序员必备的技能，因此选择合适的调试工具能极大地方便我们调试代码。Node.js 的调试方式也有很多，常见的有：</p>
-<ol>
-<li>万能的 console.log</li>
-<li>debugger</li>
-<li>node –inspect + chrome devtools</li>
-</ol>
-<p>本文重点介绍最有用的node –inspect方法。具体步骤如下：</p>
-<ol>
-<li>node –inspect app.js</li>
-<li>打开 Chrome 浏览器，访问 chrome://inspect，选择第一步的调试目标。</li>
-<li>在chrome访问源代码，设置断点调试。</li>
-</ol>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://github.com/nswbmw/node-in-debugging" target="_blank" rel="noopener">《Node.js 调试指南》</a>,by nswbmw.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2359,7 +2400,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">309</span>
+                    <span class="site-state-item-count">310</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

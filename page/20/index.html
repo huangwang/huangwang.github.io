@@ -314,6 +314,268 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/29/%E7%9B%B8%E6%9C%BA%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A1%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/29/%E7%9B%B8%E6%9C%BA%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A1%E5%85%A5%E9%97%A8/" itemprop="url">
+                  相机位姿估计入门
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-29 21:11:39" itemprop="dateCreated datePublished" datetime="2019-05-29T21:11:39+08:00">2019-05-29</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-01 14:48:37" itemprop="dateModified" datetime="2019-06-01T14:48:37+08:00">2019-06-01</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>相机位姿估计是指给定若干图像，估计其中相机运动的问题。求解方法通常分特征点法和直接法两种。下面主要介绍特征点法。</p>
+<p>特征点法的思路是先从图像当中提取许多特征，然后在图像间进行特征匹配，这样就得到许多匹配好的点，再根据这些点进行相机位姿的求解。根据传感器形式的不同，可以分成三种情况：</p>
+<ul>
+<li>2D-2D，单目相机获取的影像，只能获得像素坐标</li>
+<li>3D-3D配对点，RGBD或双目相机，可以获取深度信息</li>
+<li>3D-2D，已知一张图中的3D信息，另一张图只有2D信息</li>
+</ul>
+<h1 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h1><p>在两帧各自的相机坐标系中，设P点的相机坐标系的坐标分别为$P_1$、$P_2$，如图1所示。</p>
+<p align="center">
+    <img src="images/cameraEstimate.png" width="90%" alt="相机位姿估计示意图"/>
+</p>
+<center>图1  相机位姿估计示意图</center>
+
+<p>其中：</p>
+<p>$$P_{1}=\begin{pmatrix}<br>X_{1}\<br>Y_{1}\<br>Z_{1}<br>\end{pmatrix},P_{2}=\begin{pmatrix}<br>X_{2}\<br>Y_{2}\<br>Z_{2}<br>\end{pmatrix}$$</p>
+<p>相机从第一帧移动到第二帧，其旋转矩阵设为R，平移向量设为t。这里的R表示的旋转是相对于第一帧的姿态改变量。那么有:</p>
+<p>$$P_{2}=RP_{1}+t \tag{1}$$</p>
+<p>相机位姿估计的最终目的就是要根据这个运动方程，求解出相机的运动，也就是R、t。<strong>注意这里的R、t并不是相机外参！</strong></p>
+<p>由于$P_1$、$P_2$的坐标未知，但其在像素坐标系的坐标$p_1$、$p_2$已知，因此，根据小孔成像模型寻找$p_1$、$p_2$和$P_1$、$P_2$之间的关系。</p>
+<h1 id="小孔成像模型"><a href="#小孔成像模型" class="headerlink" title="小孔成像模型"></a>小孔成像模型</h1><p>小孔成像模型的示意图如图2所示。设P点在世界坐标系下坐标为$P_w$在相机坐标系下坐标为$P_c$，物理成像平面对应坐标为 $P’$, 像素平面对应坐标为p, 有：</p>
+<p>$$p=\begin{pmatrix}<br>u\<br>v<br>\end{pmatrix},P^{‘}=\begin{pmatrix}<br>X^{‘}\<br>Y^{‘}\<br>Z^{‘}<br>\end{pmatrix},P_c=\begin{pmatrix}<br>X_c\<br>Y_c\<br>Z_c<br>\end{pmatrix},P_w=\begin{pmatrix}<br>X_w\<br>Y_w\<br>Z_w<br>\end{pmatrix}$$</p>
+<p align="center">
+    <img src="images/cameraModel.png" width="90%" alt="小孔成像模型示意图"/>
+</p>
+<center>图2  小孔成像模型示意图</center>
+
+<p>根据小孔成像模型，有如下公式：</p>
+<p>$$<br>\begin{pmatrix}<br>u\<br>v\<br>1<br>\end{pmatrix}=\frac{1}{Z_{c}}\begin{pmatrix}<br>f_{x} &amp; 0 &amp; c_{x}\<br>0 &amp; f_{y} &amp; c_{y}\<br>0 &amp; 0 &amp; 1<br>\end{pmatrix}\begin{pmatrix}<br>X_{c}\<br>Y_{c}\<br>Z_{c}<br>\end{pmatrix} \tag{2}$$</p>
+<p>该公式给出了点P相机坐标系下坐标与像素平面坐标之间的关系。</p>
+<h1 id="2D-2D估计"><a href="#2D-2D估计" class="headerlink" title="2D-2D估计"></a>2D-2D估计</h1><p>设相机内参矩阵为K，即</p>
+<p>$$<br>K=\begin{pmatrix}<br>f_{x} &amp; 0 &amp; c_{x}\<br>0 &amp; f_{y} &amp; c_{y}\<br>0 &amp; 0 &amp; 1<br>\end{pmatrix}<br>$$</p>
+<p>将公式(2)代入公式(1)，则</p>
+<p>$$K^{-1}Z_{2}p_{2}=RK^{-1}Z_{1}p_{1}+t \tag{3}$$</p>
+<p>内参矩阵K短期内不变，但$Z_1$很明显一般情况下不等于$Z_2$，除非是相机绕着P点为圆心旋转。<strong>现在已知的是K、p1、p2，待求R，t</strong>。 然而这里还有$Z_1$、$Z_2$是未知的，因此必须想办法将$Z$消去。</p>
+<p>将相机坐标系下坐标$P_c$归一化，即</p>
+<p>$$<br>P_{c}^{‘}=\begin{pmatrix}<br>{X_{c}}/{Z_{c}}\<br>{Y_{c}}/{Z_{c}}\<br>1<br>\end{pmatrix}<br>$$</p>
+<p>由公式(2)可得：</p>
+<p>$$<br>\begin{pmatrix}<br>u\<br>v\<br>1<br>\end{pmatrix}=\begin{pmatrix}<br>f_{x} &amp; 0 &amp; c_{x}\<br>0 &amp; f_{y} &amp; c_{y}\<br>0 &amp; 0 &amp; 1<br>\end{pmatrix}\begin{pmatrix}<br>{X_{c}}/{Z_{c}}\<br>{Y_{c}}/{Z_{c}}\<br>1<br>\end{pmatrix} =K\begin{pmatrix}<br>{X_{c}}/{Z_{c}}\<br>{Y_{c}}/{Z_{c}}\<br>1<br>\end{pmatrix} \tag{4}$$</p>
+<p>将公式(4)代入公式(1)，则有：</p>
+<p>$$K^{-1}p_{2}=RK^{-1}p_{1}+t$$</p>
+<p>这样便能求解了。但是也导致了一个问题，因为不同帧对应的相机坐标系中P的Z值并不相等。在实际操作中分别除以其本身从而将Z分量归一化为1，这其实就丢失了真实的位置信息，不同帧的缩放是不等的！从而导致2D-2D估计两两帧之间，每次估计的尺度都是不同的。这也就是单目SLAM的尺度不确定性。</p>
+<p><strong>通过2D-2D，最终可获得P点像素坐标 $p$ 对应相机坐标系下归一化坐标$P_{c}^{‘}$</strong>。</p>
+<h1 id="三角测量"><a href="#三角测量" class="headerlink" title="三角测量"></a>三角测量</h1><p>三角测量在三角学与几何学上是一借由测量目标点与固定基准线的已知端点的角度，测量目标距离的方法。而不是直接测量特定位置的距离（三边量测法）。当已知一个边长及两个观测角度时，观测目标点可以被标定为一个三角形的第三个点。</p>
+<h2 id="基于两固定角度之距离量测"><a href="#基于两固定角度之距离量测" class="headerlink" title="基于两固定角度之距离量测"></a>基于两固定角度之距离量测</h2><p>假设一量测目标点及两个已知座标的参考点可形成一个三角形，则借由计算三角形其中参考边的长度，量测两参考点与目标点形成的角度，即可找出目标点的距离及座标。</p>
+<p align="center">
+    <img src="images/Distance_by_triangulation.svg.png" width="90%" alt="基于两固定角度之距离量测示意图"/>
+</p>
+<center>图3  基于两固定角度之距离量测示意图</center>
+
+<p>三角测量可用来计算岸边与船只之间的距离及座标。A顶点的观察者测量岸边与船只之间的角度α，B点的观察者则依同理测量出角度β，由长度l或已知的A及B点座标，则可由正弦定理取得在C点船只的座标及距离d。</p>
+<p>计算过程如下：</p>
+<p>$$ \ell = \frac{d}{\tan \alpha} + \frac{d}{\tan \beta}$$</p>
+<p>根据三角恒等式${\displaystyle \tan \alpha ={\frac {\sin \alpha }{\cos \alpha }}}$和${\displaystyle \sin \left(\alpha +\beta \right)=\sin \alpha \cos \beta +\cos \alpha \sin \beta }$，此式可等于：</p>
+<p>$${\displaystyle \ell =d\left({\frac {\cos \alpha }{\sin \alpha }}+{\frac {\cos \beta }{\sin \beta }}\right)}$$</p>
+<p>$${\displaystyle \ell =d\ {\frac {\sin(\alpha +\beta )}{\sin \alpha \sin \beta }}}$$</p>
+<p>因此，</p>
+<p>$${\displaystyle d=\ell \ {\frac {\sin \alpha \sin \beta }{\sin(\alpha +\beta )}}}$$</p>
+<p>由此便可简单定义出一未知点与观察点间的距离，以及与观察点往东西、南北向相差的位移量，终得完整座标。</p>
+<p><strong>2D-2D估计获得特征点在相机坐标系下的归一化3D坐标，结合三角测量，可获得特征点在相机坐标系下的深度，两者结合即获得特征点在相机坐标系下的3D坐标。</strong></p>
+<h1 id="3D-2D估计"><a href="#3D-2D估计" class="headerlink" title="3D-2D估计"></a>3D-2D估计</h1><p>3D-2D估计本质是PnP一个问题，即给定世界坐标系中n个3D点及其在图像中的相应2D投影的情况下，估计校准相机的姿势的问题。相机姿势由6个自由度（DOF）组成，其由旋转（滚动，俯仰和偏航）以及相机相对于世界的3D平移构成。该问题源于相机校准，并且在计算机视觉和其他领域中具有许多应用，包括3D姿态估计、机器人和增强现实。 对于n = 3，存在一个常用的问题解决方案，称为P3P，并且许多解决方案适用于n≥3的一般情况。</p>
+<h2 id="P3P"><a href="#P3P" class="headerlink" title="P3P"></a>P3P</h2><p>P3P仅需要使用三对匹配点，就可以完成相机的位姿估计。</p>
+<p>假设空间中有A,B,C三点，投影到成像平面中有a,b,c三点，在PnP问题中，A,B,C在世界坐标系下的坐标是已知的，但是在相机坐标系下的坐标是未知的。a,b,c的坐标是已知的。PnP的目的就是要求解A,B,C在相机坐标系下的坐标值。如下图所示。需要注意的是三角形abc和三角形ABC不一定是平行的。</p>
+<p align="center">
+    <img src="images/p3p.png" width="90%" alt="P3P问题示意图"/>
+</p>
+<center>图4  P3P问题示意图</center>
+
+<p>根据余弦定理有：</p>
+<p>$$OA^2 + OB^2 - 2OA \cdot OB \cdot \cos(a,b) = AB^2 \ OB^2 + OC^2 - 2OB \cdot OC \cdot \cos(b,c) = BC^2 \ OA^2 + OC^2 - 2OA \cdot OC \cdot \cos(a,c) = AC^2$$</p>
+<p>记$x=\dfrac{OA}{OC}$,$y=\dfrac{OB}{OC}$，因为A,B,C在相机坐标系中的坐标未知，因此x，y是未知的。</p>
+<p>另记$u=\dfrac{BC^2}{AB^2}$,$w=\dfrac{AC}{AB}$, 根据A,B,C的世界坐标，u,w是可以求出的。</p>
+<p>通过一系列的转化可以得到两个等式：</p>
+<p>$$(1-u)y^2-ux^2-\cos(b,c)y+2uxy \cos(a,b) +1 = 0 \ (1-w)x^2-wy^2-\cos(a,c)x+2wxy \cos(a,b) +1 = 0$$</p>
+<p>该方程组是关于x,y的一个二元二次方程，可以通过吴消元法求解。最多可能得到四个解，因此在三个点之外还需要一组匹配点进行验证。</p>
+<p>至此，通过x和y就可以求得A，B，C在相机坐标下的坐标值。因此3D-2D问题转变成了3D-3D的位姿估计问题。而带有匹配信息的3D-3D位姿求解非常容易。</p>
+<h2 id="Bundle-Adjustment"><a href="#Bundle-Adjustment" class="headerlink" title="Bundle Adjustment"></a>Bundle Adjustment</h2><p>假设某空间点坐标为$P_i = [X_i, Y_i, Z_i]$, 其投影的像素坐标为$p_i=[u_i,v_i]$。这些在PnP问题里都是已知的。在相机坐标系下有$c=[x_i, y_i, z_i]$，这个坐标通过P3P或者其他解法有了粗略的估计。根据针孔相机模型可得：</p>
+<p>$$z_i p_i = KTP_i = K \exp([\xi]_{\times})P_i$$</p>
+<p>根据这个等式可以构造出一个最小二乘问题：</p>
+<p>$$\xi^* = \arg \min \limits <em>{\xi} \dfrac{1}{2} \sum\limits  _{i=1} ^n \begin{Vmatrix} p_i - \dfrac{1}{z_i} K \exp([\xi]</em>{\times})P_i \end{Vmatrix} _2 ^2$$</p>
+<p>该问题的误差项，是将像素坐标与3D点按照当前估计的位姿进行投影得到的位置相比较得到的误差，所以称之为重投影误差。如图5所示。</p>
+<p align="center">
+    <img src="images/reProjectiveError.png" width="90%" alt="重投影误差示意图"/>
+</p>
+<center>图5  重投影误差示意图</center>
+
+<p>这个最小二乘问题主要优化两个变量，第一是对相机位姿的优化，也就是对李代数的优化，第二是对空间点P的优化，也就是P点的优化。</p>
+<h1 id="3D-3D估计"><a href="#3D-3D估计" class="headerlink" title="3D-3D估计"></a>3D-3D估计</h1><p>3D-3D的位姿估计问题是指，对于空间中的某一点，我们知道这个点在两个相机坐标系中的三维坐标，如何利用这两个三维坐标来求解这两个相机坐标系的运动就是3D-3D的位姿评估问题。这个问题通常用迭代最近点(Iterative Closest Point,ICP)求解。</p>
+<p>假设空间中的一系列点在第一个相机坐标系下的三维坐标为$C={c_1,…,c_n}$，在第二个相机坐标系下匹配的三维坐标为$C’={c_1’,…,c’_n}$。则有：</p>
+<p>$$\forall i, \ c_i=Rc_i’+t$$</p>
+<p>对于ICP的求解主要分为两种方式：<strong>利用线性代数的求解和利用非线性优化方式求解</strong>。</p>
+<h2 id="线性代数求解"><a href="#线性代数求解" class="headerlink" title="线性代数求解"></a>线性代数求解</h2><p>构造误差项：</p>
+<p>$$e_i = c_i - (Rc_i’+t)$$</p>
+<p>将这个误差项构造成一个最小二乘问题：</p>
+<p>$$\min \limits _{R,t} J= \dfrac{1}{2} \sum \limits _{i=1} ^n \begin{Vmatrix} c_i - (Rc_i’+t) \end{Vmatrix} _2 ^2$$</p>
+<p>通过求解这个最小二乘问题，我们可以得到R和t。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>相机位姿估计最终目标是获得表征相机运动的旋转矩阵R和平移向量t，可分成两种方法：一种是2D-2D估计加三角测量，另一种是3D-2D估计加3D-3D估计。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://zhaoxuhui.top/blog/2018/03/18/Location&PoseEstimationInSLAM.html" target="_blank" rel="noopener">SLAM相机位姿估计(1)</a>,by zhaoxuhui.</li>
+<li><a href="https://www.jianshu.com/p/fbf56587a268" target="_blank" rel="noopener">2D-2D相机位姿估计</a>,by 金戈大王.</li>
+<li><a href="https://zhehangt.github.io/2017/03/05/SLAM/Basic/EpipolarGeometry/" target="_blank" rel="noopener">单目相机中的对极几何</a>,by 一索哥传奇.</li>
+<li><a href="https://www.jianshu.com/p/96d3b832330e" target="_blank" rel="noopener">三角测量</a>,by 金戈大王.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E4%B8%89%E8%A7%92%E6%B8%AC%E9%87%8F" target="_blank" rel="noopener">三角测量</a>,by wikipedia.</li>
+<li><a href="https://zhehangt.github.io/2017/03/06/SLAM/Basic/Triangularization/" target="_blank" rel="noopener">单目相机中的三角化测量</a>,by 一索哥传奇.</li>
+<li><a href="https://www.jianshu.com/p/f16e5b5cc47d" target="_blank" rel="noopener">3D-2D相机位姿估计</a>,by 金戈大王.</li>
+<li><a href="https://www.jianshu.com/p/504f0e5d9c26" target="_blank" rel="noopener">3D-3D相机位姿估计</a>,by 金戈大王.</li>
+<li><a href="https://www.zhihu.com/question/51510464" target="_blank" rel="noopener">相机位姿求解问题？</a>, by zhihu.</li>
+<li><a href="https://zhehangt.github.io/2017/03/07/SLAM/Basic/PnP/" target="_blank" rel="noopener">3D-2D的运动估计</a>,by 一索哥传奇.</li>
+<li><a href="https://zhehangt.github.io/2017/03/17/SLAM/Basic/ICP/" target="_blank" rel="noopener">3D-3D的运动估计</a>,by 一索哥传奇.</li>
+<li><a href="https://www.cnblogs.com/mafuqiang/p/8302663.html" target="_blank" rel="noopener">相机位姿求解——P3P问题</a>,by 达达MFZ.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/32030223" target="_blank" rel="noopener">图像二维坐标转世界三维坐标</a>,by 橙子.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/26/%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2022,188 +2284,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/04/29/PX4%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E7%AE%80%E8%A6%81%E6%95%99%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/29/PX4%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E7%AE%80%E8%A6%81%E6%95%99%E7%A8%8B/" itemprop="url">
-                  PX4应用开发简要教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-04-29 20:11:19 / 修改时间：20:47:18" itemprop="dateCreated datePublished" datetime="2019-04-29T20:11:19+08:00">2019-04-29</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>本文说明如何创建和运行第一个板载应用程序。 它涵盖了PX4上应用程序开发所需的所有基本概念和API。</p>
-<h1 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h1><p>在开发第一个PX4应用程序之前，需要构建如下开发环境：</p>
-<ul>
-<li>PX4 SITL模拟器或兼容PX4的飞行控制器。</li>
-<li>PX4开发工具链用于所需目标。</li>
-<li>从Github下载PX4源代码</li>
-</ul>
-<h1 id="简单应用"><a href="#简单应用" class="headerlink" title="简单应用"></a>简单应用</h1><h2 id="代码编写"><a href="#代码编写" class="headerlink" title="代码编写"></a>代码编写</h2><p>本节创建一个最小的应用，仅用于打印Hello Sky！。整个应用由一个简单C文件和一个cmake定义文件构成。具体步骤如下：</p>
-<ol>
-<li>创建目录Firmware/src/examples/px4_simple_app</li>
-<li>在上述目录中创建C文件px4_simple_app.c</li>
-<li>在上述目录中创建cmake定义文件CMakeLists.txt</li>
-</ol>
-<p>px4_simple_app.c代码内容如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * @file px4_simple_app.c</span><br><span class="line"> * Minimal application example for PX4 autopilot</span><br><span class="line"> *</span><br><span class="line"> * @author Example User &lt;mail@example.com&gt;</span><br><span class="line"> *&#x2F;</span><br><span class="line"></span><br><span class="line">#include &lt;px4_log.h&gt;</span><br><span class="line"></span><br><span class="line">__EXPORT int px4_simple_app_main(int argc, char *argv[]);</span><br><span class="line"></span><br><span class="line">int px4_simple_app_main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    PX4_INFO(&quot;Hello Sky!&quot;);</span><br><span class="line">    return OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>CMakeLists.txt文件内容如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">px4_add_module(</span><br><span class="line">    MODULE examples__px4_simple_app</span><br><span class="line">    MAIN px4_simple_app</span><br><span class="line">    STACK_MAIN 2000</span><br><span class="line">    SRCS</span><br><span class="line">        px4_simple_app.c</span><br><span class="line">    DEPENDS</span><br><span class="line">        platforms__common</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
-
-<p>px4_add_module()方法从模块描述构建静态库。 MAIN块列出了模块的名称 。这会将该模块与NuttX一起注册，以便可以从PX4 shell或SITL控制台调用它。</p>
-<h2 id="编译链接"><a href="#编译链接" class="headerlink" title="编译链接"></a>编译链接</h2><p>针对不同的目标平台，使用不同的make命令构建：</p>
-<ul>
-<li>jMAVSim Simulator: make posix_sitl_default jmavsim</li>
-<li>Pixhawk v1/2: make px4fmu-v2_default</li>
-<li>Pixhawk v3: make px4fmu-v4_default</li>
-</ul>
-<h2 id="测试应用（硬件）"><a href="#测试应用（硬件）" class="headerlink" title="测试应用（硬件）"></a>测试应用（硬件）</h2><h3 id="上传固件到开发板"><a href="#上传固件到开发板" class="headerlink" title="上传固件到开发板"></a>上传固件到开发板</h3><p>在开发板上测试，使用如下命令上传PX4固件：</p>
-<ul>
-<li>Pixhawk v1/2: make px4fmu-v2_default upload</li>
-<li>Pixhawk v3: make px4fmu-v4_default upload</li>
-</ul>
-<h3 id="连接控制台"><a href="#连接控制台" class="headerlink" title="连接控制台"></a>连接控制台</h3><p>现在通过串口或USB连接到系统控制台。 点击ENTER将弹出shell提示符：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">nsh&gt;</span><br><span class="line">nsh&gt;help</span><br><span class="line">nsh&gt; px4_simple_app</span><br><span class="line">Hello Sky!</span><br></pre></td></tr></table></figure>
-
-<h2 id="测试应用（SITL）"><a href="#测试应用（SITL）" class="headerlink" title="测试应用（SITL）"></a>测试应用（SITL）</h2><p>如果您正在使用SITL，PX4控制台将自动启动。 与nsh控制台一样，您可以键入help以查看内置应用程序列表。</p>
-<p>输入px4_simple_app以运行最小应用程序。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pxh&gt; px4_simple_app</span><br><span class="line">INFO  [px4_simple_app] Hello Sky!</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://huangwang.github.io/2019/04/26/PX4编译开发环境配置/">PX4编译开发环境配置</a>,by jackhuang.</li>
-<li><a href="https://huangwang.github.io/2019/04/27/PX4开发基本概念解读/">PX4开发基本概念解读</a>,by jackhuang.</li>
-<li><a href="https://dev.px4.io/en/apps/hello_sky.html" target="_blank" rel="noopener">First Application Tutorial (Hello Sky)</a>,by dronecode.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2251,7 +2331,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">309</span>
+                    <span class="site-state-item-count">310</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2946,9 +3026,9 @@
   
     
       
-        
-      
     
+      
+        
       
     
       

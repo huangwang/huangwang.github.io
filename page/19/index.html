@@ -314,6 +314,196 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/23/%E9%9A%8F%E6%9C%BA%E6%8A%BD%E6%A0%B7%E4%B8%80%E8%87%B4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/23/%E9%9A%8F%E6%9C%BA%E6%8A%BD%E6%A0%B7%E4%B8%80%E8%87%B4/" itemprop="url">
+                  随机抽样一致
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-23 09:26:08 / 修改时间：11:23:28" itemprop="dateCreated datePublished" datetime="2019-06-23T09:26:08+08:00">2019-06-23</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>随机抽样一致算法（RANdom SAmple Consensus，RANSAC）。它采用迭代的方式从一组包含离群(outlier)的被观测数据中估算出数学模型的参数。 RANSAC是一个非确定性算法，在某种意义上说，它会产生一个在一定概率下合理的结果，而更多次的迭代会使这一概率增加。此RANSAC算法在1981年由Fischler和Bolles首次提出。</p>
+<p>RANSAC的基本假设是</p>
+<ul>
+<li>“内群”(inlier)数据可以通过几组模型的参数来叙述其分布，而“离群”(outlier)数据则是不适合模型化的数据。</li>
+<li>数据会受噪声影响，噪声指的是离群，例如从极端的噪声或错误解释有关数据的测量或不正确的假设。</li>
+<li>RANSAC假定，给定一组（通常很小）的内群，存在一个程序，这个程序可以估算最佳解释或最适用于这一数据模型的参数。</li>
+</ul>
+<h1 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h1><p>这里用一个简单的例子来说明，在一组数据点中找到一条最适合的线。假设，此有一组集合包含了内群以及离群，其中内群为可以被拟合到线段上的点，而离群则是无法被拟合的点。如果我们用简单的最小二乘法来找此线，我们将无法得到一条适合于内群的线，因为最小二乘法会受离群影响而影响其结果。而RANSAC，可以只由内群来计算出模型，而且概率还够高。然而，RANSAC无法保证结果一定最好，所以必须小心选择参数，使其能有足够的概率。</p>
+<div style="display:flex">
+    <div style="width: 45%;margin: 0 2.5%;">
+        <img display="block" src="images/255px-Line_with_outliers.svg.png" width="100%" alt="包含许多离群的一组数据"/>
+        <div>包含许多离群的一组数据，要找一条最适合的线。</div>
+    </div>
+    <div style="width: 45%;margin: 0 2.5%;">
+        <img display="block" src="images/255px-Fitted_line.svg.png" width="100%" alt="RANSAC找到的线"/>
+        <div>RANSAC找到的线，离群值对结果没影响（蓝色点为内群，红色点为离群）</div>
+    </div>   
+</div>
+
+<h1 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h1><p>RANSAC算法是一个学习的技巧，通过使用观测数据的随机样本来估计模型参数。RANSAC使用投票机制来寻找优化的拟合结果。每个数据元被用来投票一或多个模型。投票机制基于两点假设：</p>
+<ul>
+<li><p>噪音大的特征并不能一直单独为某个模型投票</p>
+</li>
+<li><p>有足够多的特征来拟合一个好的模型</p>
+</li>
+</ul>
+<p>一般RANSAC算法由两步骤迭代计算：</p>
+<ul>
+<li><p>一个样本子集，包含数据选取（随机选取）。通过使用这些数据得到一个拟合模型和相关的模型参数。样本子集的数量是最小充分的得到模型参数。</p>
+</li>
+<li><p>算法检查数据集中的哪些元素是一直在第一步估计到的模型当中的。如果在阈值（相对噪声的最大偏离度）外的话，该模型元素不能拟合估计到的模型便会被当做outlier。</p>
+</li>
+</ul>
+<p>inliers的设置称作“一致性设置”RANSAC算法会一直迭代直到获得足够的inliers。</p>
+<p>RANSAC的输入是一些观测数据和一些“可信度”参数，实现步骤：</p>
+<ol>
+<li>随机选择一些原始数据，叫作假设inliers子集</li>
+<li>建立模型拟合</li>
+<li>用其他数据来验证，根据模型特定的loss-function来计算是否符合该模型</li>
+<li>如果足够的点都算是“一致性”设置里则该模型算是好模型</li>
+<li>比较所有的“一致性”设置（就是建立的所有模型）看看哪个inliers多就是我们要的。</li>
+</ol>
+<h2 id="参数决定"><a href="#参数决定" class="headerlink" title="参数决定"></a>参数决定</h2><p>假设每个点是真正内群的几率是 $w$ :<br>$$ w = 真正內群的數目 / 數據總共的數量$$</p>
+<p>通常我们不知道 $w$ 是多少, $w^n$ 是所选择的n个点都是内群的几率, $1-w^n$ 是所选择的n个点至少有一个不是内群的几率, $(1 − w^n)^k$ 是表示重复k次都没有全部的n个点都是内群的几率, 这边定算法跑k次以后成功的几率是p，那么,</p>
+<p>$$ 1 − p =(1 − w^n)^k $$<br>$$ p = 1 −(1 − w^n)^k $$</p>
+<p>所以如果希望成功几率高，p = 0.99, 当n不变时，k越大,p越大, 当w不变时，n越大，所需的k就越大, 通常w未知，所以n选小一点比较好。</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>RANSAC常被用在计算机视觉，例如，对应点问题和 估算立体摄影机双眼相对点的基本矩阵。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/36301702" target="_blank" rel="noopener">随机抽样一致RANSAC: Random Sample Consensus</a>,by 江知季.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E9%9A%A8%E6%A9%9F%E6%8A%BD%E6%A8%A3%E4%B8%80%E8%87%B4" target="_blank" rel="noopener">随机抽样一致</a>,by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/22/%E5%B0%BA%E5%BA%A6%E7%A9%BA%E9%97%B4%E7%90%86%E8%AE%BA%E7%AE%80%E4%BB%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1989,200 +2179,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/04/%E6%B1%82%E8%A7%A3%E5%B0%84%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E4%BA%A4%E7%82%B9%E7%9A%84%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/04/%E6%B1%82%E8%A7%A3%E5%B0%84%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E4%BA%A4%E7%82%B9%E7%9A%84%E7%AE%97%E6%B3%95/" itemprop="url">
-                  求解射线与三角形交点的算法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-04 19:46:52 / 修改时间：23:21:13" itemprop="dateCreated datePublished" datetime="2019-06-04T19:46:52+08:00">2019-06-04</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>求解射线与三角形的交点，在光线追踪、碰撞检测、目标拾取等场景中经常使用，是计算机图形学中最基本的操作。下面介绍常用的求解射线与三角形交点的算法。</p>
-<h1 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h1><p>求解射线与三角形交点示意图如图1所示。</p>
-<p align="center" style="display: flex;">
-    <img src="images/rayInterSection1.png" width="40%" alt="求解射线与三角形交点示意图"/>
-    <img src="images/rayInterSection2.png" width="40%" alt="求解射线与三角形交点示意图"/>
-</p>
-<center>图1  求解射线与三角形交点示意图</center>
-
-<p>射线的参数方程如下，其中O是射线的起点，D是射线的方向，t是常数。</p>
-<p>$$O+Dt$$</p>
-<p>该方程的含义是一个点从起点O开始，沿着方向D移动任意长度，得到终点R，根据t值的不同，得到的R值也不同，所有这些不同的R值便构成了整条射线，比如下面的射线，起点是P0，方向是u，p0 + tu也就构成了整条射线。</p>
-<p align="center">
-    <img src="images/ray.jpeg" width="50%" alt="射线方程示意图"/>
-</p>
-<center>图2  射线方程示意图</center>
-
-<p>三角形的参数方程如下，其中$V_0$，$V_1$和$V_2$是三角形的三个点，$u, v$是$V_1$和$V_2$的权重，$1-u-v$是$V_0$的权重，并且满足$u&gt;=0, v &gt;= 0,u+v&lt;=1$。</p>
-<p>$$(1-u-v)V_0+uV_1+vV_2$$</p>
-<p align="center">
-    <img src="images/triangle.png" width="50%" alt="三角形方程示意图"/>
-</p>
-<center>图3  三角形方程示意图</center>
-
-
-<h1 id="直观方法"><a href="#直观方法" class="headerlink" title="直观方法"></a>直观方法</h1><p>求解射线与三角形的交点最直观的方法如下：</p>
-<ol>
-<li>判断射线是否与平面相交</li>
-<li>判断点是否在三角形内</li>
-</ol>
-<p>但该方法需要额外计算三角形所在平面，效率不高。</p>
-<h1 id="Moller-Trumbore方法-Journal-of-Graphic-Tools-1997"><a href="#Moller-Trumbore方法-Journal-of-Graphic-Tools-1997" class="headerlink" title="Moller-Trumbore方法(Journal of Graphic Tools, 1997)"></a>Moller-Trumbore方法(Journal of Graphic Tools, 1997)</h1><p>Moller-Trumbore方法中，求射线与三角形的交点即求解如下方程:</p>
-<p>$$O+Dt=(1-u-v)V_0+uV_1+vV_2$$</p>
-<p>其中t,u,v是未知数，其他都是已知的。</p>
-<p>移项并整理，将t,u,v提取出来作为未知数，得到下面的线性方程组：</p>
-<p>$$\begin{bmatrix}<br>    -D&amp; V_1-V_0 &amp;V_2-V_0<br>\end{bmatrix}\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}=O-V_0$$</p>
-<p>现在开始解这个方程组，这里要用到两个知识点，一是克莱姆法则，二是向量的混合积。</p>
-<p>令$E_1 = V_1 - V_0，E_2 = V_2 - V_0，T = O - V_0$上式可以改写成:</p>
-<p>$$\begin{bmatrix}<br>    -D&amp; E_1 &amp; E_2<br>\end{bmatrix}\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}=T$$</p>
-<p>根据克莱姆法则，可得到t,u,v的解为：</p>
-<p>$$<br>\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}<br>=\frac{1}{\begin{vmatrix}<br>    -D &amp; E_1 &amp; E_2<br>\end{vmatrix} }<br>\begin{vmatrix}<br>    T&amp;E_1&amp;E_2\<br>    -D&amp; T&amp; E_2\<br>    -D &amp; E_1&amp; T<br>\end{vmatrix}<br>$$</p>
-<p>根据混合积公式:</p>
-<p>$$\begin{vmatrix}<br>    a&amp;b&amp;c<br>\end{vmatrix}<br>=a\times{b}\cdot{c}$$</p>
-<p>上式改写为：</p>
-<p>$$<br>\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}<br>=\frac{1}{\begin{bmatrix}<br>    -D \times E_2 \cdot E_1<br>\end{bmatrix} }<br>\begin{vmatrix}<br>    T \times E_1 \cdot E_2\<br>    D \times E_2 \cdot T\<br>    T \times E_1 \cdot D<br>\end{vmatrix}<br>$$</p>
-<p>令$P=D \times E_2$，$Q=T \times E_1$，得到最终的公式:</p>
-<p>$$\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}<br>=\frac{1}{\begin{bmatrix}<br>    P \cdot E_1<br>\end{bmatrix} }<br>\begin{vmatrix}<br>    Q \cdot E_2\<br>    P \cdot T\<br>    Q \cdot D<br>\end{vmatrix}<br>$$</p>
-<p>之所以提炼出P和Q是为了避免重复计算。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.cnblogs.com/graphics/archive/2010/08/09/1795348.html" target="_blank" rel="noopener">射线和三角形的相交检测（ray triangle intersection test）</a>,by zdd.</li>
-<li><a href="http://pkuwwt.github.io/scholarship/2014-04-03-ray-triangle-intersection-tests-for-dummies/" target="_blank" rel="noopener">光线-三角形求交测试算法[译]</a>, by PKUWWT.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E5%85%8B%E8%90%8A%E5%A7%86%E6%B3%95%E5%89%87" target="_blank" rel="noopener">克莱姆法则</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E4%B8%89%E9%87%8D%E7%A7%AF" target="_blank" rel="noopener">混合积</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E9%87%8D%E5%BF%83%E5%9D%90%E6%A0%87" target="_blank" rel="noopener">重心坐标</a>,by wikipedia.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/58199366" target="_blank" rel="noopener">重心坐标（Barycentric coordinates）</a>,by 杨超.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2230,7 +2226,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">312</span>
+                    <span class="site-state-item-count">313</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2941,9 +2937,9 @@
       
     
       
-        
-      
     
+      
+        
       
     
   

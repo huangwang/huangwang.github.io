@@ -15092,11 +15092,38 @@ console.log(y);</code></pre></li>
 <li><a href="https://blog.csdn.net/morning_color/article/details/50241987" target="_blank" rel="noopener">boost::program_options 用法详解</a>,by morning_color.</li>
 <li><a href="https://www.miaoerduo.com/2018/06/22/the-usage-of-cpp-boost-json/" target="_blank" rel="noopener">C++ Boost JSON解析库的使用</a>,by miaoerduo.</li>
 <li><a href="https://blog.51cto.com/u_15127588/4202592" target="_blank" rel="noopener">boost.xml_parser中文字符问题</a>,by mob604756f44f2a .</li>
+<li><a href="https://stackoverflow.com/questions/2114466/creating-json-arrays-in-boost-using-property-trees" target="_blank" rel="noopener">Creating JSON arrays in Boost using Property Trees</a>,by stackoverflow.</li>
 </ol>
 ]]></content>
       <tags>
         <tag>笔记本</tag>
         <tag>C/C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Ubuntu-18-04-Server安装图形界面和远程桌面连接</title>
+    <url>/2021/11/06/Ubuntu-18-04-Server%E5%AE%89%E8%A3%85%E5%9B%BE%E5%BD%A2%E7%95%8C%E9%9D%A2%E5%92%8C%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E8%BF%9E%E6%8E%A5/</url>
+    <content><![CDATA[<p>远程云主机部署的Ubuntu 18.04 Server没有图形用户界面，而且自带的远程访问客户端不给力，因此考虑给Ubuntu 18.04 Server安装图形用户界面，同时打算使用Windows的</p>
+<h1 id="安装图形界面"><a href="#安装图形界面" class="headerlink" title="安装图形界面"></a>安装图形界面</h1><p>Linux服务器未安装桌面环境。我们的第一步是安装X11和一个轻量级的桌面环境，该环境将充当Xrdp的后端。</p>
+<p>Ubuntu存储库中有几种可用的桌面环境（DE）。我们将安装 Xfce 。这是一个快速，稳定且轻巧的桌面环境，非常适合在远程服务器上使用。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt update sudo apt install xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils</span><br></pre></td></tr></table></figure>
+
+<h1 id="远程桌面连接"><a href="#远程桌面连接" class="headerlink" title="远程桌面连接"></a>远程桌面连接</h1><p>Xrdp是Microsoft远程桌面协议（RDP）的开源实现，允许您以图形方式控制远程系统。使用RDP，您可以登录到远程计算机并创建真实的桌面会话，就像登录到本地计算机一样。如果您想要开放源代码的远程桌面访问解决方案，请使用 VNC 。</p>
+<h2 id="安装Xrdp"><a href="#安装Xrdp" class="headerlink" title="安装Xrdp"></a>安装Xrdp</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt install xrdp</span><br><span class="line">sudo systemctl status xrdp</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置Xrdp"><a href="#配置Xrdp" class="headerlink" title="配置Xrdp"></a>配置Xrdp</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo nano &#x2F;etc&#x2F;xrdp&#x2F;xrdp.ini</span><br><span class="line"># 在文件末尾添加以下行：</span><br><span class="line"># exec startxfce4 </span><br><span class="line"># 保存文件并重新启动Xrdp服务</span><br><span class="line">sudo systemctl restart xrdp</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置防火墙"><a href="#配置防火墙" class="headerlink" title="配置防火墙"></a>配置防火墙</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo ufw allow from 192.168.1.0&#x2F;24 to any port 3389</span><br><span class="line">sudo ufw allow 3389</span><br></pre></td></tr></table></figure>
+
+<h2 id="连接到Xrdp服务器"><a href="#连接到Xrdp服务器" class="headerlink" title="连接到Xrdp服务器"></a>连接到Xrdp服务器</h2><p>如果您是Windows用户，则可以使用默认的RDP客户端。在Windows搜索栏中键入“ remote”，然后单击“ Remote Desktop Connection”。这将打开RDP客户端。在计算机字段中输入远程服务器IP地址，然后单击“连接”。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://segmentfault.com/a/1190000037561688" target="_blank" rel="noopener">Ubuntu server 18.04 安装图形化界面环境</a>,by alits.</li>
+<li><a href="https://www.myfreax.com/how-to-install-xrdp-on-ubuntu-18-04/" target="_blank" rel="noopener">如何在Ubuntu 18.04上安装Xrdp Server（远程桌面）</a>,by myfreax.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>计算机网络</tag>
       </tags>
   </entry>
 </search>

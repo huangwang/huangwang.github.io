@@ -314,6 +314,179 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/07/28/Windows%E4%B8%8BOsgEarth%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/07/28/Windows%E4%B8%8BOsgEarth%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/" itemprop="url">
+                  Windows下OsgEarth编译安装过程
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-07-28 17:44:44" itemprop="dateCreated datePublished" datetime="2021-07-28T17:44:44+08:00">2021-07-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-08-29 22:09:46" itemprop="dateModified" datetime="2021-08-29T22:09:46+08:00">2021-08-29</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>记录Windows下osgEarth编译安装过程。</p>
+<h1 id="编译前准备"><a href="#编译前准备" class="headerlink" title="编译前准备"></a>编译前准备</h1><p>使用vcpkg安装osg、gdal、curl。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vcpkg install osg:x64-windows gdal:x64-windows curl:x64-windows。</span><br></pre></td></tr></table></figure>
+
+<h1 id="编译安装osgEarth"><a href="#编译安装osgEarth" class="headerlink" title="编译安装osgEarth"></a>编译安装osgEarth</h1><p>使用cmake编译安装osgEarth。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd I:\project</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;gwaldron&#x2F;osgearth.git</span><br><span class="line">cd osgearth</span><br><span class="line">mkdir build</span><br><span class="line">cmake -S . -B build -G &quot;Visual Studio 15 2017 Win64&quot; -DCMAKE_BUILD_TYPE&#x3D;RelWithDebInfo -DWIN32_USE_MP&#x3D;ON -DCMAKE_INSTALL_PREFIX&#x3D;I:\usr -DCMAKE_TOOLCHAIN_FILE&#x3D;I:\project\vcpkg\scripts\buildsystems\vcpkg.cmake</span><br><span class="line">cmake --build build --target INSTALL --config RelWithDebInfo</span><br></pre></td></tr></table></figure>
+
+<h1 id="设置运行时环境"><a href="#设置运行时环境" class="headerlink" title="设置运行时环境"></a>设置运行时环境</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set PATH&#x3D;%PATH%;c:\vcpkg\installed\x64-windows\bin</span><br><span class="line">set PATH&#x3D;%PATH%;c:\vcpkg\installed\x64-windows\tools\osg</span><br><span class="line">set PATH&#x3D;%PATH%;[installroot]</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/jianingshow/article/details/50733159" target="_blank" rel="noopener">osgearth编译全过程</a>,by jianingshow.</li>
+<li><a href="http://docs.osgearth.org/en/latest/build.html" target="_blank" rel="noopener">Building osgEarth</a>,by osgEarth.</li>
+<li><a href="https://huangwang.github.io/2019/10/10/Windows%E4%B8%8BQT%E4%B8%8EOSG%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">Windows下QT与OSG开发环境配置</a>,by jackhuang.</li>
+<li><a href="https://blog.csdn.net/Icesteam/article/details/112055345" target="_blank" rel="noopener">安装GDAL配置到VS2017的艰难之路（避坑之作）</a>,by Icesrteam.</li>
+<li><a href="https://blog.csdn.net/qq_29413829/article/details/84404677" target="_blank" rel="noopener">VS2017编译GDAL常见问题</a>,by 一个渣渣的世界.</li>
+<li><a href="https://blog.csdn.net/Test_tju/article/details/100129127" target="_blank" rel="noopener">使用OSGeo4W安装配置QGIS</a>,by Test_hh112.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/141226948" target="_blank" rel="noopener">windows10 环境中安装GDAL及其python绑定</a>,by 蔚蓝小栈.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/153199835" target="_blank" rel="noopener">[工具]包管理工具Vcpkg 的使用</a>,by 南象.</li>
+<li><a href="https://www.zhihu.com/question/263416411" target="_blank" rel="noopener">如何看待 Windows 的 C++ 包管理器 vcpkg？</a>,by zhihu.</li>
+<li><a href="https://www.cnblogs.com/yaoyu126/p/6659712.html" target="_blank" rel="noopener">win10 + vs2017 + vcpkg —— VC++ 打包工具</a>,by 一花一世界,一叶一乾坤.</li>
+<li><a href="https://www.cnblogs.com/sunliming/p/4355966.html" target="_blank" rel="noopener">osgEarth基础入门</a>,by sunliming.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/07/08/expressjs%E7%9A%84PayloadTooLargeError%E9%94%99%E8%AF%AF%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1722,160 +1895,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/05/17/flypath3d%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E7%AE%80%E4%BB%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/17/flypath3d%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E7%AE%80%E4%BB%8B/" itemprop="url">
-                  flypath3d使用方法简介
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2021-05-17 20:39:36 / 修改时间：20:55:34" itemprop="dateCreated datePublished" datetime="2021-05-17T20:39:36+08:00">2021-05-17</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>做科研的小伙伴们在使用matlab绘制飞行器轨迹时，总是感叹大牛绘制的图美观大方，而自己绘制的图则简陋到了极点。但现在有了flypath3d，导师再也不用担心我的绘图了。</p>
-<p align="center">
-    <img src="images/graph_aircraft_2.png" width="90%" alt="飞行器轨迹"/>
-</p>
-<center>图1 飞行器轨迹</center>
-
-<h1 id="flypath3d简介"><a href="#flypath3d简介" class="headerlink" title="flypath3d简介"></a>flypath3d简介</h1><p>flypath3d打包了一个免费的Matlab软件，用于导弹和空中目标轨迹的3D可视化，为计算机仿真提供了可视参考。 由于其多功能性和易用性，该软件可以帮助产生有吸引力的演示文稿，以用于各种科学或公共宣传目的。该软件可免费用于科学和教育用途。 您也可以出于任何目的修改和/或分发此软件。 但是，使用包装时，请记住引用该论文。</p>
-<h1 id="flypath3d安装"><a href="#flypath3d安装" class="headerlink" title="flypath3d安装"></a>flypath3d安装</h1><p>该包由使用“ package_setup”命令安装在Matlab环境中的几个M代码文件组成。 它提供了通过放置连续的对象来构造复杂的3D场景的功能，这些对象实际上在布局中起到了构建块的作用。</p>
-<p>下载flypath3d软件包并将其解压缩到目标目录。 接下来执行配置脚本：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">package_setup</span><br></pre></td></tr></table></figure>
-
-<p>这样，flypath3d就安装好了，可以开始使用它了。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://www.wbint.pl/flypath3d/" target="_blank" rel="noopener">flypath3d</a>,by Witold Bużantowicz.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1923,7 +1942,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">315</span>
+                    <span class="site-state-item-count">316</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

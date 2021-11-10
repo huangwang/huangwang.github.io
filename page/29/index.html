@@ -314,6 +314,180 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/14/tensorflow%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/14/tensorflow%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  tensorflow学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-14 13:10:24" itemprop="dateCreated datePublished" datetime="2018-10-14T13:10:24+08:00">2018-10-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-06-14 22:41:13" itemprop="dateModified" datetime="2021-06-14T22:41:13+08:00">2021-06-14</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>TensorFlow™ 是一个开放源代码软件库，用于进行高性能数值计算。借助其灵活的架构，用户可以轻松地将计算工作部署到多种平台（CPU、GPU、TPU）和设备（桌面设备、服务器集群、移动设备、边缘设备等）。TensorFlow™ 最初是由 Google Brain 团队（隶属于 Google 的 AI 部门）中的研究人员和工程师开发的，可为机器学习和深度学习提供强力支持，并且其灵活的数值计算核心广泛应用于许多其他科学领域。</p>
+<h1 id="tensorflow入门"><a href="#tensorflow入门" class="headerlink" title="tensorflow入门"></a>tensorflow入门</h1><p>tensorflow实现机器学习的基本步骤如下：</p>
+<ol>
+<li>定义模型，建立数据流图</li>
+<li>定义loss，并指定优化器 </li>
+<li>传入数据并进行训练 </li>
+<li>使用测试集进行评测</li>
+</ol>
+<h2 id="通用代码框架"><a href="#通用代码框架" class="headerlink" title="通用代码框架"></a>通用代码框架</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line"></span><br><span class="line"># 初始化变量和模型参数，定义训练闭环中的运算</span><br><span class="line"></span><br><span class="line">def inference(X):</span><br><span class="line">    # 计算推断模型在数据X上的输出，并将结果返回</span><br><span class="line"></span><br><span class="line">def loss(X,Y):</span><br><span class="line">    # 依据训练数据X及其期望输出Y计算损失</span><br><span class="line"></span><br><span class="line">def inputs():</span><br><span class="line">    # 读取或生成训练数据X及其期望输出Y</span><br><span class="line"></span><br><span class="line">def train(total_loss):</span><br><span class="line">    # 依据计算的总损失训练或调整模型参数</span><br><span class="line"></span><br><span class="line">def evaluate(sess,X,Y):</span><br><span class="line">    # 对训练得到的模型进行评估</span><br><span class="line"></span><br><span class="line"># 在一个会话对象中启动数据流图，搭建流程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    tf.initialize_all_variables().run()</span><br><span class="line">    </span><br><span class="line">    X,Y&#x3D;inputs()</span><br><span class="line">    </span><br><span class="line">    total_loss&#x3D;loss(X,Y)</span><br><span class="line">    train_op&#x3D;train(total_loss)</span><br><span class="line">    </span><br><span class="line">    coord&#x3D;tf.train.Coordinator()</span><br><span class="line">    threads&#x3D;tf.train.start_queue_runners(sess&#x3D;sess,coord&#x3D;coord)</span><br><span class="line"></span><br><span class="line">    # 实际的训练迭代次数</span><br><span class="line">    training_steps&#x3D;1000</span><br><span class="line">    for step in range(training_steps):</span><br><span class="line">        sess.run([train_op])</span><br><span class="line">        # 出于调试和学习的目的，查看损失在训练过程中递减的情况</span><br><span class="line">        if step % 10 &#x3D;0:</span><br><span class="line">            print &quot;loss: &quot;,sess.run([total_loss])</span><br><span class="line"></span><br><span class="line">    evaluate(sess,X,Y)</span><br><span class="line"></span><br><span class="line">    coord.request_stop()</span><br><span class="line">    coord.join(threads)</span><br><span class="line">    sess.close()</span><br></pre></td></tr></table></figure>
+
+<h2 id="保存训练检查点"><a href="#保存训练检查点" class="headerlink" title="保存训练检查点"></a>保存训练检查点</h2><p>借助tf.train.Saver类可创建检查点文件，将数据流图中变量保存至其中。修改后框架如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 模型定义代码</span><br><span class="line"># 创建一个Saver对象</span><br><span class="line">saver&#x3D;tf.train.Saver()</span><br><span class="line"></span><br><span class="line"># 在会话对象中启动数据流图，搭建流程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    # 模型设置</span><br><span class="line"></span><br><span class="line">    # 实际的训练闭环</span><br><span class="line">    for step in range(training_steps):</span><br><span class="line">        sess.run([train_op])</span><br><span class="line"></span><br><span class="line">        if step % 1000 &#x3D;&#x3D;0</span><br><span class="line">            # 将创建遵循命名模板为my-model-&#123;step&#125;的检查点文件，默认保存最近的5个文件</span><br><span class="line">            saver.save(sess,&#39;my-model&#39;,global_step&#x3D;step)</span><br><span class="line">    </span><br><span class="line">    # 模型评估</span><br><span class="line"></span><br><span class="line">    saver.save(sess,&#39;my-model&#39;,global_step&#x3D;training_steps)</span><br><span class="line">    sess.close()</span><br></pre></td></tr></table></figure>
+<p>如果希望从检查点恢复，则使用tf.train.get_checkpoint_state方法验证检查点文件的存在，并使用tf.train.Saver.restore方法恢复变量值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">with tf.Session() as sess:</span><br><span class="line">    # 模型设置</span><br><span class="line"></span><br><span class="line">    initial_step&#x3D;0</span><br><span class="line"></span><br><span class="line">    # 验证之前是否已经保存了检查点文件</span><br><span class="line">    ckpt&#x3D;tf.train.get_checkpoint_state(os.path.dirname(__file__))</span><br><span class="line">    if ckpt and ckpt.model_checkpoint_path:</span><br><span class="line">        # 从检查点恢复模型参数</span><br><span class="line">        saver.restore(sess,ckpt.model_checkpoint_path)</span><br><span class="line">        initial_step&#x3D;int(ckpt.model_checkpoint_path.rsplite(&#39;_&#39;,1)[1])</span><br><span class="line"></span><br><span class="line">    # 实际的训练闭环</span><br><span class="line">    for step in range(initial_step, training_steps):</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://www.tensorflow.org/guide/tensor?hl=zh_cn" target="_blank" rel="noopener">TensorFlow指南</a>,by tensorflow.</li>
+<li><a href="https://www.mcoder.cc/DL-notes/posts/try_to_understand_shape.html" target="_blank" rel="noopener">尝试理解 shape 的用法</a>,by mcoder.</li>
+<li><a href="https://blog.csdn.net/liuyanfeier/article/details/53731239" target="_blank" rel="noopener">Python中的列表（list），元组（Tuple），字典（Dict）和集合（Set）</a>,by liuyanfeier.</li>
+<li><a href="https://www.liaoxuefeng.com/wiki/1016959663602400/1017092876846880" target="_blank" rel="noopener">使用list和tuple</a>,by liaoxuefeng.</li>
+<li><a href="https://blog.csdn.net/lxlong89940101/article/details/84314703" target="_blank" rel="noopener">Python的reshape(-1,1)</a>,by lxlong89940101.</li>
+<li><a href="https://numpy.org/doc/stable/reference/generated/numpy.array.html" target="_blank" rel="noopener">numpy.array</a>,by numpy.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/14/Python%E5%B8%B8%E7%94%A8%E5%BA%93%E7%AE%80%E4%BB%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1929,169 +2103,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/10/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E8%BF%90%E8%A1%8C3D%E6%B8%B8%E6%88%8F%E7%9A%84%E6%80%9D%E8%80%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/10/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E8%BF%90%E8%A1%8C3D%E6%B8%B8%E6%88%8F%E7%9A%84%E6%80%9D%E8%80%83/" itemprop="url">
-                  浏览器中运行3D游戏的思考
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-07-10 21:02:56" itemprop="dateCreated datePublished" datetime="2018-07-10T21:02:56+08:00">2018-07-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-11-20 23:31:43" itemprop="dateModified" datetime="2018-11-20T23:31:43+08:00">2018-11-20</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Web技术突飞猛进，几乎无所不能，无所不在。然而在3D游戏领域，web技术乏善可陈，性能瓶颈问题制约其发展。但是开发者们没有放弃这个梦想，不断努力，孜孜不倦地改进和增强浏览器中运行3D游戏性能的方法和技术，目前已能看到一丝曙光。</p>
-<p>对C/S架构的3D游戏而言，渲染和计算通常都在客户端，服务器端负责用户状态的管理和分发。同样对B/S架构的运行在浏览器中的3D游戏，所有的渲染和计算也应该在浏览器端。如果渲染和计算放在服务器端，将导致可怕的延迟，并严重损害3D游戏的可伸缩性。</p>
-<p>当前很多3D游戏使用C/C++语言编写，如果能够将C/C++语言编译成JavaScript语言，可大大促进Web 3D游戏的开发。而编译器项目Emscripten正是一个这样的工具。它能将C/C++代码编译成一种叫做asm.js的Javascript变体。需要指出的是，Emscripten的输入，即C/C++代码最好是开放源代码的，因为Emscripten不支持闭源代码的编译。例如Emscripten不支持mfc程序的转换，因为mfc是闭源的<sup>[4]</sup>。</p>
-<p>asm.js是一个JavaScript的严格子集，它只提供32位带符号整数和64位带符号浮点数两种数据类型，其他Javascript类型如字符串、布尔值等以数值形式存在，保存在内存中，通过TypedArray调用。另外asm.js没有垃圾回收机制，所有内存操作都由程序员自己控制。asm.js是优化后的JavaScript，它在浏览器中的运行速度大约是原生代码的一倍左右<sup>[1]</sup>。</p>
-<p>asm.js虽然比原生javascript运行速度快了一倍左右，但是相比C/C++代码，运行速度还是有差距。幸运的是出现了名为WebAssembly的技术。WebAssembly或称wasm是一个实验性的低级编程语言，应用于浏览器内的客户端<sup>[5]</sup>。WebAssembly是便携式的抽象语法树，被设计来提供比JavaScript更快速的编译及运行。WebAssembly将让开发者能运用自己熟悉的编程语言（最初以C/C++作为实现目标）编译，再藉虚拟机引擎在浏览器内运行。WebAssembly的开发团队分别来自Mozilla、Google、Microsoft、Apple，代表着四大网络浏览器Firefox、Chrome、Microsoft Edge、Safari。2017年11月，所有以上四个浏览器都开始实验性的支持WebAssembly。目前，最新版本的Emscripten已支持将C/C++代码编译成wasm。</p>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2017/09/asmjs_emscripten.html</a>. by 阮一峰.</li>
-<li><a href="https://www.cnblogs.com/slly/p/6639173.html" target="_blank" rel="noopener">https://www.cnblogs.com/slly/p/6639173.html</a>. by 李某龙.</li>
-<li><a href="http://kripken.github.io/emscripten-site/" target="_blank" rel="noopener">http://kripken.github.io/emscripten-site/</a>. by emscripten.</li>
-<li><a href="https://github.com/kripken/emscripten/issues/941" target="_blank" rel="noopener">https://github.com/kripken/emscripten/issues/941</a>. by emscripten.</li>
-<li><a href="https://zh.wikipedia.org/wiki/WebAssembly" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/WebAssembly</a>. by wikipedia.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2139,7 +2150,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">316</span>
+                    <span class="site-state-item-count">317</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

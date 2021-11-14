@@ -314,6 +314,171 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/12/11/VS2017%E9%85%8D%E7%BD%AEGLUT%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/12/11/VS2017%E9%85%8D%E7%BD%AEGLUT%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" itemprop="url">
+                  VS2017配置GLUT开发环境
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-12-11 19:38:06" itemprop="dateCreated datePublished" datetime="2020-12-11T19:38:06+08:00">2020-12-11</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-12-12 15:18:34" itemprop="dateModified" datetime="2020-12-12T15:18:34+08:00">2020-12-12</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近需要做一个红外图像处理软件，在VS2017上使用OpenGL GLUT开发，采用Rapidcsv读取传递的CSV数据。具体代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">int main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">	readCsvData();</span><br><span class="line">	glutInit(&amp;argc, argv);</span><br><span class="line">	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);</span><br><span class="line">	glutInitWindowSize(ImageWidth, ImageHeight);</span><br><span class="line">	glutInitWindowPosition(200, 200);</span><br><span class="line">	glutCreateWindow(&quot;InfraRedImage&quot;);</span><br><span class="line">	initCamera();</span><br><span class="line">	&#x2F;&#x2F; 注册回调函数</span><br><span class="line">	glutDisplayFunc(sceneRender);</span><br><span class="line">	glutReshapeFunc(reshape);</span><br><span class="line">	glutKeyboardFunc(keyboard);</span><br><span class="line">	glutTimerFunc(1, update, 0);</span><br><span class="line">	glutMouseFunc(mouseClick);</span><br><span class="line">	glutMainLoop();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.w3xue.com/exp/article/20193/26135.html" target="_blank" rel="noopener">在Visual Studio 2017上配置Glut</a>,by 凯鲁嘎吉.</li>
+<li><a href="https://blog.csdn.net/bqw18744018044/article/details/81665898" target="_blank" rel="noopener">C++中创建二维数组的四种方法</a>,by BQW_.</li>
+<li><a href="https://github.com/d99kris/rapidcsv" target="_blank" rel="noopener">Rapidcsv</a>,by d99kris.</li>
+<li><a href="https://github.com/ArashPartow/bitmap" target="_blank" rel="noopener">bitmap</a>,by ArashPartow.</li>
+<li><a href="https://blog.csdn.net/PROGRAM_anywhere/article/details/63720261" target="_blank" rel="noopener">C++中4种方式把字符串和数字连接起来</a>,by 帅东.</li>
+<li><a href="https://blog.csdn.net/zxy131072/article/details/94547012?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromBaidu-1.control&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromBaidu-1.control" target="_blank" rel="noopener">string赋值操作</a>,by zxy131072.</li>
+<li><a href="http://www.lighthouse3d.com/tutorials/glut-tutorial/bitmap-fonts-and-orthogonal-projections/" target="_blank" rel="noopener">Bitmap Fonts and Orthogonal Projections</a>,by Lighthouse3d.</li>
+<li><a href="https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros" target="_blank" rel="noopener">C++11 std::to_string(double) - No trailing zeros</a>,by stackoverflow.</li>
+<li><a href="https://www.codeproject.com/Questions/655714/How-to-write-openGl-offscreen-data-in-to-JPG-image" target="_blank" rel="noopener">How to write openGl offscreen data in to JPG image</a>,by codeproject.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/12/08/VC6%E7%8E%AF%E5%A2%83%E4%B8%8BOpenGL%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1750,167 +1915,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/09/04/%E6%B1%82%E4%B8%89%E4%B8%AA%E7%90%83%E4%BA%A4%E7%82%B9%E7%9A%84%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/09/04/%E6%B1%82%E4%B8%89%E4%B8%AA%E7%90%83%E4%BA%A4%E7%82%B9%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
-                  求三个球交点的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-09-04 22:46:16" itemprop="dateCreated datePublished" datetime="2020-09-04T22:46:16+08:00">2020-09-04</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-10-01 22:31:29" itemprop="dateModified" datetime="2020-10-01T22:31:29+08:00">2020-10-01</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>我们知道，在使用美国GPS时，需要获得三颗GPS卫星信号，才能够定位自身位置。那么其背后的原理是什么呢？很简单，用数学语言表述，就是通过求解三个球的交点。通常三个球的交点会有两个点，排除位置较高的那个点，剩下的点就是我们空间位置点。</p>
-<p align="center">
-    <img src="images/gps_location.jpg" width="90%" alt="GPS定位原理示意图"/>
-</p>
-<center>图1  GPS定位原理示意图</center>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.digitalbunker.dev/2020/08/28/how-do-global-positioning-systems-gps-work/" target="_blank" rel="noopener">How Does GPS Work?</a>,by Aryaman Sharda.</li>
-<li><a href="https://blog.csdn.net/sinat_27504423/article/details/47377763" target="_blank" rel="noopener">三个球的交点</a>,by sinat_27504423.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1958,7 +1962,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">319</span>
+                    <span class="site-state-item-count">320</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

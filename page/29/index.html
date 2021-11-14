@@ -314,6 +314,193 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/01/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E7%94%A8%E6%B3%95%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/01/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E7%94%A8%E6%B3%95%E6%80%BB%E7%BB%93/" itemprop="url">
+                  Linux常用命令用法总结
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-01 21:44:27" itemprop="dateCreated datePublished" datetime="2018-11-01T21:44:27+08:00">2018-11-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-11-10 17:13:25" itemprop="dateModified" datetime="2019-11-10T17:13:25+08:00">2019-11-10</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>记录一些常用的linux命令用法，以备查询。</p>
+<h1 id="校验文件"><a href="#校验文件" class="headerlink" title="校验文件"></a>校验文件</h1><p>下载的文件最好校验完整性，防止被人篡改。以sha256sum为例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 以下命令将生成树莓派映像的sha256哈希码，从树莓派官网复制该映像sha256哈希码，以便校验。</span><br><span class="line"># 当然通常应该会提供映像的哈希码校验文件。</span><br><span class="line"></span><br><span class="line">sha256sum 2018-10-09-raspbian-stretch.zip &gt;2018-10-09-raspbian-stretch.zip.sha256sum</span><br><span class="line"></span><br><span class="line"># 使用下面校验文件的完整性，如果成功则映像与官方一致，未被篡改。</span><br><span class="line"># 注意被校验文件与校验文件应放在同一个目录。</span><br><span class="line"></span><br><span class="line">sha256sum -c 2018-10-09-raspbian-stretch.zip.sha256sum</span><br></pre></td></tr></table></figure>
+
+<h1 id="转换和复制文件命令"><a href="#转换和复制文件命令" class="headerlink" title="转换和复制文件命令"></a>转换和复制文件命令</h1><p>Linux的dd命令用于复制文件并对原文件的内容进行转换和格式化处理。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">读指定物理扇区：</span><br><span class="line">dd  if&#x3D;&lt;源设备&gt;  of&#x3D;&lt;输出设备或文件&gt;   skip&#x3D;&lt;指定扇区值&gt;  bs&#x3D;512 count&#x3D;1</span><br><span class="line"></span><br><span class="line">写指定物理扇区：</span><br><span class="line">dd   if&#x3D;&lt;输入设备或文件&gt;   of&#x3D;&lt;输出设备&gt;   seek&#x3D;&lt;指定扇区值&gt;  bs&#x3D;512 count&#x3D;1</span><br><span class="line"></span><br><span class="line">读取sd启动扇区示例：</span><br><span class="line">dd if&#x3D;&#x2F;dev&#x2F;mmcblk0 of&#x3D;mbrsd.data bs&#x3D;512 count&#x3D;1</span><br><span class="line"></span><br><span class="line">制作光盘iso镜像</span><br><span class="line">dd if&#x3D;&#x2F;dev&#x2F;cdrom of&#x3D;&#x2F;home&#x2F;hch&#x2F;drone.iso status&#x3D;progress conv&#x3D;fsync</span><br></pre></td></tr></table></figure>
+
+<h1 id="查找文件"><a href="#查找文件" class="headerlink" title="查找文件"></a>查找文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># find基本语法：find [PATH] [option] [action]</span><br><span class="line"></span><br><span class="line">find &#x2F;usr&#x2F;lib -name libQt5Xml.so</span><br><span class="line"># 使用通配符</span><br><span class="line">find &#x2F;usr&#x2F;lib -name &quot;*ssl*&quot;</span><br></pre></td></tr></table></figure>
+
+<h1 id="批量转换文件格式"><a href="#批量转换文件格式" class="headerlink" title="批量转换文件格式"></a>批量转换文件格式</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 将png格式图像转换为jpg</span><br><span class="line"># -1 – 告诉 ls 每行列出一个图像名称的选项标识</span><br><span class="line"># -n – 指定最多参数个数，例子中为 1</span><br><span class="line"># -c – 指示 bash 运行给定的命令</span><br><span class="line"># $&#123;0%.png&#125;.jpg – 设置新转换的图像文件的名字，% 符号用来删除源文件的扩展名</span><br><span class="line"></span><br><span class="line">ls -1 *.png | xargs -n 1 bash -c &#39;convert &quot;$0&quot; &quot;$&#123;0%.png&#125;.jpg&quot;&#39;</span><br></pre></td></tr></table></figure>
+
+<h1 id="修改用户"><a href="#修改用户" class="headerlink" title="修改用户"></a>修改用户</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 将用户$USER添加到dialout用户组，以获取串口访问权限</span><br><span class="line">sudo usermod -a -G dialout $USER</span><br></pre></td></tr></table></figure>
+
+<h1 id="特殊符号用法"><a href="#特殊符号用法" class="headerlink" title="特殊符号用法"></a>特殊符号用法</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#| 管道 (pipeline)，是 UNIX 系统，基础且重要的观念。连结上个指令的标准输出，做为下个指令的标准输入。</span><br><span class="line">who | wc -l</span><br><span class="line"></span><br><span class="line">#! 惊叹号(negate or reverse)，通常它代表反逻辑的作用，譬如条件侦测中，用 !&#x3D; 来代表&quot;不等于&quot;</span><br><span class="line">#下例代表显示除了a0, a1 .... a9 这几个文件的其他文件。</span><br><span class="line">ls a[!0-9]</span><br><span class="line"></span><br><span class="line">#&amp; 后台工作，单一个&amp; 符号，且放在完整指令列的最后端，即表示将该指令列放入后台中工作。</span><br><span class="line">tar cvfz data.tar.gz data &gt; &#x2F;dev&#x2F;null &amp;</span><br></pre></td></tr></table></figure>
+
+<h1 id="终端下载"><a href="#终端下载" class="headerlink" title="终端下载"></a>终端下载</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 逐条下载uri.txt文件中每一行uri</span><br><span class="line">wget -i uri.txt</span><br><span class="line"></span><br><span class="line"># 跳过前1000条再下载</span><br><span class="line">awk &#39;NR&gt;&#x3D;1000&#39; url.txt | wget -i -</span><br><span class="line"></span><br><span class="line"># install proxy</span><br><span class="line">wget --no-check-certificate https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;jwchenzju&#x2F;teddysunss&#x2F;master&#x2F;shadowsocks.sh</span><br><span class="line"></span><br><span class="line">chmod +x shadowsocks.sh</span><br><span class="line"></span><br><span class="line">.&#x2F;shadowsocks.sh 2&gt;&amp;1 | tee shadowsocks.log</span><br></pre></td></tr></table></figure>
+
+<h1 id="终端中打开文件管理器"><a href="#终端中打开文件管理器" class="headerlink" title="终端中打开文件管理器"></a>终端中打开文件管理器</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">使用gnome文件管理器打开当前文件夹</span><br><span class="line">nautilus .&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h1 id="统计"><a href="#统计" class="headerlink" title="统计"></a>统计</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 统计文件行数</span><br><span class="line">wc -l file</span><br><span class="line"></span><br><span class="line">统计某文件夹下文件的个数</span><br><span class="line">ls -l |grep &quot;^-&quot;|wc -l</span><br><span class="line"></span><br><span class="line">统计某文件夹下目录的个数</span><br><span class="line">ls -l |grep &quot;^ｄ&quot;|wc -l</span><br><span class="line"></span><br><span class="line">统计文件夹下文件的个数，包括子文件夹里的</span><br><span class="line">ls -lR|grep &quot;^-&quot;|wc -l</span><br><span class="line"></span><br><span class="line"># 统计文件或文件夹大小</span><br><span class="line">du -a -h -d 1 .&#x2F;</span><br><span class="line"></span><br><span class="line"># 统计文件状态信息</span><br><span class="line">stat file.txt</span><br></pre></td></tr></table></figure>
+
+<h1 id="系统服务管理"><a href="#系统服务管理" class="headerlink" title="系统服务管理"></a>系统服务管理</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># service命令用于对系统服务进行管理，比如启动（start）、停止（stop）、重启（restart）、查看状态（status）等。</span><br><span class="line"># service命令本身是一个shell脚本，它在&#x2F;etc&#x2F;init.d&#x2F;目录查找指定的服务脚本，然后调用该服务脚本来完成任务。</span><br><span class="line"></span><br><span class="line"># 查看系统所有服务状态</span><br><span class="line">service --status-all</span><br></pre></td></tr></table></figure>
+
+<h1 id="查询本机公网IP"><a href="#查询本机公网IP" class="headerlink" title="查询本机公网IP"></a>查询本机公网IP</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl ifconfig.me</span><br><span class="line">curl ipinfo.io</span><br></pre></td></tr></table></figure>
+
+<h1 id="压缩和解压文件"><a href="#压缩和解压文件" class="headerlink" title="压缩和解压文件"></a>压缩和解压文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># tar命令</span><br><span class="line">tar zxvf FileName.tar #解压</span><br><span class="line">tar czvf FileName.tar DirName #压缩</span><br><span class="line"></span><br><span class="line"># zip命令</span><br><span class="line">unzip FileName.zip #解压</span><br><span class="line">zip -r FileName.zip DirName #压缩</span><br></pre></td></tr></table></figure>
+
+<h1 id="SSH-连接、远程上传下载文件"><a href="#SSH-连接、远程上传下载文件" class="headerlink" title="SSH 连接、远程上传下载文件"></a>SSH 连接、远程上传下载文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># SSH 远程登入 Ubuntu 机 </span><br><span class="line">ssh username@192.168.0.1</span><br><span class="line"></span><br><span class="line"># 将 文件&#x2F;文件夹 从远程 Ubuntu 机拷至本地(scp) </span><br><span class="line">scp -r username@192.168.0.1:&#x2F;home&#x2F;username&#x2F;remotefile.txt remotefile.txt</span><br><span class="line"></span><br><span class="line"># 将 文件&#x2F;文件夹 从本地拷至远程 Ubuntu 机(scp) </span><br><span class="line">scp -r localfile.txt username@192.168.0.1:&#x2F;home&#x2F;username&#x2F;</span><br><span class="line"></span><br><span class="line"># rsync大文件断电续传，远程服务器需安装rsync</span><br><span class="line">rsync -P --rsh&#x3D;ssh  root@192.168.0.1:&#x2F;root&#x2F;fgdata.tar fgdata.tar</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/ljianhui/article/details/11100625" target="_blank" rel="noopener">初窥Linux 之 我最常用的20条命令</a>,by ljianhui.</li>
+<li><a href="http://www.ruanyifeng.com/blog/2009/10/5_ways_to_search_for_files_using_the_terminal.html" target="_blank" rel="noopener">Linux的五个查找命令</a>,by 阮一峰.</li>
+<li><a href="https://www.cnblogs.com/xuxm2007/archive/2011/10/20/2218846.html" target="_blank" rel="noopener">shell脚本中一些特殊符号</a>, by 阿笨猫.</li>
+<li><a href="https://medium.com/@zoomyale/%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91%E7%9A%84%E7%BB%88%E6%9E%81%E5%A7%BF%E5%8A%BF-%E5%9C%A8-vultr-vps-%E4%B8%8A%E6%90%AD%E5%BB%BA-shadowsocks-fd57c807d97e" target="_blank" rel="noopener">vultr proxy</a></li>
+<li><a href="https://einverne.github.io/post/2017/02/terminal-sock5-proxy.html" target="_blank" rel="noopener">proxychains配置</a>,by Verne.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/20/%E4%BD%BF%E7%94%A8tensorflow-object-detection-api%E8%AE%AD%E7%BB%83%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A8%A1%E5%9E%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1992,171 +2179,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/09/06/Windows%E4%B8%8ELinux%E5%8F%8C%E7%B3%BB%E7%BB%9FGrub%E5%BC%95%E5%AF%BC%E4%BF%AE%E5%A4%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/06/Windows%E4%B8%8ELinux%E5%8F%8C%E7%B3%BB%E7%BB%9FGrub%E5%BC%95%E5%AF%BC%E4%BF%AE%E5%A4%8D/" itemprop="url">
-                  Windows与Linux双系统Grub引导修复
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-06 16:38:26" itemprop="dateCreated datePublished" datetime="2018-09-06T16:38:26+08:00">2018-09-06</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-11-20 23:32:24" itemprop="dateModified" datetime="2018-11-20T23:32:24+08:00">2018-11-20</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>因为个人爱好，我再笔记本中安装了Windows和Linux的双系统。最近因为Windows系统故障原因，重装Windows系统，导致无法引导Linux启动。</p>
-<p>故障原因是之前安装双系统时，先安装Windows，再安装Linux，这样将由Grub2来引导Linux和Windows的启动。而重装Windows的过程中，将覆盖Grub2引导程序，导致无法Linux的启动。</p>
-<p>故障解决方法是重新在硬盘中写入Grub2引导程序。具体步骤如下：</p>
-<ol>
-<li>使用Linux安装盘，使用Live CD方式进行Linux系统。</li>
-<li>使用fdisk -l命令查看硬盘信息。</li>
-<li>使用grub-install –root-directory=/media/boot /dev/sda将grub2引导程序写入硬盘。/media/boot为引导分区所在位置，grub-install写入grub2引导程序时需要使用引导分区所在linux映像。</li>
-<li>使用update-grub2更新引导配置。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/28/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><span class="page-number current">29</span><a class="page-number" href="/page/30/">30</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/30/">下一页</a>
+    <a class="extend prev" rel="prev" href="/page/28/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><span class="page-number current">29</span><a class="page-number" href="/page/30/">30</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/30/">下一页</a>
   </nav>
 
 
@@ -2199,7 +2226,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">320</span>
+                    <span class="site-state-item-count">321</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

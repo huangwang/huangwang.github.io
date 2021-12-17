@@ -314,6 +314,207 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/04/03/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F%E4%B8%AD%E6%B0%94%E5%8A%A8%E5%8F%82%E6%95%B0%E7%9A%84%E7%94%9F%E6%88%90%E5%92%8C%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/03/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F%E4%B8%AD%E6%B0%94%E5%8A%A8%E5%8F%82%E6%95%B0%E7%9A%84%E7%94%9F%E6%88%90%E5%92%8C%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95/" itemprop="url">
+                  飞行仿真中气动参数的生成和计算方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-04-03 17:38:55" itemprop="dateCreated datePublished" datetime="2020-04-03T17:38:55+08:00">2020-04-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-07-26 22:19:00" itemprop="dateModified" datetime="2020-07-26T22:19:00+08:00">2020-07-26</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>飞行器仿真一个难点是气动力和力矩系数的生成和计算方法。通常获得气动力和力矩系统的方法主要有：</p>
+<ul>
+<li>风洞实验。能够获得精准的气动力和力矩系数，但投资巨大。</li>
+<li>Fluent类似软件进行仿真计算。</li>
+<li>Datcom生成。Datacom软件本质是在大量风洞实验数据基础上，通过数值计算粗略生成气动力和力矩系数。</li>
+</ul>
+<p>气动力模型是表征气动力和力矩系数与飞行状态、控制输入之间关系的函数。可表示为：</p>
+<p>$$C_i=f(H, Ma, α, β, \omega_x, \omega_y,\omega_z, \delta_e,\delta_r,\delta_a)$$</p>
+<p>其中，H、Ma、α、β分别为高度、马赫数、攻角、侧滑角；$\omega_x, \omega_y,\omega_z$ 分别为滚转、偏航和俯仰角速度；$\delta_e,\delta_r,\delta_a$ 分别为升降舵、方向舵和副翼舵偏角。</p>
+<h1 id="Datcom-使用帮助"><a href="#Datcom-使用帮助" class="headerlink" title="Datcom+使用帮助"></a>Datcom+使用帮助</h1><p>Datcom+是Digital Datcom程序的一个扩展，它包含了一些工具，使使用Digital Datcom程序更加容易。这一计划的起源始于1996年，并由Holy Cows，Inc.支持到2010年。</p>
+<p>Datcom+Pro是Datcom+的下一代，它已经变得更加用户友好。可视化工具允许您立即看到您的飞机，由数字数据通信程序生成的系数数据绘制在X-Y图上，以便于解释和包含在报告中。此外，您的Datcom+模型现在可以在JSBSim中运行，它是一个完整的6自由度运动方程模型，并提供了执行标准飞行试验机动的飞行试验脚本示例。可惜无法网上无法获得该版本。</p>
+<p>下面重点介绍Datcom+的使用方法。</p>
+<h1 id="Datcom-输入"><a href="#Datcom-输入" class="headerlink" title="Datcom+输入"></a>Datcom+输入</h1><p>Datcom+输入是以“.dcm”为扩展名的文件，具体数据输入格式可参考示例文件“citation.dcm”。该示例文件的设计目的是允许您读取它，并可能理解它，即使Datcom符号可能很难读取和理解。它由以“*”开头的注释行和Datcom命令组成，其中一些命令必须以列1开头，另一些命令以$开头，后跟公共块名，如FLTCON。如果以$开头，则必须以$结尾。常用的名字列表如下：</p>
+<ul>
+<li><p>FLTCON-定义飞行条件</p>
+</li>
+<li><p>SYNTHS-定位cg、机翼、水平尾翼和垂直尾翼相对于参考线</p>
+</li>
+<li><p>BODY-定义机体几何体</p>
+</li>
+<li><p>WGPLNF-定义机翼平面形状几何图形</p>
+</li>
+<li><p>HTPLNF-定义水平尾翼几何结构</p>
+</li>
+<li><p>VTPLNF-定义垂直尾翼几何结构</p>
+</li>
+</ul>
+<h2 id="MiG-17-Datcom-输入示例"><a href="#MiG-17-Datcom-输入示例" class="headerlink" title="MiG-17 Datcom+ 输入示例"></a>MiG-17 Datcom+ 输入示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">CASEID ----- MIKOYAN-GUREVICH MiG-17 ----- </span><br><span class="line"> $FLTCON NMACH&#x3D;1.0,MACH(1)&#x3D;0.6,NALPHA&#x3D;10.0,ALSCHD(1)&#x3D;-4.0,-2.0, </span><br><span class="line">  0.0,2.0,4.0,6.0,8.0,10.0,12.0,14.0,NALT&#x3D;1.0,ALT(1)&#x3D;5000.0, </span><br><span class="line">  WT&#x3D;13395.0,LOOP&#x3D;1.$ </span><br><span class="line"> $SYNTHS XCG&#x3D;11.17,ZCG&#x3D;0.0,XW&#x3D;3.63,ZW&#x3D;0.42,ALIW&#x3D;1.0,XH&#x3D;28.73, </span><br><span class="line">  ZH&#x3D;5.24,ALIH&#x3D;0.0,XV&#x3D;18.3,ZV&#x3D;0.0$ </span><br><span class="line"> $OPTINS SREF&#x3D;243.0$ </span><br><span class="line"> $BODY NX&#x3D;8.0, </span><br><span class="line">  X(1)&#x3D;0.0,0.74,8.35,13.14,19.35,24.41,28.41,30.77, </span><br><span class="line">  S(1)&#x3D;5.19,9.32,16.89,16.89,15.94,11.12,5.85,2.5$ </span><br><span class="line">NACA-W-6-66-012 </span><br><span class="line"> $WGPLNF CHRDTP&#x3D;7.02,SSPNOP&#x3D;11.32,SSPNE&#x3D;13.41,SSPN&#x3D;15.71, </span><br><span class="line">  CHRDBP&#x3D;8.4,CHRDR&#x3D;14.0,SAVSI&#x3D;45.0,SAVSO&#x3D;45.0,CHSTAT&#x3D;0.25, </span><br><span class="line">  TWISTA&#x3D;0.0,DHDADI&#x3D;-3.0,DHDADO&#x3D;-3.0,TYPE&#x3D;1.0$ </span><br><span class="line">NACA-H-6-66-009 </span><br><span class="line"> $HTPLNF CHRDTP&#x3D;1.86,SSPNE&#x3D;5.42,SSPN&#x3D;5.43,CHRDR&#x3D;4.69,SAVSI&#x3D;45.0, </span><br><span class="line">  CHSTAT&#x3D;0.25,TYPE&#x3D;1.0$ </span><br><span class="line">NACA-V-6-66-009 </span><br><span class="line"> $VTPLNF CHRDTP&#x3D;3.76,SSPNE&#x3D;6.05,SSPN&#x3D;8.18,CHRDR&#x3D;12.47,SAVSI&#x3D;55.0, </span><br><span class="line">  CHSTAT&#x3D;0.25,TYPE&#x3D;1.0$ </span><br><span class="line">DIM FT </span><br><span class="line">BUILD </span><br><span class="line">PLOT </span><br><span class="line">NEXT CASE</span><br></pre></td></tr></table></figure>
+
+<h2 id="F16输入示例"><a href="#F16输入示例" class="headerlink" title="F16输入示例"></a>F16输入示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">DIM FT</span><br><span class="line">DAMP</span><br><span class="line">DERIV DEG</span><br><span class="line">PART</span><br><span class="line"></span><br><span class="line"> $FLTCON NMACH&#x3D;1.0,MACH(1)&#x3D;0.6,</span><br><span class="line">         NALPHA&#x3D;10.0,ALSCHD(1)&#x3D;-4.0,-2.0,0.0,2.0,4.0,6.0,8.0,10.0,12.0,14.0,</span><br><span class="line">         NALT&#x3D;1.0,ALT(1)&#x3D;5000.0, </span><br><span class="line">         WT&#x3D;17400.0,LOOP&#x3D;2.$ </span><br><span class="line"> $OPTINS SREF&#x3D;300.0,BLREF&#x3D;30.0$ </span><br><span class="line"> $SYNTHS XCG&#x3D;27.60,ZCG&#x3D;0.0,</span><br><span class="line">         XW&#x3D;19.63,ZW&#x3D;0.69,ALIW&#x3D;0.0,</span><br><span class="line">         XH&#x3D;35.10,ZH&#x3D;0.69,ALIH&#x3D;0.0,</span><br><span class="line">         XV&#x3D;33.86,ZV&#x3D;0.0$ </span><br><span class="line"> $BODY NX&#x3D;7.0, </span><br><span class="line">  X(1)&#x3D;  0.00, 2.52,15.51,16.76,24.95,41.83,42.75,</span><br><span class="line">  R(1)&#x3D;  0.07, 0.13, 3.19, 3.15, 2.54, 1.80, 1.64,</span><br><span class="line">  ITYPE&#x3D;1.0, METHOD&#x3D;1.0$ </span><br><span class="line">NACA-W-6-4A-204 </span><br><span class="line"> $WGPLNF CHRDR&#x3D;15.30, CHRDTP&#x3D;3.6,</span><br><span class="line">         SSPNE&#x3D;12.69, SSPN&#x3D;14.79, </span><br><span class="line">         SAVSI&#x3D;45.0,</span><br><span class="line">         CHSTAT&#x3D;0.0, TWISTA&#x3D;0.0, </span><br><span class="line">         DHDADI&#x3D;-1.5,</span><br><span class="line">         TYPE&#x3D;1.0$ </span><br><span class="line"></span><br><span class="line">NACA-F-4-0012</span><br><span class="line"> $SYMFLP FTYPE&#x3D;2.0,    NDELTA&#x3D;9.0,</span><br><span class="line">         DELTA(1)&#x3D;0.0,5.0,10.0,15.0,20.0,25.0,30.0,35.0,40.0,</span><br><span class="line">         PHETE&#x3D;0.0522, PHETEP&#x3D;0.0391,</span><br><span class="line">         CHRDFI&#x3D;2.40,   CHRDFO&#x3D;1.30,</span><br><span class="line">         SPANFI&#x3D;3.50,  SPANFO&#x3D;12.00,</span><br><span class="line">         NTYPE&#x3D;1.0$</span><br><span class="line">CASEID FLAPS: ----- General Dynamics F-16A Block 15(+) -----</span><br><span class="line">SAVE</span><br><span class="line">NEXT CASE </span><br><span class="line"></span><br><span class="line"> $ASYFLP STYPE&#x3D;4.0, NDELTA&#x3D;9.0,</span><br><span class="line">         DELTAL(1)&#x3D;-32.0,-20.0,-10.0,-5.0, 0.0, 5.0, 10.0, 20.0, 32.0,</span><br><span class="line">         DELTAR(1)&#x3D; 32.0, 20.0, 10.0, 5.0, 0.0,-5.0,-10.0,-20.0,-32.0,</span><br><span class="line">         SPANFI&#x3D;12.05, SPANFO&#x3D;14.79,</span><br><span class="line">         PHETE&#x3D;0.05228,</span><br><span class="line">         CHRDFI&#x3D;1.35, CHRDFO&#x3D;0.74$</span><br><span class="line">CASEID AILERONS: ----- General Dynamics F-16A Block 15(+) -----</span><br><span class="line">SAVE</span><br><span class="line">NEXT CASE</span><br><span class="line"></span><br><span class="line">NACA-H-4-0010</span><br><span class="line"> $HTPLNF CHRDR&#x3D;9.91, CHRDTP&#x3D;2.62,</span><br><span class="line">         SSPNE&#x3D;5.77,  SSPN&#x3D;9.25,</span><br><span class="line">         SAVSI&#x3D;40.0, </span><br><span class="line">         CHSTAT&#x3D;0.0,</span><br><span class="line">         DHDADI&#x3D;-15.0,</span><br><span class="line">         TYPE&#x3D;1.0$</span><br><span class="line"> $SYMFLP FTYPE&#x3D;5.0,    NDELTA&#x3D;9.0,</span><br><span class="line">         DELTA(1)&#x3D;-32.0,-20.0,-10.0,-5.0, 0.0, 5.0, 10.0, 20.0, 32.0,</span><br><span class="line">         PHETE&#x3D;0.0522, PHETEP&#x3D;0.0391,</span><br><span class="line">         CHRDFI&#x3D;7.42, CHRDFO&#x3D;2.62,</span><br><span class="line">         SPANFI&#x3D;3.65, SPANFO&#x3D;9.25,</span><br><span class="line">         NTYPE&#x3D;1.0$</span><br><span class="line"></span><br><span class="line">NACA-V-4-0012</span><br><span class="line"> $VTPLNF CHRDR&#x3D;9.64,  CHRDTP&#x3D;3.80,</span><br><span class="line">         SSPNE&#x3D;8.59,  SSPN&#x3D;10.53,</span><br><span class="line">         SAVSI&#x3D;45.0,  </span><br><span class="line">         CHSTAT&#x3D;0.0,</span><br><span class="line">         TYPE&#x3D;1.0$ </span><br><span class="line"> </span><br><span class="line">SAVE</span><br><span class="line">CASEID TOTAL: ----- General Dynamics F-16A Block 15(+) -----</span><br></pre></td></tr></table></figure>
+
+<h1 id="AIM-9输入示例"><a href="#AIM-9输入示例" class="headerlink" title="AIM-9输入示例"></a>AIM-9输入示例</h1><p>在Missile Datcom的for005.dat文件中输入如下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">$FLTCON </span><br><span class="line"> NALPHA&#x3D;5.00000,</span><br><span class="line"> ALPHA&#x3D;-8.0000,-4.0000,0.0000,4.0000,8.0000,</span><br><span class="line"> NMACH&#x3D;4.00000,</span><br><span class="line"> MACH&#x3D;0.5000,1.5000,2.5000,3.5000,</span><br><span class="line"> ALT&#x3D;5000.0000,$</span><br><span class="line">$REFQ </span><br><span class="line"> XCG&#x3D;1.5000,$</span><br><span class="line">$AXIBOD </span><br><span class="line"> TNOSE&#x3D;CONICAL,</span><br><span class="line"> LNOSE&#x3D;0.28000,</span><br><span class="line"> DNOSE&#x3D;0.13000,</span><br><span class="line"> LCENTR&#x3D;2.69000,</span><br><span class="line"> DCENTR&#x3D;0.13000,$</span><br><span class="line">$FINSET1 </span><br><span class="line"> SECTYP&#x3D;NACA,</span><br><span class="line"> SSPAN&#x3D;0.0650,0.2900,</span><br><span class="line"> CHORD&#x3D;0.3000,0.0000,</span><br><span class="line"> CFOC&#x3D;0.2000,0.0000,</span><br><span class="line"> XLE&#x3D;0.2800,0.5700,</span><br><span class="line"> NPANEL&#x3D;4.00000,</span><br><span class="line"> PHIF&#x3D;45.0000,135.0000,225.0000,315.0000,$</span><br><span class="line">$FINSET2 </span><br><span class="line"> SECTYP&#x3D;NACA,</span><br><span class="line"> SSPAN&#x3D;0.0650,0.2900,</span><br><span class="line"> CHORD&#x3D;0.6600,0.4600,</span><br><span class="line"> XLE&#x3D;2.2200,2.8800,</span><br><span class="line"> NPANEL&#x3D;4.00000,</span><br><span class="line"> PHIF&#x3D;45.0000,135.0000,225.0000,315.0000,$</span><br><span class="line"> NACA-1-6-64-005</span><br><span class="line"> NACA-2-4-2204-04 </span><br><span class="line">DAMP </span><br><span class="line">PART </span><br><span class="line">PLOT </span><br><span class="line">PRESSURES </span><br><span class="line">SAVE</span><br><span class="line">DIM M</span><br><span class="line">DERIV DEG</span><br><span class="line">CASEID AIM-9</span><br><span class="line">NEXT CASE</span><br><span class="line">CASEID PANEL DEFLECTION</span><br><span class="line"> $DEFLCT DELTA1&#x3D;-5.0,5.0,5.0,-5.0$</span><br><span class="line">SAVE</span><br><span class="line">NEXT CASE</span><br><span class="line"> $DEFLCT DELTA1&#x3D;5.0,-5.0,-5.0,5.0$</span><br><span class="line">SAVE</span><br><span class="line">NEXT CASE</span><br><span class="line"> $DEFLCT DELTA1&#x3D;-10.0,10.0,10.0,-10.0$</span><br><span class="line">SAVE</span><br><span class="line">NEXT CASE</span><br><span class="line"> $DEFLCT DELTA1&#x3D;10.0,-10.0,-10.0,10.0$</span><br><span class="line">SAVE</span><br><span class="line">NEXT CASE</span><br></pre></td></tr></table></figure>
+
+<h1 id="Matlab导入Datcom输出文件"><a href="#Matlab导入Datcom输出文件" class="headerlink" title="Matlab导入Datcom输出文件"></a>Matlab导入Datcom输出文件</h1><p>Matlab使用datcomimport函数导入Datcom输出文件数据到工作空间，有可能会出现如下所示警告：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; In usafdatcom</span><br><span class="line">  In usafdatcom</span><br><span class="line">  In datcomimport (line 88) </span><br><span class="line">警告: DATCOM file reader state inconsistent</span><br></pre></td></tr></table></figure>
+<p>然后会发现导入的启动系数值无法使用。出现该问题的原因主要有：</p>
+<ul>
+<li>计算多迎角多高度飞机气动系数时，应设置LOOP为2.0，而非默认的1.0。</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://wenku.baidu.com/view/4bc2f49667ec102de3bd8947.html" target="_blank" rel="noopener">Missile Datcom</a>,by beihang.</li>
+<li><a href="http://www.holycows.net/datcom/index.html" target="_blank" rel="noopener">Datcom</a>,by holycows.</li>
+<li><a href="https://wenku.baidu.com/view/ea3c834cfad6195f302ba61e.html" target="_blank" rel="noopener">DATCOM使用介绍</a>,by wenku.</li>
+<li><a href="https://en.wikipedia.org/wiki/United_States_Air_Force_Stability_and_Control_Digital_DATCOM" target="_blank" rel="noopener">United States Air Force Stability and Control Digital DATCOM</a>,by wikipedia.</li>
+<li><a href="https://en.wikipedia.org/wiki/Missile_Datcom" target="_blank" rel="noopener">Missile Datcom</a>,by wikipedia.</li>
+<li><a href="https://wenku.baidu.com/view/ad7ef34133687e21af45a932.html" target="_blank" rel="noopener">操稳特性快速评估及其在飞机设计中的应用</a>,by 张帅.</li>
+<li><a href="https://wenku.baidu.com/view/d228fa0dca50ad02de80d4d8d15abe23482f0380.html" target="_blank" rel="noopener">MISSILE DATCOM使用教程_LIppt课件</a>,by 雅芳.</li>
+<li><a href="https://wenku.baidu.com/view/768a1060001ca300a6c30c22590102020740f291.html?fr=search" target="_blank" rel="noopener">datcom 计算导弹气动参数</a>,by 一路向北884.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/03/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1935,146 +2136,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/02/09/%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E7%9A%84%E6%A0%87%E5%87%86%E6%B5%81%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/02/09/%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E7%9A%84%E6%A0%87%E5%87%86%E6%B5%81%E7%A8%8B/" itemprop="url">
-                  科学研究的标准流程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-02-09 11:12:26 / 修改时间：11:52:28" itemprop="dateCreated datePublished" datetime="2020-02-09T11:12:26+08:00">2020-02-09</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>科学研究是每一个科研人必备的技能，那么科学研究应如何入手呢？通常科学研究应遵循如下标准流程：</p>
-<h1 id="问题牵引"><a href="#问题牵引" class="headerlink" title="问题牵引"></a>问题牵引</h1><h2 id="形式化定义问题"><a href="#形式化定义问题" class="headerlink" title="形式化定义问题"></a>形式化定义问题</h2><h2 id="问题等价转换"><a href="#问题等价转换" class="headerlink" title="问题等价转换"></a>问题等价转换</h2><h1 id="建立模型"><a href="#建立模型" class="headerlink" title="建立模型"></a>建立模型</h1><h2 id="已有数学模型"><a href="#已有数学模型" class="headerlink" title="已有数学模型"></a>已有数学模型</h2><h2 id="类似数学模型"><a href="#类似数学模型" class="headerlink" title="类似数学模型"></a>类似数学模型</h2><h2 id="重建数学模型"><a href="#重建数学模型" class="headerlink" title="重建数学模型"></a>重建数学模型</h2><h1 id="模型求解"><a href="#模型求解" class="headerlink" title="模型求解"></a>模型求解</h1><h2 id="收集数据"><a href="#收集数据" class="headerlink" title="收集数据"></a>收集数据</h2><h2 id="求解模型"><a href="#求解模型" class="headerlink" title="求解模型"></a>求解模型</h2><h1 id="验证模型"><a href="#验证模型" class="headerlink" title="验证模型"></a>验证模型</h1><h2 id="模型预测"><a href="#模型预测" class="headerlink" title="模型预测"></a>模型预测</h2><h2 id="灵敏度分析"><a href="#灵敏度分析" class="headerlink" title="灵敏度分析"></a>灵敏度分析</h2>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2122,7 +2183,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">326</span>
+                    <span class="site-state-item-count">327</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -314,6 +314,175 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/06/03/FlightGear%E5%A4%9A%E5%B1%8F%E5%A4%9A%E8%A7%86%E5%8F%A3%E8%AE%BE%E7%BD%AE%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/06/03/FlightGear%E5%A4%9A%E5%B1%8F%E5%A4%9A%E8%A7%86%E5%8F%A3%E8%AE%BE%E7%BD%AE%E6%96%B9%E6%B3%95/" itemprop="url">
+                  FlightGear多屏多视口设置方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-06-03 23:19:14" itemprop="dateCreated datePublished" datetime="2021-06-03T23:19:14+08:00">2021-06-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-06-23 12:52:46" itemprop="dateModified" datetime="2021-06-23T12:52:46+08:00">2021-06-23</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在玩FlightGear的过程中，可能需要将视景分角度投影到不同显示器上，或者在一个显示器窗口上投影不同角度的视景。下面记录该需求实现方法。</p>
+<h1 id="投影到不同显示器"><a href="#投影到不同显示器" class="headerlink" title="投影到不同显示器"></a>投影到不同显示器</h1><p>在FGDATA文件夹根目录下创建camera-views.xml文件夹，写入如下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;PropertyList&gt;</span><br><span class="line">  &lt;camera-group&gt;</span><br><span class="line">      &lt;window&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;host-name type&#x3D;&quot;string&quot;&gt;&lt;&#x2F;host-name&gt;</span><br><span class="line">        &lt;display&gt;0&lt;&#x2F;display&gt;</span><br><span class="line">        &lt;screen&gt;0&lt;&#x2F;screen&gt;</span><br><span class="line">        &lt;fullscreen type &#x3D; &quot;bool&quot;&gt;false&lt;&#x2F;fullscreen&gt;</span><br><span class="line">        &lt;decoration type &#x3D; &quot;bool&quot;&gt;false&lt;&#x2F;decoration&gt;</span><br><span class="line">        &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">        &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">        &lt;width&gt;1920&lt;&#x2F;width&gt;</span><br><span class="line">        &lt;height&gt;1080&lt;&#x2F;height&gt;</span><br><span class="line">      &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">      &lt;window&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Right&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;host-name type&#x3D;&quot;string&quot;&gt;&lt;&#x2F;host-name&gt;</span><br><span class="line">        &lt;display&gt;0&lt;&#x2F;display&gt;</span><br><span class="line">        &lt;screen&gt;1&lt;&#x2F;screen&gt;</span><br><span class="line">        &lt;fullscreen type &#x3D; &quot;bool&quot;&gt;false&lt;&#x2F;fullscreen&gt;</span><br><span class="line">        &lt;decoration type &#x3D; &quot;bool&quot;&gt;false&lt;&#x2F;decoration&gt;</span><br><span class="line">        &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">        &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">        &lt;width&gt;1280&lt;&#x2F;width&gt;</span><br><span class="line">        &lt;height&gt;720&lt;&#x2F;height&gt;</span><br><span class="line">      &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">      &lt;gui&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">          &lt;name type&#x3D;&quot;string&quot;&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line">      &lt;&#x2F;gui&gt;</span><br><span class="line"></span><br><span class="line">      &lt;camera&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">         &lt;name&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">        &lt;view&gt;</span><br><span class="line">          &lt;heading-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;heading-deg&gt;</span><br><span class="line">          &lt;roll-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;roll-deg&gt;</span><br><span class="line">          &lt;pitch-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;pitch-deg&gt;</span><br><span class="line">        &lt;&#x2F;view&gt;</span><br><span class="line"></span><br><span class="line">        &lt;viewport&gt;</span><br><span class="line">          &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">          &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">          &lt;width&gt;1920&lt;&#x2F;width&gt;</span><br><span class="line">          &lt;height&gt;1080&lt;&#x2F;height&gt;</span><br><span class="line">        &lt;&#x2F;viewport&gt;</span><br><span class="line">        </span><br><span class="line">      &lt;&#x2F;camera&gt;</span><br><span class="line">      &lt;camera&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Right&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">         &lt;name&gt;Right&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">        &lt;view&gt;</span><br><span class="line">          &lt;heading-deg type &#x3D; &quot;double&quot;&gt;-45.0&lt;&#x2F;heading-deg&gt;</span><br><span class="line">          &lt;roll-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;roll-deg&gt;</span><br><span class="line">          &lt;pitch-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;pitch-deg&gt;</span><br><span class="line">        &lt;&#x2F;view&gt;</span><br><span class="line"></span><br><span class="line">        &lt;viewport&gt;</span><br><span class="line">          &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">          &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">          &lt;width&gt;1280&lt;&#x2F;width&gt;</span><br><span class="line">          &lt;height&gt;720&lt;&#x2F;height&gt;</span><br><span class="line">        &lt;&#x2F;viewport&gt;</span><br><span class="line"></span><br><span class="line">      &lt;&#x2F;camera&gt;</span><br><span class="line">    &lt;&#x2F;camera-group&gt;</span><br><span class="line">&lt;&#x2F;PropertyList&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在FGDATA文件夹根目录下找到defaults.xml配置文件，修改如下配置内容，加入camera-views.xml配置文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;rendering include&#x3D;&quot;camera-views.xml&quot;&gt;</span><br><span class="line">&lt;&#x2F;rendering&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="投影到窗口不同地方"><a href="#投影到窗口不同地方" class="headerlink" title="投影到窗口不同地方"></a>投影到窗口不同地方</h1><p>在FGDATA文件夹根目录下创建camera-views.xml文件夹，写入如下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;PropertyList&gt;</span><br><span class="line">  &lt;camera-group&gt;</span><br><span class="line">      &lt;window&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;host-name type&#x3D;&quot;string&quot;&gt;&lt;&#x2F;host-name&gt;</span><br><span class="line">        &lt;display&gt;0&lt;&#x2F;display&gt;</span><br><span class="line">        &lt;screen&gt;0&lt;&#x2F;screen&gt;</span><br><span class="line">        &lt;fullscreen type &#x3D; &quot;bool&quot;&gt;false&lt;&#x2F;fullscreen&gt;</span><br><span class="line">        &lt;decoration type &#x3D; &quot;bool&quot;&gt;false&lt;&#x2F;decoration&gt;</span><br><span class="line">        &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">        &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">        &lt;width&gt;1920&lt;&#x2F;width&gt;</span><br><span class="line">        &lt;height&gt;1080&lt;&#x2F;height&gt;</span><br><span class="line">      &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">      &lt;gui&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">          &lt;name type&#x3D;&quot;string&quot;&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line">      &lt;&#x2F;gui&gt;</span><br><span class="line"></span><br><span class="line">      &lt;camera&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Main&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">          &lt;name&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">        &lt;view&gt;</span><br><span class="line">          &lt;heading-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;heading-deg&gt;</span><br><span class="line">          &lt;roll-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;roll-deg&gt;</span><br><span class="line">          &lt;pitch-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;pitch-deg&gt;</span><br><span class="line">        &lt;&#x2F;view&gt;</span><br><span class="line"></span><br><span class="line">        &lt;viewport&gt;</span><br><span class="line">          &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">          &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">          &lt;width&gt;1920&lt;&#x2F;width&gt;</span><br><span class="line">          &lt;height&gt;1080&lt;&#x2F;height&gt;</span><br><span class="line">        &lt;&#x2F;viewport&gt;</span><br><span class="line">        </span><br><span class="line">      &lt;&#x2F;camera&gt;</span><br><span class="line">      &lt;camera&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Left-Down&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">          &lt;name&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">        &lt;view&gt;</span><br><span class="line">          &lt;heading-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;heading-deg&gt;</span><br><span class="line">          &lt;roll-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;roll-deg&gt;</span><br><span class="line">          &lt;pitch-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;pitch-deg&gt;</span><br><span class="line">        &lt;&#x2F;view&gt;</span><br><span class="line"></span><br><span class="line">        &lt;viewport&gt;</span><br><span class="line">          &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">          &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">          &lt;width&gt;320&lt;&#x2F;width&gt;</span><br><span class="line">          &lt;height&gt;180&lt;&#x2F;height&gt;</span><br><span class="line">        &lt;&#x2F;viewport&gt;</span><br><span class="line"></span><br><span class="line">      &lt;&#x2F;camera&gt;</span><br><span class="line">      &lt;camera&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Right-Down&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">          &lt;name&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">        &lt;view&gt;</span><br><span class="line">          &lt;heading-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;heading-deg&gt;</span><br><span class="line">          &lt;roll-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;roll-deg&gt;</span><br><span class="line">          &lt;pitch-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;pitch-deg&gt;</span><br><span class="line">        &lt;&#x2F;view&gt;</span><br><span class="line"></span><br><span class="line">        &lt;viewport&gt;</span><br><span class="line">          &lt;x&gt;1600&lt;&#x2F;x&gt;</span><br><span class="line">          &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">          &lt;width&gt;320&lt;&#x2F;width&gt;</span><br><span class="line">          &lt;height&gt;180&lt;&#x2F;height&gt;</span><br><span class="line">        &lt;&#x2F;viewport&gt;</span><br><span class="line"></span><br><span class="line">      &lt;&#x2F;camera&gt;</span><br><span class="line">      &lt;camera&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Right-Up&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">          &lt;name&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">        &lt;view&gt;</span><br><span class="line">          &lt;heading-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;heading-deg&gt;</span><br><span class="line">          &lt;roll-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;roll-deg&gt;</span><br><span class="line">          &lt;pitch-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;pitch-deg&gt;</span><br><span class="line">        &lt;&#x2F;view&gt;</span><br><span class="line"></span><br><span class="line">        &lt;viewport&gt;</span><br><span class="line">          &lt;x&gt;1600&lt;&#x2F;x&gt;</span><br><span class="line">          &lt;y&gt;900&lt;&#x2F;y&gt;</span><br><span class="line">          &lt;width&gt;320&lt;&#x2F;width&gt;</span><br><span class="line">          &lt;height&gt;180&lt;&#x2F;height&gt;</span><br><span class="line">        &lt;&#x2F;viewport&gt;</span><br><span class="line"></span><br><span class="line">      &lt;&#x2F;camera&gt;</span><br><span class="line">    &lt;&#x2F;camera-group&gt;</span><br><span class="line">&lt;&#x2F;PropertyList&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在FGDATA文件夹根目录下找到defaults.xml配置文件，修改如下配置内容，加入camera-views.xml配置文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;rendering include&#x3D;&quot;camera-views.xml&quot;&gt;</span><br><span class="line">&lt;&#x2F;rendering&gt;</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://forum.flightgear.org/viewtopic.php?f=24&t=36230&sid=5a8c6daf6d52ff5fcb520a54c4de4a24" target="_blank" rel="noopener">Multi-Display setup</a>,by flightgear.</li>
+<li><a href="https://wiki.flightgear.org/Howto:Configure_camera_view_windows" target="_blank" rel="noopener">Howto:Configure camera view windows</a>,by flightgear.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/05/26/%E8%BD%AF%E4%BB%B6%E7%AD%BE%E5%90%8D%E9%AA%8C%E8%AF%81%E7%9A%84%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1741,188 +1910,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/03/30/FlightGear%E7%9A%84Nasal%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/03/30/FlightGear%E7%9A%84Nasal%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
-                  FlightGear的Nasal脚本语言学习笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2021-03-30 22:31:00" itemprop="dateCreated datePublished" datetime="2021-03-30T22:31:00+08:00">2021-03-30</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2021-04-17 11:29:09" itemprop="dateModified" datetime="2021-04-17T11:29:09+08:00">2021-04-17</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Nasal是FlightGear内建的脚本语言。 它最初是由安迪·罗斯（Andy Ross）为个人项目编写和开发的，于2003年11月被集成到FlightGear中，并且从那时起一直在不断地开发，改进和完善。 随着时间的流逝，它可能已成为FlightGear的最强大功能，并已用于创建各种各样的系统，从野火到控制显示单元。 </p>
-<p>在FlightGear中，Nasal支持读取和写入内部属性，通过扩展功能访问内部数据，创建GUI对话框等等。注意到Nasal是一种与JavaScript语法类似的脚本语言，但是它能够与FlightGear之间进行双向交互，实现非常强大的功能，这主要是通过CppBind实现的。</p>
-<h1 id="创建可点击的面板"><a href="#创建可点击的面板" class="headerlink" title="创建可点击的面板"></a>创建可点击的面板</h1><p>FlightGear中创建可点击的面板有两种方法：</p>
-<ul>
-<li>热点区域：在某个位置创建可点击表面</li>
-<li>拾取：使一整个对象可以被点击</li>
-</ul>
-<h2 id="可点击面板的测试"><a href="#可点击面板的测试" class="headerlink" title="可点击面板的测试"></a>可点击面板的测试</h2><p>使用“Ctrl+C”可显示所有可点击的面板对象。</p>
-<h1 id="属性浏览器"><a href="#属性浏览器" class="headerlink" title="属性浏览器"></a>属性浏览器</h1><p>属性树是FlightGear的神经系统，连接着FlightGear的各个子系统，是各个子系统之间交互的桥梁。因此，需要属性浏览器窗口查看各个属性的变化。打开属性浏览器的方式有两种：</p>
-<ul>
-<li>通过按键 Ctrl+/ 打开属性浏览器</li>
-<li>通过主菜单 Debug &gt; Browse Internal Properties 打开属性浏览器</li>
-</ul>
-<h2 id="详细模式"><a href="#详细模式" class="headerlink" title="详细模式"></a>详细模式</h2><p>在属性浏览器窗口中，通过按键 Ctrl+. 可用来切换属性浏览器的详细模式（Verbose mode）。在详细模式下，可获得属性的额外信息，例如属性的类型、属性上侦听器的数量等。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://wiki.flightgear.org/Nasal_scripting_language" target="_blank" rel="noopener">Nasal scripting language</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Nasal_library#aircraftToCart.28.29" target="_blank" rel="noopener">Nasal library</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Bindings" target="_blank" rel="noopener">Bindings</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Category:Howto" target="_blank" rel="noopener">Category:Howto</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Howto:Animate_models" target="_blank" rel="noopener">Howto:Animate models</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Howto:Make_a_clickable_panel#Pick" target="_blank" rel="noopener">Howto:Make a clickable panel</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Howto:Creating_3D_instruments" target="_blank" rel="noopener">Howto:Creating 3D instruments</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Property_tree" target="_blank" rel="noopener">Property tree</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/PropertyList_XML_files" target="_blank" rel="noopener">PropertyList XML files</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Property_browser" target="_blank" rel="noopener">Property browser</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Effect_Framework" target="_blank" rel="noopener">Effect Framework</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Canvas_EFIS_Framework#new.28.29_3" target="_blank" rel="noopener">Canvas EFIS Framework</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Nasal/CppBind" target="_blank" rel="noopener">Nasal/CppBind</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Howto:Extend_Nasal" target="_blank" rel="noopener">Howto:Extend Nasal</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Canvas_ND_Framework" target="_blank" rel="noopener">Canvas ND Framework</a>,by flightgear.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1970,7 +1957,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">328</span>
+                    <span class="site-state-item-count">329</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -1483,7 +1483,34 @@
 </ol>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F;DLL导出类头文件ExportClassImpl.h</span><br><span class="line">#include &quot;MatureApproach.h&quot;</span><br><span class="line"></span><br><span class="line">class ExportImpl : public IExport</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	virtual void Hi();</span><br><span class="line">	virtual void Test();</span><br><span class="line">	virtual void Release();</span><br><span class="line">	~ExportImpl();</span><br><span class="line">private:</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;DLL导出类的实现ExportClassImpl.cpp</span><br><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &quot;ExportClassImpl.h&quot;</span><br><span class="line"></span><br><span class="line">void ExportImpl::Hi()</span><br><span class="line">&#123;</span><br><span class="line">	wcout &lt;&lt; L&quot;Hello World&quot; &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void ExportImpl::Test()</span><br><span class="line">&#123;</span><br><span class="line">	wcout &lt;&lt; L&quot;Hi cswuyg&quot; &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void ExportImpl::Release()</span><br><span class="line">&#123;</span><br><span class="line">	delete this;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ExportImpl::~ExportImpl()</span><br><span class="line">&#123;</span><br><span class="line">	cout &lt;&lt; &quot;Release OK&quot; &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h1 id="Dll导出C-类的3种方式"><a href="#Dll导出C-类的3种方式" class="headerlink" title="Dll导出C++类的3种方式"></a>Dll导出C++类的3种方式</h1><h2 id="Using-pure-C-（纯C语言方式）"><a href="#Using-pure-C-（纯C语言方式）" class="headerlink" title="Using pure C （纯C语言方式）"></a>Using pure C （纯C语言方式）</h2><h2 id="Using-a-regular-C-class-（C-直接导出类）"><a href="#Using-a-regular-C-class-（C-直接导出类）" class="headerlink" title="Using a regular C++ class （C++直接导出类）"></a>Using a regular C++ class （C++直接导出类）</h2><h2 id="Using-an-abstract-C-interface-（使用抽象接口方式）"><a href="#Using-an-abstract-C-interface-（使用抽象接口方式）" class="headerlink" title="Using an abstract C++ interface （使用抽象接口方式）"></a>Using an abstract C++ interface （使用抽象接口方式）</h2><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<h1 id="Dll导出C-类的3种方式"><a href="#Dll导出C-类的3种方式" class="headerlink" title="Dll导出C++类的3种方式"></a>Dll导出C++类的3种方式</h1><h2 id="Using-pure-C-（纯C语言方式）"><a href="#Using-pure-C-（纯C语言方式）" class="headerlink" title="Using pure C （纯C语言方式）"></a>Using pure C （纯C语言方式）</h2><p>这种方式类似与Win32的窗口句柄，用户将句柄作为参数传递给函数，并对对象执行各种操作。存在以下缺点：</p>
+<ol>
+<li>调用创建对象函数的时候编译器无法判断类型是否匹配</li>
+<li>需要手动调用Release函数，一旦忘记则会造成内存泄露</li>
+<li>如果导出的函数的参数支持除基本数据类型以外的其他类型的参数（例如：class），则也得为这些类型提供接口。</li>
+</ol>
+<h2 id="Using-a-regular-C-class-（C-直接导出类）"><a href="#Using-a-regular-C-class-（C-直接导出类）" class="headerlink" title="Using a regular C++ class （C++直接导出类）"></a>Using a regular C++ class （C++直接导出类）</h2><p>缺点：</p>
+<ol>
+<li>这种方式虽然简单易用，但是局限性很大，而且后期维护会很麻烦，除了导出的东西太多、使用者对类的实现依赖太多之外，还有其它问题：必须保证使用同一种编译器。导出类的本质是导出类里的函数，因为语法上直接导出了类，没有对函数的调用方式、重命名进行设置，导致了产生的dll并不通用。</li>
+<li>Dll地狱问题:</li>
+</ol>
+<h2 id="Using-an-abstract-C-interface-（使用抽象接口方式）"><a href="#Using-an-abstract-C-interface-（使用抽象接口方式）" class="headerlink" title="Using an abstract C++ interface （使用抽象接口方式）"></a>Using an abstract C++ interface （使用抽象接口方式）</h2><p>C++抽象接口（仅包含纯虚函数且不包含数据成员的C++类）同时兼顾以下两个方面：与对象无关的纯净接口，以及方便的的面向对象的调用方式。</p>
+<p><strong>推荐使用该种方式导出类库。</strong></p>
+<p>优点：</p>
+<ul>
+<li>导出的C++类可以通过抽象接口与任何C++编译器一起使用。</li>
+<li>DLL的C运行时库和客户端彼此独立。因为资源获取和释放完全发生在DLL模块内部，客户端不受DLL内部改变的影响。</li>
+<li>实现了真正的模块分离。可以重新设计和重建生成的DLL模块，而不会影响项目的其余部分。</li>
+<li>如果需要，可以将DLL模块轻松转换为成熟的COM模块。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li><p>创建新对象实例并将其删除需要显式函数调用。但是，智能指针可以解决。</p>
+</li>
+<li><p>抽象接口方法不能返回或接受常规C++对象作为参数。它是A内置类型（如int，double，char*等）或另一抽象接口。它与C接口的限制相同。</p>
+</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://zh.wikipedia.org/wiki/动态链接库" target="_blank" rel="noopener">动态链接库</a>, by wikipedia</li>
 <li><a href="http://www.cnblogs.com/micro-chen/p/5937428.html" target="_blank" rel="noopener">C++调用DLL有两种方法——静态调用和动态调用</a>，by 特洛伊-Micro</li>
 <li><a href="https://www.zhihu.com/question/49433640/answer/115952604" target="_blank" rel="noopener">怎么通俗的解释COM组件？</a>, by 灵剑.</li>

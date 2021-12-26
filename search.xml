@@ -4161,9 +4161,25 @@
     <title>OSG学习笔记</title>
     <url>/2021/03/17/OSG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>OpenSceneGraph是一个开源3D图形应用程序编程接口，应用程序开发人员在诸如视觉模拟，计算机游戏，虚拟现实，科学可视化和建模等领域中使用该接口。</p>
+<h1 id="OSG渲染状态管理"><a href="#OSG渲染状态管理" class="headerlink" title="OSG渲染状态管理"></a>OSG渲染状态管理</h1><blockquote>
+<p>OpenGL是一个状态机，在OpenGL中如果设置一种状态（比如设置当前的绘制颜色：glColor，那么实际上是设置了OpenGL颜色绘制状态为某种颜色，如果后续没有调用glColor去修改颜色，那么之后所有绘制的对象都使用之前设置的颜色。），在没有修改它的时候，该状态就会一直保持。在OpenGL使用中的状态有以下两种方式：</p>
+</blockquote>
+<ul>
+<li><p>仅仅通过glEnable和glDisable开启和关闭状态<br>这里面也有两种不同的取值：</p>
+<ul>
+<li>1.1 不涉及和其他状态相关，比如GL_DITHER、GL_POINT_SPRITE等；</li>
+<li>1.2 涉及和其他状态的联动，比如GL_ALPHA_TEST、GL_BLEND等，需要使用glEnable开启状态</li>
+</ul>
+</li>
+<li><p>和1.2种的某种状态对应，但是需要设置状态的值（比如glAlphaFunc、glBlendFunc）</p>
+</li>
+</ul>
+<p>在OSG中对OpenGL的状态进行了封装，在OSG中称第一种情形为Mode（模式），称第二种情况为Attribute（属性），使用osg::StateAttribute来封装OpenGL的状态。</p>
+<p>在OSG中涉及到状态管理的类有3个，分别是 osg::State， osg::StateSet， osg::StateAttribute。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://en.wikipedia.org/wiki/OpenSceneGraph" target="_blank" rel="noopener">OpenSceneGraph</a>,by wikipedia.</li>
 <li><a href="https://blog.csdn.net/wang15061955806/article/details/49679731" target="_blank" rel="noopener">OSG渲染引擎架构——整体认识</a>,by wikipedia.</li>
+<li><a href="https://blog.csdn.net/csxiaoshui/article/details/74859066" target="_blank" rel="noopener">OSG渲染状态管理</a>,by csxiaoshui.</li>
 </ol>
 ]]></content>
       <tags>
@@ -15693,7 +15709,9 @@ console.log(y);</code></pre></li>
   <entry>
     <title>OSG的observer_ptr指针</title>
     <url>/2021/12/25/OSG%E7%9A%84observer-ptr%E6%8C%87%E9%92%88/</url>
-    <content><![CDATA[<p>observer_ptr指针，这个指针和它的名字一样，就是用来观察指针的，可以把它想象成一个观察者，它只观察一个你给他指点的对象，但是不会影响这个对象的创建和销毁，它只是一个旁观者，但是它观察的这个对象要是被销毁了它也会知道并且自己也会被销毁。和osg::ref_ptr不同，osg::ref_ptr是用来管理指针的创建和删除的。</p>
+    <content><![CDATA[<blockquote>
+<p>observer_ptr指针，这个指针和它的名字一样，就是用来观察指针的，可以把它想象成一个观察者，它只观察一个你给他指点的对象，但是不会影响这个对象的创建和销毁，它只是一个旁观者，但是它观察的这个对象要是被销毁了它也会知道并且自己也会被销毁。和osg::ref_ptr不同，osg::ref_ptr是用来管理指针的创建和删除的。</p>
+</blockquote>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://blog.csdn.net/u012501459/article/details/37923151" target="_blank" rel="noopener">OSG中的observer_ptr指针</a>,by vincent-xia.</li>
 </ol>

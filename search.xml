@@ -13550,6 +13550,13 @@ console.log(y);</code></pre></li>
 <p>UltraISO 是一个运行在Microsoft Windows平台上的用来创建、修改和转换ISO文件的软件。自从2002年4月20日UltraISO首次发布以来，它的开发公司EZB Systems就把它定义为一个共享软件。当前EZB Systems域名的注册地址在中国深圳。</p>
 <p>UltraISO用于替换Windows启动镜像中的boot.wim和install.wim。</p>
 <h1 id="注入原理"><a href="#注入原理" class="headerlink" title="注入原理"></a>注入原理</h1><p>Windows7原版镜像中有两个重要文件：install.wim和boot.wim。boot.wim本质时WinPe，用于安装Windows7时的启动，install.wim镜像文件用于Windows7安装后的启动。使用工具Dism++在boot.wim和install.wim中注入USB3.0和nvme驱动，可以确保Windows7系统在安装和启动过程中识别USB3.0的键盘和鼠标，以及固态硬盘，从而保证Windows7的顺序安装和启动。</p>
+<h1 id="封装步骤"><a href="#封装步骤" class="headerlink" title="封装步骤"></a>封装步骤</h1><p>当前很多笔记本已不再支持Win7操纵系统，强行在新机器上安装Win7会出现很多问题。通过验证，总结了如下使用Win7封装步骤：</p>
+<ol>
+<li>制作WeiPE启动盘。WeiPE启动盘使用Win8PE，在新机器上能运行，同时也支持光盘启动。当使用Win7安装盘在新机器上安装操作系统时，如果出现USB3.0鼠标键盘无响应，可尝试使用WeiPE进入Win8PE，然后在Win8PE安装Win7操作系统到新机器上，同时在使用Dism++注入USB3.0和nvme驱动到Win7操作系统中。</li>
+<li>封装Win7系统盘，主要处理boot.wim和install.wim两个文件。boot.wim主要用于自启动安装Win7操作系统，应在其中注入usb3.0和nvme驱动，防止出现安装时无法识别USB3.0的键盘和鼠标，以及固态硬盘的情况。install.wim是Win7的主要文件，使用Dism++在其中注入系统更新和常用软件。</li>
+<li>下载EasyDrv驱动安装包，用于给机器安装相应驱动。</li>
+</ol>
+<p>通过上述三张光盘，相信安装Windows7操作系统不再是麻烦。</p>
 <h1 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h1><ul>
 <li>WinPE</li>
 </ul>

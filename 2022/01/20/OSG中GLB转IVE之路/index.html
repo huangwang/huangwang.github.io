@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近在使用OSG 3.4的过程中，需要将一个GLB格式的3D模型文件，转换成IVE格式，以便osgDB::readNodeFile函数加载。具体方法是通过Blender建模软件进行3D文件格式转换。这个过程中遇到很多问题，记录一下。 常用的3D文件格式.objOBJ文件是Alias | Wavefront公司为它的一套基于工作站的3D建模和动画软件“AdvancedVisualizer”开发的一种">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSG中GLB转IVE之路">
+<meta property="og:url" content="https://huangwang.github.io/2022/01/20/OSG%E4%B8%ADGLB%E8%BD%ACIVE%E4%B9%8B%E8%B7%AF/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="最近在使用OSG 3.4的过程中，需要将一个GLB格式的3D模型文件，转换成IVE格式，以便osgDB::readNodeFile函数加载。具体方法是通过Blender建模软件进行3D文件格式转换。这个过程中遇到很多问题，记录一下。 常用的3D文件格式.objOBJ文件是Alias | Wavefront公司为它的一套基于工作站的3D建模和动画软件“AdvancedVisualizer”开发的一种">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-20T09:31:58.000Z">
+<meta property="article:modified_time" content="2022-01-20T12:05:15.646Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="3D">
+<meta property="article:tag" content="飞行仿真">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+  <link rel="canonical" href="https://huangwang.github.io/2022/01/20/OSG中GLB转IVE之路/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>OSG中GLB转IVE之路 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jack Huang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/01/20/OSG%E4%B8%ADGLB%E8%BD%ACIVE%E4%B9%8B%E8%B7%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">OSG中GLB转IVE之路
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2022-01-20 17:31:58 / 修改时间：20:05:15" itemprop="dateCreated datePublished" datetime="2022-01-20T17:31:58+08:00">2022-01-20</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/01/20/OSG%E4%B8%ADGLB%E8%BD%ACIVE%E4%B9%8B%E8%B7%AF/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2022/01/20/OSG%E4%B8%ADGLB%E8%BD%ACIVE%E4%B9%8B%E8%B7%AF/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在使用OSG 3.4的过程中，需要将一个GLB格式的3D模型文件，转换成IVE格式，以便osgDB::readNodeFile函数加载。具体方法是通过Blender建模软件进行3D文件格式转换。这个过程中遇到很多问题，记录一下。</p>
+<h1 id="常用的3D文件格式"><a href="#常用的3D文件格式" class="headerlink" title="常用的3D文件格式"></a>常用的3D文件格式</h1><h2 id="obj"><a href="#obj" class="headerlink" title=".obj"></a>.obj</h2><p>OBJ文件是Alias | Wavefront公司为它的一套基于工作站的3D建模和动画软件“AdvancedVisualizer”开发的一种标准3D模型文件格式。</p>
+<p>应用OBJ文件一般包括三个子文件，分别是.obj、.mtl、.jpg，除了模型文件，还需要.jpg纹理文件。OBJ可以是传统模型，也可以是倾斜模型。</p>
+<p>特点OBJ格式适合用于3D软件模型之间的互导。比如Smart3D里面生成的模型需要修饰，就可以输出OBJ格式，然后导入到3dsMax进行处理；如果你想把在3dsMax中建的模型调到Maya里面渲染或制作动画，导出OBJ文件就是一种很好的选择。</p>
+<p>目前几乎所有知名的3D软件都支持OBJ文件的读写，不过其中很多需要通过插件才能实现。另外，OBJ文件还是一种文本文件，可以直接用写字板打开进行查看和编辑修改。值得一提的是，老子云平台能够支持OBJ格式数据的上传和OBJ格式与其它格式间的互转。</p>
+<h2 id="dae"><a href="#dae" class="headerlink" title=".dae"></a>.dae</h2><p>COLLADA ( COLLA borative Design A ctivity ) 是一种用于交互式3D应用程序的交换文件格式。它由非营利性技术联盟Khronos Group管理，并已被 ISO 采用为公开可用的规范 ISO/PAS 17506。[1]</p>
+<p>COLLADA 定义了一个开放的标准 XML 模式，用于在各种图形软件应用程序之间交换数字资产，否则这些应用程序可能会将其资产存储在不兼容的文件格式中。描述数字资产的 COLLADA 文档是 XML 文件，通常以.dae（数字资产交换）文件扩展名标识。</p>
+<h2 id="fbx"><a href="#fbx" class="headerlink" title=".fbx"></a>.fbx</h2><p>FBX是FilmBoX软件中所使用的格式，后来这一软件改名为Motionbuilder。</p>
+<p>应用因为Motionbuilder扮演的是动作制作平台，所以FBX格式最大的用途是在3dsMax、Maya、softimage等软件间进行模型、材质、动作和摄影机信息的互导，这样就可以发挥max和maya等各个软件的优势。可以说，FBX方案是最好的互导方案。</p>
+<h2 id="gltf-和-glb"><a href="#gltf-和-glb" class="headerlink" title=".gltf 和 .glb"></a>.gltf 和 .glb</h2><p>glTF（ Graphics Language Transmission Format或GL Transmission Format的衍生简称）是三维场景和模型的标准文件格式。glTF 文件使用两种可能的文件扩展名之一，.gltf ( JSON / ASCII ) 或 .glb ( binary )。.gltf 文件可以是自包含的，也可以引用外部二进制和纹理资源，而 .glb 文件是完全自包含的。Khronos Group开发和维护的开放标准，支持3D 模型几何、外观、场景图层次结构和动画。它旨在成为一种简化的、可互操作的格式，用于交付 3D 资产，同时最大限度地减少文件大小和应用程序的运行时处理。因此，其创建者将其描述为“ 3D JPEG ”。</p>
+<p>应用GlTF是一种可以减少3D格式中与渲染无关的冗余数据并且在更加适合OpenGL簇加载的一种3D文件格式。GlTF的提出是源自于3D工业和媒体发展的过程中，对3D格式统一化的急迫需求。如果用一句话来描述：GlTF 就是三维文件的 JPEG ，三维格式的 MP3。在没有GlTF的时候，大家都要花很长的的时间来处理模型的载入。尽管一些3D Web框架支持特定于平台的模型格式，如FBX和OBJ，但几乎每个框架都支持GLTF。如果有人要为你提供3D模型，你可以请求他们提供GLTF格式的版本。</p>
+<p>特点GLTF是一种输出格式，这意味着我们无法直接修改它们。但我们可以修改其位置和大小，并对其进行旋转操作。</p>
+<p>另外，GLTF文件不是单个文件，而是包含JSON文档、图片、几何图形、纹理、凹凸贴图等的文件夹。</p>
+<h2 id="OSGB"><a href="#OSGB" class="headerlink" title=".OSGB"></a>.OSGB</h2><p>OSGB的全称是Open Scene Gragh Binary。这里的Binary是二进制的意思。</p>
+<p>应用目前市面上生产的倾斜模型，尤其是Smart3D处理的倾斜摄影三维模型的数据组织方式一般是二进制存贮的、带有嵌入式链接纹理数据（.jpg）的OSGB格式。</p>
+<p>特点此类数据文件碎、数量多、高级别金字塔文件大。因而难以形成高效、标准的网络发布方案，无法实现不同地域、不同部门之间的数据共享。</p>
+<h2 id="ive"><a href="#ive" class="headerlink" title=".ive"></a>.ive</h2><p>ive是由OpenSceneGraph（OSG）创建的三维模型文件，OSG是用于建模和动画处理的开源3D图形工具包； 包含使用该软件创建的3D场景； 用于可视化，仿真，游戏，虚拟现实和其他建模方案。IVE文件以二进制格式存储，有助于查看和渲染场景时提高性能。</p>
+<h1 id="OSG实用工具"><a href="#OSG实用工具" class="headerlink" title="OSG实用工具"></a>OSG实用工具</h1><h2 id="osgconv"><a href="#osgconv" class="headerlink" title="osgconv"></a>osgconv</h2><p>osgconv是一种非常有用的的工具来读取标准的3D格式，如OpenFlight,3DS,Alias Wavefront(OBJ) etc，并且可以将它们转换为一种OSG所支持的格式，如OSG中的ASCII格式的.osg，二进制格式的.ive。</p>
+<p>在程序运行的默认情况下，优化导入的场景图，将形成的这样结果：场景图读取的数据量将会更少且速度会更快。尤其值得指出的是，.ive格式的的文件，快速装载数据的能力使它非常适合数据页和大型的数据库。</p>
+<p>osgconv常用方式为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 将cow.obj转成ive</span><br><span class="line">osgconv cow.obj cow.ive</span><br><span class="line"># 沿Z轴逆时针旋转90度</span><br><span class="line">osgconv -o -90-0,0,1 cow.obj cow.ive</span><br></pre></td></tr></table></figure>
+
+<h2 id="osgviewer"><a href="#osgviewer" class="headerlink" title="osgviewer"></a>osgviewer</h2><p>osgviewer 是随 OpenSceneGraph 一起分发的基本场景图查看器。它的主要目的是一个如何编写简单查看器的示例，但它的功能也足以用作基本的 3D 图形查看器。使用方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">osgviewer cow.ive</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="转换方法"><a href="#转换方法" class="headerlink" title="转换方法"></a>转换方法</h1><p>将glb文件转换成ive文件的流程如下：</p>
+<ol>
+<li>使用blender 2.92 导入 glb 文件。</li>
+<li>使用blender 2.92 将 glb 文件导出成 dae 文件。注意导出时选择导出纹理图像。该步骤的主要目的是为了获取glb文件的纹理图像。</li>
+<li>使用blender 2.92 将 glb 文件导出成 obj 文件。 注意导出时选择导出纹理图像。该步骤将生成.obj、.mtl、.jpg三种文件，其中.jpg是纹理图像。如果纹理图像导出失败，可使用 dae 文件的纹理图像，同时注意修改.mtl文件中纹理图像的路径。.obj、.mtl均是文本文件，可直接打开。</li>
+<li>使用命令 osgconv -o -90-0,0,1 cow.obj cow.ive 将obj文件转换成ive文件。-o选择将模型朝向沿着坐标轴进行旋转。</li>
+</ol>
+<h1 id="转换需要注意的问题"><a href="#转换需要注意的问题" class="headerlink" title="转换需要注意的问题"></a>转换需要注意的问题</h1><p>3D文件格式转换需要注意的问题主要有：</p>
+<ul>
+<li>blender打开glb文件渲染时出现透明区域，显示背面区域的问题。</li>
+</ul>
+<p>因为对blender建模软件不够熟悉，刚开始以为是纹理贴图的问题，后面才发现是面朝向的问题。法线朝外的面是正面，朝里的面是背面。透明区域的面法线朝里，我们看到的是背面。由于blender着色器默认使用背面剔除功能，导致本应不透明的面被删除，导致出现透明区域现象。</p>
+<p>检测方面很简单，在blender中选择“视图叠加层”-&gt;“面朝向”打勾，模型正面将显示蓝色，背面显示红色。显示红色的区域就是透明区域。</p>
+<p>解决方法很简单，在blender中选择红色区域三角面，选择“网格”-&gt;“法线”-&gt;“翻转”, 将背面变为正面，即可解决模型显示透明区域问题。</p>
+<ul>
+<li><p>blender将glb转换成obj丢失纹理问题。解决方法在转换流程中已有介绍，在此不再详述。</p>
+</li>
+<li><p>模型朝向问题。解决方法在转换流程中已有介绍，在此不再详述。</p>
+</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.bgteach.com/article/132" target="_blank" rel="noopener">三维文件格式知多少 | abc、glTF、fbx、obj、dae、stl、3ds..</a>,by 饼干教育.</li>
+<li><a href="https://new.qq.com/omn/20200828/20200828A04JEE00.html" target="_blank" rel="noopener">超实用：一篇文章带你了解市面上主流通用的3D模型格式</a>,by qq.</li>
+<li><a href="https://en.wikipedia.org/wiki/COLLADA" target="_blank" rel="noopener">COLLADA</a>,by wikipedia.</li>
+<li><a href="https://en.wikipedia.org/wiki/GlTF" target="_blank" rel="noopener">glTF</a>,by wikipedia.</li>
+<li><a href="https://www.cnblogs.com/mazhenyu/p/5995519.html" target="_blank" rel="noopener">osgconv使用指南(转)</a>,by 3D入魔.</li>
+<li><a href="http://osgchina.org/show.php?id=50" target="_blank" rel="noopener">osgconv</a>,by osgchina.</li>
+<li><a href="https://www.bilibili.com/video/BV1Hp4y1v7Cx/" target="_blank" rel="noopener">背面剔除，正面剔除是什么能干嘛，从Blender和Unity解读，来2个效果你就懂了</a>,by 拉克哈尼.</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+          
+            <a href="/tags/3D/" rel="tag"># 3D</a>
+          
+            <a href="/tags/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F/" rel="tag"># 飞行仿真</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/01/18/%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="next" title="多智能体强化学习">
+                <i class="fa fa-chevron-left"></i> 多智能体强化学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Jack Huang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/%20%7C%7C%20archive">
+                
+                    <span class="site-state-item-count">341</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">60</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#常用的3D文件格式"><span class="nav-number">1.</span> <span class="nav-text">常用的3D文件格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#obj"><span class="nav-number">1.1.</span> <span class="nav-text">.obj</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dae"><span class="nav-number">1.2.</span> <span class="nav-text">.dae</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fbx"><span class="nav-number">1.3.</span> <span class="nav-text">.fbx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gltf-和-glb"><span class="nav-number">1.4.</span> <span class="nav-text">.gltf 和 .glb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSGB"><span class="nav-number">1.5.</span> <span class="nav-text">.OSGB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ive"><span class="nav-number">1.6.</span> <span class="nav-text">.ive</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OSG实用工具"><span class="nav-number">2.</span> <span class="nav-text">OSG实用工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#osgconv"><span class="nav-number">2.1.</span> <span class="nav-text">osgconv</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#osgviewer"><span class="nav-number">2.2.</span> <span class="nav-text">osgviewer</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#转换方法"><span class="nav-number">3.</span> <span class="nav-text">转换方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#转换需要注意的问题"><span class="nav-number">4.</span> <span class="nav-text">转换需要注意的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a></div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: decodeURI(window.location.pathname),
+            owner: 'huangwang',
+            repo: 'gitment-comments',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'c5aa25b94035c77665be42dbeff0d229f2d66108',
+            
+                client_id: '60cc27182c03877da9a2'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

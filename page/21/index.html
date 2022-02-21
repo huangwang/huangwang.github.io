@@ -314,6 +314,188 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/23/RESTful-API%E8%AE%BE%E8%AE%A1%E5%8F%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/23/RESTful-API%E8%AE%BE%E8%AE%A1%E5%8F%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/" itemprop="url">
+                  RESTful_API设计及测试入门
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-23 17:01:34" itemprop="dateCreated datePublished" datetime="2019-07-23T17:01:34+08:00">2019-07-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-07-24 22:27:50" itemprop="dateModified" datetime="2019-07-24T22:27:50+08:00">2019-07-24</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>RESTful API是目前比较成熟的一套互联网应用程序的API设计理论，提供了一种统一的机制，方便不同的前端设备与后端进行通信，以应对前端设备层出不穷（手机、平板、桌面电脑、其他专用设备……）的状况。同时对开发人员而言，提供了一种规范，方便协作开发，降低了API接口设计的难度。</p>
+<h1 id="RESTful-API设计规范"><a href="#RESTful-API设计规范" class="headerlink" title="RESTful API设计规范"></a>RESTful API设计规范</h1><p>请参考阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html" target="_blank" rel="noopener">RESTful API 设计指南</a>。</p>
+<h1 id="RESTful-API的测试方法"><a href="#RESTful-API的测试方法" class="headerlink" title="RESTful API的测试方法"></a>RESTful API的测试方法</h1><p>RESTful API设计好了之后，需要测试其可用性。常用的API测试工具有Postman。简单入门可参考<a href="https://www.cnblogs.com/mafly/p/postman.html" target="_blank" rel="noopener">Postman 安装及使用入门教程</a>。</p>
+<p>Postman中使用HTTP POST方法测试RESTful API时，需要了解POST提交数据的方法。</p>
+<h2 id="POST提交数据的方法"><a href="#POST提交数据的方法" class="headerlink" title="POST提交数据的方法"></a>POST提交数据的方法</h2><p>POST 几种请求主要包括 application/x-www-form-urlencoded、 multipart/form-data、 application/json、text/xml 四种的方法。</p>
+<p>服务端通常是根据请求头（Request Headers）中的 Content-Type 字段来获知请求中的消息主体是用何种方式编码，再对主体进行解析。<br>POST 提交数据方案，包含了 Content-Type 和消息主体编码方式两部分。</p>
+<ul>
+<li>application/x-www-form-urlencoded (默认常用)</li>
+</ul>
+<p>这是最常见的 POST 提交数据的方式。浏览器的原生表单，如果不设置Content-type属性，就会默认该方式提交数据，并且提交的数据按照 key1=val1&amp;key2=val2 的方式进行编码，key 和 val 都进行了 URL 转码。</p>
+<ul>
+<li>multipart/form-data</li>
+</ul>
+<p>这是另一个常见的 POST 数据提交的方式。我们使用表单上传文件时，必须让表单的enctyped等于 multipart/form-data。</p>
+<ul>
+<li>application/json</li>
+</ul>
+<p>application/json 这种方案，可以方便的提交复杂的结构化数据，这种POST提交方式越来越多，用来告诉服务端消息主体是序列化后的 JSON 字符串。</p>
+<p>由于JSON规范的流行，出了低版本的IE之外，各大浏览器都支持 JSON.stringify 将JSON数据字符串化（编码）传到服务器，还可以通过  JSON.parse 将字符串转化（解码）为JSON数据供前端渲染或者其他处理。</p>
+<ul>
+<li>text/xml</li>
+</ul>
+<p>现在基本不用。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html" target="_blank" rel="noopener">RESTful API 设计指南</a>,by 阮一峰.</li>
+<li><a href="https://juejin.im/entry/59e460c951882542f578f2f0" target="_blank" rel="noopener">RESTful API 设计最佳实践</a>,by Philipp Hauer.</li>
+<li><a href="https://github.com/aisuhua/restful-api-design-references" target="_blank" rel="noopener">restful-api-design-references</a>,by aisuhua.</li>
+<li><a href="https://learning.getpostman.com/docs/postman/launching_postman/installation_and_updates/" target="_blank" rel="noopener">Postman Doc</a>,by postman homepage.</li>
+<li><a href="https://www.cnblogs.com/mafly/p/postman.html" target="_blank" rel="noopener">Postman 安装及使用入门教程</a>,by Mafly.</li>
+<li><a href="https://imququ.com/post/four-ways-to-post-data-in-http.html" target="_blank" rel="noopener">四种常见的 POST 提交数据方式</a>,by Jerry Qu.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/22/HTML-DOM%E6%96%87%E6%A1%A3%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E7%AE%80%E4%BB%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2202,172 +2384,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/29/%E4%BD%BF%E7%94%A8python3-PyQt5-pycharm%E6%A1%8C%E9%9D%A2GUI%E5%BC%80%E5%8F%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/29/%E4%BD%BF%E7%94%A8python3-PyQt5-pycharm%E6%A1%8C%E9%9D%A2GUI%E5%BC%80%E5%8F%91/" itemprop="url">
-                  使用python3+PyQt5+PyCharm桌面GUI开发
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-29 21:18:34" itemprop="dateCreated datePublished" datetime="2019-06-29T21:18:34+08:00">2019-06-29</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2021-03-07 21:02:33" itemprop="dateModified" datetime="2021-03-07T21:02:33+08:00">2021-03-07</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>下面简单介绍基于Python3、PyQt5和PyCharm进行桌面GUI开发。</p>
-<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><h2 id="安装python3"><a href="#安装python3" class="headerlink" title="安装python3"></a>安装python3</h2><p>PyQt5所支持的python版本是从3.5开始的，因此安装的Python3版本必须大于3.5。</p>
-<h2 id="安装PyQt5"><a href="#安装PyQt5" class="headerlink" title="安装PyQt5"></a>安装PyQt5</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip3 install PyQt5</span><br><span class="line">pip3 install PyQt5-tools</span><br></pre></td></tr></table></figure>
-
-<h2 id="安装PyCharm"><a href="#安装PyCharm" class="headerlink" title="安装PyCharm"></a>安装PyCharm</h2><p>安装完PyCharm后，需要配置Qt Designer和PyUIC，前者用于设计UI，后者用于将UI转成Py文件。</p>
-<p>具体步骤请参考<a href="https://www.cnblogs.com/zhoug2020/p/9039993.html" target="_blank" rel="noopener">程序员之路：python3+PyQt5+pycharm桌面GUI开发</a>。</p>
-<h1 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line"># Form implementation generated from reading ui file &#39;clearWaterPrintGui.ui&#39;</span><br><span class="line">#</span><br><span class="line"># Created by: PyQt5 UI code generator 5.11.3</span><br><span class="line">#</span><br><span class="line"># WARNING! All changes made in this file will be lost!</span><br><span class="line"></span><br><span class="line">from PyQt5 import QtCore, QtGui, QtWidgets</span><br><span class="line"></span><br><span class="line">class Ui_Form(object):</span><br><span class="line">    def setupUi(self, Form):</span><br><span class="line">        Form.setObjectName(&quot;Form&quot;)</span><br><span class="line">        Form.resize(400, 300)</span><br><span class="line">        self.label_DirPath &#x3D; QtWidgets.QLabel(Form)</span><br><span class="line">        self.label_DirPath.setGeometry(QtCore.QRect(16, 52, 72, 15))</span><br><span class="line">        self.label_DirPath.setObjectName(&quot;label_DirPath&quot;)</span><br><span class="line">        self.label_ExtName &#x3D; QtWidgets.QLabel(Form)</span><br><span class="line">        self.label_ExtName.setGeometry(QtCore.QRect(31, 112, 72, 15))</span><br><span class="line">        self.label_ExtName.setObjectName(&quot;label_ExtName&quot;)</span><br><span class="line">        self.buttonBox &#x3D; QtWidgets.QDialogButtonBox(Form)</span><br><span class="line">        self.buttonBox.setGeometry(QtCore.QRect(190, 260, 193, 28))</span><br><span class="line">        self.buttonBox.setInputMethodHints(QtCore.Qt.ImhNone)</span><br><span class="line">        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)</span><br><span class="line">        self.buttonBox.setObjectName(&quot;buttonBox&quot;)</span><br><span class="line">        self.lineEdit_DirPath &#x3D; QtWidgets.QLineEdit(Form)</span><br><span class="line">        self.lineEdit_DirPath.setGeometry(QtCore.QRect(100, 50, 281, 21))</span><br><span class="line">        self.lineEdit_DirPath.setObjectName(&quot;lineEdit_DirPath&quot;)</span><br><span class="line">        self.lineEdit_ExtName &#x3D; QtWidgets.QLineEdit(Form)</span><br><span class="line">        self.lineEdit_ExtName.setGeometry(QtCore.QRect(100, 112, 281, 21))</span><br><span class="line">        self.lineEdit_ExtName.setObjectName(&quot;lineEdit_ExtName&quot;)</span><br><span class="line"></span><br><span class="line">        self.retranslateUi(Form)</span><br><span class="line">        QtCore.QMetaObject.connectSlotsByName(Form)</span><br><span class="line"></span><br><span class="line">    def retranslateUi(self, Form):</span><br><span class="line">        _translate &#x3D; QtCore.QCoreApplication.translate</span><br><span class="line">        Form.setWindowTitle(_translate(&quot;Form&quot;, &quot;Form&quot;))</span><br><span class="line">        self.label_DirPath.setText(_translate(&quot;Form&quot;, &quot;文件路径：&quot;))</span><br><span class="line">        self.label_ExtName.setText(_translate(&quot;Form&quot;, &quot;扩展名：&quot;))</span><br><span class="line"></span><br><span class="line"># 下面代码是手动添加的</span><br><span class="line">if __name__&#x3D;&#x3D;&quot;__main__&quot;:</span><br><span class="line">    import sys</span><br><span class="line">    from PyQt5.QtGui import QIcon</span><br><span class="line">    app&#x3D;QtWidgets.QApplication(sys.argv)</span><br><span class="line">    widget&#x3D;QtWidgets.QWidget()</span><br><span class="line">    ui&#x3D;Ui_Form()</span><br><span class="line">    ui.setupUi(widget)</span><br><span class="line">    # widget.setWindowIcon(QIcon(&#39;web.png&#39;))#增加icon图标，如果没有图片可以没有这句</span><br><span class="line">    widget.show()</span><br><span class="line">    sys.exit(app.exec_())</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.cnblogs.com/zhoug2020/p/9039993.html" target="_blank" rel="noopener">程序员之路：python3+PyQt5+pycharm桌面GUI开发</a>,by 莫水千流.</li>
-<li><a href="http://www.futantan.com/2015/11/22/use-pyqt-develop-gui/" target="_blank" rel="noopener">使用PyQt快速开发GUI应用</a>,by Prayer.</li>
-<li><a href="https://zh.wikipedia.org/wiki/PyQt" target="_blank" rel="noopener">PyQt</a>,by wikipedia.</li>
-<li><a href="https://www.cnblogs.com/lsgxeva/p/7826761.html" target="_blank" rel="noopener">Qt Widgets、QML、Qt Quick的区别</a>,by 云水.</li>
-<li><a href="https://blog.csdn.net/shenziheng1/article/details/78055056" target="_blank" rel="noopener">Q_OBJECT宏的作用</a>,by 沈子恒.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2415,7 +2431,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">348</span>
+                    <span class="site-state-item-count">349</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -314,6 +314,197 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/03/08/Flightgear%E5%9C%A8Linux-Debian%E4%B8%AD%E7%9A%84%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/08/Flightgear%E5%9C%A8Linux-Debian%E4%B8%AD%E7%9A%84%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/" itemprop="url">
+                  Flightgear在Linux/Debian中的下载编译安装教程
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-08 10:29:59" itemprop="dateCreated datePublished" datetime="2019-03-08T10:29:59+08:00">2019-03-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-01-26 21:35:17" itemprop="dateModified" datetime="2021-01-26T21:35:17+08:00">2021-01-26</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h1><p>使用如下脚本在Linux/Debian操作系统下从源代码构建开源飞行模拟器FlightGear.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cd  &lt;your working directory for building FlightGear&gt;</span><br><span class="line">wget -O download_and_compile.sh  http:&#x2F;&#x2F;sourceforge.net&#x2F;p&#x2F;flightgear&#x2F;fgmeta&#x2F;ci&#x2F;next&#x2F;tree&#x2F;download_and_compile.sh?format&#x3D;raw</span><br><span class="line">chmod +x download_and_compile.sh</span><br><span class="line">mkdir -p stable</span><br><span class="line">mkdir -p next</span><br><span class="line">cd stable</span><br><span class="line">..&#x2F;download_and_compile.sh -s</span><br><span class="line">cd ..&#x2F;next</span><br><span class="line">..&#x2F;download_and_compile.sh -p n</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，该脚本git clone fgdata时超过1G时就会报错退出，解决方案见链接4。</p>
+<p>此外，如果之前安装过FlightGear的旧版本，编译过程也有可能报错，清理之前旧版本之后即可解决问题。</p>
+<h1 id="启动模拟器"><a href="#启动模拟器" class="headerlink" title="启动模拟器"></a>启动模拟器</h1><p>启动FlightGear命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd &lt;your working directory for building FlightGear&gt;</span><br><span class="line">cd stable</span><br><span class="line">.&#x2F;run_fgfs.sh</span><br></pre></td></tr></table></figure>
+
+<h1 id="fgfs常用选项"><a href="#fgfs常用选项" class="headerlink" title="fgfs常用选项"></a>fgfs常用选项</h1><p>fgfs为flightgear的飞行模拟器主程序，在命令行中输入fgfs –launcher即可打开启动器，选择飞机、位置等配置，然后开始模拟飞行。下面介绍fgfs的一些常用选项。</p>
+<ul>
+<li><p>–launcher</p>
+<p>  打开启动器。</p>
+</li>
+<li><p>–fg-root=path</p>
+<p>  告诉flightgear到path下寻找数据文件，如飞机、地景等。</p>
+</li>
+<li><p>–fg-scenery=path</p>
+<p>  告诉flightgear到path下寻找地景文件。</p>
+</li>
+<li><p>–fg-aircraft=path</p>
+<p>  告诉flightgear到path下寻找飞机文件。</p>
+</li>
+<li><p>–language=code</p>
+<p>  指定会话语音， 例如 pl, nl, it, fr, en, de。</p>
+</li>
+<li><p>–aircraft= 飞行器</p>
+<p>  载入特定飞行器。</p>
+</li>
+<li><p>–show-aircraft</p>
+<p>  打印可用的飞行器列表。</p>
+</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://wiki.flightgear.org/Howto:Get_Local_Copies_of_Flightgear_Source_Code" target="_blank" rel="noopener">Howto:Get Local Copies of Flightgear Source Code</a>,by flightgear wiki.</li>
+<li><a href="http://wiki.flightgear.org/Scripted_Compilation_on_Linux_Debian/Ubuntu" target="_blank" rel="noopener">Scripted Compilation on Linux Debian/Ubuntu</a>, by flightgear wiki.</li>
+<li><a href="http://wiki.flightgear.org/Building_FlightGear" target="_blank" rel="noopener">Building FlightGear</a>,by flightgear wiki.</li>
+<li><a href="https://huangwang.github.io/2019/03/09/Git-Clone大项目超过1G失败解决方案/">Git_Clone大项目超过1G失败解决方案</a>,by jack huang.</li>
+<li><a href="http://wiki.flightgear.org/Building_using_CMake_-_Windows" target="_blank" rel="noopener">Building using CMake - Windows</a>,by flightgear.</li>
+<li><a href="https://blog.csdn.net/inter_peng/article/details/53933206" target="_blank" rel="noopener">Visual Studio之RelWithDebInfo模式，“被忽视”的编译模式</a>,by inter_peng.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/02/26/%E5%8D%9A%E5%BC%88%E8%AE%BA%E7%AE%80%E4%BB%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1919,219 +2110,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/25/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/25/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/" itemprop="url">
-                  软件架构的一些思考
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-25 10:55:27" itemprop="dateCreated datePublished" datetime="2019-01-25T10:55:27+08:00">2019-01-25</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-12-27 22:00:50" itemprop="dateModified" datetime="2019-12-27T22:00:50+08:00">2019-12-27</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>以前对软件架构总是雾里看花，似懂非懂，最近好像有点悟了，赶紧记录一下。</p>
-<h1 id="软件架构的定义（What）"><a href="#软件架构的定义（What）" class="headerlink" title="软件架构的定义（What）"></a>软件架构的定义（What）</h1><p><strong>软件架构是有关软件整体结构与组件的抽象描述，用于指导大型软件系统各个方面的设计</strong><sup>[1]</sup>。</p>
-<p>软件体系结构是构建计算机软件实践的基础。与建筑师设定建筑项目的设计原则和目标，作为绘图员画图的基础一样，软件架构师或者系统架构师陈述软件架构以作为满足不同客户需求的实际系统设计方案的基础。从和目的、主题、材料和结构的联系上来说，软件架构可以和建筑物的架构相比拟。一个软件架构师需要有广泛的软件理论知识和相应的经验来实施和管理软件产品的高级设计。软件架构师定义和设计软件的模块化，模块之间的交互，用户界面风格，对外接口方法，创新的设计特性，以及高层事物的对象操作、逻辑和流程。</p>
-<h1 id="软件架构的意义（Why）"><a href="#软件架构的意义（Why）" class="headerlink" title="软件架构的意义（Why）"></a>软件架构的意义（Why）</h1><p>软件架构是一个系统的草图。软件架构描述的对象是直接构成系统的抽象组件。各个组件之间的连接则明确和相对细致地描述组件之间的通讯。在实现阶段，这些抽象组件被细化为实际的组件，比如具体某个类或者对象。在面向对象领域中，组件之间的连接通常用接口来实现。</p>
-<p>软件架构是软件架构师与项目干系人沟通的工具。例如：软件架构师与客户商谈概念上的事情，与经理商谈广泛的设计问题，与软件工程师商谈创新的结构特性，与程序员商谈实现技巧，外观和风格。</p>
-<h1 id="软件架构的选择（How）"><a href="#软件架构的选择（How）" class="headerlink" title="软件架构的选择（How）"></a>软件架构的选择（How）</h1><p><strong>用户需求决定软件架构的选择</strong>。用户需求可分成功能性需求和非功能性需求。功能性需求即用户要求软件产品应实现什么样的功能，非功能性需求即用户要求软件产品的质量属性达到一定标准。以开发一个购物网站为例，用户要求实现商品展示功能、购物车功能即功能性需求，用户要求在1秒内打开购物网站、网站平均无故障时间是一个月即非功能性需求。<strong>通常用户的非功能性需求对软件架构产生决定性影响</strong>。</p>
-<h2 id="常见的软件架构"><a href="#常见的软件架构" class="headerlink" title="常见的软件架构"></a>常见的软件架构</h2><h3 id="分层架构"><a href="#分层架构" class="headerlink" title="分层架构"></a>分层架构</h3><p>分层架构（layered architecture）是最常见的软件架构，也是事实上的标准架构。如果你不知道要用什么架构，那就用它。</p>
-<p>这种架构将软件分成若干个水平层，每一层都有清晰的角色和分工，不需要知道其他层的细节。层与层之间通过接口通信。</p>
-<p>虽然没有明确约定，软件一定要分成多少层，但是四层的结构最常见:</p>
-<ul>
-<li>表现层（presentation）：用户界面，负责视觉和用户互动</li>
-<li>业务层（business）：实现业务逻辑</li>
-<li>持久层（persistence）：提供数据，SQL 语句就放在这一层</li>
-<li>数据库（database） ：保存数据</li>
-</ul>
-<h3 id="事件驱动架构"><a href="#事件驱动架构" class="headerlink" title="事件驱动架构"></a>事件驱动架构</h3><p>事件（event）是状态发生变化时，软件发出的通知。</p>
-<p>事件驱动架构（event-driven architecture）就是通过事件进行通信的软件架构。它分成四个部分。</p>
-<ul>
-<li>事件队列（event queue）：接收事件的入口</li>
-<li>分发器（event mediator）：将不同的事件分发到不同的业务逻辑单元</li>
-<li>事件通道（event channel）：分发器与处理器之间的联系渠道</li>
-<li>事件处理器（event processor）：实现业务逻辑，处理完成后会发出事件，触发下一步操作</li>
-</ul>
-<h3 id="微核架构"><a href="#微核架构" class="headerlink" title="微核架构"></a>微核架构</h3><p>微核架构（microkernel architecture）又称为”插件架构”（plug-in architecture），指的是软件的内核相对较小，主要功能和业务逻辑都通过插件实现。</p>
-<p>内核（core）通常只包含系统运行的最小功能。插件则是互相独立的，插件之间的通信，应该减少到最低，避免出现互相依赖的问题。</p>
-<h3 id="微服务架构"><a href="#微服务架构" class="headerlink" title="微服务架构"></a>微服务架构</h3><p>微服务架构（microservices architecture）是服务导向架构（service-oriented architecture，缩写 SOA）的升级。</p>
-<p>每一个服务就是一个独立的部署单元（separately deployed unit）。这些单元都是分布式的，互相解耦，通过远程通信协议（比如REST、SOAP）联系。</p>
-<p>微服务架构分成三种实现模式。</p>
-<ul>
-<li>RESTful API 模式：服务通过 API 提供，云服务就属于这一类</li>
-<li>RESTful 应用模式：服务通过传统的网络协议或者应用协议提供，背后通常是一个多功能的应用程序，常见于企业内部</li>
-<li>集中消息模式：采用消息代理（message broker），可以实现消息队列、负载均衡、统一日志和异常处理，缺点是会出现单点失败，消息代理可能要做成集群</li>
-</ul>
-<h3 id="云架构"><a href="#云架构" class="headerlink" title="云架构"></a>云架构</h3><p>云结构（cloud architecture）主要解决扩展性和并发的问题，是最容易扩展的架构。</p>
-<p>它的高扩展性，主要原因是没使用中央数据库，而是把数据都复制到内存中，变成可复制的内存数据单元。然后，业务处理能力封装成一个个处理单元（prcessing unit）。访问量增加，就新建处理单元；访问量减少，就关闭处理单元。由于没有中央数据库，所以扩展性的最大瓶颈消失了。由于每个处理单元的数据都在内存里，最好要进行数据持久化。</p>
-<p>这个模式主要分成两部分：处理单元（processing unit）和虚拟中间件（virtualized middleware）。</p>
-<ul>
-<li>处理单元：实现业务逻辑</li>
-<li>虚拟中间件：负责通信、保持sessions、数据复制、分布式处理、处理单元的部署。</li>
-</ul>
-<p>虚拟中间件又包含四个组件。</p>
-<ul>
-<li>消息中间件（Messaging Grid）：管理用户请求和session，当一个请求进来以后，决定分配给哪一个处理单元。</li>
-<li>数据中间件（Data Grid）：将数据复制到每一个处理单元，即数据同步。保证某个处理单元都得到同样的数据。</li>
-<li>处理中间件（Processing Grid）：可选，如果一个请求涉及不同类型的处理单元，该中间件负责协调处理单元</li>
-<li>部署中间件（Deployment Manager）：负责处理单元的启动和关闭，监控负载和响应时间，当负载增加，就新启动处理单元，负载减少，就关闭处理单元。</li>
-</ul>
-<h3 id="客户端-服务器架构"><a href="#客户端-服务器架构" class="headerlink" title="客户端/服务器架构"></a>客户端/服务器架构</h3><p>这种架构由两部分组成：一个服务器和多个客户端。服务器组件将为多个客户端组件提供服务。客户端从服务器请求服务，服务器为这些客户端提供相关服务。此外，服务器持续侦听客户机请求。</p>
-<h3 id="模型-视图-控制器架构"><a href="#模型-视图-控制器架构" class="headerlink" title="模型/视图/控制器架构"></a>模型/视图/控制器架构</h3><p>这种架构，也称为MVC模式，把一个交互式应用程序划分为3个部分，</p>
-<ul>
-<li>模型：包含核心功能和数据</li>
-<li>视图：将信息显示给用户(可以定义多个视图)</li>
-<li>控制器：处理用户输入的信息</li>
-</ul>
-<p>这样做是为了将信息的内部表示与信息的呈现方式分离开来，并接受用户的请求。它分离了组件，并允许有效的代码重用。</p>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/软件架构" target="_blank" rel="noopener">软件架构</a>,by wikipedia.</li>
-<li><a href="http://www.ruanyifeng.com/blog/2016/09/software-architecture.html" target="_blank" rel="noopener">软件架构入门</a>,by 阮一峰.</li>
-<li><a href="https://www.cnblogs.com/IcanFixIt/p/7518146.html" target="_blank" rel="noopener">10种常见的软件架构模式</a>,by 尽信书不如无书.</li>
-<li><a href="https://zh.wikipedia.org/zh-hans/MVC" target="_blank" rel="noopener">MVC</a>,by wikipedia.</li>
-<li><a href="https://www.jianshu.com/p/b477b2cc6cfa" target="_blank" rel="noopener">1.软件架构编年史(译)</a>,by qinyu.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2179,7 +2157,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">353</span>
+                    <span class="site-state-item-count">354</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2882,9 +2860,9 @@
       
     
       
-        
-      
     
+      
+        
       
     
       

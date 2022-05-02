@@ -314,6 +314,217 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/04/30/TensorFlow%E5%AF%B9%E8%B1%A1%E6%A3%80%E6%B5%8BAPI%E6%B5%8B%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/04/30/TensorFlow%E5%AF%B9%E8%B1%A1%E6%A3%80%E6%B5%8BAPI%E6%B5%8B%E8%AF%95/" itemprop="url">
+                  TensorFlow对象检测API测试
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2022-04-30 23:51:59" itemprop="dateCreated datePublished" datetime="2022-04-30T23:51:59+08:00">2022-04-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2022-05-02 13:10:53" itemprop="dateModified" datetime="2022-05-02T13:10:53+08:00">2022-05-02</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近想研究一下红外图像的对象检测算法，于是先拿TensorFlow对象检测API学习一下。</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>准备工作主要有：</p>
+<ul>
+<li>pyenv安装python 3.9.6。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pyenv install 3.9.6</span><br><span class="line">pyenv global 3.9.6</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建虚拟环境</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 使用venv</span><br><span class="line">python -m venv tf2_api_env</span><br><span class="line">.\tf2_api_env\Scripts\activate</span><br><span class="line">deactivate</span><br><span class="line"></span><br><span class="line"># 使用virtualenv</span><br><span class="line">pip install virtualenv</span><br><span class="line">pyenv exec virtualenv tf2_api_env</span><br><span class="line">.\tf2_api_env\Scripts\activate</span><br><span class="line">deactivate</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装ipython，方便测试。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 进入虚拟环境</span><br><span class="line">pip install ipython</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装tensorflow。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 如果没有独立GPU</span><br><span class="line">pip install tensorflow&#x3D;&#x3D;2.8.0 -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple&#x2F; --trusted-host pypi.tuna.tsinghua.edu.cn</span><br><span class="line"></span><br><span class="line"># 如果有独立GPU</span><br><span class="line">pip install tensorflow-gpu&#x3D;&#x3D;2.8.0 -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple&#x2F; --trusted-host pypi.tuna.tsinghua.edu.cn</span><br><span class="line"></span><br><span class="line"># tensorflow环境测试</span><br><span class="line">import tensorflow as tf</span><br><span class="line">print(tf.__version__) </span><br><span class="line">print(tf.__path__)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装CUDA11.2。CUDA的版本由tensorflow-gpu的版本确定。具体请参考<a href="https://www.tensorflow.org/install/source_windows" target="_blank" rel="noopener">在 Windows 环境中从源代码构建</a>。<strong>本步骤在有nvidia独立显卡的前提下执行。</strong></li>
+</ul>
+<ul>
+<li>安装CUDNN v8.1文件。CUDNN的版本由tensorflow-gpu的版本确定。具体请参考<a href="https://www.tensorflow.org/install/source_windows" target="_blank" rel="noopener">在 Windows 环境中从源代码构建</a>。<strong>本步骤在有nvidia独立显卡的前提下执行。</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># GPU测试</span><br><span class="line">gpu_device_name &#x3D; tf.test.gpu_device_name()</span><br><span class="line">print(gpu_device_name)</span><br><span class="line"> </span><br><span class="line">from tensorflow.python.client import device_lib</span><br><span class="line"> </span><br><span class="line"># 列出所有的本地机器设备</span><br><span class="line">local_device_protos &#x3D; device_lib.list_local_devices()</span><br><span class="line"> </span><br><span class="line"># 只打印GPU设备</span><br><span class="line">[print(x) for x in local_device_protos if x.device_type &#x3D;&#x3D; &#39;GPU&#39;]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>TensorFlow Model Garden。TensorFlow 模型花园是一个存储库，为 TensorFlow 用户提供了许多不同的最先进 (SOTA) 模型和建模解决方案的实现。我们旨在展示建模的最佳实践，以便 TensorFlow 用户可以充分利用 TensorFlow 进行研究和产品开发。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;tensorflow&#x2F;models</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>配置目标检测API目录，以便python能找到object detect api。使用pth文件，将object detect模块的路径添加到python模块的搜索路径中。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 创建tensorflow.pth文件，输入如下内容</span><br><span class="line">I:\project\tensorflow\models</span><br><span class="line">I:\project\tensorflow\models\research</span><br><span class="line">I:\project\tensorflow\models\research\object_detection</span><br><span class="line">I:\project\tensorflow\models\research\slim</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>安装Protobuf。具体参考<a href="https://blog.51cto.com/stq054188/2891184" target="_blank" rel="noopener">TensorFlow2.x目标检测API安装配置步骤详细教程 Object Detection API with TensorFlow2.x </a>。</p>
+</li>
+<li><p>测试tf object detect api，并安装缺失模块。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">python object_detection&#x2F;builders&#x2F;model_builder_tf2_test.py</span><br><span class="line"></span><br><span class="line">pip install tf-slim</span><br><span class="line">pip install scipy</span><br><span class="line">pip install tensorflow_io</span><br><span class="line">pip install matplotlib</span><br><span class="line">pip install pyyaml</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://github.com/tensorflow/models/tree/master/research/object_detection" target="_blank" rel="noopener">TensorFlow Object Detection API</a>,by tensorflow.</li>
+<li><a href="https://blog.csdn.net/stq054188/article/details/109462843" target="_blank" rel="noopener">TensorFlow2.x GPU版安装与CUDA版本选择指南</a>,by Color_Space.</li>
+<li><a href="https://www.tensorflow.org/install/source_windows" target="_blank" rel="noopener">在 Windows 环境中从源代码构建</a>,by tensorflow.</li>
+<li><a href="https://blog.csdn.net/W1995S/article/details/113123127" target="_blank" rel="noopener">COCO2014/2017数据集</a>,by THE@JOKER.</li>
+<li><a href="https://cloud.tencent.com/developer/article/1745147" target="_blank" rel="noopener">TensorFlow2.x目标检测API测试代码使用演示</a>,by Color Space.</li>
+<li><a href="https://blog.51cto.com/stq054188/2891184" target="_blank" rel="noopener">TensorFlow2.x目标检测API安装配置步骤详细教程 Object Detection API with TensorFlow2.x </a>,by Color_Space.</li>
+<li><a href="https://blog.csdn.net/cc1949/article/details/78286224" target="_blank" rel="noopener">python安装第三方包的安装路径，dist-packages和site-packages区别</a>,by 陈 超.</li>
+<li><a href="https://yanbin.blog/pth-file-append-python-module-search-path/" target="_blank" rel="noopener">用 .pth 文件附加 Python 模块搜索路径</a>,by 隔叶黄莺.</li>
+<li><a href="https://www.jianshu.com/p/b723053a86a6" target="_blank" rel="noopener">Google Protobuf简明教程</a>,by geekpy.</li>
+<li><a href="https://medium.com/analytics-vidhya/tensorflow-gpu-how-to-install-tensorflow-with-nvidia-cuda-cudnn-and-gpu-support-on-windows-6158cffc1c29" target="_blank" rel="noopener">Tensorflow-GPU: How to Install Tensorflow with NVIDIA CUDA,cuDNN and GPU support on Windows</a>,by Ilekura Idowu.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/04/27/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E8%AE%B0%E5%BD%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1645,161 +1856,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/02/21/QT%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%8F%8A%E5%85%B6%E4%B8%8EGUI%E7%BB%84%E4%BB%B6%E7%9A%84%E9%80%9A%E4%BF%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2022/02/21/QT%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%8F%8A%E5%85%B6%E4%B8%8EGUI%E7%BB%84%E4%BB%B6%E7%9A%84%E9%80%9A%E4%BF%A1/" itemprop="url">
-                  QT多线程及其与GUI组件的通信
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2022-02-21 09:00:52 / 修改时间：15:25:23" itemprop="dateCreated datePublished" datetime="2022-02-21T09:00:52+08:00">2022-02-21</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>每个程序启动后拥有的第一个线程称为主线程，即<strong>GUI线程</strong>。QT中所有的组件类和几个相关的类只能工作在GUI线程，不能工作在次线程，次线程即<strong>工作线程</strong>，主要负责处理GUI线程卸下的工作。</p>
-<p>每个线程都有自己的栈，因此每个线程都要自己的调用历史和本地变量。线程共享相同的地址空间。</p>
-<h1 id="QT线程创建方法"><a href="#QT线程创建方法" class="headerlink" title="QT线程创建方法"></a>QT线程创建方法</h1><h2 id="QThread使用方法1——重写run-函数"><a href="#QThread使用方法1——重写run-函数" class="headerlink" title="QThread使用方法1——重写run()函数"></a>QThread使用方法1——重写run()函数</h2><p>对于使用Qthread创建的进程而言，run()函数则是新线程的入口，run()函数退出，意味着线程的终止。</p>
-<h2 id="QThread使用方法2——moveToThread"><a href="#QThread使用方法2——moveToThread" class="headerlink" title="QThread使用方法2——moveToThread()"></a>QThread使用方法2——moveToThread()</h2><p>如果不想每执行一种任务就自定义一个新线程，那么可以自定义用于完成任务的类，并让它们继承自QObject。</p>
-<p>然后使用moveToThread()将QObject对象实例移动到新线程。注意moveToThread()是QObject的公有函数。移动之后启动子线程。</p>
-<h1 id="多线程与GUI组件的通信"><a href="#多线程与GUI组件的通信" class="headerlink" title="多线程与GUI组件的通信"></a>多线程与GUI组件的通信</h1><p>GUI系统的设计原则：所有界面组件的创建只能在GUI线程（主线程）中完成。子线程与界面组件的通信有两种方式：</p>
-<ul>
-<li>信号槽方式</li>
-<li>发送自定事件方式</li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://www.codebaoku.com/it-c/it-c-215894.html" target="_blank" rel="noopener">深入理解QT多线程编程</a>,by 编程宝库.</li>
-<li><a href="https://wizardforcel.gitbooks.io/wudi-qt4/content/index.html" target="_blank" rel="noopener">零基础学 qt4 编程</a>,by wd007.</li>
-<li><a href="https://its401.com/article/weixin_41211961/103604565" target="_blank" rel="noopener">多线程与界面组件的通信</a>,by 程序员ITS401.</li>
-<li><a href="https://www.cnblogs.com/xyf327/p/15032670.html" target="_blank" rel="noopener">QT从入门到入土（五（1））——多线程（QThread）</a>,by 唯有自己强大.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1847,7 +1903,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">357</span>
+                    <span class="site-state-item-count">358</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

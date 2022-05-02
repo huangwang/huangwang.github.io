@@ -16253,4 +16253,74 @@ console.log(y);</code></pre></li>
         <tag>计算机图形学</tag>
       </tags>
   </entry>
+  <entry>
+    <title>TensorFlow对象检测API测试</title>
+    <url>/2022/04/30/TensorFlow%E5%AF%B9%E8%B1%A1%E6%A3%80%E6%B5%8BAPI%E6%B5%8B%E8%AF%95/</url>
+    <content><![CDATA[<p>最近想研究一下红外图像的对象检测算法，于是先拿TensorFlow对象检测API学习一下。</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>准备工作主要有：</p>
+<ul>
+<li>pyenv安装python 3.9.6。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pyenv install 3.9.6</span><br><span class="line">pyenv global 3.9.6</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建虚拟环境</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 使用venv</span><br><span class="line">python -m venv tf2_api_env</span><br><span class="line">.\tf2_api_env\Scripts\activate</span><br><span class="line">deactivate</span><br><span class="line"></span><br><span class="line"># 使用virtualenv</span><br><span class="line">pip install virtualenv</span><br><span class="line">pyenv exec virtualenv tf2_api_env</span><br><span class="line">.\tf2_api_env\Scripts\activate</span><br><span class="line">deactivate</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装ipython，方便测试。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 进入虚拟环境</span><br><span class="line">pip install ipython</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装tensorflow。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 如果没有独立GPU</span><br><span class="line">pip install tensorflow&#x3D;&#x3D;2.8.0 -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple&#x2F; --trusted-host pypi.tuna.tsinghua.edu.cn</span><br><span class="line"></span><br><span class="line"># 如果有独立GPU</span><br><span class="line">pip install tensorflow-gpu&#x3D;&#x3D;2.8.0 -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple&#x2F; --trusted-host pypi.tuna.tsinghua.edu.cn</span><br><span class="line"></span><br><span class="line"># tensorflow环境测试</span><br><span class="line">import tensorflow as tf</span><br><span class="line">print(tf.__version__) </span><br><span class="line">print(tf.__path__)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装CUDA11.2。CUDA的版本由tensorflow-gpu的版本确定。具体请参考<a href="https://www.tensorflow.org/install/source_windows" target="_blank" rel="noopener">在 Windows 环境中从源代码构建</a>。<strong>本步骤在有nvidia独立显卡的前提下执行。</strong></li>
+</ul>
+<ul>
+<li>安装CUDNN v8.1文件。CUDNN的版本由tensorflow-gpu的版本确定。具体请参考<a href="https://www.tensorflow.org/install/source_windows" target="_blank" rel="noopener">在 Windows 环境中从源代码构建</a>。<strong>本步骤在有nvidia独立显卡的前提下执行。</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># GPU测试</span><br><span class="line">gpu_device_name &#x3D; tf.test.gpu_device_name()</span><br><span class="line">print(gpu_device_name)</span><br><span class="line"> </span><br><span class="line">from tensorflow.python.client import device_lib</span><br><span class="line"> </span><br><span class="line"># 列出所有的本地机器设备</span><br><span class="line">local_device_protos &#x3D; device_lib.list_local_devices()</span><br><span class="line"> </span><br><span class="line"># 只打印GPU设备</span><br><span class="line">[print(x) for x in local_device_protos if x.device_type &#x3D;&#x3D; &#39;GPU&#39;]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>TensorFlow Model Garden。TensorFlow 模型花园是一个存储库，为 TensorFlow 用户提供了许多不同的最先进 (SOTA) 模型和建模解决方案的实现。我们旨在展示建模的最佳实践，以便 TensorFlow 用户可以充分利用 TensorFlow 进行研究和产品开发。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;tensorflow&#x2F;models</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>配置目标检测API目录，以便python能找到object detect api。使用pth文件，将object detect模块的路径添加到python模块的搜索路径中。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 创建tensorflow.pth文件，输入如下内容</span><br><span class="line">I:\project\tensorflow\models</span><br><span class="line">I:\project\tensorflow\models\research</span><br><span class="line">I:\project\tensorflow\models\research\object_detection</span><br><span class="line">I:\project\tensorflow\models\research\slim</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>安装Protobuf。具体参考<a href="https://blog.51cto.com/stq054188/2891184" target="_blank" rel="noopener">TensorFlow2.x目标检测API安装配置步骤详细教程 Object Detection API with TensorFlow2.x </a>。</p>
+</li>
+<li><p>测试tf object detect api，并安装缺失模块。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python object_detection&#x2F;builders&#x2F;model_builder_tf2_test.py</span><br><span class="line"></span><br><span class="line">pip install tf-slim</span><br><span class="line">pip install scipy</span><br><span class="line">pip install tensorflow_io</span><br><span class="line">pip install matplotlib</span><br><span class="line">pip install pyyaml</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://github.com/tensorflow/models/tree/master/research/object_detection" target="_blank" rel="noopener">TensorFlow Object Detection API</a>,by tensorflow.</li>
+<li><a href="https://blog.csdn.net/stq054188/article/details/109462843" target="_blank" rel="noopener">TensorFlow2.x GPU版安装与CUDA版本选择指南</a>,by Color_Space.</li>
+<li><a href="https://www.tensorflow.org/install/source_windows" target="_blank" rel="noopener">在 Windows 环境中从源代码构建</a>,by tensorflow.</li>
+<li><a href="https://blog.csdn.net/W1995S/article/details/113123127" target="_blank" rel="noopener">COCO2014/2017数据集</a>,by THE@JOKER.</li>
+<li><a href="https://cloud.tencent.com/developer/article/1745147" target="_blank" rel="noopener">TensorFlow2.x目标检测API测试代码使用演示</a>,by Color Space.</li>
+<li><a href="https://blog.51cto.com/stq054188/2891184" target="_blank" rel="noopener">TensorFlow2.x目标检测API安装配置步骤详细教程 Object Detection API with TensorFlow2.x </a>,by Color_Space.</li>
+<li><a href="https://blog.csdn.net/cc1949/article/details/78286224" target="_blank" rel="noopener">python安装第三方包的安装路径，dist-packages和site-packages区别</a>,by 陈 超.</li>
+<li><a href="https://yanbin.blog/pth-file-append-python-module-search-path/" target="_blank" rel="noopener">用 .pth 文件附加 Python 模块搜索路径</a>,by 隔叶黄莺.</li>
+<li><a href="https://www.jianshu.com/p/b723053a86a6" target="_blank" rel="noopener">Google Protobuf简明教程</a>,by geekpy.</li>
+<li><a href="https://medium.com/analytics-vidhya/tensorflow-gpu-how-to-install-tensorflow-with-nvidia-cuda-cudnn-and-gpu-support-on-windows-6158cffc1c29" target="_blank" rel="noopener">Tensorflow-GPU: How to Install Tensorflow with NVIDIA CUDA,cuDNN and GPU support on Windows</a>,by Ilekura Idowu.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>计算机视觉</tag>
+        <tag>计算机图形学</tag>
+      </tags>
+  </entry>
 </search>

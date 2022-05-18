@@ -314,6 +314,201 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/01/20/OSG%E4%B8%ADGLB%E8%BD%ACIVE%E4%B9%8B%E8%B7%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/01/20/OSG%E4%B8%ADGLB%E8%BD%ACIVE%E4%B9%8B%E8%B7%AF/" itemprop="url">
+                  OSG中GLB转IVE之路
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2022-01-20 17:31:58 / 修改时间：21:26:19" itemprop="dateCreated datePublished" datetime="2022-01-20T17:31:58+08:00">2022-01-20</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近在使用OSG 3.4的过程中，需要将一个GLB格式的3D模型文件，转换成IVE格式，以便osgDB::readNodeFile函数加载。具体方法是通过Blender建模软件进行3D文件格式转换。这个过程中遇到很多问题，记录一下。</p>
+<h1 id="常用的3D文件格式"><a href="#常用的3D文件格式" class="headerlink" title="常用的3D文件格式"></a>常用的3D文件格式</h1><h2 id="obj"><a href="#obj" class="headerlink" title=".obj"></a>.obj</h2><p>OBJ文件是Alias | Wavefront公司为它的一套基于工作站的3D建模和动画软件“AdvancedVisualizer”开发的一种标准3D模型文件格式。</p>
+<p>应用OBJ文件一般包括三个子文件，分别是.obj、.mtl、.jpg，除了模型文件，还需要.jpg纹理文件。OBJ可以是传统模型，也可以是倾斜模型。</p>
+<p>特点OBJ格式适合用于3D软件模型之间的互导。比如Smart3D里面生成的模型需要修饰，就可以输出OBJ格式，然后导入到3dsMax进行处理；如果你想把在3dsMax中建的模型调到Maya里面渲染或制作动画，导出OBJ文件就是一种很好的选择。</p>
+<p>目前几乎所有知名的3D软件都支持OBJ文件的读写，不过其中很多需要通过插件才能实现。另外，OBJ文件还是一种文本文件，可以直接用写字板打开进行查看和编辑修改。值得一提的是，老子云平台能够支持OBJ格式数据的上传和OBJ格式与其它格式间的互转。</p>
+<h2 id="dae"><a href="#dae" class="headerlink" title=".dae"></a>.dae</h2><p>COLLADA ( COLLA borative Design A ctivity ) 是一种用于交互式3D应用程序的交换文件格式。它由非营利性技术联盟Khronos Group管理，并已被 ISO 采用为公开可用的规范 ISO/PAS 17506。[1]</p>
+<p>COLLADA 定义了一个开放的标准 XML 模式，用于在各种图形软件应用程序之间交换数字资产，否则这些应用程序可能会将其资产存储在不兼容的文件格式中。描述数字资产的 COLLADA 文档是 XML 文件，通常以.dae（数字资产交换）文件扩展名标识。</p>
+<h2 id="fbx"><a href="#fbx" class="headerlink" title=".fbx"></a>.fbx</h2><p>FBX是FilmBoX软件中所使用的格式，后来这一软件改名为Motionbuilder。</p>
+<p>应用因为Motionbuilder扮演的是动作制作平台，所以FBX格式最大的用途是在3dsMax、Maya、softimage等软件间进行模型、材质、动作和摄影机信息的互导，这样就可以发挥max和maya等各个软件的优势。可以说，FBX方案是最好的互导方案。</p>
+<h2 id="gltf-和-glb"><a href="#gltf-和-glb" class="headerlink" title=".gltf 和 .glb"></a>.gltf 和 .glb</h2><p>glTF（ Graphics Language Transmission Format或GL Transmission Format的衍生简称）是三维场景和模型的标准文件格式。glTF 文件使用两种可能的文件扩展名之一，.gltf ( JSON / ASCII ) 或 .glb ( binary )。.gltf 文件可以是自包含的，也可以引用外部二进制和纹理资源，而 .glb 文件是完全自包含的。Khronos Group开发和维护的开放标准，支持3D 模型几何、外观、场景图层次结构和动画。它旨在成为一种简化的、可互操作的格式，用于交付 3D 资产，同时最大限度地减少文件大小和应用程序的运行时处理。因此，其创建者将其描述为“ 3D JPEG ”。</p>
+<p>应用GlTF是一种可以减少3D格式中与渲染无关的冗余数据并且在更加适合OpenGL簇加载的一种3D文件格式。GlTF的提出是源自于3D工业和媒体发展的过程中，对3D格式统一化的急迫需求。如果用一句话来描述：GlTF 就是三维文件的 JPEG ，三维格式的 MP3。在没有GlTF的时候，大家都要花很长的的时间来处理模型的载入。尽管一些3D Web框架支持特定于平台的模型格式，如FBX和OBJ，但几乎每个框架都支持GLTF。如果有人要为你提供3D模型，你可以请求他们提供GLTF格式的版本。</p>
+<p>特点GLTF是一种输出格式，这意味着我们无法直接修改它们。但我们可以修改其位置和大小，并对其进行旋转操作。</p>
+<p>另外，GLTF文件不是单个文件，而是包含JSON文档、图片、几何图形、纹理、凹凸贴图等的文件夹。</p>
+<h2 id="OSGB"><a href="#OSGB" class="headerlink" title=".OSGB"></a>.OSGB</h2><p>OSGB的全称是Open Scene Gragh Binary。这里的Binary是二进制的意思。</p>
+<p>应用目前市面上生产的倾斜模型，尤其是Smart3D处理的倾斜摄影三维模型的数据组织方式一般是二进制存贮的、带有嵌入式链接纹理数据（.jpg）的OSGB格式。</p>
+<p>特点此类数据文件碎、数量多、高级别金字塔文件大。因而难以形成高效、标准的网络发布方案，无法实现不同地域、不同部门之间的数据共享。</p>
+<h2 id="ive"><a href="#ive" class="headerlink" title=".ive"></a>.ive</h2><p>ive是由OpenSceneGraph（OSG）创建的三维模型文件，OSG是用于建模和动画处理的开源3D图形工具包； 包含使用该软件创建的3D场景； 用于可视化，仿真，游戏，虚拟现实和其他建模方案。IVE文件以二进制格式存储，有助于查看和渲染场景时提高性能。</p>
+<h1 id="OSG实用工具"><a href="#OSG实用工具" class="headerlink" title="OSG实用工具"></a>OSG实用工具</h1><h2 id="osgconv"><a href="#osgconv" class="headerlink" title="osgconv"></a>osgconv</h2><p>osgconv是一种非常有用的的工具来读取标准的3D格式，如OpenFlight,3DS,Alias Wavefront(OBJ) etc，并且可以将它们转换为一种OSG所支持的格式，如OSG中的ASCII格式的.osg，二进制格式的.ive。</p>
+<p>在程序运行的默认情况下，优化导入的场景图，将形成的这样结果：场景图读取的数据量将会更少且速度会更快。尤其值得指出的是，.ive格式的的文件，快速装载数据的能力使它非常适合数据页和大型的数据库。</p>
+<p>osgconv常用方式为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 将cow.obj转成ive</span><br><span class="line">osgconv cow.obj cow.ive</span><br><span class="line"># 沿Z轴逆时针旋转90度</span><br><span class="line">osgconv -o -90-0,0,1 cow.obj cow.ive</span><br></pre></td></tr></table></figure>
+
+<h2 id="osgviewer"><a href="#osgviewer" class="headerlink" title="osgviewer"></a>osgviewer</h2><p>osgviewer 是随 OpenSceneGraph 一起分发的基本场景图查看器。它的主要目的是一个如何编写简单查看器的示例，但它的功能也足以用作基本的 3D 图形查看器。使用方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">osgviewer cow.ive</span><br></pre></td></tr></table></figure>
+
+<h2 id="osg插件"><a href="#osg插件" class="headerlink" title="osg插件"></a>osg插件</h2><p>OpenSceneGraph 核心发行版中有 45 个插件，它们提供了对原生和 3rd 方文件格式的读写支持。OpenSceneGraph 数据库插件库 osgDB 自动按需加载插件，使用正在加载/保存的文件的扩展名来确定要加载哪个插件。osgDB 加载必要的插件是透明的，实际上你不应该做任何特殊的事情来加载某种文件类型。唯一需要记住的因素是 OSG 需要支持文件格式（由文件的扩展名决定）并且您应该已经编译了必要的插件。</p>
+<h1 id="转换方法"><a href="#转换方法" class="headerlink" title="转换方法"></a>转换方法</h1><p>将glb文件转换成ive文件的流程如下：</p>
+<ol>
+<li>使用blender 2.92 导入 glb 文件。</li>
+<li>使用blender 2.92 将 glb 文件导出成 dae 文件。注意导出时选择导出纹理图像。该步骤的主要目的是为了获取glb文件的纹理图像。</li>
+<li>使用blender 2.92 将 glb 文件导出成 obj 文件。 注意导出时选择导出纹理图像。该步骤将生成.obj、.mtl、.jpg三种文件，其中.jpg是纹理图像。如果纹理图像导出失败，可使用 dae 文件的纹理图像，同时注意修改.mtl文件中纹理图像的路径。.obj、.mtl均是文本文件，可直接打开。</li>
+<li>使用命令 osgconv -o -90-0,0,1 cow.obj cow.ive 将obj文件转换成ive文件。-o选择将模型朝向沿着坐标轴进行旋转。</li>
+</ol>
+<h1 id="转换需要注意的问题"><a href="#转换需要注意的问题" class="headerlink" title="转换需要注意的问题"></a>转换需要注意的问题</h1><p>3D文件格式转换需要注意的问题主要有：</p>
+<ul>
+<li>blender打开glb文件渲染时出现透明区域，显示背面区域的问题。</li>
+</ul>
+<p>因为对blender建模软件不够熟悉，刚开始以为是纹理贴图的问题，后面才发现是面朝向的问题。法线朝外的面是正面，朝里的面是背面。透明区域的面法线朝里，我们看到的是背面。由于blender着色器默认使用背面剔除功能，导致本应不透明的面被删除，导致出现透明区域现象。</p>
+<p>检测方面很简单，在blender中选择“视图叠加层”-&gt;“面朝向”打勾，模型正面将显示蓝色，背面显示红色。显示红色的区域就是透明区域。</p>
+<p>解决方法很简单，在blender中选择红色区域三角面，选择“网格”-&gt;“法线”-&gt;“翻转”, 将背面变为正面，即可解决模型显示透明区域问题。</p>
+<ul>
+<li><p>blender将glb转换成obj丢失纹理问题。解决方法在转换流程中已有介绍，在此不再详述。</p>
+</li>
+<li><p>模型朝向问题。解决方法在转换流程中已有介绍，在此不再详述。</p>
+</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.bgteach.com/article/132" target="_blank" rel="noopener">三维文件格式知多少 | abc、glTF、fbx、obj、dae、stl、3ds..</a>,by 饼干教育.</li>
+<li><a href="https://new.qq.com/omn/20200828/20200828A04JEE00.html" target="_blank" rel="noopener">超实用：一篇文章带你了解市面上主流通用的3D模型格式</a>,by qq.</li>
+<li><a href="https://en.wikipedia.org/wiki/COLLADA" target="_blank" rel="noopener">COLLADA</a>,by wikipedia.</li>
+<li><a href="https://en.wikipedia.org/wiki/GlTF" target="_blank" rel="noopener">glTF</a>,by wikipedia.</li>
+<li><a href="https://www.cnblogs.com/mazhenyu/p/5995519.html" target="_blank" rel="noopener">osgconv使用指南(转)</a>,by 3D入魔.</li>
+<li><a href="http://osgchina.org/show.php?id=50" target="_blank" rel="noopener">osgconv</a>,by osgchina.</li>
+<li><a href="https://www.bilibili.com/video/BV1Hp4y1v7Cx/" target="_blank" rel="noopener">背面剔除，正面剔除是什么能干嘛，从Blender和Unity解读，来2个效果你就懂了</a>,by 拉克哈尼.</li>
+<li><a href="http://www.openscenegraph.org/index.php/documentation/guides/user-guides/61-osgplugins" target="_blank" rel="noopener">osgPlugins</a>,by openscenegraph.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/01/18/%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1686,158 +1881,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/12/21/CPlusPlus%E5%8F%8B%E5%85%83%E5%87%BD%E6%95%B0%E4%B8%8E%E5%8F%8B%E5%85%83%E7%B1%BB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/12/21/CPlusPlus%E5%8F%8B%E5%85%83%E5%87%BD%E6%95%B0%E4%B8%8E%E5%8F%8B%E5%85%83%E7%B1%BB/" itemprop="url">
-                  CPlusPlus友元函数与友元类
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2021-12-21 17:39:41 / 修改时间：17:42:53" itemprop="dateCreated datePublished" datetime="2021-12-21T17:39:41+08:00">2021-12-21</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>私有成员只能在类的成员函数内部访问，如果想在别处访问对象的私有成员，只能通过类提供的接口（成员函数）间接地进行。这固然能够带来数据隐藏的好处，利于将来程序的扩充，但也会增加程序书写的麻烦。</p>
-<p>C++ 设计者认为， 如果有的程序员真的非常怕麻烦，就是想在类的成员函数外部直接访问对象的私有成员，那还是做一点妥协以满足他们的愿望为好，这也算是眼前利益和长远利益的折中。因此，C++ 就有了友元（friend）的概念。打个比方，这相当于是说：朋友是值得信任的，所以可以对他们公开一些自己的隐私。</p>
-<p>友元分为两种：友元函数和友元类。</p>
-<h1 id="友元函数"><a href="#友元函数" class="headerlink" title="友元函数"></a>友元函数</h1><p>在定义一个类的时候，可以把一些函数（包括全局函数和其他类的成员函数）声明为“友元”，这样那些函数就成为该类的友元函数，在友元函数内部就可以访问该类对象的私有成员了。</p>
-<h1 id="友元类"><a href="#友元类" class="headerlink" title="友元类"></a>友元类</h1><p>一个类 A 可以将另一个类 B 声明为自己的友元，类 B 的所有成员函数就都可以访问类 A 对象的私有成员。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://c.biancheng.net/view/169.html" target="_blank" rel="noopener">C++友元函数和友元类（C++ friend）详解</a>,by c语言中文网.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/">上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/36/">36</a><a class="extend next" rel="next" href="/page/4/">下一页</a>
+    <a class="extend prev" rel="prev" href="/page/2/">上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="extend next" rel="next" href="/page/4/">下一页</a>
   </nav>
 
 
@@ -1880,7 +1928,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">360</span>
+                    <span class="site-state-item-count">361</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

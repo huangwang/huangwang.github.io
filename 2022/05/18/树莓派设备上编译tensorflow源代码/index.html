@@ -110,7 +110,7 @@
 <meta property="og:description" content="对 TensorFlow Raspbian package 进行交叉编译 (cross-compiling)。 交叉编译使用的平台与部署平台不同。 相较于在 Raspberry Pi 使用有限的 RAM 和相对较慢的处理器，我们更加建议在 Linux ，macOS 或 Windows 等功能更强大的主机上构建TensorFlow。 宿主机 （host） 设置安装 Docker为了简化依赖关系管理，">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-05-18T01:58:36.000Z">
-<meta property="article:modified_time" content="2022-05-18T04:57:02.609Z">
+<meta property="article:modified_time" content="2022-05-18T15:57:12.194Z">
 <meta property="article:author" content="Jack Huang">
 <meta property="article:tag" content="笔记本">
 <meta property="article:tag" content="硬件">
@@ -361,7 +361,7 @@
                 
               
 
-              <time title="创建时间：2022-05-18 09:58:36 / 修改时间：12:57:02" itemprop="dateCreated datePublished" datetime="2022-05-18T09:58:36+08:00">2022-05-18</time>
+              <time title="创建时间：2022-05-18 09:58:36 / 修改时间：23:57:12" itemprop="dateCreated datePublished" datetime="2022-05-18T09:58:36+08:00">2022-05-18</time>
             
 
             
@@ -418,7 +418,26 @@
 
       
         <p>对 TensorFlow Raspbian package 进行交叉编译 (cross-compiling)。 交叉编译使用的平台与部署平台不同。 相较于在 Raspberry Pi 使用有限的 RAM 和相对较慢的处理器，我们更加建议在 Linux ，macOS 或 Windows 等功能更强大的主机上构建TensorFlow。</p>
-<h1 id="宿主机-（host）-设置"><a href="#宿主机-（host）-设置" class="headerlink" title="宿主机 （host） 设置"></a>宿主机 （host） 设置</h1><h2 id="安装-Docker"><a href="#安装-Docker" class="headerlink" title="安装 Docker"></a>安装 Docker</h2><p>为了简化依赖关系管理，构建脚本使用 Docker 来创建虚拟 Linux 开发环境进行编译。通过执行以下操作来验证您的 Docker 是否安装成功： docker run –rm hello-world</p>
+<h1 id="宿主机-（host）-设置"><a href="#宿主机-（host）-设置" class="headerlink" title="宿主机 （host） 设置"></a>宿主机 （host） 设置</h1><h2 id="安装-Docker"><a href="#安装-Docker" class="headerlink" title="安装 Docker"></a>安装 Docker</h2><p>为了简化依赖关系管理，构建脚本使用 Docker 来创建虚拟 Linux 开发环境进行编译。通过执行以下操作来验证您的 Docker 是否安装成功： docker run –rm hello-world。</p>
+<h2 id="Docker使用方法"><a href="#Docker使用方法" class="headerlink" title="Docker使用方法"></a>Docker使用方法</h2><p>以 koa-demos 项目为例，介绍怎么写 Dockerfile 文件，实现让用户在 Docker 容器里面运行 Koa 框架。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;ruanyf&#x2F;koa-demos.git</span><br><span class="line">cd koa-demos</span><br></pre></td></tr></table></figure>
+
+<h3 id="编写-Dockerfile-文件"><a href="#编写-Dockerfile-文件" class="headerlink" title="编写 Dockerfile 文件"></a>编写 Dockerfile 文件</h3><p>首先，在项目的根目录下，新建一个文本文件.dockerignore，写入下面的内容。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.git</span><br><span class="line">node_modules</span><br><span class="line">npm-debug.log</span><br></pre></td></tr></table></figure>
+
+<p>上面代码表示，这三个路径要排除，不要打包进入 image 文件。如果你没有路径要排除，这个文件可以不新建。</p>
+<p>然后，在项目的根目录下，新建一个文本文件 Dockerfile，写入下面的内容。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FROM node:8.4</span><br><span class="line">COPY . &#x2F;app</span><br><span class="line">WORKDIR &#x2F;app</span><br><span class="line">RUN npm install --registry&#x3D;https:&#x2F;&#x2F;registry.npm.taobao.org</span><br><span class="line">EXPOSE 3000</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建-image-文件"><a href="#创建-image-文件" class="headerlink" title="创建 image 文件"></a>创建 image 文件</h3><p>有了 Dockerfile 文件以后，就可以使用docker image build命令创建 image 文件了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker image build -t koa-demo .</span><br><span class="line"># 或者</span><br><span class="line">$ docker image build -t koa-demo:0.0.1 .</span><br></pre></td></tr></table></figure>
+
+<p>如果运行成功，就可以看到新生成的 image 文件koa-demo了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image ls</span><br></pre></td></tr></table></figure>
+
+<h3 id="生成容器"><a href="#生成容器" class="headerlink" title="生成容器"></a>生成容器</h3><p>docker container run命令会从 image 文件生成容器。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker container run -p 8000:3000 -it koa-demo &#x2F;bin&#x2F;bash</span><br><span class="line"># 或者</span><br><span class="line">$ docker container run -p 8000:3000 -it koa-demo:0.0.1 &#x2F;bin&#x2F;bash</span><br></pre></td></tr></table></figure>
+
 <h2 id="下载-Tensorflow-源代码"><a href="#下载-Tensorflow-源代码" class="headerlink" title="下载 Tensorflow 源代码"></a>下载 Tensorflow 源代码</h2><h1 id="编译源代码"><a href="#编译源代码" class="headerlink" title="编译源代码"></a>编译源代码</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.tensorflow.org/install/source_rpi?hl=zh-cn" target="_blank" rel="noopener">在树莓派设备上编译 tensorflow 源代码 </a>,by tensorflow.</li>
 <li><a href="https://www.ruanyifeng.com/blog/2018/02/docker-tutorial.html" target="_blank" rel="noopener">Docker 入门教程</a>,by 阮一峰.</li>
@@ -720,7 +739,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#宿主机-（host）-设置"><span class="nav-number">1.</span> <span class="nav-text">宿主机 （host） 设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Docker"><span class="nav-number">1.1.</span> <span class="nav-text">安装 Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载-Tensorflow-源代码"><span class="nav-number">1.2.</span> <span class="nav-text">下载 Tensorflow 源代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译源代码"><span class="nav-number">2.</span> <span class="nav-text">编译源代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#宿主机-（host）-设置"><span class="nav-number">1.</span> <span class="nav-text">宿主机 （host） 设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Docker"><span class="nav-number">1.1.</span> <span class="nav-text">安装 Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker使用方法"><span class="nav-number">1.2.</span> <span class="nav-text">Docker使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编写-Dockerfile-文件"><span class="nav-number">1.2.1.</span> <span class="nav-text">编写 Dockerfile 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建-image-文件"><span class="nav-number">1.2.2.</span> <span class="nav-text">创建 image 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成容器"><span class="nav-number">1.2.3.</span> <span class="nav-text">生成容器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载-Tensorflow-源代码"><span class="nav-number">1.3.</span> <span class="nav-text">下载 Tensorflow 源代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译源代码"><span class="nav-number">2.</span> <span class="nav-text">编译源代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

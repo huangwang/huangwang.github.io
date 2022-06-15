@@ -314,6 +314,221 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/10/Windows%E4%B8%8BQT%E4%B8%8EOSG%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/10/10/Windows%E4%B8%8BQT%E4%B8%8EOSG%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" itemprop="url">
+                  Windows下QT与OSG开发环境配置
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-10 08:18:23" itemprop="dateCreated datePublished" datetime="2019-10-10T08:18:23+08:00">2019-10-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-11-20 12:56:01" itemprop="dateModified" datetime="2021-11-20T12:56:01+08:00">2021-11-20</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近想尝试使用QT开发图形用户界面，OSG负责三维展示的解决方案，于是研究了一下Windows下OSG的编译安装配置，以及在QT中集成OSG的配置过程。过程记录如下：</p>
+<h1 id="QT-OSG开发环境配置"><a href="#QT-OSG开发环境配置" class="headerlink" title="QT+OSG开发环境配置"></a>QT+OSG开发环境配置</h1><p>QT+OSG开发环境配置将使用QT Creator集成环境进行图形用户界面开发，使用Desktop Qt 5.9.8 MSVC2017 64构建套件编译链接调试C++程序。</p>
+<h2 id="Visual-Studio-Community-2017-下载安装"><a href="#Visual-Studio-Community-2017-下载安装" class="headerlink" title="Visual Studio Community 2017 下载安装"></a>Visual Studio Community 2017 下载安装</h2><p>下载安装Visual Studio Community 2017的“使用C++的桌面开发”工作负载。这将为QT提供MSVC2017 64bit编译套件。</p>
+<h2 id="CDB-调试器下载安装"><a href="#CDB-调试器下载安装" class="headerlink" title="CDB 调试器下载安装"></a>CDB 调试器下载安装</h2><p>没有安装CDB调试器，QT的Desktop Qt 5.9.8 MSVC2017 64构建套件前会出现感叹号，并且使用该构建套件调试时会报“Unable to create a debugging engine”错误。CDB调试器下载安装方法参考<a href="https://dlonng.com/posts/qt-osg" target="_blank" rel="noopener">QT - OSG 开发环境配置</a></p>
+<h2 id="QT-5-9-8-下载安装"><a href="#QT-5-9-8-下载安装" class="headerlink" title="QT 5.9.8 下载安装"></a>QT 5.9.8 下载安装</h2><p>QT 5.9.8是 LTS 版本，其下载安装请参考<a href="https://huangwang.github.io/2019/10/07/Qt5%E9%85%8D%E7%BD%AE%E5%BC%80%E6%BA%90GSL%E6%95%B0%E5%AD%A6%E5%BA%93/">Qt5配置开源GSL数学库</a>。<strong>需要注意的是，QT 5.9.8安装过程，选择MSVC2017 64bit编译组件，如图1所示。</strong></p>
+<p align="center">
+    <img src="images/qt_install.jpg" width="60%" alt="QT 5.9.8安装选择MSVC2017 64bit编译组件"/>
+</p>
+<center>图1 QT 5.9.8安装选择MSVC2017 64bit编译组件</center>
+
+<h2 id="cmake下载安装"><a href="#cmake下载安装" class="headerlink" title="cmake下载安装"></a>cmake下载安装</h2><p>到 cmake 官网下载安装 cmake，用于osg的编译安装。</p>
+<h1 id="下载编译安装OSG"><a href="#下载编译安装OSG" class="headerlink" title="下载编译安装OSG"></a>下载编译安装OSG</h1><h2 id="下载OSG及相关软件"><a href="#下载OSG及相关软件" class="headerlink" title="下载OSG及相关软件"></a>下载OSG及相关软件</h2><p>Windows平台编译安装OSG需下载从OSG官网以下资料：</p>
+<ul>
+<li>OpenSceneGraph 3.6.4源代码</li>
+<li>OpenSceneGraph-Data-3.4.0，因为找不到3.6.4版本的数据</li>
+<li>3rdParty_VS2017_v141_x64_V11_full</li>
+</ul>
+<h2 id="配置OSG"><a href="#配置OSG" class="headerlink" title="配置OSG"></a>配置OSG</h2><p>打开cmake，选择osg源代码路径和osg源代码构建的路径，再点击“configure”按钮，选择Visual Studio 15 2017 Win64编译套件，配置osg如图2所示。</p>
+<p align="center">
+    <img src="images/cmake_config.jpg" width="100%" alt="cmake编译osg配置"/>
+</p>
+<center>图2 cmake编译osg配置</center>
+
+<p>需要配置的地方主要有：</p>
+<ul>
+<li>ACTUAL_3rdparty_DIR：配置第三方库的目录</li>
+<li>Build_OSG_EXAMPLES：选中即编译安装OSG的示例。</li>
+<li>CMAKE_INSTALL_PREFIX：设置OSG的安装目录，通常放到C盘以外的地方，防止因权限问题安装失败。</li>
+</ul>
+<p>配置完成后，再持续点击“configure”按钮，知道红色警告消失。然后点击“Generate”按钮生成vs2017工程。</p>
+<h2 id="编译OSG"><a href="#编译OSG" class="headerlink" title="编译OSG"></a>编译OSG</h2><p>在cmake中点击“Open Project”按钮，即使用 VS2017 打开 build 文件夹下的工程，点击：生成 -&gt; 批生成 -&gt; 生成 Debug 和 Release 版本的 All_BUILD 即可。</p>
+<h2 id="安装OSG"><a href="#安装OSG" class="headerlink" title="安装OSG"></a>安装OSG</h2><p>右击解决方案的 Install 项目，点击生成，然后 Debug 平台的库文件就开始安装了，同理选择 Release 平台再重复安装。之后就可以在安装路径中看到编译的库文件了，安装路径由变量CMAKE_INSTALL_PREFIX的配置决定。</p>
+<h2 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h2><p>OSG官方文档 <a href="http://www.openscenegraph.org/index.php/documentation/platform-specifics/windows/37-visual-studio" target="_blank" rel="noopener">Windows Compiling with Visual Studio</a>指出，OSG安装完成后需要配置如下环境变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">OSG_ROOT points to the base of the OSG file structure (the directory that contains include, src etc. subdirectories)</span><br><span class="line">OSG_BIN_PATH &#x3D; %OSG_ROOT%\bin</span><br><span class="line">OSG_INCLUDE_PATH &#x3D; %OSG_ROOT%\include</span><br><span class="line">OSG_LIB_PATH &#x3D; %OSG_ROOT%\lib</span><br><span class="line">OSG_SAMPLES_PATH &#x3D; %OSG_ROOT%\share\OpenSceneGraph\bin</span><br><span class="line">OSG_FILE_PATH &#x3D; ???\OpenSceneGraph-Data-X.X</span><br><span class="line">OPENSCENEGRAPH_VERSION &#x3D; 3.6.4 </span><br><span class="line">PATH 添加：%OSG_ROOT%\bin;%OSG_ROOT%\bin\osgPlugins-%OPENSCENEGRAPH_VERSION%; 这两个是配置 bin 和插件的路径。</span><br></pre></td></tr></table></figure>
+
+<h1 id="OSG测试"><a href="#OSG测试" class="headerlink" title="OSG测试"></a>OSG测试</h1><h2 id="命令行测试"><a href="#命令行测试" class="headerlink" title="命令行测试"></a>命令行测试</h2><p>打开 cmd 命令行，输入osgversion，输出当前 osg 版本说明环境变量配置成功了，再来看看能不能导入模型文件，接着键入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">osgviewer cow.osg</span><br></pre></td></tr></table></figure>
+
+<p>这里可能会提示系统缺少 zlibd.dll，解决方法很简单：</p>
+<ul>
+<li>拷贝第三方库的 dll 目录下的 zlib.dll 和 zlibd.dll 到 OSG 安装目录的 bin 目录中。</li>
+<li>拷贝第三方库的 lib 目录下的 zlib.dll 和 zlibd.dll 到 OSG 安装目录的 lib 目录中。</li>
+</ul>
+<p>这时重新键入上面的命令，就可以看到一头经典的 3D 牛了，说明 OSG 安装成功了。</p>
+<h2 id="QT-配置-OSG-库路径"><a href="#QT-配置-OSG-库路径" class="headerlink" title="QT 配置 OSG 库路径"></a>QT 配置 OSG 库路径</h2><p>新建一个 QT 的控制台项目，编辑 .pro 文件，加入 OSG 库的路径：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">win32:CONFIG(release, debug|release): LIBS +&#x3D; -L$$PWD&#x2F;..&#x2F;..&#x2F;..&#x2F;OpenSceneGraph&#x2F;lib&#x2F; -lOpenThreads -losg -losgDB -losgUtil -losgGA  -losgViewer -losgText</span><br><span class="line">else:win32:CONFIG(debug, debug|release): LIBS +&#x3D; -L$$PWD&#x2F;..&#x2F;..&#x2F;..&#x2F;OpenSceneGraph&#x2F;lib&#x2F; -lOpenThreadsd -losgd -losgDBd -losgUtild -losgGAd -losgViewerd -losgTextd</span><br><span class="line">else:unix: LIBS +&#x3D; -L$$PWD&#x2F;..&#x2F;..&#x2F;..&#x2F;OpenSceneGraph&#x2F;lib&#x2F; -lOpenThreads -losg -losgDB -losgUtil -losgGA -losgViewer -losgText</span><br><span class="line"></span><br><span class="line">INCLUDEPATH +&#x3D; $$PWD&#x2F;..&#x2F;..&#x2F;..&#x2F;OpenSceneGraph&#x2F;include</span><br><span class="line">DEPENDPATH +&#x3D; $$PWD&#x2F;..&#x2F;..&#x2F;..&#x2F;OpenSceneGraph&#x2F;lib</span><br></pre></td></tr></table></figure>
+
+<p>main.cpp 如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;osgViewer&#x2F;Viewer&gt;</span><br><span class="line">#include &lt;osgDB&#x2F;ReadFile&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    osgViewer::Viewer viewer;</span><br><span class="line">    viewer.setSceneData(osgDB::readNodeFile(&quot;cow.osg&quot;));</span><br><span class="line">    return viewer.run();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行，出来一头 3D 牛，即配置成功。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://dlonng.com/posts/qt-osg" target="_blank" rel="noopener">QT - OSG 开发环境配置</a>,by 程序小哥.</li>
+<li><a href="https://huangwang.github.io/2019/10/07/Qt5%E9%85%8D%E7%BD%AE%E5%BC%80%E6%BA%90GSL%E6%95%B0%E5%AD%A6%E5%BA%93/">Qt5配置开源GSL数学库</a>,by jackhuang.</li>
+<li><a href="https://huangwang.github.io/2019/09/14/Ubuntu16-04%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85OSG/">Ubuntu16.04编译安装OSG</a>,by jackhuang.</li>
+<li><a href="http://www.openscenegraph.org/index.php/documentation/platform-specifics/windows/37-visual-studio" target="_blank" rel="noopener">Windows Compiling with Visual Studio</a>,by OpenSceneGraph.</li>
+<li><a href="https://huangwang.github.io/2018/06/21/Visual-Studio-Community-2017%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85/">Visual_Studio_Community_2017离线安装</a>,by jackhuang.</li>
+<li><a href="https://blog.csdn.net/u013745174/article/details/53691589" target="_blank" rel="noopener">Qt-Creator常见问题</a>,by XenonSec.</li>
+<li><a href="https://stackoverflow.com/questions/31457306/visual-studio-msb3073-error-exited-with-code-1" target="_blank" rel="noopener">Visual Studio: MSB3073 error exited with code 1</a>,by stackoverflow.</li>
+<li><a href="https://blog.csdn.net/liang19890820/article/details/53931813" target="_blank" rel="noopener">Qt5.7 + VS2015 环境搭建</a>,by 一去丶二三里.</li>
+<li><a href="https://blog.csdn.net/u013719339/article/details/78415685" target="_blank" rel="noopener">OSG学习：WIN10系统下OSG+VS2017编译及运行</a>,by 路人甲JIA.</li>
+<li><a href="http://bbs.osgchina.org/forum.php?mod=viewthread&tid=15687&extra=" target="_blank" rel="noopener">error LNK2019: 无法解析的外部符号 “__declspec(dllimport) public</a>,by OSG_weiguoying.</li>
+<li><a href="https://blog.csdn.net/webzhuce/article/details/104683416" target="_blank" rel="noopener">应用篇之dll lib pdb和头文件</a>,by 阿兵-AI医疗.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/09/Windows%E5%BF%98%E8%AE%B0%E5%AF%86%E7%A0%81%E6%97%A0%E6%B3%95%E7%99%BB%E5%BD%95%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2057,213 +2272,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/09/16/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E%E4%B8%8E%E7%89%A9%E7%90%86%E5%BC%95%E6%93%8E/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/16/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E%E4%B8%8E%E7%89%A9%E7%90%86%E5%BC%95%E6%93%8E/" itemprop="url">
-                  游戏引擎与物理引擎
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-09-16 21:44:49" itemprop="dateCreated datePublished" datetime="2019-09-16T21:44:49+08:00">2019-09-16</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2021-01-09 21:27:47" itemprop="dateModified" datetime="2021-01-09T21:27:47+08:00">2021-01-09</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>游戏引擎提供一系列可视化开发工具和可重用组件。这些工具通过与开发环境进行集成，方便开发者简单、快速进行数据驱动方式的游戏开发。为了提高游戏开发人员的开发效率，引擎开发者会开发出大量的游戏所需要的软件组件。大多数引擎集成了图形、声音、物理和人工智能等功能部件。游戏引擎会被称为“中间件”，因为它们可以提供灵活和重用平台，向游戏开发者提供所需要的全部核心功能，从而节省大量的游戏开发费用，降低开发的复杂性，缩短游戏的上市时间，所有这些对于高竞争性的游戏产业来说都是关键因素。诸如虚幻系列引擎、Unity3D、Frostbite Engine、zerodin引擎、Doom3引擎、CryENGINE、3DGame Studio、RenderWare、Gamebryo、Virtools以及Source引擎等引擎。</p>
-<p>物理引擎是一个计算机程序模拟牛顿力学模型，使用质量、速度、摩擦力和空气阻力等变量。可以用来预测这种不同情况下的效果。它主要用在计算物理学和电子游戏以及计算机动画当中。物理引擎可作为游戏引擎的一个组件。</p>
-<p>物理引擎有两种类型常见的型类：实时物理引擎和高精度物理引擎。高精度的物理引擎需要更多的处理能力来计算非常精确的物理，通常使用在科学研究（计算物理学）和计算机动画电影制作。实时物理引擎使用通常使用在电子游戏并且简化运算，降低精确度增以减少计算时间，得到在电子游戏当中可以接受的的处理速度。常用的物理引擎有：ODE、Box2D、PhysX、Bullet、Havok引擎。</p>
-<h1 id="游戏主循环"><a href="#游戏主循环" class="headerlink" title="游戏主循环"></a>游戏主循环</h1><p>FPS(Frame Per Second)游戏帧速60帧是指游戏每秒循环更新60次。  </p>
-<p>一个游戏程序的基本结构像是这样:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	updateEverything();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="固定拖时间更新法"><a href="#固定拖时间更新法" class="headerlink" title="固定拖时间更新法"></a>固定拖时间更新法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	updateEverything();</span><br><span class="line">	sleep(1.0&#x2F;60);&#x2F;&#x2F;程序进程等待1&#x2F;60秒</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="累积时间更新法"><a href="#累积时间更新法" class="headerlink" title="累积时间更新法"></a>累积时间更新法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* getCurrentTime()每次调用返回当前的时间 *&#x2F;</span><br><span class="line">float lastUpdateTime &#x3D; getCurrentTime();</span><br><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	float currentTime &#x3D; getCurrentTime();</span><br><span class="line">	float deltaTime &#x3D; currentTime - lastUpdateTime;</span><br><span class="line">    &#x2F;* 每调用updateEverything()后检查时间，</span><br><span class="line">     直到过去的时间达到1&#x2F;60秒就进行下一次更新 *&#x2F;</span><br><span class="line">	if (deltaTime &gt;&#x3D; 1.0&#x2F;60)</span><br><span class="line">	&#123;</span><br><span class="line">		lastUpdateTime &#x3D; currentTime;</span><br><span class="line">		updateEverything();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="图形更新调用法"><a href="#图形更新调用法" class="headerlink" title="图形更新调用法"></a>图形更新调用法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	updateEverything();</span><br><span class="line">	&#x2F;* 等待垂直同步信号间的空白时间，程序执行到这里会进入等待</span><br><span class="line">	 一般会被封装在类似swapBuffer之类的图形API中执行，</span><br><span class="line">	 但是程序要开启了垂直同步的功能才有效。</span><br><span class="line">	 不过貌似现在的智能手机都默认有垂直同步的效果，</span><br><span class="line">	 当然手机和PC的硬件技术不同，可能也不叫这个名字了。*&#x2F;</span><br><span class="line">	waitForVerticalBlank();</span><br><span class="line">	drawEverything();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="死循环并计算时间差用于更新法"><a href="#死循环并计算时间差用于更新法" class="headerlink" title="死循环并计算时间差用于更新法"></a>死循环并计算时间差用于更新法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">float lastUpdateTime &#x3D; getCurrentTime();</span><br><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	float currentTime &#x3D; getCurrentTime();</span><br><span class="line">	float deltaTime &#x3D; currentTime - lastUpdateTime;</span><br><span class="line">	lastUpdateTime &#x3D; currentTime;</span><br><span class="line">	updateEverything(deltaTime);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void updateMove(float deltaTime)</span><br><span class="line">&#123;</span><br><span class="line">	position.x +&#x3D; speedX * deltaTime;</span><br><span class="line">	position.y +&#x3D; speedY * deltaTime;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="累积时间半固定时长等图形更新并将时间差用于更新法"><a href="#累积时间半固定时长等图形更新并将时间差用于更新法" class="headerlink" title="累积时间半固定时长等图形更新并将时间差用于更新法"></a>累积时间半固定时长等图形更新并将时间差用于更新法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;假设目标是60帧&#x2F;秒更新的游戏</span><br><span class="line">float lastUpdateTime &#x3D; getCurrentTime();</span><br><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	float currentTime &#x3D; getCurrentTime();</span><br><span class="line">	float deltaTime &#x3D; currentTime - lastUpdateTime;</span><br><span class="line">	lastUpdateTime &#x3D; currentTime;</span><br><span class="line">    &#x2F;* 如果游戏太卡，过长的时间差可能会导致跳过一些不能跳过的游戏逻辑，所以做一些人为限制 *&#x2F;</span><br><span class="line">    if (deltaTime &gt; 1.0&#x2F;30) deltaTime &#x3D; 1.0&#x2F;30;</span><br><span class="line">	updateEverything(deltaTime);</span><br><span class="line">	waitForVerticalBlank();</span><br><span class="line">	drawEverything();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上述方法只针对单机游戏有效，如果是网络游戏，考虑客户端之间的同步问题的话，帧速不稳定地变来变去是不好的，我们可以记录过去的时间里跑过的帧数，如果达不到目标帧数就连续进行更新直到赶上需要的帧数。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;假设目标是60帧&#x2F;秒更新的游戏</span><br><span class="line">float startTime &#x3D; getCurrentTime();</span><br><span class="line">long passedFrames &#x3D; 0;</span><br><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	float currentTime &#x3D; getCurrentTime();</span><br><span class="line">	float totalTime &#x3D; currentTime - startTime;</span><br><span class="line">	long targetTotalFrames &#x3D; totalTime&#x2F;(1.0&#x2F;60);</span><br><span class="line">	&#x2F;* 如果某一次更新耗时太久，则会导致passedFrames和targetTotalFrames差太多，所以就连续更新好几次逻辑来赶上目标的更新次数，以保证游戏的进度稳定*&#x2F;</span><br><span class="line">	while (passedFrames &lt; targetTotalFrames)</span><br><span class="line">	&#123;</span><br><span class="line">		updateEverything();</span><br><span class="line">		passedFrames++;</span><br><span class="line">	&#125;</span><br><span class="line">	&#x2F;* 图形更新应该在逻辑完全完成更新以后才进行 *&#x2F;</span><br><span class="line">	drawEverything();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="游戏时间"><a href="#游戏时间" class="headerlink" title="游戏时间"></a>游戏时间</h1><p>计算机是通过高分辨率计时器来衡量现实时间的，而游戏时间显然不能和真实事件的时间线一致，每个游戏都会有自身的时间线，该时间线和真实时间是两个平行的世界。开发者可以暂停游戏，冻结时间线，也可以通过某种指令来加速时间线，这些对于游戏的调试非常有帮助。一些游戏也会有一些类似时光倒流或者时间变慢的特殊特效，而这些都是通过操作时间线来完成的。</p>
-<p>现在假设游戏程序以 60 FPS 在运行，则每帧的处理时间大约为16毫秒。如果想要确保帧率稳定运行，每次循环的处理时间都应该小于这个值，剩余的时间，程序进入睡眠状态：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">while(true)</span><br><span class="line">&#123;</span><br><span class="line">    double start &#x3D; getCurrentTime();</span><br><span class="line"></span><br><span class="line">    processInput();</span><br><span class="line">    udpate();</span><br><span class="line">    render();</span><br><span class="line"></span><br><span class="line">    sleep(start + MS_PER_FRAME - getCurrentTime());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果每帧的处理时间小于16毫秒，sleep 可以保证游戏不会运行的太快。但是如果游戏的每帧超过16毫秒则会出现卡顿现象。</p>
-<p>上面的代码中如果正常的情况下，可以确保每帧推进游戏进程16毫秒，但是因为每帧执行的时间无法固定，会导致帧处理时间超出固定的16毫秒而将游戏拖慢。在无法保证帧处理时间的情况下，我们尝试动态的更新策略，让每帧推进的时间不再是固定的16毫秒，而是根据帧处理的时间来动态调整：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">double lastTime &#x3D; getCurrentTime();</span><br><span class="line">while (true)</span><br><span class="line">&#123;</span><br><span class="line">    double current &#x3D; getCurrentTime();</span><br><span class="line">    double elapsed &#x3D; current - lastTime;</span><br><span class="line">    processInput();</span><br><span class="line">    update(elapsed);</span><br><span class="line">    render();</span><br><span class="line">    lastTime &#x3D; current;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>每一帧我们都计算花费的真实时间（elapsed），而这条根据真实时间测量的时间线被称为全局时间线，所有的游戏内部 update() 逻辑都是基于这条全局时间线。update() 函数内部的处理逻辑会根据传入的时间间隔来驱动所有物体的动态效果，每个物体都有自己的局部时间线，这个局部时间线和全局时间线之间存在着一定的比例关系。例如游戏中存在一个飞行的子弹，子弹的飞行距离 = 子弹的飞行速度 * 子弹的飞行时间。这里的飞行时间并不一定是上面提到的全局时间线，可能是它的1/2或者2倍都是可以的，具体的快慢比例完全取决于你的游戏配置，这条和全局时间线比例不同的时间线也就是局部时间线。</p>
-<p>游戏中渲染通常并不会被时间所影响，因为渲染引擎只是单纯的渲染某一时刻的数据逻辑，一般和时间没有关系。受影响的主要是游戏的逻辑更新部分，为了保证不会出现不同硬件的游戏效果不一致，我们可以固定游戏逻辑的更新时间间隔，确保更新频率保持一致。这样做虽然可能导致在配置好的机器上相同的逻辑被渲染多次，但是这显然并不会影响游戏逻辑。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">double previous &#x3D; getCurrentTime();</span><br><span class="line">double lag &#x3D; 0.0; </span><br><span class="line">while (true) &#123; </span><br><span class="line">	double current &#x3D; getCurrentTime(); </span><br><span class="line">	double elapsed &#x3D; current - previous; </span><br><span class="line">	previous &#x3D; current; </span><br><span class="line">	lag +&#x3D; elapsed;</span><br><span class="line"></span><br><span class="line">	processInput();</span><br><span class="line">	while (lag &gt;&#x3D; MS_PER_UPDATE)</span><br><span class="line">	&#123;</span><br><span class="line">		update();</span><br><span class="line">		lag -&#x3D; MS_PER_UPDATE;</span><br><span class="line">	&#125;</span><br><span class="line">    render();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>现在<strong>游戏渲染时间线和游戏的更新时间线</strong>已经分离，代码中保持游戏的更新时间线以固定的时间间隔推进，这个时间间隔越短，update() 更新的频率越快，越慢更新的频率越低，过慢的更新频率会导致游戏产生抖动现象，不过因为时间步长和硬件不相关，这种现象只会出现在低端机器上。</p>
-<p>通过上面的代码基本上已经可以解决游戏循环的大部分问题了，但是还会出现一种现象，就是当一次循环消耗过长的时间，在下一次游戏渲染的时候，渲染的数据仍然是上一个时间点的数据，而不是真实时间点的数据，这听起来不太容易理解，可以看下面的示意图：</p>
-<p align="center">
-    <img src="images/game-loop-timeline.png" width="100%" alt="游戏更新与渲染"/>
-</p>
-<center>图1 游戏更新与渲染不一致</center>
-
-<p>在图中可以看出这是一个游戏的更新渲染序列，这里看第三次渲染（红点的位置）。因为上一帧的时间花费过长，导致在一帧的逻辑中调用了 update() 两次，进行了两次更新，这时渲染和更新的时间线发生偏移，渲染的真实位置在两次更新逻辑的中间，而渲染的结果却是上一次更新的结果（绿点的位置）。这显然是不对的，因为渲染的结果和现在真实的更新结果并不一样，这时候我们需要计算出二者时间线的偏移值，让渲染的结果符合真实的更新逻辑，也就是说需要计算出从绿点到红点位置的数据变化情况，只有这样渲染的结果才符合常理。</p>
-<p>解决这个问题其实很简单，只需要将偏移的大小告诉渲染逻辑即可，渲染逻辑怎样处理这个偏移时间还需要程序自己来决定。</p>
-<p>将渲染的代码改为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">render(lag &#x2F; MS_PER_UPDATE);</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://blog.jmecn.net/chapter-16-physics-engine/" target="_blank" rel="noopener">第十六章：物理引擎</a>,by 冰点.</li>
-<li><a href="https://www.zhihu.com/question/277300055" target="_blank" rel="noopener">为什么单机游戏中的碰撞很不真实？物理引擎真的很难做到和现实一样吗？</a>,by zhihu.</li>
-<li><a href="http://blog.gifplane.com/2018/10/08/1-UnityOpt14.html" target="_blank" rel="noopener">5.1、Faster Physics(一)</a>,by GIFPlane.</li>
-<li><a href="http://www.luvfight.me/game-loop/" target="_blank" rel="noopener">游戏主循环、帧速控制</a>,by luvfight.</li>
-<li><a href="http://www.luvfight.me/update-components/" target="_blank" rel="noopener">一些游戏程序的基础知识（一）</a>,by luvfight.</li>
-<li><a href="http://www.luvfight.me/draw-components/" target="_blank" rel="noopener">一些游戏程序的基础知识（二）</a>,by luvfight.</li>
-<li><a href="https://www.cnblogs.com/murongxiaopifu/p/7683140.html" target="_blank" rel="noopener">FixedUpdate真的是固定的时间间隔执行吗？聊聊游戏定时器</a>,by 嘉栋.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E6%96%B9%E6%B3%95" target="_blank" rel="noopener">欧拉方法</a>,by wikipedia.</li>
-<li><a href="https://wangzhechao.com/2dgames/chapter11/game%20loop.html" target="_blank" rel="noopener">游戏循环</a>,by 没事造轮子.</li>
-<li><a href="https://www.zhihu.com/question/27765214" target="_blank" rel="noopener">大型多人在线游戏的开发中，如何做到每个玩家动作的实时同步的？</a>,by zhihu.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2311,7 +2319,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">365</span>
+                    <span class="site-state-item-count">366</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

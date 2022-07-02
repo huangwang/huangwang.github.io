@@ -314,6 +314,188 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/20/Node-Addon%E6%8F%92%E4%BB%B6%E7%BC%96%E5%86%99%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/20/Node-Addon%E6%8F%92%E4%BB%B6%E7%BC%96%E5%86%99%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Node_C++_Addon插件编写方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-20 21:34:38" itemprop="dateCreated datePublished" datetime="2018-06-20T21:34:38+08:00">2018-06-20</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-10-03 15:42:28" itemprop="dateModified" datetime="2019-10-03T15:42:28+08:00">2019-10-03</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近研究在Nodejs中调用DLL，上网搜索发现主要有两种方法：</p>
+<ul>
+<li>使用Nodeffi调用C风格接口的DLL，但是无法调用C++风格导出类的DLL。</li>
+<li>使用Nodejs C++ Addon 插件，该方法可直接与C++代码交互，理论上可以调用C++风格导出类的DLL。</li>
+</ul>
+<p>下面研究Nodejs Addon C++插件的编写方法。</p>
+<h1 id="什么是Nodejs-C-Addon"><a href="#什么是Nodejs-C-Addon" class="headerlink" title="什么是Nodejs C++ Addon"></a>什么是Nodejs C++ Addon</h1><p>Node.js插件（Addons）是C/C++编写的动态链接对象，这些对象可以被Node.js的require()函数引用，并可以像普通的Node.js模块一样使用。Addons主要用于提供一个Node.js中运行的JavaScript和C/C++库之间的接口。</p>
+<p>插件（Addons）是动态链接的共享对象，它提供了C/C++类库的调用能力。实现插件的方法比较复杂，涉及到以下元组件及API:</p>
+<ul>
+<li>V8：C++库，Node.js用于提供JavaScript执行环境。V8提供了对象创建、函数调用等执行机制，V8相关API包含在了v8.h头文件中（位于Node.js源码树的deps/v8/include/v8.h），也可以查看在线文档。</li>
+<li>libuv：C库，实现了Node.js中的事件循环、工作线程及在不同平台中异步行为的相关功能。也可以做为是一个跨平台的抽象库，提供了简单的、类POSIX的对主要操作系统的常见系统任务功能，如：与文件系统、套接字、计时器、系统事件的交互等。libuv还提供了一个类pthreads的线程池抽象对象，可用于更复杂的、超越标准事件循环的异步插件的控制功能。</li>
+<li>内部Node.js库：Node.js自身提供了一定义数量的C/C++API的插件可以使用 - 其中最重要的可能是node::ObjectWrap类</li>
+<li>Node.js静态链接库：Node.js自身还包含了一部分静态链接库，如OpenSSL。这些位于Node.js源码树的deps/目录下，只有V8和OpenSSL提供了符号出口，可以供Node.js和基它插件所使用。详见Node.js依赖链接</li>
+</ul>
+<h1 id="Node-Addon插件编写方法"><a href="#Node-Addon插件编写方法" class="headerlink" title="Node Addon插件编写方法"></a>Node Addon插件编写方法</h1><p>Node Addon插件的编写需要解决两个关键问题：</p>
+<ul>
+<li>当数据流向 javaScript -&gt; C++时，如何将javascript类型数据包装成C++类型数据，供C++代码使用。</li>
+<li>当数据流向 C++ -&gt; JavaScript时，如何将C++类型数据包装成JavaScript类型数据，供JavaScript代码使用。</li>
+</ul>
+<p>这两个关键问题的分析请参见淘宝前端团队成员发表的文章“Node.js 和 C++ 之间的类型转换<sup>[3]</sup>”。解决这两个关键问题后，Node Addon插件编写难度就不大了。</p>
+<h1 id="Node-Addon插件调用C-导出类DLL方法测试"><a href="#Node-Addon插件调用C-导出类DLL方法测试" class="headerlink" title="Node Addon插件调用C++导出类DLL方法测试"></a>Node Addon插件调用C++导出类DLL方法测试</h1><p>现有一个采用成熟方法导出类接口的DLL<sup>[4]</sup>，如何在Node Addon插件中调用该DLL呢?下面nodejs官网Node Addon插件例子Factory of wrapped objects为例进行讲解。</p>
+<p>Factory of wrapped objects例子在Addon插件中包装了一个MyObject类，现在就在MyObject类调用DLL导出类的接口方法。修改MyObject.h代码，增加DLL导出类接口方法，增加类接口成员变量IExport和DLL句柄变量hDll，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; myobject.h</span><br><span class="line">#ifndef MYOBJECT_H</span><br><span class="line">#define MYOBJECT_H</span><br><span class="line"></span><br><span class="line">#include &lt;node.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;node_object_wrap.h&gt;</span><br><span class="line">#include &quot;MatureApproach.h&quot;</span><br><span class="line"></span><br><span class="line">namespace demo &#123;</span><br><span class="line">typedef IExport*(*TYPE_fnCreateExportObj) (void);&#x2F;&#x2F;定义函数指针  </span><br><span class="line">typedef void(*TYPE_fnDestroyExportObj) (IExport*);&#x2F;&#x2F;定义函数指针  </span><br><span class="line"></span><br><span class="line">class MyObject : public node::ObjectWrap &#123;</span><br><span class="line"> public:</span><br><span class="line">  static void Init(v8::Isolate* isolate);</span><br><span class="line">  static void NewInstance(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line"></span><br><span class="line"> private:</span><br><span class="line">  explicit MyObject(double value &#x3D; 0);</span><br><span class="line">  ~MyObject();</span><br><span class="line"></span><br><span class="line">  static void New(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static void PlusOne(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static void Hi(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static void Test(const v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args);</span><br><span class="line">  static v8::Persistent&lt;v8::Function&gt; constructor;</span><br><span class="line">  HMODULE hDll;</span><br><span class="line">  IExport* pExport;</span><br><span class="line">  double value_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125;  &#x2F;&#x2F; namespace demo</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>接下来将在MyObject类的构造函数中动态加载DLL，创建DLL导出类对象，在析构函数中析构DLL导出类对象，动态卸载DLL,在MyObject成员方法中调用DLL导出类方法，代码如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; myobject.cc</span><br><span class="line">#include &lt;node.h&gt;</span><br><span class="line">#include &quot;myobject.h&quot;</span><br><span class="line"></span><br><span class="line">namespace demo &#123;</span><br><span class="line"></span><br><span class="line">using v8::Context;</span><br><span class="line">using v8::Function;</span><br><span class="line">using v8::FunctionCallbackInfo;</span><br><span class="line">using v8::FunctionTemplate;</span><br><span class="line">using v8::Isolate;</span><br><span class="line">using v8::Local;</span><br><span class="line">using v8::Number;</span><br><span class="line">using v8::Object;</span><br><span class="line">using v8::Persistent;</span><br><span class="line">using v8::String;</span><br><span class="line">using v8::Value;</span><br><span class="line"></span><br><span class="line">Persistent&lt;Function&gt; MyObject::constructor;</span><br><span class="line"></span><br><span class="line">MyObject::MyObject(double value) : value_(value)&#123;</span><br><span class="line">	MyObject::hDll &#x3D; LoadLibrary(&quot;MatureApproach.dll&quot;); &#x2F;&#x2F;加载动态链接库DllDemo.dll文件；</span><br><span class="line">  TYPE_fnCreateExportObj fnCreateExportObj &#x3D; (TYPE_fnCreateExportObj)GetProcAddress(MyObject::hDll, &quot;CreateExportObj&quot;);</span><br><span class="line">  MyObject::pExport &#x3D; fnCreateExportObj();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MyObject::~MyObject() &#123;</span><br><span class="line">  TYPE_fnDestroyExportObj fnDestroyExportObj &#x3D; (TYPE_fnDestroyExportObj)GetProcAddress(MyObject::hDll, &quot;DestroyExportObj&quot;);</span><br><span class="line">  fnDestroyExportObj(MyObject::pExport);</span><br><span class="line">  FreeLibrary(MyObject::hDll);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::Init(Isolate* isolate) &#123;</span><br><span class="line">  &#x2F;&#x2F; Prepare constructor template</span><br><span class="line">  Local&lt;FunctionTemplate&gt; tpl &#x3D; FunctionTemplate::New(isolate, New);</span><br><span class="line">  tpl-&gt;SetClassName(String::NewFromUtf8(isolate, &quot;MyObject&quot;));</span><br><span class="line">  tpl-&gt;InstanceTemplate()-&gt;SetInternalFieldCount(3);</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; Prototype</span><br><span class="line">  NODE_SET_PROTOTYPE_METHOD(tpl, &quot;plusOne&quot;, PlusOne);</span><br><span class="line">  NODE_SET_PROTOTYPE_METHOD(tpl, &quot;hi&quot;, Hi);</span><br><span class="line">  NODE_SET_PROTOTYPE_METHOD(tpl, &quot;test&quot;, Test);</span><br><span class="line"></span><br><span class="line">  constructor.Reset(isolate, tpl-&gt;GetFunction());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::New(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate &#x3D; args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  if (args.IsConstructCall()) &#123;</span><br><span class="line">    &#x2F;&#x2F; Invoked as constructor: &#96;new MyObject(...)&#96;</span><br><span class="line">    double value &#x3D; args[0]-&gt;IsUndefined() ? 0 : args[0]-&gt;NumberValue();</span><br><span class="line">    MyObject* obj &#x3D; new MyObject(value);</span><br><span class="line">    obj-&gt;Wrap(args.This());</span><br><span class="line">    args.GetReturnValue().Set(args.This());</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    &#x2F;&#x2F; Invoked as plain function &#96;MyObject(...)&#96;, turn into construct call.</span><br><span class="line">    const int argc &#x3D; 1;</span><br><span class="line">    Local&lt;Value&gt; argv[argc] &#x3D; &#123; args[0] &#125;;</span><br><span class="line">    Local&lt;Function&gt; cons &#x3D; Local&lt;Function&gt;::New(isolate, constructor);</span><br><span class="line">    Local&lt;Context&gt; context &#x3D; isolate-&gt;GetCurrentContext();</span><br><span class="line">    Local&lt;Object&gt; instance &#x3D;</span><br><span class="line">        cons-&gt;NewInstance(context, argc, argv).ToLocalChecked();</span><br><span class="line">    args.GetReturnValue().Set(instance);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::NewInstance(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate &#x3D; args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  const unsigned argc &#x3D; 1;</span><br><span class="line">  Local&lt;Value&gt; argv[argc] &#x3D; &#123; args[0] &#125;;</span><br><span class="line">  Local&lt;Function&gt; cons &#x3D; Local&lt;Function&gt;::New(isolate, constructor);</span><br><span class="line">  Local&lt;Context&gt; context &#x3D; isolate-&gt;GetCurrentContext();</span><br><span class="line">  Local&lt;Object&gt; instance &#x3D;</span><br><span class="line">      cons-&gt;NewInstance(context, argc, argv).ToLocalChecked();</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(instance);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::PlusOne(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate &#x3D; args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  MyObject* obj &#x3D; ObjectWrap::Unwrap&lt;MyObject&gt;(args.Holder());</span><br><span class="line">  obj-&gt;value_ +&#x3D; 1;</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(Number::New(isolate, obj-&gt;value_));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::Hi(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate &#x3D; args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  MyObject* obj &#x3D; ObjectWrap::Unwrap&lt;MyObject&gt;(args.Holder());</span><br><span class="line">  Local&lt;String&gt; str&#x3D;v8::String::NewFromUtf8(isolate, obj-&gt;pExport-&gt;Hi().data());</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MyObject::Test(const FunctionCallbackInfo&lt;Value&gt;&amp; args) &#123;</span><br><span class="line">  Isolate* isolate &#x3D; args.GetIsolate();</span><br><span class="line"></span><br><span class="line">  MyObject* obj &#x3D; ObjectWrap::Unwrap&lt;MyObject&gt;(args.Holder());</span><br><span class="line">  Local&lt;String&gt; str&#x3D;v8::String::NewFromUtf8(isolate, obj-&gt;pExport-&gt;Test().data());</span><br><span class="line"></span><br><span class="line">  args.GetReturnValue().Set(str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;  &#x2F;&#x2F; namespace demo</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://itbilu.com/nodejs/core/4y4-Nrd5G.html" target="_blank" rel="noopener">Node.js C/C++插件（Addons）</a>, by IT笔录</li>
+<li><a href="https://nodejs.org/dist/latest-v8.x/docs/api/addons.html" target="_blank" rel="noopener">Node.js v8.16.1 Documentation</a>，by nodejs</li>
+<li><a href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/" target="_blank" rel="noopener">type-casts-between-node-and-cpp</a>，by 淘宝前端团队</li>
+<li><a href="https://huangwang.github.io/2018/06/15/DLL导出类和函数/">DLL导出类和函数</a>,by jackhuang</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/18/%E5%A6%82%E4%BD%95%E5%9C%A8Vistual-Studio%E4%B8%AD%E8%B0%83%E8%AF%95Node-Addon-C-%E6%8F%92%E4%BB%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2074,198 +2256,6 @@ console.log(y);</code></pre></li>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/24/Git%E7%94%A8%E6%B3%95%E6%80%BB%E7%BB%93/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/24/Git%E7%94%A8%E6%B3%95%E6%80%BB%E7%BB%93/" itemprop="url">
-                  Git用法总结
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-24 08:32:03" itemprop="dateCreated datePublished" datetime="2018-05-24T08:32:03+08:00">2018-05-24</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2021-11-01 17:40:57" itemprop="dateModified" datetime="2021-11-01T17:40:57+08:00">2021-11-01</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>git是一个分布式版本控制软件，最初由林纳斯·托瓦兹（Linus Torvalds）创作，于2005年以GPL发布。最初目的是为更好地管理Linux内核开发而设计<sup>[1]</sup>。</p>
-<p align="center">
-    <img src="images/git_structure.png" width="90%" alt="git结构"/>
-</p>
-
-<h1 id="新建代码库"><a href="#新建代码库" class="headerlink" title="新建代码库"></a>新建代码库</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 在当前目录新建一个Git代码库</span><br><span class="line">$ git init</span><br><span class="line"></span><br><span class="line"># 新建一个目录，将其初始化为Git代码库</span><br><span class="line">$ git init [project-name]</span><br><span class="line"></span><br><span class="line"># 下载一个项目和它的整个代码历史</span><br><span class="line">$ git clone [url]</span><br></pre></td></tr></table></figure>
-
-<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 显示当前的Git配置</span><br><span class="line">$ git config --list</span><br><span class="line"></span><br><span class="line"># 编辑Git配置文件</span><br><span class="line">$ git config -e [--global]</span><br><span class="line"></span><br><span class="line"># 设置提交代码时的用户信息</span><br><span class="line">$ git config [--global] user.name &quot;[name]&quot;</span><br><span class="line">$ git config [--global] user.email &quot;[email address]&quot;</span><br></pre></td></tr></table></figure>
-
-<h1 id="代码提交"><a href="#代码提交" class="headerlink" title="代码提交"></a>代码提交</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># 提交暂存区到仓库区</span><br><span class="line">$ git commit -m [message]</span><br><span class="line"></span><br><span class="line"># 提交暂存区的指定文件到仓库区</span><br><span class="line">$ git commit [file1] [file2] ... -m [message]</span><br><span class="line"></span><br><span class="line"># 提交工作区自上次commit之后的变化，直接到仓库区</span><br><span class="line">$ git commit -a</span><br><span class="line"></span><br><span class="line"># 提交时显示所有diff信息</span><br><span class="line">$ git commit -v</span><br><span class="line"></span><br><span class="line"># 使用一次新的commit，替代上一次提交</span><br><span class="line"># 如果代码没有任何新变化，则用来改写上一次commit的提交信息</span><br><span class="line">$ git commit --amend -m [message]</span><br><span class="line"></span><br><span class="line"># 重做上一次commit，并包括指定文件的新变化</span><br><span class="line">$ git commit --amend [file1] [file2] ...</span><br></pre></td></tr></table></figure>
-
-<h1 id="查看信息"><a href="#查看信息" class="headerlink" title="查看信息"></a>查看信息</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"># 显示有变更的文件</span><br><span class="line">$ git status</span><br><span class="line"></span><br><span class="line"># 显示当前分支的版本历史</span><br><span class="line">$ git log</span><br><span class="line"></span><br><span class="line"># 显示commit历史，以及每次commit发生变更的文件</span><br><span class="line">$ git log --stat</span><br><span class="line"></span><br><span class="line"># 搜索提交历史，根据关键词</span><br><span class="line">$ git log -S [keyword]</span><br><span class="line"></span><br><span class="line"># 显示某个commit之后的所有变动，每个commit占据一行</span><br><span class="line">$ git log [tag] HEAD --pretty&#x3D;format:%s</span><br><span class="line"></span><br><span class="line"># 显示某个commit之后的所有变动，其&quot;提交说明&quot;必须符合搜索条件</span><br><span class="line">$ git log [tag] HEAD --grep feature</span><br><span class="line"></span><br><span class="line"># 显示某个文件的版本历史，包括文件改名</span><br><span class="line">$ git log --follow [file]</span><br><span class="line">$ git whatchanged [file]</span><br><span class="line"></span><br><span class="line"># 显示指定文件相关的每一次diff</span><br><span class="line">$ git log -p [file]</span><br><span class="line"></span><br><span class="line"># 显示过去5次提交</span><br><span class="line">$ git log -5 --pretty --oneline</span><br><span class="line"></span><br><span class="line"># 显示所有提交过的用户，按提交次数排序</span><br><span class="line">$ git shortlog -sn</span><br><span class="line"></span><br><span class="line"># 显示指定文件是什么人在什么时间修改过</span><br><span class="line">$ git blame [file]</span><br><span class="line"></span><br><span class="line"># 显示暂存区和工作区的差异</span><br><span class="line">$ git diff</span><br><span class="line"></span><br><span class="line"># 显示暂存区和上一个commit的差异</span><br><span class="line">$ git diff --cached [file]</span><br><span class="line"></span><br><span class="line"># 显示工作区与当前分支最新commit之间的差异</span><br><span class="line">$ git diff HEAD</span><br><span class="line"></span><br><span class="line"># 显示两次提交之间的差异</span><br><span class="line">$ git diff [first-branch]...[second-branch]</span><br><span class="line"></span><br><span class="line"># 显示今天你写了多少行代码</span><br><span class="line">$ git diff --shortstat &quot;@&#123;0 day ago&#125;&quot;</span><br><span class="line"></span><br><span class="line"># 显示某次提交的元数据和内容变化</span><br><span class="line">$ git show [commit]</span><br><span class="line"></span><br><span class="line"># 显示某次提交发生变化的文件</span><br><span class="line">$ git show --name-only [commit]</span><br><span class="line"></span><br><span class="line"># 显示某次提交时，某个文件的内容</span><br><span class="line">$ git show [commit]:[filename]</span><br><span class="line"></span><br><span class="line"># 显示当前分支的最近几次提交</span><br><span class="line">$ git reflog</span><br></pre></td></tr></table></figure>
-
-<h1 id="Git-工具-子模块"><a href="#Git-工具-子模块" class="headerlink" title="Git 工具 - 子模块"></a>Git 工具 - 子模块</h1><p>有种情况我们经常会遇到：某个工作中的项目需要包含并使用另一个项目。 也许是第三方库，或者你独立开发的，用于多个父项目的库。 现在问题来了：你想要把它们当做两个独立的项目，同时又想在一个项目中使用另一个。</p>
-<p>Git 通过子模块来解决这个问题。 子模块允许你将一个 Git 仓库作为另一个 Git 仓库的子目录。 它能让你将另一个仓库克隆到自己的项目中，同时还保持提交的独立。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ git submodule add https:&#x2F;&#x2F;github.com&#x2F;chaconinc&#x2F;DbConnector</span><br><span class="line">Cloning into &#39;DbConnector&#39;...</span><br><span class="line">remote: Counting objects: 11, done.</span><br><span class="line">remote: Compressing objects: 100% (10&#x2F;10), done.</span><br><span class="line">remote: Total 11 (delta 0), reused 11 (delta 0)</span><br><span class="line">Unpacking objects: 100% (11&#x2F;11), done.</span><br><span class="line">Checking connectivity... done.</span><br></pre></td></tr></table></figure>
-
-<p>默认情况下，子模块会将子项目放到一个与仓库同名的目录中，本例中是 “DbConnector”。 如果你想要放到其他地方，那么可以在命令结尾添加一个不同的路径。</p>
-<h1 id="不常用操作"><a href="#不常用操作" class="headerlink" title="不常用操作"></a>不常用操作</h1><ul>
-<li><p>查看代码仓库中标签</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>检出指定标签代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout tag_name</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>丢弃本地修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout .</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>打包导出仓库代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git archive --format zip --output ..\emsdk\zips\1.38.8.zip HEAD</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://zh.wikipedia.org/zh-hans/Git" target="_blank" rel="noopener">Git</a>, by wikipedia</li>
-<li><a href="http://yijiebuyi.com/blog/eacf4d053fad77affffae397d9af7172.html" target="_blank" rel="noopener">git 如何获取指定 tag 代码</a>, by 一介布衣</li>
-<li><a href="http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html" target="_blank" rel="noopener">常用 Git 命令清单</a>,by 阮一峰.</li>
-<li><a href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%AD%90%E6%A8%A1%E5%9D%97" target="_blank" rel="noopener">7.11 Git 工具 - 子模块</a>,by git.</li>
-<li><a href="https://www.jianshu.com/p/cbb302510811" target="_blank" rel="noopener">Git submodule用法</a>,by jinlei_123.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2313,7 +2303,7 @@ console.log(y);</code></pre></li>
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">371</span>
+                    <span class="site-state-item-count">372</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

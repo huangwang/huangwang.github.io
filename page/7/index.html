@@ -314,6 +314,195 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/11/01/CPlusPlus%E4%B9%8BBoost%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/11/01/CPlusPlus%E4%B9%8BBoost%E5%85%A5%E9%97%A8/" itemprop="url">
+                  CPlusPlus之Boost入门
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-11-01 08:33:09" itemprop="dateCreated datePublished" datetime="2021-11-01T08:33:09+08:00">2021-11-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-11-08 20:48:20" itemprop="dateModified" datetime="2021-11-08T20:48:20+08:00">2021-11-08</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Boost C++ 库（Libraries）是一组扩展C++功能的经过同行评审（Peer-reviewed）且开放源码程序库。大多数的函数为了能够以开放源码或者封闭项目的方式运作，而许可于Boost软件许可协议（Boost Software License）之下。许多Boost的开发人员是来自C++标准委员会，而部分的Boost库成为C++的TR1标准之一。</p>
+<p>为了要确保库的效率与弹性，Boost广泛的使用模板（template）功能。而它是针对各式领域的C++用户与应用领域（Application Domain）上，包含的库类别从像smart_ptr 库（页面存档备份，存于互联网档案馆）这种类通用库，到像是文件系统的操作系统抽象层，甚至能够利用Boost来开发额外的库或是给高级的C++用户利用，像是MPL。</p>
+<h1 id="源代码下载"><a href="#源代码下载" class="headerlink" title="源代码下载"></a>源代码下载</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;boostorg&#x2F;boost.git</span><br><span class="line">git submodule --update</span><br></pre></td></tr></table></figure>
+
+<h1 id="编译过程"><a href="#编译过程" class="headerlink" title="编译过程"></a>编译过程</h1><p>生成编译工具b2.exe：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd %BOOST_ROOT%</span><br><span class="line">bootstrap.bat</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>完整安装boost</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b2 --buildtype&#x3D;complete</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>定制安装boost</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 可查看所有必须编译才能使用的库</span><br><span class="line">b2 --show-libraries</span><br><span class="line"># 单独编译安装regex库：</span><br><span class="line">b2 --with-regex link&#x3D;static runtime-link&#x3D;shared threading&#x3D;multi –-stagedir&#x3D;build stage</span><br><span class="line"># 生成include文件夹</span><br><span class="line">b2 --with-regex link&#x3D;static runtime-link&#x3D;shared threading&#x3D;multi --prefix&#x3D;build install</span><br></pre></td></tr></table></figure>
+
+<p>编译结果在stage\lib目录下生成regex库(Debug/Release)：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">libboost_regex-vc100-mt-1_77.lib</span><br><span class="line">libboost_regex-vc100-mt-gd-1_77.lib</span><br></pre></td></tr></table></figure>
+
+<p>相关参数的含义：<br>stage 仅创建和安装库文件(不创建头文件),可以用 –stagedir= 选项指定库的安装位置，默认安装在当前目录下的stage文件夹内。<br>–with- 创建和安装指定的库，如果使用了这个选项，则仅仅指定的库被创建，其它库不被创建。如果不指定这个选项，默认创建所有需要编译安装的库。<br>link=static指定生成静态regex库<br>threading=multi指定生成多线程库<br>runtime-link=shared指定动态链接C和C++ 运行库</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/85806857" target="_blank" rel="noopener">Boost编译与使用</a>,by luckyum.</li>
+<li><a href="https://stackoverflow.com/questions/865668/parsing-command-line-arguments-in-c" target="_blank" rel="noopener">Parsing Command Line Arguments in C++?</a>,by stackoverflow.</li>
+<li><a href="https://www.boost.org/doc/libs/1_75_0/doc/html/program_options.html" target="_blank" rel="noopener">Boost.Program_options</a>,by Boost.</li>
+<li><a href="https://www.boost.org/doc/libs/1_75_0/libs/json/doc/html/index.html" target="_blank" rel="noopener">Boost.JSON</a>,by Boost.</li>
+<li><a href="https://zh.wikipedia.org/wiki/Boost_C%2B%2B_Libraries" target="_blank" rel="noopener">Boost C++ Libraries</a>,by wikipedia.</li>
+<li><a href="https://www.boost.org/doc/libs/1_75_0/more/getting_started/windows.html" target="_blank" rel="noopener">Boost Getting Started on Windows</a>,by Boost.</li>
+<li><a href="https://www.jianshu.com/p/908c962aaf80" target="_blank" rel="noopener">Windows平台下boost库的编译和调用</a>,by JasonLiThirty.</li>
+<li><a href="https://www.cnblogs.com/cmranger/p/4759223.html" target="_blank" rel="noopener">windows下编译和安装boost库</a>,by rangers.</li>
+<li><a href="https://www.cnblogs.com/cmranger/p/4653396.html" target="_blank" rel="noopener">C++静态库与动态库</a>,by rangers.</li>
+<li><a href="https://blog.csdn.net/morning_color/article/details/50241987" target="_blank" rel="noopener">boost::program_options 用法详解</a>,by morning_color.</li>
+<li><a href="https://www.miaoerduo.com/2018/06/22/the-usage-of-cpp-boost-json/" target="_blank" rel="noopener">C++ Boost JSON解析库的使用</a>,by miaoerduo.</li>
+<li><a href="https://blog.51cto.com/u_15127588/4202592" target="_blank" rel="noopener">boost.xml_parser中文字符问题</a>,by mob604756f44f2a .</li>
+<li><a href="https://stackoverflow.com/questions/2114466/creating-json-arrays-in-boost-using-property-trees" target="_blank" rel="noopener">Creating JSON arrays in Boost using Property Trees</a>,by stackoverflow.</li>
+<li><a href="https://www.cnblogs.com/ink19/p/Boost_JSON.html" target="_blank" rel="noopener">Boost.JSON Boost的JSON解析库（1.75首发）</a>,by ink19.</li>
+<li><a href="https://www.coder.work/article/831796" target="_blank" rel="noopener">c++ - 如何使用 json 解析器的 boost property_tree 创建空数组节点</a>,by coder.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/10/30/CPlusPlus%E6%96%87%E4%BB%B6%E8%AF%BB%E5%86%99%E6%93%8D%E4%BD%9C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1756,152 +1945,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/06/16/%E9%87%8D%E8%A6%81%E6%80%A7%E9%87%87%E6%A0%B7%E4%B8%8E%E9%87%8D%E5%8F%82%E6%95%B0%E7%90%86%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/06/16/%E9%87%8D%E8%A6%81%E6%80%A7%E9%87%87%E6%A0%B7%E4%B8%8E%E9%87%8D%E5%8F%82%E6%95%B0%E7%90%86%E8%A7%A3/" itemprop="url">
-                  重要性采样与重参数理解
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2021-06-16 11:50:41 / 修改时间：19:36:00" itemprop="dateCreated datePublished" datetime="2021-06-16T11:50:41+08:00">2021-06-16</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>重要性采样与重参数是深度强化学习算法中常用的统计学技巧，比较难理解，遂将一些解读记录如下。</p>
-<h1 id="重要性采样"><a href="#重要性采样" class="headerlink" title="重要性采样"></a>重要性采样</h1><h1 id="重参数"><a href="#重参数" class="headerlink" title="重参数"></a>重参数</h1><p>利用行为策略产生的数据评估目标策略需要利用重要性采样方法。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://spaces.ac.cn/archives/6705" target="_blank" rel="noopener">漫谈重参数：从正态分布到Gumbel Softmax</a>,by 苏剑林.</li>
-<li><a href="https://blog.csdn.net/hehedadaq/article/details/112232179" target="_blank" rel="noopener">重要性采样(Importance Sampling)详细学习笔记</a>,by hehedadaq.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/150693309" target="_blank" rel="noopener">PR Sampling Ⅰ: 蒙特卡洛采样、重要性采样及python实现</a>,by 刘浚嘉.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1949,7 +1992,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">372</span>
+                    <span class="site-state-item-count">373</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

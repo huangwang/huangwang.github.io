@@ -314,6 +314,202 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/02/%E5%85%BC%E5%AE%B9%E5%89%8D%E5%90%8E%E7%AB%AF%E5%A4%9A%E7%A7%8DJS%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83%E7%9A%84%E4%BB%A3%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/02/%E5%85%BC%E5%AE%B9%E5%89%8D%E5%90%8E%E7%AB%AF%E5%A4%9A%E7%A7%8DJS%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83%E7%9A%84%E4%BB%A3%E7%A0%81/" itemprop="url">
+                  兼容前后端多种JS模块规范的代码
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-02 22:11:23" itemprop="dateCreated datePublished" datetime="2018-07-02T22:11:23+08:00">2018-07-02</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-25 12:55:45" itemprop="dateModified" datetime="2019-09-25T12:55:45+08:00">2019-09-25</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近研究如何在前后端调用同一份js代码。该问题本质是如何兼容前后端各类JS模块规范。上网一搜，已经有很多详细的解决方案和JS模块规范介绍，在这里简单记录一下。</p>
+<h1 id="JS模块规范"><a href="#JS模块规范" class="headerlink" title="JS模块规范"></a>JS模块规范</h1><p>JS模块规范前端主要有AMD、CMD，后端主要有CommonJS。此外还有最新的ES2015模块规范。</p>
+<h2 id="AMD"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</h2><p>AMD（异步模块定义，Asynchronous Module Definition）格式总体的目标是为现在的开发者提供一个可用的模块化 JavaScript 的解决方案。它诞生于 Dojo 在使用 XHR+eval 时的实践经验，其支持者希望未来的解决方案都可以免受由于过去方案的缺陷所带来的麻烦。</p>
+<p>AMD风格模块定义通常包括：一个用来进行模块定义的 define 方法以及一个用来处理依赖项加载的 require 方法。define 根据如下的方法签名来定义具名或匿名的模块：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define(</span><br><span class="line">    module_id &#x2F;*可选*&#x2F;, </span><br><span class="line">    [dependencies] &#x2F;*可选*&#x2F;, </span><br><span class="line">    definition function &#x2F;*用来初始化模块或对象的函数*&#x2F;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h2 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h2><p>CMD(Common Module Definition)表示通用模块定义，该规范是国内发展出来的，由阿里的玉伯提出。就像AMD有个requireJS，CMD有个浏览器的实现SeaJS，SeaJS和requireJS一样，都是javascript的前端模块化解决方案。<br>CMD规范简单到只有一个API，即define函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define(function(require, exports, module) &#123;</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; The module code goes here</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>CMD 与 AMD 挺相近，二者区别如下： </p>
+<ul>
+<li>对于依赖的模块 CMD 是延迟执行，而 AMD 是提前执行（不过 RequireJS 从 2.0 开始，也改成可以延迟执行。 ）</li>
+<li>CMD 推崇依赖就近，AMD 推崇依赖前置。</li>
+<li>AMD 的 api 默认是一个当多个用，CMD 严格的区分推崇职责单一，其每个 API 都简单纯粹。例如：AMD 里 require 分全局的和局部的。CMD 里面没有全局的 require，提供 seajs.use() 来实现模块系统的加载启动。</li>
+</ul>
+<h2 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h2><p>CommonJS是一个志愿性质的工作组，它致力于设计、规划并标准化 JavaScript API。至今为止他们已经尝试着认可了模块标准以及程序包标准。CommonJS 的模块提案为在服务器端声明模块指定了一个简单的 API。不像 AMD，它试图覆盖更宽泛的方面比如 IO、文件系统、promise 模式等等。CommonJS风格模块在nodejs中得到广泛的应用。</p>
+<p>CommonJS风格模块是一段可重用的 JavaScript，它导出一系列特定的对象给依赖它的代码调用——通常来说这样的模块外围没有函数包裹（所以你在这里的例子中不会看到 define）。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; package&#x2F;lib 是我们须要的一个依赖项</span><br><span class="line">var lib &#x3D; require(&#39;package&#x2F;lib&#39;);</span><br><span class="line"> </span><br><span class="line">&#x2F;&#x2F; 我们的模块的一些行为</span><br><span class="line">function foo()&#123;</span><br><span class="line">    lib.log(&#39;hello world!&#39;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">&#x2F;&#x2F; 把 foo 导出（暴露）给其它模块</span><br><span class="line">exports.foo &#x3D; foo;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ES2015模块规范"><a href="#ES2015模块规范" class="headerlink" title="ES2015模块规范"></a>ES2015模块规范</h2><p>2015 年 6 月， ES2015（即 ECMAScript 6、ES6） 正式发布。ES2015 是该语言的一个显著更新，也是自 2009 年 ES5 标准确定后的第一个重大更新。</p>
+<p>ES2015的模块规范如下：</p>
+<ul>
+<li>一个模块就是一个独立的文件。该文件内部的所有变量，外部无法获取。</li>
+<li>export 命令用于规定模块的对外接口。</li>
+<li>import 命令用于输入其他模块提供的功能。</li>
+<li>ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量。</li>
+</ul>
+<p>ES2015模块示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;circle.js</span><br><span class="line">&#x2F;&#x2F;圆面积计算</span><br><span class="line">export function area(radius) &#123;</span><br><span class="line">  return Math.PI * radius * radius;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;main.js</span><br><span class="line">import &#123;area&#125; from &#39;.&#x2F;hangge&#39;;</span><br><span class="line">console.log(&#39;圆面积：&#39; + area(10));</span><br></pre></td></tr></table></figure>
+
+<h1 id="兼容多种模块规范"><a href="#兼容多种模块规范" class="headerlink" title="兼容多种模块规范"></a>兼容多种模块规范</h1><p>需要指出的是下面兼容多种JS模块规范的代码并不支持最新的ES2015模块规范。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">;(function (name, definition) &#123;</span><br><span class="line">  &#x2F;&#x2F; 检测上下文环境是否为AMD或CMD</span><br><span class="line">  var hasDefine &#x3D; typeof define &#x3D;&#x3D;&#x3D; &#39;function&#39;,</span><br><span class="line">    &#x2F;&#x2F; 检查上下文环境是否为Node</span><br><span class="line">    hasExports &#x3D; typeof module !&#x3D;&#x3D; &#39;undefined&#39; &amp;&amp; module.exports;</span><br><span class="line"></span><br><span class="line">  if (hasDefine) &#123;</span><br><span class="line">    &#x2F;&#x2F; AMD环境或CMD环境</span><br><span class="line">    define(definition);</span><br><span class="line">  &#125; else if (hasExports) &#123;</span><br><span class="line">    &#x2F;&#x2F; 定义为普通Node模块</span><br><span class="line">    module.exports &#x3D; definition();</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    &#x2F;&#x2F; 将模块的执行结果挂在window变量中，在浏览器中this指向window对象</span><br><span class="line">    this[name] &#x3D; definition();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)(&#39;hello&#39;, function () &#123;</span><br><span class="line">  var hello &#x3D; function () &#123;&#125;;</span><br><span class="line">  return hello;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="Webpack兼容所有JS模块规范"><a href="#Webpack兼容所有JS模块规范" class="headerlink" title="Webpack兼容所有JS模块规范"></a>Webpack兼容所有JS模块规范</h1><p>webpack根据webpack.config.js中的入口文件，在入口文件里识别模块依赖，不管这里的模块依赖是用CommonJS写的，还是ES6 Module规范写的，webpack会自动进行分析，并通过转换、编译代码，打包成最终的文件。最终文件中的模块实现是基于webpack自己实现的webpack_require（es5代码），所以打包后的文件可以跑在浏览器上。</p>
+<p>同时以上意味着在webapck环境下，你可以只使用ES6 模块语法书写代码（通常我们都是这么做的），也可以使用CommonJS模块语法，甚至可以两者混合使用。因为从webpack2开始，内置了对ES6、CommonJS、AMD 模块化语句的支持，webpack会对各种模块进行语法分析，并做转换编译。</p>
+<p>具体Webpack兼容所有JS模块规范的原理分析参见<a href="https://juejin.im/post/5c94a2f36fb9a070fc623df4" target="_blank" rel="noopener">Webpack 模块打包原理</a>。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://i.jakeyu.top/2017/09/14/兼容前后端共用模块代码/" target="_blank" rel="noopener">兼容前后端共用模块代码(摘自《深入浅出Node.js》)</a>, by Jake.</li>
+<li><a href="https://segmentfault.com/a/1190000011633813" target="_blank" rel="noopener">兼容多种模块规范(AMD,CMD,Node)的代码</a>, by CodeMan.</li>
+<li><a href="http://justineo.github.io/singles/writing-modular-js/" target="_blank" rel="noopener">使用 AMD、CommonJS 及 ES Harmony 编写模块化的 JavaScript</a>, by ADDY OSMANI.</li>
+<li><a href="http://www.hangge.com/blog/cache/detail_1686.html" target="_blank" rel="noopener">JS - CommonJS、ES2015、AMD、CMD模块规范对比与介绍（附样例）</a>,by hangge.</li>
+<li><a href="https://babeljs.io/docs/en/" target="_blank" rel="noopener">What is Babel?</a>,by Babel.</li>
+<li><a href="https://webpack.js.org/concepts/" target="_blank" rel="noopener">Webpack Concepts</a>,by webpack.</li>
+<li><a href="https://segmentfault.com/a/1190000012386576" target="_blank" rel="noopener">import、require、export、module.exports 混合使用详解</a>,by lv_DaDa.</li>
+<li><a href="https://juejin.im/post/5c94a2f36fb9a070fc623df4" target="_blank" rel="noopener">Webpack 模块打包原理</a>,by lq782655835.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/22/sequelize-cli%E4%BD%BF%E7%94%A8%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2047,184 +2243,6 @@ console.log(y);</code></pre></li>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/03/Matplotlib%E8%9C%A1%E7%83%9B%E5%9B%BE%E7%BB%98%E5%88%B6%E6%95%99%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/03/Matplotlib%E8%9C%A1%E7%83%9B%E5%9B%BE%E7%BB%98%E5%88%B6%E6%95%99%E7%A8%8B/" itemprop="url">
-                  Matplotlib蜡烛图绘制教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-03 09:41:25" itemprop="dateCreated datePublished" datetime="2018-06-03T09:41:25+08:00">2018-06-03</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-01-01 11:52:05" itemprop="dateModified" datetime="2020-01-01T11:52:05+08:00">2020-01-01</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>股票分析离不开各种图表的绘制，尤其是最常用的蜡烛图。下面介绍python中使用matplotlib绘制蜡烛图的过程。</p>
-<h1 id="环境及配置"><a href="#环境及配置" class="headerlink" title="环境及配置"></a>环境及配置</h1><p>使用的环境如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ python3 --version</span><br><span class="line">Python 3.6.5rc1</span><br><span class="line">$ ipython3</span><br><span class="line">In [1]: import matplotlib</span><br><span class="line">In [2]: matplotlib.__version__</span><br><span class="line">Out[2]: &#39;2.2.2&#39;</span><br><span class="line">In [3]: import tushare as ts</span><br><span class="line">In [4]: ts.__version__</span><br><span class="line">Out[4]: &#39;1.1.9&#39;</span><br><span class="line">In [5]: import talib</span><br><span class="line">In [6]: talib.__version__</span><br><span class="line">Out[6]: &#39;0.4.17&#39;</span><br></pre></td></tr></table></figure>
-
-<p>绘制蜡烛图通常使用matplotlib.finance库，但这个库在matplotlib 2.0后已经被废弃，并被移到一个名叫mpl_finance的库中。可使用如下命令安装mpl_finance。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install https:&#x2F;&#x2F;github.com&#x2F;matplotlib&#x2F;mpl_finance&#x2F;archive&#x2F;master.zip</span><br></pre></td></tr></table></figure>
-
-<p>mpl_finance使用雅虎接口获取股票数据，但是不稳定，因此推荐使用tushare库获取股票数据。另外使用talib计算股票各种技术分析指标，例如常用的均线数据。需要注意的是通过pip3按照的talib库是对C/C++版talib的包装，因此需先安装C/C++版talib。</p>
-<h1 id="蜡烛图绘制"><a href="#蜡烛图绘制" class="headerlink" title="蜡烛图绘制"></a>蜡烛图绘制</h1><h2 id="蜡烛图绘制函数简介"><a href="#蜡烛图绘制函数简介" class="headerlink" title="蜡烛图绘制函数简介"></a>蜡烛图绘制函数简介</h2><p>mpl_finance库中蜡烛图的绘制主要有以下四个函数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">candlestick2_ochl(ax, opens, closes, highs, lows, width&#x3D;4, colorup&#x3D;&#39;k&#39;, colordown&#x3D;&#39;r&#39;, alpha&#x3D;0.75)</span><br><span class="line">candlestick2_ohlc(ax, opens, highs, lows, closes, width&#x3D;4, colorup&#x3D;&#39;k&#39;, colordown&#x3D;&#39;r&#39;, alpha&#x3D;0.75)</span><br><span class="line">candlestick_ochl(ax, quotes, width&#x3D;0.2, colorup&#x3D;&#39;k&#39;, colordown&#x3D;&#39;r&#39;, alpha&#x3D;1.0)</span><br><span class="line">candlestick_ohlc(ax, quotes, width&#x3D;0.2, colorup&#x3D;&#39;k&#39;, colordown&#x3D;&#39;r&#39;, alpha&#x3D;1.0)</span><br></pre></td></tr></table></figure>
-
-<p>在这四个函数的使用过程中需要注意的是：</p>
-<ul>
-<li><p>candlestick2_ohlc函数假定opens, highs, lows, closes中任意一个值不存在，则其他值也不存在。</p>
-</li>
-<li><p>candlestick_ochl和candlestick_ohlc的输入参数quotes是(time, open, close, high, low, …)元组序列，其中time必须是浮点日期格式，具体参见date2num。</p>
-</li>
-</ul>
-<p>蜡烛图绘制函数存在日线图的时间间隔问题（非交易日无法跳过，导致图像断裂）。常用解决方法是建议重新调整横坐标，被动地过滤掉非交易时间段<sup>[2]</sup>。例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ax.set_xticks(range(0, len(data[&#39;date&#39;]), 10))</span><br><span class="line">ax.set_xticklabels(data[&#39;date&#39;][::10])</span><br></pre></td></tr></table></figure>
-
-<h2 id="蜡烛图的简单绘制"><a href="#蜡烛图的简单绘制" class="headerlink" title="蜡烛图的简单绘制"></a>蜡烛图的简单绘制</h2><p>蜡烛图的简单例子如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import talib</span><br><span class="line">import tushare as ts</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import mpl_finance as mpf</span><br><span class="line"> </span><br><span class="line">data &#x3D; ts.get_k_data(&#39;002320&#39;)</span><br><span class="line">sma_10 &#x3D; talib.SMA(np.array(data[&#39;close&#39;]), 10)</span><br><span class="line">sma_30 &#x3D; talib.SMA(np.array(data[&#39;close&#39;]), 30)</span><br><span class="line">fig &#x3D; plt.figure(figsize&#x3D;(24, 8))</span><br><span class="line">ax &#x3D; fig.add_subplot(1, 1, 1)</span><br><span class="line">ax.set_xticks(range(0, len(data[&#39;date&#39;]), 50))</span><br><span class="line">ax.set_xticklabels(data[&#39;date&#39;][::50])</span><br><span class="line">ax.plot(sma_10, label&#x3D;&#39;10 日均线&#39;)</span><br><span class="line">ax.plot(sma_30, label&#x3D;&#39;30 日均线&#39;)</span><br><span class="line">ax.legend(loc&#x3D;&#39;upper left&#39;)</span><br><span class="line">mpf.candlestick2_ochl(ax, data[&#39;open&#39;], data[&#39;close&#39;], data[&#39;high&#39;], data[&#39;low&#39;],width&#x3D;0.5, colorup&#x3D;&#39;r&#39;, colordown&#x3D;&#39;green&#39;,alpha&#x3D;0.6)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://matplotlib.org/api/finance_api.html" target="_blank" rel="noopener">finance api</a>, by matplotlib</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2272,7 +2290,7 @@ console.log(y);</code></pre></li>
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">374</span>
+                    <span class="site-state-item-count">375</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

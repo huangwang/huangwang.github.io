@@ -314,6 +314,181 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/03/17/OSG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/03/17/OSG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  OSG学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-03-17 22:25:31" itemprop="dateCreated datePublished" datetime="2021-03-17T22:25:31+08:00">2021-03-17</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-12-29 15:46:24" itemprop="dateModified" datetime="2021-12-29T15:46:24+08:00">2021-12-29</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>OpenSceneGraph是一个开源3D图形应用程序编程接口，应用程序开发人员在诸如视觉模拟，计算机游戏，虚拟现实，科学可视化和建模等领域中使用该接口。</p>
+<h1 id="OSG渲染状态管理"><a href="#OSG渲染状态管理" class="headerlink" title="OSG渲染状态管理"></a>OSG渲染状态管理</h1><blockquote>
+<p>OpenGL是一个状态机，在OpenGL中如果设置一种状态（比如设置当前的绘制颜色：glColor，那么实际上是设置了OpenGL颜色绘制状态为某种颜色，如果后续没有调用glColor去修改颜色，那么之后所有绘制的对象都使用之前设置的颜色。），在没有修改它的时候，该状态就会一直保持。在OpenGL使用中的状态有以下两种方式：</p>
+</blockquote>
+<ul>
+<li><p>仅仅通过glEnable和glDisable开启和关闭状态<br>这里面也有两种不同的取值：</p>
+<ul>
+<li>1.1 不涉及和其他状态相关，比如GL_DITHER、GL_POINT_SPRITE等；</li>
+<li>1.2 涉及和其他状态的联动，比如GL_ALPHA_TEST、GL_BLEND等，需要使用glEnable开启状态</li>
+</ul>
+</li>
+<li><p>和1.2种的某种状态对应，但是需要设置状态的值（比如glAlphaFunc、glBlendFunc）</p>
+</li>
+</ul>
+<p>在OSG中对OpenGL的状态进行了封装，在OSG中称第一种情形为Mode（模式），称第二种情况为Attribute（属性），使用osg::StateAttribute来封装OpenGL的状态。</p>
+<p>在OSG中涉及到状态管理的类有3个，分别是 osg::State， osg::StateSet， osg::StateAttribute。</p>
+<h1 id="Object-DataVariance"><a href="#Object-DataVariance" class="headerlink" title="Object::DataVariance"></a>Object::DataVariance</h1><p>要设置一个Object 对象的数据变量，可以调用setDataVariance()并设置输入参数为Object::DataVariance 枚举量。初始状态下，变度的值是UNSPECIFIED。用户程序可以将数据变度更改为STATIC 或者DYNAMIC。OSG 将确保绘制遍历在所有的DYNAMIC 节点和数据处理完成后才会返回。</p>
+<p>场景数据动态更新的核心就是设置数据变度属性DataVariance，它决定了OSG在多线程渲染的过程中的执行策略：只有所有DYNAMIC属性的对象被渲染完毕之后，OSG才会开始执行下一帧的用户更新操作；这样有效地可以避免数据的过快更新造成当前的渲染动作出错，以致系统崩溃。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://en.wikipedia.org/wiki/OpenSceneGraph" target="_blank" rel="noopener">OpenSceneGraph</a>,by wikipedia.</li>
+<li><a href="https://blog.csdn.net/wang15061955806/article/details/49679731" target="_blank" rel="noopener">OSG渲染引擎架构——整体认识</a>,by wikipedia.</li>
+<li><a href="https://blog.csdn.net/csxiaoshui/article/details/74859066" target="_blank" rel="noopener">OSG渲染状态管理</a>,by csxiaoshui.</li>
+<li><a href="https://www.codetd.com/en/article/13390663" target="_blank" rel="noopener">OSG中的DataVariance</a>,by codetd.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/03/13/OpenGL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1784,155 +1959,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/01/19/Win7%E4%B8%8BMongoDB%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/01/19/Win7%E4%B8%8BMongoDB%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/" itemprop="url">
-                  Win7下MongoDB数据库的安装方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2021-01-19 08:28:56 / 修改时间：09:23:06" itemprop="dateCreated datePublished" datetime="2021-01-19T08:28:56+08:00">2021-01-19</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在Windows7操作系统下安装MongoDB数据库，需要注意MongoDB数据库版本不能超过4.2。在安装过程中应选择“Complete”安装，并取消勾选“Install MongoDB Compass”。在安装MongoDB数据库之前，应先安装VC_redist程序，否则安装MongoDB数据库时将报如图1所示错误。</p>
-<p align="center">
-    <img src="images/error.png" width="80%" alt="安装过程中MongoDB服务无法启动"/>
-</p>
-<center>图1 安装过程中MongoDB服务无法启动</center>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://stackoverflow.com/questions/52236612/service-mongodb-server-mongodb-failed-to-start" target="_blank" rel="noopener">Service ‘MongoDB Server’ (MongoDB) failed to start</a>,by stackoverflow.</li>
-<li><a href="https://blog.csdn.net/qq_20084101/article/details/82261195" target="_blank" rel="noopener">解决 Win10 安装 MongoDB 4.0 无法启动服务的问题（ 踩了个大坑）</a>,by 蓝三金.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1980,7 +2006,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">375</span>
+                    <span class="site-state-item-count">376</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

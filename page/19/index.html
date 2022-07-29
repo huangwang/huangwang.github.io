@@ -314,6 +314,378 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/11/Axios%E8%AF%B7%E6%B1%82%E8%B6%85%E6%97%B6%E5%A4%84%E7%90%86%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/11/11/Axios%E8%AF%B7%E6%B1%82%E8%B6%85%E6%97%B6%E5%A4%84%E7%90%86%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Axios请求超时处理方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-11 20:30:30 / 修改时间：20:52:36" itemprop="dateCreated datePublished" datetime="2019-11-11T20:30:30+08:00">2019-11-11</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js 中。Vue2官方推荐使用Axios执行HTTP请求和处理HTTP响应。Axios具有如下特征：</p>
+<ul>
+<li>从浏览器中创建 XMLHttpRequests</li>
+<li>从 node.js 创建 http 请求</li>
+<li>支持 Promise API</li>
+<li>拦截请求和响应</li>
+<li>转换请求数据和响应数据</li>
+<li>取消请求</li>
+<li>自动转换 JSON 数据</li>
+<li>客户端支持防御 XSRF</li>
+</ul>
+<p>下面介绍使用Axios的拦截功能实现Axios超时错误的统一处理。</p>
+<h1 id="Axios基本用法"><a href="#Axios基本用法" class="headerlink" title="Axios基本用法"></a>Axios基本用法</h1><p>执行 GET 请求：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 为给定 ID 的 user 创建请求</span><br><span class="line">axios.get(&#39;&#x2F;user?ID&#x3D;12345&#39;)</span><br><span class="line">  .then(function (response) &#123;</span><br><span class="line">    console.log(response);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(function (error) &#123;</span><br><span class="line">    console.log(error);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 可选地，上面的请求可以这样做</span><br><span class="line">axios.get(&#39;&#x2F;user&#39;, &#123;</span><br><span class="line">    params: &#123;</span><br><span class="line">      ID: 12345</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  .then(function (response) &#123;</span><br><span class="line">    console.log(response);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(function (error) &#123;</span><br><span class="line">    console.log(error);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>执行 POST 请求:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">axios.post(&#39;&#x2F;user&#39;, &#123;</span><br><span class="line">    firstName: &#39;Fred&#39;,</span><br><span class="line">    lastName: &#39;Flintstone&#39;</span><br><span class="line">  &#125;)</span><br><span class="line">  .then(function (response) &#123;</span><br><span class="line">    console.log(response);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(function (error) &#123;</span><br><span class="line">    console.log(error);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>执行多个并发请求:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function getUserAccount() &#123;</span><br><span class="line">  return axios.get(&#39;&#x2F;user&#x2F;12345&#39;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function getUserPermissions() &#123;</span><br><span class="line">  return axios.get(&#39;&#x2F;user&#x2F;12345&#x2F;permissions&#39;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">axios.all([getUserAccount(), getUserPermissions()])</span><br><span class="line">  .then(axios.spread(function (acct, perms) &#123;</span><br><span class="line">    &#x2F;&#x2F; 两个请求现在都执行完成</span><br><span class="line">  &#125;));</span><br></pre></td></tr></table></figure>
+
+<h1 id="Axios拦截器"><a href="#Axios拦截器" class="headerlink" title="Axios拦截器"></a>Axios拦截器</h1><p>自定义 axios 实例添加拦截器，在请求或响应被 then 或 catch 处理前拦截它们。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; create an axios instance</span><br><span class="line">const service &#x3D; axios.create(&#123;</span><br><span class="line">  baseURL: process.env.VUE_APP_BASE_API, &#x2F;&#x2F; url &#x3D; base url + request url</span><br><span class="line">  &#x2F;&#x2F; withCredentials: true, &#x2F;&#x2F; send cookies when cross-domain requests</span><br><span class="line">  timeout: 5000 &#x2F;&#x2F; request timeout</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 添加请求拦截器</span><br><span class="line">service.interceptors.request.use(function (config) &#123;</span><br><span class="line">    &#x2F;&#x2F; 在发送请求之前做些什么</span><br><span class="line">    return config;</span><br><span class="line">  &#125;, function (error) &#123;</span><br><span class="line">    &#x2F;&#x2F; 对请求错误做些什么</span><br><span class="line">    return Promise.reject(error);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 添加响应拦截器</span><br><span class="line">service.interceptors.response.use(function (response) &#123;</span><br><span class="line">    &#x2F;&#x2F; 对响应数据做点什么</span><br><span class="line">    return response;</span><br><span class="line">  &#125;, function (error) &#123;</span><br><span class="line">    &#x2F;&#x2F; 对响应错误做点什么</span><br><span class="line">    return Promise.reject(error);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="拦截timeout错误"><a href="#拦截timeout错误" class="headerlink" title="拦截timeout错误"></a>拦截timeout错误</h1><p>在Axios响应拦截器中，处理timeout错误，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">service.interceptors.response.use(function (response) &#123;</span><br><span class="line">    &#x2F;&#x2F; 对响应数据做点什么</span><br><span class="line">    return response;</span><br><span class="line">  &#125;, function (error) &#123;</span><br><span class="line">    &#x2F;&#x2F; 对响应错误做点什么</span><br><span class="line">    if(error.message.includes(&#39;timeout&#39;))&#123;   &#x2F;&#x2F; 判断请求异常信息中是否含有超时timeout字符串</span><br><span class="line">      console.log(&quot;错误回调&quot;, error);</span><br><span class="line">      alert(&quot;网络超时&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    return Promise.reject(error);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.kancloud.cn/yunye/axios/234845" target="_blank" rel="noopener">Axios使用说明</a>,by yunye.</li>
+<li><a href="https://www.cnblogs.com/hcxy/p/10052465.html" target="_blank" rel="noopener">axios超时timeout拦截</a>,by 亲爱的混蛋.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/10/CPlusPlus%E6%A0%87%E5%87%86%E6%A8%A1%E6%9D%BF%E5%BA%93STL%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/11/10/CPlusPlus%E6%A0%87%E5%87%86%E6%A8%A1%E6%9D%BF%E5%BA%93STL%E5%85%A5%E9%97%A8/" itemprop="url">
+                  C++标准模板库STL入门
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-10 12:26:15 / 修改时间：17:53:15" itemprop="dateCreated datePublished" datetime="2019-11-10T12:26:15+08:00">2019-11-10</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近C++编程中需要管理多个由同一个类实例化的对象，于是想到了C++的标准模板库STL，在此将STL的相关知识记录一下。</p>
+<h1 id="STL的来龙去脉"><a href="#STL的来龙去脉" class="headerlink" title="STL的来龙去脉"></a>STL的来龙去脉</h1><p>STL 历史可以追溯到 1972 年 C 语言在 UNIX 计算机上的首次使用。直到 1994 年，STL 才被正式纳入 C++ 标准中。</p>
+<p>标准模板库（STL）是 C ++编程语言的软件库，影响了C ++标准库的许多部分。它提供了四个组件，分别称为<strong>算法，容器，仿函数和迭代器</strong>。</p>
+<p>STL为 C ++提供了一组通用类，例如容器和关联数组，可以与任何内置类型和支持某些基本操作（例如复制和赋值）的任何用户定义类型一起使用。 STL算法独立于容器，从而大大降低了库的复杂性。</p>
+<p>STL通过使用模板来实现其结果。这种方法提供的编译时多态性通常比传统的运行时多态性更有效。对现代 C ++编译器进行了调整，以最大程度地减少由于大量使用STL而引起的抽象损失。</p>
+<p>STL是创建的第一个C ++通用算法和数据结构库，它牢记四个想法：通用编程，不损失效率的抽象性，冯·诺依曼计算模型和值语义。</p>
+<h1 id="STL-组件"><a href="#STL-组件" class="headerlink" title="STL 组件"></a>STL 组件</h1><p>STL 将“在数据上执行的操作”与“要执行操作的数据分开”，分别以如下概念指代：</p>
+<ul>
+<li>容器：包含、放置数据的地方。</li>
+<li>迭代器：在容器中指出一个位置、或成对使用以划定一个区域，用来限定操作所涉及到的数据范围。</li>
+<li>算法：要执行的操作。</li>
+</ul>
+<h2 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h2><p>容器即用来存储并管理某类对象的集合。例如鱼缸是用来盛放金鱼的容器。标准模板库中容器主要分为序列容器（sequence containers）与关系容器（associative containers）。</p>
+<p>序列容器包括：</p>
+<ul>
+<li>vector</li>
+<li>list</li>
+<li>forward_list</li>
+<li>deque</li>
+<li>array</li>
+</ul>
+<p>关联容器包括：</p>
+<ul>
+<li>set</li>
+<li>multiset</li>
+<li>map</li>
+<li>multimap</li>
+<li>unordered_set</li>
+<li>unordered_multiset</li>
+<li>unordered_map</li>
+<li>unordered_multimap</li>
+</ul>
+<p>其他类型的容器包括：</p>
+<ul>
+<li>bitset</li>
+<li>valarray</li>
+</ul>
+<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><p>迭代器用于在一个对象群集的元素上进行遍历动作。对象群集可能是容器，也可能是容器的一部分。</p>
+<p>迭代器的主要用途是为容器提供一组很小的公共接口。利用这个接口，某项操作可以行进至群集内的下一个元素。</p>
+<p>每种容器都提供了各自的迭代器。迭代器了解该容器的内部结构，所以能够正确行进。迭代器的接口和一般指针类似。</p>
+<p>迭代器的作用就是提供一个遍历容器内部所有元素的接口，因此迭代器的内部必须保存一个与容器相关联的指针，然后重载各种运算操作来方便遍历，其中最重要的就是∗运算符和-&gt;运算符，以及++，–等可能需要的运算符重载。</p>
+<p>根据迭代器的操作方式的不同，迭代器分为五种：</p>
+<ul>
+<li>输入迭代器</li>
+<li>输出迭代器</li>
+<li>前向迭代器</li>
+<li>双向迭代器</li>
+<li>随机访问迭代器</li>
+</ul>
+<p>迭代器的示例代码如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    vector&lt;int&gt; v;        &#x2F;&#x2F; 定义一个vector容器</span><br><span class="line"></span><br><span class="line">    v.push_back(1);        &#x2F;&#x2F; 向容器中添加3个元素</span><br><span class="line">    v.push_back(2);</span><br><span class="line">    v.push_back(3);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 遍历向量的元素</span><br><span class="line">    vector&lt;int&gt;::iterator b &#x3D; v.begin();        &#x2F;&#x2F; 指向容器的第一个元素</span><br><span class="line">    vector&lt;int&gt;::iterator e &#x3D; v.end();            &#x2F;&#x2F; 指向容器尾元素的下一个位置</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; C++11新标准的写法, auto关键字为类型推断，由编译器自动完成</span><br><span class="line">    &#x2F;&#x2F; auto b &#x3D; v.begin();</span><br><span class="line">    &#x2F;&#x2F; auto e &#x3D; v.end();</span><br><span class="line"></span><br><span class="line">    for (vector&lt;int&gt;::iterator iter &#x3D; b; iter !&#x3D; e; ++iter)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; *iter &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>算法用来处理群集内的元素，可以出于不同目的搜寻、排序、修改、使用那些元素。所有容器的迭代器都提供一致的接口，通过迭代器的协助，算法程序可以用于任意容器。</p>
+<p>STL 的一个特性是将数据和操作分离。数据由容器类别加以管理，操作则由可定制的算法定义。迭代器在两者之间充当“粘合剂”，以使算法可以和容器交互运作。</p>
+<p>STL 的另一个特性即组件可以针对任意型别运作。“标准模板库”这一名称即表示“可接受任意型别”的模板，并且这些型别均可执行必要操作。</p>
+<h2 id="仿函数"><a href="#仿函数" class="headerlink" title="仿函数"></a>仿函数</h2><p>STL中大量运用了仿函数。仿函数具有泛型编程强大的威力，是纯粹抽象概念的例证。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://c.biancheng.net/stl/" target="_blank" rel="noopener">STL教程：C++ STL快速入门</a>,by C语言中文网.</li>
+<li><a href="http://c.biancheng.net/view/1436.html" target="_blank" rel="noopener">STL是什么（STL简介）</a>,by C语言中文网.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%A0%87%E5%87%86%E6%A8%A1%E6%9D%BF%E5%BA%93" target="_blank" rel="noopener">标准模板库</a>,by wikipedia.</li>
+<li><a href="https://www.jianshu.com/p/77d0dd2fa3ee" target="_blank" rel="noopener">C++ STL初识及整理</a>,by thinkChao.</li>
+<li><a href="https://blog.csdn.net/wutao1530663/article/details/64922389" target="_blank" rel="noopener">C++标准模板库(STL)迭代器的原理与实现</a>,by wutao02.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/02/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1952,366 +2324,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/10/JavaScript%E5%AF%B9%E8%B1%A1%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/10/JavaScript%E5%AF%B9%E8%B1%A1%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86/" itemprop="url">
-                  JavaScript对象深度克隆
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-10-10 21:10:21 / 修改时间：21:37:32" itemprop="dateCreated datePublished" datetime="2019-10-10T21:10:21+08:00">2019-10-10</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>JavaScript并没有提供对象的复制方法，只能借助第三方库或自己实现对象的深度克隆。具体方法如下：</p>
-<h1 id="第三方库实现"><a href="#第三方库实现" class="headerlink" title="第三方库实现"></a>第三方库实现</h1><p>实现JavaScript库的深度克隆的第三方库主要有：</p>
-<ul>
-<li>Underscore —— _.clone()</li>
-<li>jQuery —— $.clone() / $.extend()</li>
-<li>lodash —— _.clone() / _.cloneDeep()</li>
-<li>借助 JSON 全局对象</li>
-</ul>
-<h2 id="Underscore-——-clone"><a href="#Underscore-——-clone" class="headerlink" title="Underscore —— _.clone()"></a>Underscore —— _.clone()</h2><p>在 Underscore 中有这样一个方法：_.clone()，这个方法实际上是一种浅复制 (shallow-copy)，所有嵌套的对象和数组都是直接复制引用而并没有进行深复制。其代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Create a (shallow-cloned) duplicate of an object.</span><br><span class="line">_.clone &#x3D; function(obj) &#123;</span><br><span class="line">  if (!_.isObject(obj)) return obj;</span><br><span class="line">  return _.isArray(obj) ? obj.slice() : _.extend(&#123;&#125;, obj);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h2 id="jQuery-——-clone-extend"><a href="#jQuery-——-clone-extend" class="headerlink" title="jQuery —— $.clone() / $.extend()"></a>jQuery —— $.clone() / $.extend()</h2><p>在 jQuery 中也有这么一个叫 $.clone() 的方法，可是它并不是用于一般的 JS 对象的深复制，而是用于 DOM 对象。与 Underscore 类似，可以通过 $.extend() 方法来完成深复制。值得庆幸的是，在 jQuery 中可以通过添加一个参数来实现递归extend。调用$.extend(true, {}, …)就可以实现深复制。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var x &#x3D; &#123;</span><br><span class="line">    a: 1,</span><br><span class="line">    b: &#123; f: &#123; g: 1 &#125; &#125;,</span><br><span class="line">    c: [ 1, 2, 3 ]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var y &#x3D; $.extend(&#123;&#125;, x),          &#x2F;&#x2F;shallow copy</span><br><span class="line">    z &#x3D; $.extend(true, &#123;&#125;, x);    &#x2F;&#x2F;deep copy</span><br><span class="line"></span><br><span class="line">y.b.f &#x3D;&#x3D;&#x3D; x.b.f       &#x2F;&#x2F; true</span><br><span class="line">z.b.f &#x3D;&#x3D;&#x3D; x.b.f       &#x2F;&#x2F; false</span><br></pre></td></tr></table></figure>
-
-<h2 id="lodash-——-clone-cloneDeep"><a href="#lodash-——-clone-cloneDeep" class="headerlink" title="lodash —— _.clone() / _.cloneDeep()"></a>lodash —— _.clone() / _.cloneDeep()</h2><p>在lodash中关于复制的方法有两个，分别是<em>.clone()和</em>.cloneDeep()。其中<em>.clone(obj, true)等价于</em>.cloneDeep(obj)。</p>
-<h2 id="借助-JSON-全局对象"><a href="#借助-JSON-全局对象" class="headerlink" title="借助 JSON 全局对象"></a>借助 JSON 全局对象</h2><p>针对纯 JSON 数据对象的深复制，使用 JSON 全局对象的 parse 和 stringify 方法来实现深复制也算是一个简单讨巧的方法，但它能正确处理的对象只有 Number, String, Boolean, Array, 扁平对象，即那些能够被 json 直接表示的数据结构。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function jsonClone(obj) &#123;</span><br><span class="line">    return JSON.parse(JSON.stringify(obj));</span><br><span class="line">&#125;</span><br><span class="line">var clone &#x3D; jsonClone(&#123; a:1 &#125;);</span><br></pre></td></tr></table></figure>
-
-<h1 id="递归实现"><a href="#递归实现" class="headerlink" title="递归实现"></a>递归实现</h1><p>下面是递归实现对象深度克隆的可用方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">function clone(obj) &#123;</span><br><span class="line">  &#x2F;&#x2F; Handle the 3 simple types, and null or undefined</span><br><span class="line">  if (null &#x3D;&#x3D; obj || &quot;object&quot; !&#x3D; typeof obj) return obj;</span><br><span class="line"> </span><br><span class="line">  &#x2F;&#x2F; Handle Date</span><br><span class="line">  if (obj instanceof Date) &#123;</span><br><span class="line">    var copy &#x3D; new Date();</span><br><span class="line">    copy.setTime(obj.getTime());</span><br><span class="line">    return copy;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  &#x2F;&#x2F; Handle Array</span><br><span class="line">  if (obj instanceof Array) &#123;</span><br><span class="line">    var copy &#x3D; [];</span><br><span class="line">    for (var i &#x3D; 0, var len &#x3D; obj.length; i &lt; len; ++i) &#123;</span><br><span class="line">      copy[i] &#x3D; clone(obj[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    return copy;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  &#x2F;&#x2F; Handle Object</span><br><span class="line">  if (obj instanceof Object) &#123;</span><br><span class="line">    var copy &#x3D; &#123;&#125;;</span><br><span class="line">    for (var attr in obj) &#123;</span><br><span class="line">      if (obj.hasOwnProperty(attr)) copy[attr] &#x3D; clone(obj[attr]);</span><br><span class="line">    &#125;</span><br><span class="line">    return copy;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  throw new Error(&quot;Unable to copy obj! Its type isn&#39;t supported.&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://jerryzou.com/posts/dive-into-deep-clone-in-javascript/" target="_blank" rel="noopener">深入剖析 JavaScript 的深复制</a>,by 咀嚼之味.</li>
-<li><a href="https://www.jb51.net/article/84541.htm" target="_blank" rel="noopener">深入理解JavaScript中的对象复制(Object Clone)</a>,by jingxian.</li>
-<li><a href="https://book.douban.com/subject/11874748/" target="_blank" rel="noopener">JavaScript语言精粹（修订版）</a>,by Douglas Crockford著.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/10/%E5%9B%BE%E7%89%87%E6%88%96%E5%A4%9A%E5%AA%92%E4%BD%93%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E5%AD%98%E5%82%A8%E4%B8%8E%E7%AE%A1%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/10/%E5%9B%BE%E7%89%87%E6%88%96%E5%A4%9A%E5%AA%92%E4%BD%93%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E5%AD%98%E5%82%A8%E4%B8%8E%E7%AE%A1%E7%90%86/" itemprop="url">
-                  图片或多媒体大文件的存储与管理
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-10-10 08:45:27" itemprop="dateCreated datePublished" datetime="2019-10-10T08:45:27+08:00">2019-10-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-10-11 22:07:39" itemprop="dateModified" datetime="2019-10-11T22:07:39+08:00">2019-10-11</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>图片、声音、视频等大文件在后台数据库中的存储管理方式通常有两种:</p>
-<ul>
-<li>文件存储到数据库中</li>
-<li>文件存储到文件系统中,数据库中保存文件路径</li>
-</ul>
-<p>这两种文件存储管理方式有各自优缺点, 选择哪种方法存储大文件应根据具体情况而定。</p>
-<h1 id="文件系统存储管理方式"><a href="#文件系统存储管理方式" class="headerlink" title="文件系统存储管理方式"></a>文件系统存储管理方式</h1><p>文件系统存储管理方式将文件存储到磁盘中，在数据库中使用varchar类型记录文件路径。该方法的缺点主要有：</p>
-<ul>
-<li>文件不支持DELETE</li>
-</ul>
-<p>当删除文件路径时，不支持自动删除对应文件。</p>
-<ul>
-<li>文件不支持事务隔离</li>
-</ul>
-<p>如果改变文件内容或删除文件，这些操作将立刻被其他客户端看到。</p>
-<ul>
-<li>文件不支持回滚</li>
-</ul>
-<p>数据库记录能够恢复，但文件删除不能。</p>
-<ul>
-<li><p>文件不支持数据库的备份工具</p>
-</li>
-<li><p>文件不支持SQL的访问权限设置</p>
-</li>
-<li><p>文件不是SQL数据类型</p>
-</li>
-</ul>
-<p>数据库不会验证文件路径是否有效。当文件移动、重命名、删除时，数据不会自动更新路径。</p>
-<h1 id="数据库中存储文件"><a href="#数据库中存储文件" class="headerlink" title="数据库中存储文件"></a>数据库中存储文件</h1><p>数据库通常支持BLOB类型，可用于存储任何二进制数据。数据库中存储文件，其优点对应文件系统管理存储方式的缺点。同样，数据库中存储文件也存在一些缺点：</p>
-<ul>
-<li>对数据库的读/写的速度永远都赶不上文件系统处理的速度</li>
-<li>数据库备份变的巨大，越来越耗时间</li>
-<li>对文件的访问需要穿越你的应用层和数据库层</li>
-</ul>
-<h1 id="多媒体大文件存储建议"><a href="#多媒体大文件存储建议" class="headerlink" title="多媒体大文件存储建议"></a>多媒体大文件存储建议</h1><p>当只涉及较小规模图片、音频的存储时，建议直接存放到数据库中。当涉及视频大文件存储时，建议还是用文件系统存储。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://gitee.com/jkxqj/java_wiki/blob/master/SQL%E5%8F%8D%E6%A8%A1%E5%BC%8F.pdf" target="_blank" rel="noopener">SQL反模式</a>,by Bill karwin著, 谭振林, Push Chen译.</li>
-<li><a href="https://www.cnblogs.com/hellojesson/p/6295797.html" target="_blank" rel="noopener">特殊格式文件(视频、声音等) 在数据库中的存储方式</a>,by Jesson.</li>
-<li><a href="https://www.cnblogs.com/wangtao_20/p/3440570.html" target="_blank" rel="noopener">关于图片或者文件在数据库的存储方式归纳</a>,by 王滔.</li>
-<li><a href="https://www.cnblogs.com/studyzy/archive/2009/02/23/1396712.html" target="_blank" rel="noopener">SQL Server 2008新特性——FILESTREAM</a>,by 曾毅.</li>
-<li><a href="https://www.iteye.com/blog/lxy2330-961266" target="_blank" rel="noopener">oracle对大对象类型操作：blob，clob，nclob，bfile</a>,by lxy2330.</li>
-<li><a href="https://www.zhihu.com/question/22128674" target="_blank" rel="noopener">类似优酷土豆视频网站的视频源文件一般是存储在什么样系统上？</a>,by zhihu.</li>
-<li><a href="https://stackoverflow.com/questions/18518290/how-to-add-hours-to-current-date-in-sql-server/18518412" target="_blank" rel="noopener">How to add hours to current date in SQL Server?</a>,by stackoverflow.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2359,7 +2371,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">376</span>
+                    <span class="site-state-item-count">378</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -314,6 +314,189 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/18/%E5%A6%82%E4%BD%95%E5%9C%A8Vistual-Studio%E4%B8%AD%E8%B0%83%E8%AF%95Node-Addon-C-%E6%8F%92%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/18/%E5%A6%82%E4%BD%95%E5%9C%A8Vistual-Studio%E4%B8%AD%E8%B0%83%E8%AF%95Node-Addon-C-%E6%8F%92%E4%BB%B6/" itemprop="url">
+                  如何在Vistual_Studio中调试Node_Addon_C++插件
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-18 21:59:53" itemprop="dateCreated datePublished" datetime="2018-06-18T21:59:53+08:00">2018-06-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-26 19:13:57" itemprop="dateModified" datetime="2019-09-26T19:13:57+08:00">2019-09-26</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近研究如何在Vistual Studio 2017社区版中调试Node addon C++插件，遇到很多问题，花费了不少时间，为防止遗忘，将方法记录下来。</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><ol>
+<li>安装VS2017社区版</li>
+<li>安装python 2.7</li>
+<li>安装Nodejs 8.11.3 LTS</li>
+<li>下载Nodejs 8.11.3 LTS源码</li>
+</ol>
+<h1 id="安装配置环境"><a href="#安装配置环境" class="headerlink" title="安装配置环境"></a>安装配置环境</h1><ol>
+<li><p>安装node-gyp和nan<br>node-gyp和nan用于编译生成node addon 插件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install -g node-gyp</span><br><span class="line">npm install -g nan</span><br></pre></td></tr></table></figure></li>
+<li><p>编译nodejs源码<br>在nodejs源码解压后文件夹中执行如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.\vcbuild.bat debug x64</span><br></pre></td></tr></table></figure></li>
+<li><p>创建nodejs addon c++插件示例工程<br>使用如下命名生成调试用的vs工程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node-gyp configure rebuild --nodedir&#x3D;&quot;D:\project\cpp_project\node-v8.11.3&quot; --debug</span><br></pre></td></tr></table></figure></li>
+<li><p>修改测试用的index.js,使其调用上一步骤生成的调试用的插件  </p>
+<pre><code>//该js调用生成的插件
+var addon = require(&apos;./build/Debug/max&apos;);
+var y=addon.max(2,3);
+console.log(y);</code></pre></li>
+<li><p>使用VS2017打开插件示例工程的build文件夹下node-gyp生成的解决方案。右键单击工程，在上下文菜单中点击属性，配置其调试命令和命令参数，如下图所示。</p>
+<p align="center">
+ <img src="images/debug_config.jpg" width="50%" alt="工程调试配置"/>
+</p>
+</li>
+<li><p>设置断点进行调试</p>
+</li>
+</ol>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/zcyzsy/article/details/72821755" target="_blank" rel="noopener">如何在VS2015中搭建可以写node.js的C++Addon的环境</a>, by Zmyths.</li>
+<li><a href="https://computer-vision-talks.com/how-to-debug-nodejs-addons-in-visual-studio/" target="_blank" rel="noopener">how-to-debug-nodejs-addons-in-visual-studio</a>,by cvtalks. </li>
+<li><a href="https://blog.csdn.net/jxyb2012/article/details/83009765" target="_blank" rel="noopener">Vistual Studio Community 2017 30天许可证过期</a>,by 井底一蛤蟆.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/15/DLL%E5%AF%BC%E5%87%BA%E7%B1%BB%E5%92%8C%E5%87%BD%E6%95%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2084,175 +2267,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/13/Vue-js%E9%9B%86%E6%88%90three-js/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/13/Vue-js%E9%9B%86%E6%88%90three-js/" itemprop="url">
-                  Vue.js集成three.js
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-13 21:03:47" itemprop="dateCreated datePublished" datetime="2018-05-13T21:03:47+08:00">2018-05-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-06-03 09:40:02" itemprop="dateModified" datetime="2018-06-03T09:40:02+08:00">2018-06-03</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Three.js是一个跨浏览器的脚本，使用JavaScript函数库或API来在网页浏览器中创建和展示动画的三维计算机图形。Three.js使用WebGL。源代码托管在GitHub。</p>
-<p>下面介绍在Vue.js中集成three.js的步骤。</p>
-<ol>
-<li>安装vue-cli脚手架</li>
-<li>安装three.js<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save three</span><br></pre></td></tr></table></figure></li>
-<li>编写使用three.js创建3D场景的Vuejs组件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id&#x3D;&quot;container&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">import * as Three from &#39;three&#39;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &#39;Home&#39;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      camera: null,</span><br><span class="line">      scene: null,</span><br><span class="line">      renderer: null,</span><br><span class="line">      mesh: null</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    init: function () &#123;</span><br><span class="line">      var container &#x3D; document.getElementById(&#39;container&#39;)</span><br><span class="line"></span><br><span class="line">      this.camera &#x3D; new Three.PerspectiveCamera(70, container.clientWidth &#x2F; container.clientHeight, 0.01, 10)</span><br><span class="line">      this.camera.position.z &#x3D; 1</span><br><span class="line"></span><br><span class="line">      this.scene &#x3D; new Three.Scene()</span><br><span class="line"></span><br><span class="line">      var geometry &#x3D; new Three.BoxGeometry(0.2, 0.2, 0.2)</span><br><span class="line">      var material &#x3D; new Three.MeshNormalMaterial()</span><br><span class="line"></span><br><span class="line">      this.mesh &#x3D; new Three.Mesh(geometry, material)</span><br><span class="line">      this.scene.add(this.mesh)</span><br><span class="line"></span><br><span class="line">      this.renderer &#x3D; new Three.WebGLRenderer(&#123; antialias: true &#125;)</span><br><span class="line">      this.renderer.setSize(container.clientWidth, container.clientHeight)</span><br><span class="line">      container.appendChild(this.renderer.domElement)</span><br><span class="line">    &#125;,</span><br><span class="line">    animate: function () &#123;</span><br><span class="line">      requestAnimationFrame(this.animate)</span><br><span class="line">      this.mesh.rotation.x +&#x3D; 0.01</span><br><span class="line">      this.mesh.rotation.y +&#x3D; 0.02</span><br><span class="line">      this.renderer.render(this.scene, this.camera)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted () &#123;</span><br><span class="line">    this.init()</span><br><span class="line">    this.animate()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;script&gt;</span><br><span class="line">&lt;style  rel&#x3D;&quot;stylesheet&#x2F;scss&quot; lang&#x3D;&quot;scss&quot; scoped&gt;</span><br><span class="line">#container &#123;</span><br><span class="line">  width: 100%;</span><br><span class="line">  height: 100%;</span><br><span class="line">  margin: 0;</span><br><span class="line">  padding: 0;</span><br><span class="line">  overflow: hidden;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;style&gt;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Three.js" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Three.js</a>, by Wikipedia</li>
-<li><a href="https://stackoverflow.com/questions/47849626/import-and-use-three-js-library-in-vue-component" target="_blank" rel="noopener">https://stackoverflow.com/questions/47849626/import-and-use-three-js-library-in-vue-component</a>, by Stackoverlflow</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/36/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/36/">36</a><span class="page-number current">37</span><a class="page-number" href="/page/38/">38</a><a class="extend next" rel="next" href="/page/38/">下一页</a>
+    <a class="extend prev" rel="prev" href="/page/36/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/36/">36</a><span class="page-number current">37</span><a class="page-number" href="/page/38/">38</a><a class="page-number" href="/page/39/">39</a><a class="extend next" rel="next" href="/page/38/">下一页</a>
   </nav>
 
 
@@ -2295,7 +2314,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">380</span>
+                    <span class="site-state-item-count">381</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

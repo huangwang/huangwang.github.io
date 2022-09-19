@@ -314,6 +314,193 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/09/20/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E4%B8%BB%E9%94%AE%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/20/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E4%B8%BB%E9%94%AE%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/" itemprop="url">
+                  数据库表主键设计方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-20 21:17:43 / 修改时间：22:04:05" itemprop="dateCreated datePublished" datetime="2019-09-20T21:17:43+08:00">2019-09-20</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>数据库表主键使用自增整型字段还是使用GUID字段，这是一个问题。下面详细分析它们的优劣。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="数据库设计范式"><a href="#数据库设计范式" class="headerlink" title="数据库设计范式"></a>数据库设计范式</h2><ul>
+<li><p>第一范式（1NF）：强调的是列的原子性，即列不能够再分成其他几列。简而言之，第一范式就是无重复的列</p>
+</li>
+<li><p>第二范式（2NF）：首先要满足它是1NF，另外还需要包含两部分内容：一是表必须有一个主键；二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。简而言之，第二范式就是非主属性非部分依赖于主关键字</p>
+</li>
+<li><p>第三范式（3NF）：首先是 2NF，另外非主键列必须直接依赖于主键，不能存在传递依赖。即不能存在：非主键列 A 依赖于非主键列 B，非主键列 B 依赖于主键的情况。简而言之，第三范式（3NF）要求一个数据库表中不包含已在其它表中已包含的非主关键字信息。</p>
+</li>
+</ul>
+<h2 id="反范式主键的设计原则"><a href="#反范式主键的设计原则" class="headerlink" title="反范式主键的设计原则"></a>反范式主键的设计原则</h2><ul>
+<li>主键应当是对用户没有意义的。业务上的‘主键’可以通过唯一键（Unique Key）或唯一索引（Unique Index）和其它约束条件实现</li>
+<li>主键应该是单列的，以便提高连接和筛选操作的效率</li>
+<li>不要更新主键。实际上，因为主键除了惟一地标识一行之外再没有其他的用途了，所以也就没有理由去对它更新。</li>
+<li>主键不应包含动态变化的数据，如时间戳、创建时间列、修改时间列等</li>
+<li>主键应当由计算机自动生成。</li>
+</ul>
+<h1 id="数据库表主键设计方法"><a href="#数据库表主键设计方法" class="headerlink" title="数据库表主键设计方法"></a>数据库表主键设计方法</h1><p>数据库表主键设计主要有自增整型字段和使用GUID字段两种方法。</p>
+<h2 id="自增整型字段作为主键"><a href="#自增整型字段作为主键" class="headerlink" title="自增整型字段作为主键"></a>自增整型字段作为主键</h2><p>最常用的主键设计方法。例如《阿里 Java 开发手册》中规定有以下 MySQL 建表规约：</p>
+<blockquote>
+<p>表必备三字段：id, gmt_create, gmt_modified。 说明：其中id必为主键，类型为unsigned bigint、单表时自增、步长为1。gmt_create, gmt_modified的类型均为date_time类型。</p>
+</blockquote>
+<p>该方法优点是：数据库自动编号，速度快，而且是增量增长，聚集型主键按顺序存放，对于检索非常有利;数字型的，占用空间小，易排序，在程序中传递也方便;如果通过非系统增加记录(比如手动录入，或是用其他工具直接在表里插入新记录，或老系统数据导入)时，非常方便，不用担心主键重复问题。</p>
+<p>该方法缺点是：因为自动增长，在手动要插入指定ID的记录时会显得麻烦，尤其是当系统与其他系统集成时，需要数据导入时，很难保证原系统的ID不发生主键冲突。</p>
+<h2 id="GUID字符串作为主键"><a href="#GUID字符串作为主键" class="headerlink" title="GUID字符串作为主键"></a>GUID字符串作为主键</h2><p>Guid:指在一台机器上生成的数字，它保证对在同一时空中的所有机器都是唯一的，其算法是通过以太网卡地址、纳秒级时间、芯片ID码和许多可能的数字生成。其格式为:04755396-9A29-4B8C-A38D-00042C1B9028。</p>
+<p>GUID字符串作为主键的优点如下：</p>
+<ul>
+<li><p>在扩展数据库的时候，当你有多个数据库包含同一段（片）数据时，比如一个顾客集，使用 GUID 意味着该 ID 在所有的数据库中是唯一标识的，而不是仅仅本数据库唯一。这保障了跨数据库迁移数据的安全。又比如，我曾在项目中把多个数据库分片合并到一个 Hadoop 集群中，也没有产生键的冲突。</p>
+</li>
+<li><p>在插入数据之前，你就能知道这个主键的值，这避免了一轮的数据查找，并且简化了事务的逻辑，即在你插入子记录之前，因为需要使用这个主键作为一个外键，你必须要知道这个主键的值。</p>
+</li>
+<li><p>GUID 不会透露数据的信息，因此被用在 URL 中也比自增整数更安全。比如，我是编号 12345678 号顾客，那么人们就会猜测编号为 12345677 和 12345679 的顾客的存在，这就提供了一种攻击向量。（但是后面我们会看到一个更好的替代品）</p>
+</li>
+</ul>
+<p>GUID字符串作为主键的缺点如下：</p>
+<ul>
+<li>GUID 值较长，不容易记忆和输入，而且这个值是随机、无顺序的。</li>
+<li>GUID 的值有 16 个字节，与其它那些诸如 4 字节的整数相比要相对大一些。这意味着如果在数据库中使用 uniqueidentifier 键，可能会带来两方面的消极影响：存储空间增大;索引时间较慢。</li>
+</ul>
+<h1 id="主流数据库中GUID实现"><a href="#主流数据库中GUID实现" class="headerlink" title="主流数据库中GUID实现"></a>主流数据库中GUID实现</h1><h2 id="MSSQL"><a href="#MSSQL" class="headerlink" title="MSSQL"></a>MSSQL</h2><p>在MS Sql 数据库中可以在建立表结构是指定字段类型为uniqueidentifier,并且其默认值可以使用NewID()来生成唯一的Guid(全局唯一标识符).</p>
+<p>使用NewID生成的比较随机,如果是SQL 2005可以使用NewSequentialid()来顺序生成,在此为了兼顾使用SQL 2000使用了NewID().</p>
+<h2 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h2><p>MySQL中使用UUID()函数生成主键，UUID()函数将生成格式为xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx (8-4-4-4-12)的字符串，包含32个16进制数字，以连字号分为五段。示例：550e8400-e29b-41d4-a716-446655440000。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/kleguan/article/details/74502330" target="_blank" rel="noopener">数据库表主键设计原则</a>,by 乐哉悠哉.</li>
+<li><a href="https://blog.csdn.net/linzhiqiang0316/article/details/52881151" target="_blank" rel="noopener">[MySQL]数据库主键设计之思考</a>,by 林老师带你学编程.</li>
+<li><a href="http://www.nowamagic.net/librarys/veda/detail/383" target="_blank" rel="noopener">如何设计数据库的主键</a>,by Veda 原型.</li>
+<li><a href="https://juejin.im/post/59561e5b6fb9a06bbf6fdf16" target="_blank" rel="noopener">[译] 把 UUID 或者 GUID 作为主键？你得小心啦！</a>,by zaraguo.</li>
+<li><a href="https://blog.csdn.net/shiyong1949/article/details/78411509" target="_blank" rel="noopener">MySQL中使用UUID()函数生成主键</a>,by shiyonghm.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/09/16/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E%E4%B8%8E%E7%89%A9%E7%90%86%E5%BC%95%E6%93%8E/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1922,151 +2109,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/08/17/MSSQL2008%E4%B8%AD%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/17/MSSQL2008%E4%B8%AD%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E7%8E%B0/" itemprop="url">
-                  MSSQL2008中分页查询的实现
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-08-17 18:22:02 / 修改时间：22:04:42" itemprop="dateCreated datePublished" datetime="2019-08-17T18:22:02+08:00">2019-08-17</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在后台管理中，涉及分页操作，需要数据库支持limit和offset选项，但在MSSQL2008中这两个选项不支持，不过可以用ROW_NUMBER函数在SQL语句中实现数据分页效果。SQL代码示例如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM  </span><br><span class="line">(SELECT Users.id as id,name,sign,account,audit,roleName,RoleId, Users.deleteFlag as deleteFlag,</span><br><span class="line">ROW_NUMBER() OVER (ORDER BY Users.createdAt) AS Seq </span><br><span class="line">FROM Users LEFT JOIN Roles ON Users.RoleId&#x3D;Roles.id)Users </span><br><span class="line">Where deleteFlag&#x3D;0 and </span><br><span class="line">Seq &gt; :offset_num and Seq&lt;&#x3D; :offset_num+:limit_num</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://social.msdn.microsoft.com/Forums/sqlserver/en-US/f24c0a3d-e8e9-4041-aca5-590a6e1a2e81/how-to-use-offset-fetch-next-in-sql-server-2008-r2?forum=databasedesign" target="_blank" rel="noopener">How to use Offset . . .Fetch Next in SQL SERVER 2008 R2</a>,by microsoft msdn.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2114,7 +2156,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">386</span>
+                    <span class="site-state-item-count">387</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

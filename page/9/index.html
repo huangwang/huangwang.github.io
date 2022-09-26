@@ -314,6 +314,341 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/09/21/Pipenv%E6%9C%80%E6%96%B0%E4%B8%80%E4%BB%A3Python%E9%A1%B9%E7%9B%AE%E7%8E%AF%E5%A2%83%E4%B8%8E%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/09/21/Pipenv%E6%9C%80%E6%96%B0%E4%B8%80%E4%BB%A3Python%E9%A1%B9%E7%9B%AE%E7%8E%AF%E5%A2%83%E4%B8%8E%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" itemprop="url">
+                  Pipenv最新一代Python项目环境与依赖管理工具
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-09-21 16:09:50" itemprop="dateCreated datePublished" datetime="2021-09-21T16:09:50+08:00">2021-09-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2022-05-14 09:20:14" itemprop="dateModified" datetime="2022-05-14T09:20:14+08:00">2022-05-14</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Pipenv是一个工具，旨在将所有打包世界（bundler、composer、npm、cargo、yarn 等）中最好的东西带到 Python 世界。在我们的世界中，Windows 是一等公民。</p>
+<p>它会自动为您的项目创建和管理 virtualenv，并Pipfile在您安装/卸载软件包时从您的项目中添加/删除软件包。它还生成Pipfile.lock用于生成确定性构建的 ever-important 。</p>
+<p>Pipenv 主要旨在为应用程序的用户和开发人员提供一种设置工作环境的简单方法。</p>
+<p>Pipenv 寻求解决的问题是多方面的：</p>
+<ul>
+<li>您不再需要单独使用pip和virtualenv。他们一起工作。</li>
+<li>管理requirements.txt文件可能会有问题，因此 Pipenv 使用* * Pipfile并将Pipfile.lock抽象依赖声明与上次测试的组合分开。</li>
+<li>哈希值无处不在，总是如此。安全。自动暴露安全漏洞。</li>
+<li>强烈鼓励使用最新版本的依赖项，以尽量减少过时组件带来的安全风险。</li>
+<li>让您深入了解您的依赖关系图（例如）。$ pipenv graph</li>
+<li>通过加载.env文件简化开发工作流程。</li>
+</ul>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>如果您已经拥有 Python 和 pip，您可以轻松地将 Pipenv 安装到您的主目录中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pip install pipenv</span><br></pre></td></tr></table></figure>
+
+<h1 id="创建虚拟环境"><a href="#创建虚拟环境" class="headerlink" title="创建虚拟环境"></a>创建虚拟环境</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd your_project_dir</span><br><span class="line">$ pipenv install</span><br></pre></td></tr></table></figure>
+
+<h1 id="激活虚拟环境"><a href="#激活虚拟环境" class="headerlink" title="激活虚拟环境"></a>激活虚拟环境</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pipenv shell</span><br></pre></td></tr></table></figure>
+
+<h1 id="安装依赖到虚拟环境"><a href="#安装依赖到虚拟环境" class="headerlink" title="安装依赖到虚拟环境"></a>安装依赖到虚拟环境</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pipenv install Scrapy</span><br></pre></td></tr></table></figure>
+
+<h1 id="记录依赖"><a href="#记录依赖" class="headerlink" title="记录依赖"></a>记录依赖</h1><p>使用Pipenv时，什么都不必做，Pipenv会自动帮你管理依赖。Pipenv会在你创建虚拟环境时自动创建Pipfile和Pipfile.lock文件（如果不存在），并且会在你使用pipenv install和pipenv uninstall命令安装和卸载包时自动更新Pipfile和Pipfile.lock。</p>
+<h1 id="在部署环境安装依赖"><a href="#在部署环境安装依赖" class="headerlink" title="在部署环境安装依赖"></a>在部署环境安装依赖</h1><p>使用Pipenv则只需要执行pipenv install，它会自动安装Pipfile中记录的依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pipenv install</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://huangwang.github.io/2018/10/09/Virtualenv%E7%AE%80%E6%98%93%E6%95%99%E7%A8%8B/">Virtualenv简易教程</a>,by jackhuang.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/60647332" target="_blank" rel="noopener">最全的Python虚拟环境使用方法</a>,by Stevent.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/37581807" target="_blank" rel="noopener">Pipenv：新一代Python项目环境与依赖管理工具</a>,by 李辉.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/109939711" target="_blank" rel="noopener">Python 修改 pip 源为国内源</a>,by 花晓星辰.</li>
+<li><a href="https://www.jianshu.com/p/d4af07d5af27" target="_blank" rel="noopener">pip安装包时出现 ValueError: check_hostname requires server_hostname 错误</a>,by 胡小包.</li>
+<li><a href="https://blog.csdn.net/m0_37469948/article/details/106188587" target="_blank" rel="noopener">pyenv install build failed:Fatal: You must get working getaddrinfo() function.</a>,by Honcy Ye.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/08/07/%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95%E9%9B%86%E9%94%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/08/07/%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95%E9%9B%86%E9%94%A6/" itemprop="url">
+                  搜索算法集锦
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-08-07 22:37:00 / 修改时间：23:26:11" itemprop="dateCreated datePublished" datetime="2021-08-07T22:37:00+08:00">2021-08-07</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>记录各种经典的搜索算法。</p>
+<h1 id="Dijkstra算法"><a href="#Dijkstra算法" class="headerlink" title="Dijkstra算法"></a>Dijkstra算法</h1><p>该算法解决了图 ${\displaystyle G=\langle V,E\rangle }$上带权的单源最短路径问题。</p>
+<h1 id="A-搜索算法"><a href="#A-搜索算法" class="headerlink" title="A*搜索算法"></a>A*搜索算法</h1><p>A<em>搜索算法（A</em> search algorithm）是一种在图形平面上，有多个节点的路径，求出最低通过成本的算法。常用于游戏中的NPC的移动计算，或网络游戏的BOT的移动计算上。</p>
+<p>该算法综合了BFS和Dijkstra算法的优点：在进行启发式搜索提高算法效率的同时，可以保证找到一条最优路径（基于评估函数）。</p>
+<h1 id="RRT-搜索算法"><a href="#RRT-搜索算法" class="headerlink" title="RRT*搜索算法"></a>RRT*搜索算法</h1><p>基于随机采样的路径规划算法。这类算法适用于高维度空间，它们以概率完备性(当时间接近无限时一定有解)来代替完备性，从而提高搜索效率。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%88%B4%E5%85%8B%E6%96%AF%E7%89%B9%E6%8B%89%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">Dijkstra算法</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/A*%E6%90%9C%E5%B0%8B%E6%BC%94%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">A*搜索算法</a>,by wikipedia.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/346666812" target="_blank" rel="noopener">路径规划 | 图搜索算法：DFS、BFS、GBFS、Dijkstra、A*</a>,by 鬼木士.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/349074802" target="_blank" rel="noopener">路径规划 | 随机采样算法：PRM、RRT、RRT-Connect、RRT*</a>,by 鬼木士.</li>
+<li><a href="https://blog.csdn.net/gophae/article/details/103231053" target="_blank" rel="noopener">全局路径规划：图搜索算法介绍4(RRT/RRT*)</a>,by gophae.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/08/06/%E7%A9%BA%E6%88%98%E6%88%98%E6%9C%AF%E9%9B%86%E9%94%A6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1650,318 +1985,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/06/07/%E6%B7%B1%E5%BA%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/06/07/%E6%B7%B1%E5%BA%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/" itemprop="url">
-                  深度强化学习的实验环境汇总
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2021-06-07 21:20:51 / 修改时间：21:26:33" itemprop="dateCreated datePublished" datetime="2021-06-07T21:20:51+08:00">2021-06-07</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/105293343" target="_blank" rel="noopener">深度强化学习中实验环境-开源平台框架汇总</a>,by 小小何先生.</li>
-<li><a href="https://blog.csdn.net/bigheadyushan/article/details/81019691" target="_blank" rel="noopener">强化学习实验环境 I (MuJoCo, OpenAI Gym, rllab, DeepMind Lab, TORCS, PySC2)</a>,by AITBOOK.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/06/03/FlightGear%E5%A4%9A%E5%B1%8F%E5%A4%9A%E8%A7%86%E5%8F%A3%E8%AE%BE%E7%BD%AE%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/06/03/FlightGear%E5%A4%9A%E5%B1%8F%E5%A4%9A%E8%A7%86%E5%8F%A3%E8%AE%BE%E7%BD%AE%E6%96%B9%E6%B3%95/" itemprop="url">
-                  FlightGear多屏多视口设置方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2021-06-03 23:19:14" itemprop="dateCreated datePublished" datetime="2021-06-03T23:19:14+08:00">2021-06-03</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2021-06-23 12:52:46" itemprop="dateModified" datetime="2021-06-23T12:52:46+08:00">2021-06-23</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在玩FlightGear的过程中，可能需要将视景分角度投影到不同显示器上，或者在一个显示器窗口上投影不同角度的视景。下面记录该需求实现方法。</p>
-<h1 id="投影到不同显示器"><a href="#投影到不同显示器" class="headerlink" title="投影到不同显示器"></a>投影到不同显示器</h1><p>在FGDATA文件夹根目录下创建camera-views.xml文件夹，写入如下内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;PropertyList&gt;</span><br><span class="line">  &lt;camera-group&gt;</span><br><span class="line">      &lt;window&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;host-name type&#x3D;&quot;string&quot;&gt;&lt;&#x2F;host-name&gt;</span><br><span class="line">        &lt;display&gt;0&lt;&#x2F;display&gt;</span><br><span class="line">        &lt;screen&gt;0&lt;&#x2F;screen&gt;</span><br><span class="line">        &lt;fullscreen type &#x3D; &quot;bool&quot;&gt;false&lt;&#x2F;fullscreen&gt;</span><br><span class="line">        &lt;decoration type &#x3D; &quot;bool&quot;&gt;false&lt;&#x2F;decoration&gt;</span><br><span class="line">        &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">        &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">        &lt;width&gt;1920&lt;&#x2F;width&gt;</span><br><span class="line">        &lt;height&gt;1080&lt;&#x2F;height&gt;</span><br><span class="line">      &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">      &lt;window&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Right&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;host-name type&#x3D;&quot;string&quot;&gt;&lt;&#x2F;host-name&gt;</span><br><span class="line">        &lt;display&gt;0&lt;&#x2F;display&gt;</span><br><span class="line">        &lt;screen&gt;1&lt;&#x2F;screen&gt;</span><br><span class="line">        &lt;fullscreen type &#x3D; &quot;bool&quot;&gt;false&lt;&#x2F;fullscreen&gt;</span><br><span class="line">        &lt;decoration type &#x3D; &quot;bool&quot;&gt;false&lt;&#x2F;decoration&gt;</span><br><span class="line">        &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">        &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">        &lt;width&gt;1280&lt;&#x2F;width&gt;</span><br><span class="line">        &lt;height&gt;720&lt;&#x2F;height&gt;</span><br><span class="line">      &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">      &lt;gui&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">          &lt;name type&#x3D;&quot;string&quot;&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line">      &lt;&#x2F;gui&gt;</span><br><span class="line"></span><br><span class="line">      &lt;camera&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">         &lt;name&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">        &lt;view&gt;</span><br><span class="line">          &lt;heading-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;heading-deg&gt;</span><br><span class="line">          &lt;roll-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;roll-deg&gt;</span><br><span class="line">          &lt;pitch-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;pitch-deg&gt;</span><br><span class="line">        &lt;&#x2F;view&gt;</span><br><span class="line"></span><br><span class="line">        &lt;viewport&gt;</span><br><span class="line">          &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">          &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">          &lt;width&gt;1920&lt;&#x2F;width&gt;</span><br><span class="line">          &lt;height&gt;1080&lt;&#x2F;height&gt;</span><br><span class="line">        &lt;&#x2F;viewport&gt;</span><br><span class="line">        </span><br><span class="line">      &lt;&#x2F;camera&gt;</span><br><span class="line">      &lt;camera&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Right&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">         &lt;name&gt;Right&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">        &lt;view&gt;</span><br><span class="line">          &lt;heading-deg type &#x3D; &quot;double&quot;&gt;-45.0&lt;&#x2F;heading-deg&gt;</span><br><span class="line">          &lt;roll-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;roll-deg&gt;</span><br><span class="line">          &lt;pitch-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;pitch-deg&gt;</span><br><span class="line">        &lt;&#x2F;view&gt;</span><br><span class="line"></span><br><span class="line">        &lt;viewport&gt;</span><br><span class="line">          &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">          &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">          &lt;width&gt;1280&lt;&#x2F;width&gt;</span><br><span class="line">          &lt;height&gt;720&lt;&#x2F;height&gt;</span><br><span class="line">        &lt;&#x2F;viewport&gt;</span><br><span class="line"></span><br><span class="line">      &lt;&#x2F;camera&gt;</span><br><span class="line">    &lt;&#x2F;camera-group&gt;</span><br><span class="line">&lt;&#x2F;PropertyList&gt;</span><br></pre></td></tr></table></figure>
-
-<p>在FGDATA文件夹根目录下找到defaults.xml配置文件，修改如下配置内容，加入camera-views.xml配置文件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;rendering include&#x3D;&quot;camera-views.xml&quot;&gt;</span><br><span class="line">&lt;&#x2F;rendering&gt;</span><br></pre></td></tr></table></figure>
-
-<h1 id="投影到窗口不同地方"><a href="#投影到窗口不同地方" class="headerlink" title="投影到窗口不同地方"></a>投影到窗口不同地方</h1><p>在FGDATA文件夹根目录下创建camera-views.xml文件夹，写入如下内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;PropertyList&gt;</span><br><span class="line">  &lt;camera-group&gt;</span><br><span class="line">      &lt;window&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;host-name type&#x3D;&quot;string&quot;&gt;&lt;&#x2F;host-name&gt;</span><br><span class="line">        &lt;display&gt;0&lt;&#x2F;display&gt;</span><br><span class="line">        &lt;screen&gt;0&lt;&#x2F;screen&gt;</span><br><span class="line">        &lt;fullscreen type &#x3D; &quot;bool&quot;&gt;false&lt;&#x2F;fullscreen&gt;</span><br><span class="line">        &lt;decoration type &#x3D; &quot;bool&quot;&gt;false&lt;&#x2F;decoration&gt;</span><br><span class="line">        &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">        &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">        &lt;width&gt;1920&lt;&#x2F;width&gt;</span><br><span class="line">        &lt;height&gt;1080&lt;&#x2F;height&gt;</span><br><span class="line">      &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">      &lt;gui&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">          &lt;name type&#x3D;&quot;string&quot;&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line">      &lt;&#x2F;gui&gt;</span><br><span class="line"></span><br><span class="line">      &lt;camera&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Main&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">          &lt;name&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">        &lt;view&gt;</span><br><span class="line">          &lt;heading-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;heading-deg&gt;</span><br><span class="line">          &lt;roll-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;roll-deg&gt;</span><br><span class="line">          &lt;pitch-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;pitch-deg&gt;</span><br><span class="line">        &lt;&#x2F;view&gt;</span><br><span class="line"></span><br><span class="line">        &lt;viewport&gt;</span><br><span class="line">          &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">          &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">          &lt;width&gt;1920&lt;&#x2F;width&gt;</span><br><span class="line">          &lt;height&gt;1080&lt;&#x2F;height&gt;</span><br><span class="line">        &lt;&#x2F;viewport&gt;</span><br><span class="line">        </span><br><span class="line">      &lt;&#x2F;camera&gt;</span><br><span class="line">      &lt;camera&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Left-Down&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">          &lt;name&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">        &lt;view&gt;</span><br><span class="line">          &lt;heading-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;heading-deg&gt;</span><br><span class="line">          &lt;roll-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;roll-deg&gt;</span><br><span class="line">          &lt;pitch-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;pitch-deg&gt;</span><br><span class="line">        &lt;&#x2F;view&gt;</span><br><span class="line"></span><br><span class="line">        &lt;viewport&gt;</span><br><span class="line">          &lt;x&gt;0&lt;&#x2F;x&gt;</span><br><span class="line">          &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">          &lt;width&gt;320&lt;&#x2F;width&gt;</span><br><span class="line">          &lt;height&gt;180&lt;&#x2F;height&gt;</span><br><span class="line">        &lt;&#x2F;viewport&gt;</span><br><span class="line"></span><br><span class="line">      &lt;&#x2F;camera&gt;</span><br><span class="line">      &lt;camera&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Right-Down&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">          &lt;name&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">        &lt;view&gt;</span><br><span class="line">          &lt;heading-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;heading-deg&gt;</span><br><span class="line">          &lt;roll-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;roll-deg&gt;</span><br><span class="line">          &lt;pitch-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;pitch-deg&gt;</span><br><span class="line">        &lt;&#x2F;view&gt;</span><br><span class="line"></span><br><span class="line">        &lt;viewport&gt;</span><br><span class="line">          &lt;x&gt;1600&lt;&#x2F;x&gt;</span><br><span class="line">          &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">          &lt;width&gt;320&lt;&#x2F;width&gt;</span><br><span class="line">          &lt;height&gt;180&lt;&#x2F;height&gt;</span><br><span class="line">        &lt;&#x2F;viewport&gt;</span><br><span class="line"></span><br><span class="line">      &lt;&#x2F;camera&gt;</span><br><span class="line">      &lt;camera&gt;</span><br><span class="line">        &lt;name type&#x3D;&quot;string&quot;&gt;Right-Up&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;window&gt;</span><br><span class="line">          &lt;name&gt;Front&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;&#x2F;window&gt;</span><br><span class="line"></span><br><span class="line">        &lt;view&gt;</span><br><span class="line">          &lt;heading-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;heading-deg&gt;</span><br><span class="line">          &lt;roll-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;roll-deg&gt;</span><br><span class="line">          &lt;pitch-deg type &#x3D; &quot;double&quot;&gt;0.0&lt;&#x2F;pitch-deg&gt;</span><br><span class="line">        &lt;&#x2F;view&gt;</span><br><span class="line"></span><br><span class="line">        &lt;viewport&gt;</span><br><span class="line">          &lt;x&gt;1600&lt;&#x2F;x&gt;</span><br><span class="line">          &lt;y&gt;900&lt;&#x2F;y&gt;</span><br><span class="line">          &lt;width&gt;320&lt;&#x2F;width&gt;</span><br><span class="line">          &lt;height&gt;180&lt;&#x2F;height&gt;</span><br><span class="line">        &lt;&#x2F;viewport&gt;</span><br><span class="line"></span><br><span class="line">      &lt;&#x2F;camera&gt;</span><br><span class="line">    &lt;&#x2F;camera-group&gt;</span><br><span class="line">&lt;&#x2F;PropertyList&gt;</span><br></pre></td></tr></table></figure>
-
-<p>在FGDATA文件夹根目录下找到defaults.xml配置文件，修改如下配置内容，加入camera-views.xml配置文件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;rendering include&#x3D;&quot;camera-views.xml&quot;&gt;</span><br><span class="line">&lt;&#x2F;rendering&gt;</span><br></pre></td></tr></table></figure>
-
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://forum.flightgear.org/viewtopic.php?f=24&t=36230&sid=5a8c6daf6d52ff5fcb520a54c4de4a24" target="_blank" rel="noopener">Multi-Display setup</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Howto:Configure_camera_view_windows" target="_blank" rel="noopener">Howto:Configure camera view windows</a>,by flightgear.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2009,7 +2032,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">388</span>
+                    <span class="site-state-item-count">390</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -314,6 +314,172 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/08/14/Simulink%E6%A8%A1%E5%9D%97%E5%8F%82%E6%95%B0%E5%9C%A8%E7%BA%BF%E4%BF%AE%E6%94%B9%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/14/Simulink%E6%A8%A1%E5%9D%97%E5%8F%82%E6%95%B0%E5%9C%A8%E7%BA%BF%E4%BF%AE%E6%94%B9%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Simulink模块参数在线修改方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-08-14 18:36:06" itemprop="dateCreated datePublished" datetime="2020-08-14T18:36:06+08:00">2020-08-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-05-19 21:39:19" itemprop="dateModified" datetime="2021-05-19T21:39:19+08:00">2021-05-19</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Simulink在建立系统模型方面非常的便捷，利用其提供的各种已封装好的组件，可以很快地构建各种模型，如飞机、导弹、诱饵弹等。但是在将导弹、诱饵弹装配到飞机上时就比较复杂了。例如，在飞机发射导弹时，如何将飞机的速度、位姿状态传递给导弹模型就是一个难题。为解决该难题，Simulink必须能够在线修改模型的参数。幸运的是，尽管比较艰难，通过一些特殊的技巧，Simulink还是能够实现在线修改模型参数的。具体的解决方案如下：</p>
+<ul>
+<li><p>模型实例化问题。以飞机携带多枚导弹为例，因为飞机携带导弹数量有限，可以直接生成多个导弹模块。如果数量实在太多，可以考虑for each subsystem。</p>
+</li>
+<li><p>在线修改模型参数问题。利用Simulink的s函数，在Update函数中使用set_param函数修改模型参数。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function Update(block)</span><br><span class="line">    decoyID&#x3D;block.DialogPrm(1).Data; </span><br><span class="line">    decoyName&#x3D;sprintf(&#39;%s%d&#39;,&#39;JetFlighterWithDecoy&#x2F;Decoys&#x2F;Decoy&#39;,decoyID);</span><br><span class="line"></span><br><span class="line">    % 脉冲信号上升沿触发，设置模型参数</span><br><span class="line">    if(block.InputPort(4).Data&#x3D;&#x3D;1 &amp;&amp; block.Dwork(1).Data&#x3D;&#x3D;0)</span><br><span class="line">        fligherSpeed&#x3D;block.InputPort(2).Data;</span><br><span class="line">        decoySpeed&#x3D;[fligherSpeed(1) fligherSpeed(2) fligherSpeed(3)-30];</span><br><span class="line">        dcm&#x3D;block.InputPort(3).Data;</span><br><span class="line">        docoySpeedInFlatEarth&#x3D;inv(dcm)*decoySpeed&#39;;</span><br><span class="line">        v0&#x3D;join([&#39;[&#39; string(docoySpeedInFlatEarth&#39;) &#39;]&#39;]);</span><br><span class="line">        pos0&#x3D;join([&#39;[&#39; string(block.InputPort(1).Data&#39;) &#39;]&#39;]);</span><br><span class="line">        set_param(decoyName,&#39;ParameterArgumentValues&#39;,struct(&#39;decoySpeed&#39;,char(v0),&#39;decoyPos&#39;,char(pos0)));</span><br><span class="line">        block.Dwork(1).Data &#x3D; 1;%使能信号</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://gb.oversea.cnki.net/KCMS/detail/detail.aspx?filename=JSJZ200412066&dbcode=CJFD&dbname=CJFD2004" target="_blank" rel="noopener">Simulink模块参数在线修改方法的研究</a>,by 郑志波.</li>
+<li><a href="https://www.mathworks.com/matlabcentral/answers/420930-why-do-i-get-an-error-when-specifying-a-simscape-component-parameter-with-same-name-as-built-in-simu" target="_blank" rel="noopener">Why do I get an error when specifying a Simscape component parameter with same name as built-in Simulink parameter?</a>,by mathworks.</li>
+<li><a href="https://www.mathworks.com/help/simulink/ug/parameterize-referenced-models.html" target="_blank" rel="noopener">Parameterize Instances of a Reusable Referenced Model</a>,by mathworks.</li>
+<li><a href="https://ww2.mathworks.cn/help/simulink/slref/find_system.html" target="_blank" rel="noopener">find_system</a>,by mathworks.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/07/31/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E4%B9%8B%E4%BA%8C%E7%BB%B4%E5%9B%BE%E5%BD%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1786,172 +1952,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/05/23/%E5%A6%82%E4%BD%95%E8%87%B4%E5%AF%8C%E4%B8%8D%E9%9D%A0%E8%BF%90%E6%B0%94/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/05/23/%E5%A6%82%E4%BD%95%E8%87%B4%E5%AF%8C%E4%B8%8D%E9%9D%A0%E8%BF%90%E6%B0%94/" itemprop="url">
-                  如何致富不靠运气
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-05-23 18:21:45 / 修改时间：18:57:09" itemprop="dateCreated datePublished" datetime="2020-05-23T18:21:45+08:00">2020-05-23</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>美国风险投资家 Naval Ravikant 有一个很有名的长推特，一共40条，题目叫做《如何致富，不靠运气》，谈了他的商业观。</p>
-</blockquote>
-<p>现摘抄一些令人振聋发聩的观点：</p>
-<ul>
-<li><p>去寻求财富，而非金钱或地位。财富就是你拥有资产，而资产在你睡觉的时候都还在为你赚钱；金钱是我们转换时间和财富的工具；身份是你在社会等级体系里所处的位置。</p>
-</li>
-<li><p>你不会通过出租自己的时间而变得富有。你必须拥有产权，也就是生意的一部分，以此才能赢得个人财务自由。</p>
-</li>
-<li><p>在选择商业合作伙伴的时候，选择那些高智商、精力旺盛的家伙，但在这一切之上，他应该是个<strong>正直诚实</strong>的人。</p>
-</li>
-<li><p>不要和愤世嫉俗者和悲观主义者合作，因为他们会任由坏事发生，以此证明他们的负面看法是正确的。</p>
-</li>
-<li><p>学会如何销售，学会如何创建。如果你同时能做到这两件事，你的成功将无可阻挡。</p>
-</li>
-<li><p>独到知识是那种不可以通过培训而获得的知识。这是因为，如果这种知识可以经由培训而得，那么其他人同样也可以，并且以此取代你。</p>
-</li>
-<li><p>财富增长需要使用杠杆。商业杠杆有三个来源：1、资本；2、人力；3、复制起来边际成本为零的产品（如：代码和媒体）。</p>
-</li>
-<li><p>资本和劳动力是需要征得许可才能使用的杠杆。每个人都在追逐资本，但总得有个什么人给你才行；每个人都想要领导其它人，但总得有什么人愿意跟着你才行。</p>
-</li>
-<li><p>代码和媒体是无需要许可即可使用的杠杆。它们是新贵人群背后的杠杆，你可以通过自己创建的软件和媒体，在睡觉时仍然为你干活。</p>
-</li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://new.qq.com/omn/20200413/20200413A0U72C00.html" target="_blank" rel="noopener">和菜头翻译 如何不靠运气致富</a>,by 和菜头.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1999,7 +1999,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">396</span>
+                    <span class="site-state-item-count">397</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

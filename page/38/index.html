@@ -314,6 +314,177 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/15/Emscripten%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/15/Emscripten%E6%95%99%E7%A8%8B/" itemprop="url">
+                  Emscripten教程
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-15 17:00:04" itemprop="dateCreated datePublished" datetime="2018-07-15T17:00:04+08:00">2018-07-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-09-09 21:21:40" itemprop="dateModified" datetime="2018-09-09T21:21:40+08:00">2018-09-09</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Emscripten是一种基于LLVM的编译器，理论上能够将任何能够生成LLVM位码的代码编译成javascript的严格子集asm.js，实际上主要用于将C/C++代码编译成asm.js。本文主要介绍Emscripten的安装过程。</p>
+<h1 id="下载和安装"><a href="#下载和安装" class="headerlink" title="下载和安装"></a>下载和安装</h1><p>从源码编译安装十分麻烦，推荐安装核心的Emscripten SDK。以Windows为例，先使用如下命令下载emsdk。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Get the emsdk repo</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;juj&#x2F;emsdk.git</span><br><span class="line"></span><br><span class="line"># Enter that directory</span><br><span class="line">cd emsdk</span><br></pre></td></tr></table></figure>
+<p>再使用如下命令安装配置Emscripten。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># Fetch the latest registry of available tools.</span><br><span class="line">.\emsdk.bat update</span><br><span class="line"></span><br><span class="line"># Download and install the latest SDK tools. Need install Python first. </span><br><span class="line">.\emsdk.bat install latest</span><br><span class="line"></span><br><span class="line"># Make the &quot;latest&quot; SDK &quot;active&quot; for the current user. (writes ~&#x2F;.emscripten file)</span><br><span class="line">.\emsdk.bat activate latest</span><br><span class="line"></span><br><span class="line"># Activate PATH and other environment variables in the current terminal</span><br><span class="line">.\emsdk_env.bat</span><br></pre></td></tr></table></figure>
+
+<h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p>使用如下命令验证Emscripten是否安装配置正确。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Enter that directory</span><br><span class="line">cd emsdk</span><br><span class="line"></span><br><span class="line"># Activate PATH and other environment variables in the current terminal</span><br><span class="line">.\emsdk_env.bat</span><br><span class="line"></span><br><span class="line"># Verifying Emscripten</span><br><span class="line">emcc.bat -v</span><br></pre></td></tr></table></figure>
+
+<h1 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h1><p>如果验证通过，即可使用Emscripten编译C/C++代码到asm.js。</p>
+<p>创建名为helloWorld.cpp的文件，其内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">  printf(&quot;hello, world!\n&quot;);</span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用如下命令编译：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">emcc.bat helloWorld.cpp</span><br></pre></td></tr></table></figure>
+<p>编译后将生成a.out.js和a.out.wasm两个文件。后者是包含编译后代码的WebAssembly文件，前者是用于加载和执行后者的Javascipt文件。使用如下命令测试编译后生成的代码，将输出“hello,world!”。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node a.out.js</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://kripken.github.io/emscripten-site/docs/introducing_emscripten/about_emscripten.html" target="_blank" rel="noopener">http://kripken.github.io/emscripten-site/docs/introducing_emscripten/about_emscripten.html</a>. by kripken.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/10/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E8%BF%90%E8%A1%8C3D%E6%B8%B8%E6%88%8F%E7%9A%84%E6%80%9D%E8%80%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2156,186 +2327,6 @@ console.log(y);</code></pre></li>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/10/Cesium%E4%B8%AD%E9%A3%9E%E8%A1%8C%E5%99%A8%E5%A7%BF%E6%80%81%E6%8E%A7%E5%88%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/10/Cesium%E4%B8%AD%E9%A3%9E%E8%A1%8C%E5%99%A8%E5%A7%BF%E6%80%81%E6%8E%A7%E5%88%B6/" itemprop="url">
-                  Cesium中飞行器姿态控制
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-10 21:52:42" itemprop="dateCreated datePublished" datetime="2018-06-10T21:52:42+08:00">2018-06-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-11-29 21:33:38" itemprop="dateModified" datetime="2020-11-29T21:33:38+08:00">2020-11-29</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="问题提出"><a href="#问题提出" class="headerlink" title="问题提出"></a>问题提出</h1><p>最近研究开源虚拟地球Cesium，遇到一个问题：在获取飞行器经度纬度高度偏航俯仰滚转六个参数的前提下，如何在Cesium中用CZML文件表示，从而完美实现飞行器姿态轨迹的复现。在CZML的position属性中使用cartographicDegrees表示飞行器的经度纬度高度，可以很好复现飞行器的轨迹。然而在CZML的orientation属性中使用unitQuaternion表示飞机自身姿态时，飞机姿态总是不对。</p>
-<h1 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h1><h2 id="基本知识"><a href="#基本知识" class="headerlink" title="基本知识"></a>基本知识</h2><p>在Cesium中存在两种常用坐标系：</p>
-<ol>
-<li>世界坐标系<br>世界坐标系统是以椭球中心为原点的笛卡尔空间直角坐标系。</li>
-<li>地理坐标系<br>地理坐标系即人们常用的使用经度、纬度、高度表示位置的坐标系。</li>
-<li>站心坐标系<br>又称为Earth-fixed coordinate system（站点坐标系、东-北-天坐标系ENU）。可分为站心直角坐标系和站心极坐标系。<br>常用的站心直角坐标系定义为：以站心（如GPS接收天线中心）为坐标系原点O，Z轴与椭球法线重合，向上为正（天向），y与椭球短半轴重合（北向），x轴与地球椭球的长半轴重合（东向）所构成的直角坐标系，称为当地东北天坐标系（ENU）。<br>飞行器的偏航、俯仰、滚转即是以站心直角坐标系为参考。</li>
-<li>模型坐标系<br>模型坐标系以物体的中心为坐标原点，物体旋转、平移等操作都是围绕局部坐标系进行的。这时当物体模型进行旋转、平移等操作时，局部坐标系也执行相应的旋转、平移等操作。<br>局部坐标系是一个假想的坐标系，该坐标系与物体的相对位置至始至终是不变的，假想出这个坐标系的目的主要是为了正向理解对三维场景中物体执行的平移和旋转操作。使用局部坐标系理解模型变换时，所有的变换操作直接作用与局部坐标系，由于局部坐标系与物体的相对位置不变，因此对局部坐标系进行平移、旋转和缩放时，物体在场景中位置和形状也会发生相应的变化。</li>
-</ol>
-<p>在Cesium中存在两种世界坐标系和地理坐标系之间坐标转换的方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 经纬度转换为世界坐标</span><br><span class="line">Cesium.Cartesian3.fromDegrees(longitude, latitude, height, ellipsoid, result) </span><br><span class="line"># 世界坐标转换为经纬度</span><br><span class="line">var ellipsoid&#x3D;viewer.scene.globe.ellipsoid;</span><br><span class="line">var cartesian3&#x3D;new Cesium.cartesian3(x,y,z);</span><br><span class="line">var cartographic&#x3D;ellipsoid.cartesianToCartographic(cartesian3);</span><br><span class="line">var lat&#x3D;Cesium.Math.toDegrees(cartograhphic.latitude);</span><br><span class="line">var lng&#x3D;Cesium.Math.toDegrees(cartograhpinc.longitude);</span><br><span class="line">var alt&#x3D;cartographic.height;</span><br></pre></td></tr></table></figure>
-
-<h2 id="CZML分析"><a href="#CZML分析" class="headerlink" title="CZML分析"></a>CZML分析</h2><p>CZML是一种用来描述动态场景的JSON架构的语言，主要用于Cesium在浏览器中的展示。它可以用来描述点、线、布告板、模型以及其他的图元，同时定义他们是怎样随时间变化的<sup>[3]</sup>。  </p>
-<p>CZML可使用model属性直接加载3D模型，由position属性决定模型在世界坐标系内的位置，由orientation决定模型在世界坐标系内的姿态，并最终由orientation的unitQuaternion表示。  </p>
-<p>unitQuaternion即单位四元数，可与偏航俯仰滚转相互转换，并避免偏航俯仰滚转的万向节锁定问题，但其本质上都是一个旋转矩阵，可决定模型在世界坐标系内的姿态。</p>
-<h2 id="获取正确的飞行器姿态"><a href="#获取正确的飞行器姿态" class="headerlink" title="获取正确的飞行器姿态"></a>获取正确的飞行器姿态</h2><p>首先计算飞行器模型坐标系对站点直角坐标系的旋转矩阵（在制作飞行器3D模型时，应使其中心在本地坐标系原点，机头机翼与轴平行，方便计算在站点直角坐标系内的旋转角度），再乘以由飞行器偏航俯仰滚转得到的旋转矩阵，再乘以站点直角坐标系对世界坐标系的旋转矩阵。将最终得到旋转矩阵转换为单位四元数，即得到正确的飞行器姿态。</p>
-<p>小技巧：飞机3D模型的中心设置在本地坐标系原点，机头机翼与轴平行后，可能在Cesium中渲染时姿态还是不对。原因是绕Z轴旋转的角度还是不对。可以在HeadingPitchRoll示例中使用自己的飞机3D模型，参照Cesium给的运输机模型，比较它们之间绕Z轴旋转的差异，然后调整飞机3D模型绕Z轴旋转的角度。</p>
-<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>参考代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var lon&#x3D;113,lat&#x3D;34;&#x2F;&#x2F;模型的站心经纬度</span><br><span class="line">var h1&#x3D;0,p1&#x3D;0,r1&#x3D;0;&#x2F;&#x2F;模型坐标系对站点坐标系的旋转角度</span><br><span class="line">var h2&#x3D;0,p2&#x3D;0,r2&#x3D;0;&#x2F;&#x2F;模型在站点坐标系的姿态</span><br><span class="line">var center &#x3D; Cesium.Cartesian3.fromDegrees(lon, lat)</span><br><span class="line">var hpr &#x3D; new Cesium.HeadingPitchRoll(h1+h2, p1+p2, r1+r2)</span><br><span class="line">var q1 &#x3D; Cesium.Transforms.headingPitchRollQuaternion(center, hpr)</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://stackoverflow.com/questions/43389069/cesium-how-to-animate-an-aircraft-from-pitch-roll-heading" target="_blank" rel="noopener">CESIUM : How to animate an aircraft from pitch, roll, heading?</a>, by stackoverflow.</li>
-<li><a href="https://blog.csdn.net/qq_34149805/article/details/78393540" target="_blank" rel="noopener">Cesium中的几种坐标和相互转换</a>, by finalLi.</li>
-<li><a href="http://www.cnblogs.com/laixiangran/p/4997971.html" target="_blank" rel="noopener">Cesium Language (CZML) 入门1 — CZML Structure（CZML的结构）</a>, by laixiangran.</li>
-<li><a href="https://github.com/AnalyticalGraphicsInc/cesium/wiki/CZML-Structure" target="_blank" rel="noopener">CZML Structure</a>, by AnalyticalGraphicsInc.</li>
-<li><a href="https://www.jianshu.com/p/8d483fa1acbd" target="_blank" rel="noopener">3D坐标系</a>, by S_H_C.</li>
-<li><a href="https://blog.csdn.net/trojanpizza/article/details/6652533" target="_blank" rel="noopener">3D空间的坐标系</a>, by trojanpizza.</li>
-<li><a href="https://blog.csdn.net/qq_30100043/article/details/91958750" target="_blank" rel="noopener">cesium获取某个位置垂直于当前地表的垂直坐标系</a>,by 暮志未晚Webgl.</li>
-<li><a href="https://www.jianshu.com/p/244ed413a3bd" target="_blank" rel="noopener">Cesium控制模型旋转2019-11-15</a>,by _____xyz.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2383,7 +2374,7 @@ console.log(y);</code></pre></li>
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">397</span>
+                    <span class="site-state-item-count">398</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

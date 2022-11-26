@@ -676,7 +676,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-11-25 17:42:43" itemprop="dateModified" datetime="2022-11-25T17:42:43+08:00">2022-11-25</time>
+                <time title="修改时间：2022-11-25 19:32:43" itemprop="dateModified" datetime="2022-11-25T19:32:43+08:00">2022-11-25</time>
               
             
           </span>
@@ -757,7 +757,7 @@
 <p>答案是子节点渲染时，其自身着色器会生效，而不会运行父节点着色器。</p>
 <h1 id="3D模型转换"><a href="#3D模型转换" class="headerlink" title="3D模型转换"></a>3D模型转换</h1><p>osgconv是一种非常有用的的工具来读取标准的3D格式，如OpenFlight,3DS,Alias Wavefront<br>(OBJ) etc，并且可以将它们转换为一种OSG所支持的格式，如OSG中的ASCII格式的.osg，二进制格式的.ive。<br>在程序运行的默认情况下，优化导入的场景图，将形成的这样结果：场景图读取的数据量将会更少且速度会更<br>快。尤其值得指出的是，.ive格式的的文件，快速装载数据的能力使它非常适合数据页和大型的数据库。</p>
 <p>使用方法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">osgconv cow.obj cow.ive</span><br><span class="line">osgconv osgconv --compressed cow.obj cow.ive</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">osgconv cow.obj cow.ive</span><br><span class="line">osgconv --compressed cow.obj cow.ive</span><br></pre></td></tr></table></figure>
 
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://en.wikipedia.org/wiki/OpenSceneGraph" target="_blank" rel="noopener">OpenSceneGraph</a>,by wikipedia.</li>
@@ -910,7 +910,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-11-24 10:05:57" itemprop="dateModified" datetime="2022-11-24T10:05:57+08:00">2022-11-24</time>
+                <time title="修改时间：2022-11-26 11:42:55" itemprop="dateModified" datetime="2022-11-26T11:42:55+08:00">2022-11-26</time>
               
             
           </span>
@@ -968,7 +968,10 @@
 <h3 id="片元着色器"><a href="#片元着色器" class="headerlink" title="片元着色器"></a>片元着色器</h3><p>进行逐片元处理过程如光照的程序。片元可理解为像素。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;片元着色器程序</span><br><span class="line">var FSHADER_SCOURCE &#x3D; </span><br><span class="line">&#39;void main() &#123;\n&#39; +</span><br><span class="line">      &#39; gl_FragColor &#x3D; vec4(1.0, 0.0, 0.0, 1.0);\n&#39; +</span><br><span class="line">   &#39;&#125;\n&#39;;</span><br></pre></td></tr></table></figure>
 
-<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><h2 id="Uniform变量"><a href="#Uniform变量" class="headerlink" title="Uniform变量"></a>Uniform变量</h2><p>Uniform变量简单理解就是一个GLSL shader中的全局常量，可以随意在任意shader(vertex shader, geometry shader, or fragment shader)访问，不同的shader中uniform是一起链接的，初始化之后，不能修改其值，否则会引起编译错误。</p>
+<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><h2 id="attribute变量"><a href="#attribute变量" class="headerlink" title="attribute变量"></a>attribute变量</h2><p>attribute变量是只能在vertex shader中使用的变量。（它不能在fragment shader中声明attribute变量，也不能被fragment shader中使用）</p>
+<p>一般用attribute变量来表示一些顶点的数据，如：顶点坐标，法线，纹理坐标，顶点颜色等。</p>
+<h2 id="uniform变量"><a href="#uniform变量" class="headerlink" title="uniform变量"></a>uniform变量</h2><p>Uniform变量简单理解就是一个GLSL shader中的全局常量，可以随意在任意shader(vertex shader, geometry shader, or fragment shader)访问，不同的shader中uniform是一起链接的，初始化之后，不能修改其值，否则会引起编译错误。</p>
+<h2 id="varying变量"><a href="#varying变量" class="headerlink" title="varying变量"></a>varying变量</h2><p>varying变量是vertex和fragment shader之间做数据传递用的。一般vertex shader修改varying变量的值，然后fragment shader使用该varying变量的值。因此varying变量在vertex和fragment shader二者之间的声明必须是一致的。application不能使用此变量。</p>
 <h1 id="坐标系"><a href="#坐标系" class="headerlink" title="坐标系"></a>坐标系</h1><p>OSG中采用的X轴正方向向右，Y轴正方向朝里，Z轴正方向向上。</p>
 <p>OpenGL中采用的X轴正方向向右，Y轴正方向朝上，Z轴正方向朝外。</p>
 <p align="center">
@@ -991,6 +994,7 @@
 <li><a href="https://blog.csdn.net/dcrmg/article/details/53133112" target="_blank" rel="noopener">OpenGL（八） 显示列表</a>,by -牧野-.</li>
 <li><a href="https://xiaobazhang.github.io/2016/07/31/OSG-coordinate/" target="_blank" rel="noopener">OSG三维渲染引擎–OSG渲染引擎中坐标系</a>,by 苏黎.</li>
 <li><a href="https://www.cnblogs.com/clingingboy/archive/2010/10/26/1861928.html" target="_blank" rel="noopener">OpenGL学习笔记(12)基本光照</a>,by Clingingboy.</li>
+<li><a href="https://www.jianshu.com/p/eed3ebdad4fb" target="_blank" rel="noopener">GLSL 三种变量类型（uniform，attribute和varying）理解</a>,by wo不懂.</li>
 </ol>
 
           

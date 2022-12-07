@@ -314,6 +314,177 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/09/24/JS%E5%A6%82%E4%BD%95%E4%BB%8EArrayBuffer%E4%B8%AD%E8%A7%A3%E7%A0%81%E5%AD%97%E7%AC%A6%E4%B8%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/24/JS%E5%A6%82%E4%BD%95%E4%BB%8EArrayBuffer%E4%B8%AD%E8%A7%A3%E7%A0%81%E5%AD%97%E7%AC%A6%E4%B8%B2/" itemprop="url">
+                  JS如何从ArrayBuffer中解码字符串
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-24 17:37:25 / 修改时间：18:41:52" itemprop="dateCreated datePublished" datetime="2019-09-24T17:37:25+08:00">2019-09-24</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近遇到一个问题，拿到一个ArrayBuffer，知道它是以gb2312编码的文档，那么如何使用javascript从中解码出字符串。下面介绍常用的解决方案。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="字符编码"><a href="#字符编码" class="headerlink" title="字符编码"></a>字符编码</h2><p>字符编码（英语：Character encoding）、字集码是把字符集中的字符编码为指定集合中某一对象（例如：比特模式、自然数序列、8位组或者电脉冲），以便文本在计算机中存储和通过通信网络的传递。常见的例子包括将拉丁字母表编码成摩斯电码和ASCII。其中，ASCII将字母、数字和其它符号编号，并用7比特的二进制来表示这个整数。通常会额外使用一个扩充的比特，以便于以1个字节的方式存储。</p>
+<p>因此，如果不知道字符存储的编码方案，那么只能得到一堆无意义的数字，无法从中解码出正确的字符信息。</p>
+<h2 id="ArrayBuffer"><a href="#ArrayBuffer" class="headerlink" title="ArrayBuffer"></a>ArrayBuffer</h2><p>ArrayBuffer对象、TypedArray对象、DataView对象是JavaScript操作二进制数据的一个接口。这些对象早就存在，属于独立的规格，ES6将它们纳入了ECMAScript规格，并且增加了新的方法。</p>
+<p>这些对象原始的设计目的，与WebGL项目有关。所谓WebGL，就是指浏览器与显卡之间的通信接口，为了满足JavaScript与显卡之间大量的、实时的数据交换，它们之间的数据通信必须是二进制的，而不能是传统的文本格式。文本格式传递一个32位整数，两端的JavaScript脚本与显卡都要进行格式转化，将非常耗时。这时要是存在一种机制，可以像C语言那样，直接操作字节，将4个字节的32位整数，以二进制形式原封不动地送入显卡，脚本的性能就会大幅提升。</p>
+<p>二进制数组就是在这种背景下诞生的。它很像C语言的数组，允许开发者以数组下标的形式，直接操作内存，大大增强了JavaScript处理二进制数据的能力，使得开发者有可能通过JavaScript与操作系统的原生接口进行二进制通信。</p>
+<p>二进制数组由三个对象组成。</p>
+<ul>
+<li><p>ArrayBuffer对象：代表内存之中的一段二进制数据，可以通过“视图”进行操作。“视图”部署了数组接口，这意味着，可以用数组的方法操作内存。</p>
+</li>
+<li><p>TypedArray对象：用来生成内存的视图，通过9个构造函数，可以生成9种数据格式的视图，比如Uint8Array（无符号8位整数）数组视图, Int16Array（16位整数）数组视图, Float32Array（32位浮点数）数组视图等等。</p>
+</li>
+<li><p>DataView对象：用来生成内存的视图，可以自定义格式和字节序，比如第一个字节是Uint8（无符号8位整数）、第二个字节是Int16（16位整数）、第三个字节是Float32（32位浮点数）等等。</p>
+</li>
+</ul>
+<p>简单说，ArrayBuffer对象代表原始的二进制数据，TypedArray对象代表确定类型的二进制数据，DataView对象代表不确定类型的二进制数据。它们支持的数据类型一共有9种（DataView对象支持除Uint8C以外的其他8种）。</p>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><h2 id="UTF-16的编码解码"><a href="#UTF-16的编码解码" class="headerlink" title="UTF-16的编码解码"></a>UTF-16的编码解码</h2><p>下面的解决方案只能解码UTF-16编码的字符串，而且当ArrayBuffer的长度过大时，会报“ Maximum call stack size exceeded”的错误。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function ab2str(buf) &#123;</span><br><span class="line">  return String.fromCharCode.apply(null, new Uint16Array(buf));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function str2ab(str) &#123;</span><br><span class="line">  var buf &#x3D; new ArrayBuffer(str.length*2); &#x2F;&#x2F; 2 bytes for each char</span><br><span class="line">  var bufView &#x3D; new Uint16Array(buf);</span><br><span class="line">  for (var i&#x3D;0, strLen&#x3D;str.length; i &lt; strLen; i++) &#123;</span><br><span class="line">    bufView[i] &#x3D; str.charCodeAt(i);</span><br><span class="line">  &#125;</span><br><span class="line">  return buf;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="gb2312解码"><a href="#gb2312解码" class="headerlink" title="gb2312解码"></a>gb2312解码</h2><p>下面的解决方案能解码指定编码的字符串，包括utf-8，utf-16, iso-8859-2, koi8, cp1261, and gbk等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function ab2str(arrayBuf, encodeType) &#123;</span><br><span class="line">  var decoder &#x3D; new TextDecoder(encodeType)</span><br><span class="line">  var u8arr &#x3D; new Uint8Array(arrayBuf)</span><br><span class="line">  return decoder.decode(u8arr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String" target="_blank" rel="noopener">How to convert ArrayBuffer to and from String</a>,by Renato Mangini.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81" target="_blank" rel="noopener">字符编码</a>,by wikipedia.</li>
+<li><a href="https://stackoverflow.com/questions/38432611/converting-arraybuffer-to-string-maximum-call-stack-size-exceeded" target="_blank" rel="noopener">Converting arraybuffer to string : Maximum call stack size exceeded</a>,by stackoverflow.</li>
+<li><a href="https://stackoverflow.com/questions/22123769/rangeerror-maximum-call-stack-size-exceeded-why" target="_blank" rel="noopener">“RangeError: Maximum call stack size exceeded” Why?</a>,by stackoverflow.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder" target="_blank" rel="noopener">TextDecoder</a>,by mozilla.</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode" target="_blank" rel="noopener">String.fromCharCode()</a>,by mozilla.</li>
+<li><a href="https://javascript.ruanyifeng.com/stdlib/arraybuffer.html" target="_blank" rel="noopener">二进制数组</a>,by 阮一峰.</li>
+<li><a href="http://es6.ruanyifeng.com/#docs/arraybuffer" target="_blank" rel="noopener">ArrayBuffer</a>,by 阮一峰.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/09/22/netcat%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E7%AE%80%E4%BB%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2042,232 +2213,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/08/25/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E5%9B%BE%E6%A0%87icon/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/25/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E5%9B%BE%E6%A0%87icon/" itemprop="url">
-                  如何使用图标icon
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-08-25 16:46:07" itemprop="dateCreated datePublished" datetime="2019-08-25T16:46:07+08:00">2019-08-25</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2022-08-24 21:54:26" itemprop="dateModified" datetime="2022-08-24T21:54:26+08:00">2022-08-24</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在前端网页的世界里，Icon是最基本的元素之一。使用Icon已成为前端开发者最基本的技能。下面将主要介绍利用SVG Sprites技术在前端中使用Icon的方法。</p>
-<h1 id="Icon的演化史"><a href="#Icon的演化史" class="headerlink" title="Icon的演化史"></a>Icon的演化史</h1><p>Icon最早用img实现，后为了提高效率，减少img请求，出现image sprite技术，实现将多个图片合成一个图片，然后利用 css 的 background-position 定位显示不同的 icon 图标。但该技术维护困难。</p>
-<p>随后出现了<strong>font库</strong>实现页面图标，例如<a href="https://fontawesome.com/" target="_blank" rel="noopener"> Font Awesome</a>。目前最常用的是<a href="https://www.iconfont.cn/" target="_blank" rel="noopener">iconfont</a>，里面图标应有尽有，且开源。</p>
-<h1 id="iconfont的使用方法"><a href="#iconfont的使用方法" class="headerlink" title="iconfont的使用方法"></a>iconfont的使用方法</h1><h2 id="unicode"><a href="#unicode" class="headerlink" title="unicode"></a>unicode</h2><p>优势：</p>
-<ul>
-<li>兼容性最好，支持ie6+</li>
-<li>支持按字体的方式去动态调整图标大小，颜色等等</li>
-</ul>
-<p>劣势:</p>
-<ul>
-<li>不支持多色图标</li>
-<li>在不同的设备浏览器字体的渲染会略有差别</li>
-</ul>
-<p>具体使用方法参考<a href="https://juejin.im/post/59bb864b5188257e7a427c09" target="_blank" rel="noopener">手摸手，带你优雅的使用 icon</a>，不建议使用。</p>
-<h2 id="font-class"><a href="#font-class" class="headerlink" title="font-class"></a>font-class</h2><p>与unicode使用方式相比，具有如下特点：</p>
-<ul>
-<li>兼容性良好，支持ie8+</li>
-<li>相比于unicode语意明确，书写更直观。可以很容易分辨这个icon是什么。</li>
-</ul>
-<h2 id="symbol"><a href="#symbol" class="headerlink" title="symbol"></a>symbol</h2><p>随着IE浏览器逐渐淡出历史舞台，svg-icon 使用形式慢慢成为主流和推荐的方法，请参考<a href="https://www.zhangxinxu.com/wordpress/2014/07/introduce-svg-sprite-technology/?spm=a313x.7781069.1998910419.50" target="_blank" rel="noopener">未来必热：SVG Sprites技术介绍</a>。其优点有：</p>
-<ul>
-<li>支持多色图标了，不再受单色限制。</li>
-<li>支持像字体那样通过font-size,color来调整样式。</li>
-<li>支持 ie9+</li>
-<li>可利用CSS实现动画。</li>
-<li>减少HTTP请求。</li>
-<li>矢量，缩放不失真</li>
-<li>可以很精细的控制SVG图标的每一部分</li>
-</ul>
-<p>具体使用方法如下：</p>
-<ul>
-<li>使用SVG Sprite生成SVG雪碧图</li>
-</ul>
-<p align="center">
-    <img src="images/svg_sprite.png" width="90%" alt="SVG雪碧图"/>
-</p>
-<center>图1  SVG雪碧图</center>
-
-<ul>
-<li>加入通用css代码（引入一次就行）</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;style type&#x3D;&quot;text&#x2F;css&quot;&gt;</span><br><span class="line">    .icon &#123;</span><br><span class="line">       width: 1em; height: 1em;</span><br><span class="line">       vertical-align: -0.15em;</span><br><span class="line">       fill: currentColor;</span><br><span class="line">       overflow: hidden;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>挑选相应图标并获取类名，应用于页面</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;svg class&#x3D;&quot;icon&quot; aria-hidden&#x3D;&quot;true&quot;&gt;</span><br><span class="line">    &lt;use xlink:href&#x3D;&quot;#icon-xxx&quot;&gt;&lt;&#x2F;use&gt;</span><br><span class="line">&lt;&#x2F;svg&gt;</span><br></pre></td></tr></table></figure>
-
-<p>使用svg-icon的好处是再也不用发送woff|eot|ttf| 这些很多个字体库请求了，所有的svg都可以内联在html内。且svg 是一个真正的矢量，不管再怎么的放缩它都不会失真模糊，而且svg可以控制的属性也更加的丰富，也能做出更加生动和复杂的图标。</p>
-<h1 id="生成SVG-sprite的方法"><a href="#生成SVG-sprite的方法" class="headerlink" title="生成SVG sprite的方法"></a>生成SVG sprite的方法</h1><p>推荐使用<a href="https://github.com/kisenka/svg-sprite-loader" target="_blank" rel="noopener">svg-sprite-loader </a>,它是一个Webpack loader。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import &#39;@&#x2F;src&#x2F;icons&#x2F;qq.svg; &#x2F;&#x2F;引入图标</span><br><span class="line">&lt;svg&gt;&lt;use xlink:href&#x3D;&quot;#qq&quot; &#x2F;&gt;&lt;&#x2F;svg&gt;  &#x2F;&#x2F;使用图标</span><br></pre></td></tr></table></figure>
-
-<h1 id="自动导入多个SVG"><a href="#自动导入多个SVG" class="headerlink" title="自动导入多个SVG"></a>自动导入多个SVG</h1><p>使用 webpack 的 <a href="https://webpack.js.org/guides/dependency-management/#require-context" target="_blank" rel="noopener">require.context</a> 实现自动导入多个SVG Icon，避免手动一个个引入。</p>
-<p>require.context有三个参数：</p>
-<ul>
-<li>directory：说明需要检索的目录</li>
-<li>useSubdirectories：是否检索子目录</li>
-<li>regExp: 匹配文件的正则表达式</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const requireAll &#x3D; requireContext &#x3D;&gt; requireContext.keys().map(requireContext)</span><br><span class="line">const req &#x3D; require.context(&#39;.&#x2F;svg&#39;, false, &#x2F;\.svg$&#x2F;)</span><br><span class="line">requireAll(req)</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://juejin.im/post/59bb864b5188257e7a427c09" target="_blank" rel="noopener">手摸手，带你优雅的使用 icon</a>,by 花裤衩.</li>
-<li><a href="https://www.zhangxinxu.com/wordpress/2014/07/introduce-svg-sprite-technology/?spm=a313x.7781069.1998910419.50" target="_blank" rel="noopener">未来必热：SVG Sprites技术介绍</a>,by 张鑫旭.</li>
-<li><a href="https://juejin.im/post/5c049a28f265da61273d2317" target="_blank" rel="noopener">如何在vue项目中优雅的使用SVG</a>,by SilentLove.</li>
-<li><a href="https://juejin.im/post/5c10dbcbf265da61441fe8e2" target="_blank" rel="noopener">关于webpack的require.context</a>,by yeyan1996.</li>
-<li><a href="https://blog.csdn.net/qq_21567385/article/details/107626075" target="_blank" rel="noopener">requireContext.keys().map(requireContext)在批量导入时的作用</a>,by 咲奈.</li>
-<li><a href="https://www.jianshu.com/p/c894ea00dfec" target="_blank" rel="noopener">使用require.context实现前端工程自动化</a>,by 心_c2a2.</li>
-<li><a href="https://webpack.docschina.org/guides/dependency-management/" target="_blank" rel="noopener">webpack依赖管理</a>,by docschina.</li>
-<li><a href="https://segmentfault.com/a/1190000015367490" target="_blank" rel="noopener">懒人神器：svg-sprite-loader实现自己的Icon组件</a>,by<br>Yawenina.</li>
-<li><a href="https://svgontheweb.com/#implementation" target="_blank" rel="noopener">SVG on the Web – Implementation Options</a>,by svgontheweb.</li>
-<li><a href="https://uiset.com/category/icon" target="_blank" rel="noopener">SVG Search</a>,by uiset.</li>
-<li><a href="https://www.zhangxinxu.com/wordpress/2014/07/svg-sprites-fill-color-currentcolor/" target="_blank" rel="noopener">SVG图标颜色文字般继承与填充</a>,by 张鑫旭.</li>
-<li><a href="https://goodpalette.io/how-to" target="_blank" rel="noopener">How To Create a Beautiful Color Palette for your Website or App</a>,by goodpalette.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2315,7 +2260,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">398</span>
+                    <span class="site-state-item-count">399</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

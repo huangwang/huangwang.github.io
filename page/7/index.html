@@ -314,6 +314,190 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/02/19/QT%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0%E8%A2%AB%E8%A7%A6%E5%8F%91%E4%B8%A4%E6%AC%A1%E7%9A%84%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/02/19/QT%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0%E8%A2%AB%E8%A7%A6%E5%8F%91%E4%B8%A4%E6%AC%A1%E7%9A%84%E9%97%AE%E9%A2%98/" itemprop="url">
+                  QT事件处理函数被触发两次的问题
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2022-02-19 23:36:21" itemprop="dateCreated datePublished" datetime="2022-02-19T23:36:21+08:00">2022-02-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2022-02-21 10:37:43" itemprop="dateModified" datetime="2022-02-21T10:37:43+08:00">2022-02-21</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>如果用官方的写法on_btn_pressed()可以不用写connect函数，可以直接触发槽函数。如果此时用connect再次连接的话，就会导致on_btn_pressed()被执行两次。</p>
+<p>Qt信号-槽连接函数原型如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bool QObject::connect ( const QObject * sender, const char * signal, const QObject * receiver, const char *method, Qt::ConnectionType type &#x3D; Qt::AutoConnection )</span><br></pre></td></tr></table></figure>
+
+<p>Qt支持5种连接方式</p>
+<ul>
+<li>Qt::DirectConnection（直连方式）（信号与槽函数关系类似于函数调用，同步执行）</li>
+</ul>
+<p>当信号发出后，相应的槽函数将立即被调用。emit语句后的代码将在所有槽函数执行完毕后被执行。<br>当信号发射时，槽函数将直接被调用。<br>无论槽函数所属对象在哪个线程，槽函数都在发射信号的线程内执行。</p>
+<ul>
+<li>Qt::QueuedConnection（队列方式）（此时信号被塞到事件队列里，信号与槽函数关系类似于消息通信，异步执行）</li>
+</ul>
+<p>当信号发出后，排队到信号队列中，需等到接收对象所属线程的事件循环取得控制权时才取得该信号，调用相应的槽函数。emit语句后的代码将在发出信号后立即被执行，无需等待槽函数执行完毕。<br>当控制权回到接收者所依附线程的事件循环时，槽函数被调用。<br>槽函数在接收者所依附线程执行。</p>
+<ul>
+<li>Qt::AutoConnection（自动方式）</li>
+</ul>
+<p>Qt的默认连接方式，如果信号的发出和接收信号的对象同属一个线程，那个工作方式与直连方式相同；否则工作方式与队列方式相同。<br>如果信号在接收者所依附的线程内发射，则等同于直接连接<br>如果发射信号的线程和接受者所依附的线程不同，则等同于队列连接</p>
+<ul>
+<li>Qt::BlockingQueuedConnection(信号和槽必须在不同的线程中，否则就产生死锁)</li>
+</ul>
+<p>槽函数的调用情形和Queued Connection相同，不同的是当前的线程会阻塞住，直到槽函数返回。</p>
+<ul>
+<li>Qt::UniqueConnection</li>
+</ul>
+<p>与默认工作方式相同，只是不能重复连接相同的信号和槽，因为如果重复连接就会导致一个信号发出，对应槽函数就会执行多次。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/erchowyo/article/details/78428997" target="_blank" rel="noopener">QT按钮被触发两次的问题</a>,by 不二侬.</li>
+<li><a href="https://blog.csdn.net/xiaopei_yan/article/details/81410092" target="_blank" rel="noopener">QVariant的用法</a>,by 十年之少.</li>
+<li><a href="https://blog.csdn.net/qq598535550/article/details/60966378" target="_blank" rel="noopener">QT入门系列（4）：QString与int相互转换方法</a>,by 李奕锋.</li>
+<li><a href="http://www.codebaoku.com/it-c/it-c-215894.html" target="_blank" rel="noopener">深入理解QT多线程编程</a>,by 编程宝库.</li>
+<li><a href="https://www.cnblogs.com/xia-weiwen/p/10306089.html" target="_blank" rel="noopener">在Qt（C++）中使用QThread实现多线程</a>,by 星夜之夏.</li>
+<li><a href="https://blog.csdn.net/shenziheng1/article/details/78055056" target="_blank" rel="noopener">Q_OBJECT宏的作用</a>,by 沈子恒.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/02/19/VS2017%E5%8A%A0QT5-8-0%E9%94%99%E8%AF%AFC3615/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1796,152 +1980,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/12/22/CPlusPlus%E4%B9%8Bvolatile%E5%85%B3%E9%94%AE%E5%AD%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/12/22/CPlusPlus%E4%B9%8Bvolatile%E5%85%B3%E9%94%AE%E5%AD%97/" itemprop="url">
-                  CPlusPlus之volatile关键字
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2021-12-22 23:43:44 / 修改时间：23:53:33" itemprop="dateCreated datePublished" datetime="2021-12-22T23:43:44+08:00">2021-12-22</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>C/C++ 中的 volatile 关键字和 const 对应，用来修饰变量，通常用于建立语言级别的 memory barrier。</p>
-<p>volatile 关键字是一种类型修饰符，用它声明的类型变量表示可以被某些编译器未知的因素更改，比如：操作系统、硬件或者其它线程等。遇到这个关键字声明的变量，编译器对访问该变量的代码就不再进行优化，从而可以提供对特殊地址的稳定访问。声明时语法：int volatile vInt; 当要求使用 volatile 声明的变量的值的时候，系统总是重新从它所在的内存读取数据，即使它前面的指令刚刚从该处读取过数据。</p>
-<p>当两个线程都要用到某一个变量且该变量的值会被改变时，应该用 volatile 声明，该关键字的作用是防止优化编译器把变量从内存装入 CPU 寄存器中。如果变量被装入寄存器，那么两个线程有可能一个使用内存中的变量，一个使用寄存器中的变量，这会造成程序的错误执行。volatile 的意思是让编译器每次操作该变量时一定要从内存中真正取出，而不是使用已经存在寄存器中的值。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.runoob.com/w3cnote/c-volatile-keyword.html" target="_blank" rel="noopener">C/C++ 中 volatile 关键字详解</a>,by runoob.</li>
-<li><a href="https://blog.csdn.net/zhangliang1223/article/details/7614027?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.highlightwordscore&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.highlightwordscore" target="_blank" rel="noopener">InterlockedCompareExchange用法详解</a>,by 漂泊心情.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1989,7 +2027,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">406</span>
+                    <span class="site-state-item-count">407</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

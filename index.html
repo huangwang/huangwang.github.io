@@ -360,12 +360,24 @@
                 
               
 
-              <time title="创建时间：2023-01-20 20:20:27 / 修改时间：21:13:46" itemprop="dateCreated datePublished" datetime="2023-01-20T20:20:27+08:00">2023-01-20</time>
+              <time title="创建时间：2023-01-20 20:20:27" itemprop="dateCreated datePublished" datetime="2023-01-20T20:20:27+08:00">2023-01-20</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-01-21 09:55:41" itemprop="dateModified" datetime="2023-01-21T09:55:41+08:00">2023-01-21</time>
               
             
           </span>
@@ -424,6 +436,51 @@
 <p>QGIS 的目标是成为一个 GIS系统，提供常见的功能与特征。借着核心特征提供基本功能与附加组件（Python 或 C++） 持续地扩充，让使用者可以浏览、管理、编辑、分析数据以及制图。</p>
 <p>QGIS安装请参考<a href="https://www.osgeo.cn/qgis-tutorial/overview-install.html" target="_blank" rel="noopener">QGIS安装</a>.</p>
 <h1 id="QGIS界面"><a href="#QGIS界面" class="headerlink" title="QGIS界面"></a>QGIS界面</h1><p>安装QGIS时，将获得两个应用程序：QGIS Desktop 和 QGIS Browser。如果您熟悉ArcGIS， 则可以将QGIS Browser视为类似于ArcCatalog。这是一个用于预览空间数据和相关元数据的小型应用程序。</p>
+<h1 id="栅格数据"><a href="#栅格数据" class="headerlink" title="栅格数据"></a>栅格数据</h1><p>栅格数据就是将空间分割成有规律的网格，每一个网格称为一个单元，并在各单元上赋予相应的属性值来表示实体的一种数据形式。 空间数据库是对地理栅格数据进行有效管理的一个极为重要的手段。</p>
+<p>GIS系统的栅格数据格式有很多种，有卫星影像、数字高程模型、数字正射影像、扫描文件、数据栅格图形、 图形文件（”.jpg”，”.png”，”.tif”）等。其中常用的有”.jpg”，”.png”，”.tif”等。我们在一些任务中会利用一些电子地图下载器 来获取研究范围内的卫星地图，下载得到的格式就是”.jpg”或者”.png”。”.tif”格式的数据不同之处在于它具有空间地理坐标。</p>
+<p>目前 QGIS 可以支持读取的主要栅格格式如下：</p>
+<ul>
+<li>Arc/Info Binary Grid</li>
+<li>Arc/Info ASCII Grid</li>
+<li>GRASS Raster</li>
+<li>GeoTIFF</li>
+<li>JPEG</li>
+<li>Spatial Data Tranfer Standard Grids</li>
+<li>USGS ASCII DEM</li>
+<li>Erdas Imagine</li>
+</ul>
+<h1 id="矢量数据"><a href="#矢量数据" class="headerlink" title="矢量数据"></a>矢量数据</h1><p>矢量数据（Vector Data）是用X、Y、Z坐标表示地图图形或地理实体位置的数据。矢量数据一般通过记录坐标的方式来 尽可能将地理实体的空间位置表现的精确。常见的矢量数据有：点、线、面等格式。</p>
+<p>QGIS可以支持多种的矢量数据，如常见的 Shapefile 和 MapInfo MIF、TAB； 另外 QGIS 亦支持在 PostgreSQL 数据库中的 PostGIS 图层；以及提供 CSV(delimited text)纯文本导入。</p>
+<p>目前 QGIS 可以读取的矢量数据有：</p>
+<ul>
+<li>Arc/Info Binary Coverage</li>
+<li>ESRI Shapefile</li>
+<li>Mapinfo File</li>
+<li>SDTS</li>
+</ul>
+<h2 id="SHP-Shapefile"><a href="#SHP-Shapefile" class="headerlink" title="SHP (Shapefile)"></a>SHP (Shapefile)</h2><p>Shapefile是目前最常见的一种矢量数据格式。作为行业标准，几乎所有的商业和开源GIS软件都支持Shapefile。</p>
+<p>一个Shapefile数据最少包括文件：</p>
+<p>主文件（ “*.shp” ）：存储地理要素的几何图形的文件。</p>
+<p>索引文件（ “*.shx” ）：空间数据索引文件，存储地理数据几何特征的索引。</p>
+<p>DBASE表文件（ “*.dbf” ）：它是存储属性数据的文件，用于存储地理数据的属性信息。有时候我们也称为表文件或者dbf文件。 这里值得注意一下的是，这个文件Excel也是能够打开的。</p>
+<p>空间投影文件（ “*.prj” ）：用于存储空间参考，也就是投影方式文件。当然了，如果你的数据没有空间参考信息，这个文件自然也就没有了。</p>
+<p>地理数据索引文件（ “<em>.sbn” , “</em>.sbx” ）：这两个文件只有在进行主题间空间关系查询、主题的空间联接和对shape字段进行索引的时候才存在。 它们用于存储地物特征的索引。</p>
+<h1 id="地图-影像配准与数字化"><a href="#地图-影像配准与数字化" class="headerlink" title="地图/影像配准与数字化"></a>地图/影像配准与数字化</h1><h1 id="地图投影及坐标转换"><a href="#地图投影及坐标转换" class="headerlink" title="地图投影及坐标转换"></a>地图投影及坐标转换</h1><h2 id="地理坐标系"><a href="#地理坐标系" class="headerlink" title="地理坐标系"></a>地理坐标系</h2><p>如果使用纬度和经度，它可以在世界的任何地方表达， 与本地语言的地址符号不同，世界上每个人都可以理解。 基准系统（大地测量参考系统）是获得这种纬度和经度的标准， 大地测量系统和世界大地测量系统。</p>
+<p>大地测量是为建立和维持测绘基准与测绘系统而进行的确定位置、 地球形状、重力场及其随时间和空间变化的测绘活动。世界大地测量系统（World geodetic system，简称WGS）是指1960年以来， 由美国国防制图局（DMA）建立的四个世界大地测量系统（WGS60、WGS66、WGS72和WGS84）的统称。</p>
+<p>地理坐标系：为球面坐标。 参考平面地是椭球面，坐标单位：经纬度；</p>
+<p>地理坐标转换到投影坐标的过程可理解为投影。（投影：将不规则的地球曲面转换为平面）；</p>
+<p>地理坐标，就是用经线（子午线）、纬线、经度、纬度表示地面点位的球面坐标。</p>
+<h3 id="地球的三级逼近"><a href="#地球的三级逼近" class="headerlink" title="地球的三级逼近"></a>地球的三级逼近</h3><p>大地水准面是地球表面的第一级逼近。假设当海水处于完全静止的平衡状态时，从海平面延伸到所有大陆下部， 而与地球重力方向处处正交的一个连续、闭合的曲面，这就是大地水准面。</p>
+<p>大地水准面可以近似成一个规则成椭球体，但并不是完全规则， 其形状接近一个扁率极小的椭圆绕短轴旋转所形成的规则椭球体，这个椭球体称为地球椭球体。 它是地球的第二级逼近。</p>
+<p>确定了一个规则的椭球表面以后，我们会发现还有一个问题， 参考椭球体是对地球的抽象，因此其并不能去地球表面完全重合， 在设置参考椭球体的时候必然会出现有的地方贴近的好（参考椭球体与地球表面位置接近）， 有的地方贴近的不好的问题，因此这里还需要一个大地基准面来控制参考椭球和地球的相对位置。 这是地球表面的第三级逼近。</p>
+<p>地心基准面：由卫星数据得到，使用地球的质心作为原点，使用最广泛的是 WGS 1984。</p>
+<p>区域基准面：特定区域内与地球表面吻合，大地原点是参考椭球与大地水准面相切的点，例如Beijing54、Xian80。 我们通常称谓的Beijing54、Xian80坐标系实际上指的是我国的两个大地基准面。</p>
+<p>我们通常说的参心大地坐标系和地心大地坐标系的区别就在于此。</p>
+<p>参心大地坐标系：指经过定位与定向后，地球椭球的中心不与地球质心 重合而是接近地球质心。区域性大地坐标系。是我国基本测图和常规大地测量的基础。如Beijing54、Xian80。</p>
+<p>地心大地坐标系：指经过定位与定向后，地球椭球的中心与地球质心重合。如CGCS2000、WGS84。</p>
+<h2 id="投影坐标系"><a href="#投影坐标系" class="headerlink" title="投影坐标系"></a>投影坐标系</h2><p>投影坐标系：为平面坐标。参考平面地是水平面，坐标单位：米、千米等；</p>
+<p>在地球椭球面和平面之间建立点与点之间函数关系的数学方法，称为地图投影。</p>
+<p>地球椭球表面是一种不可能展开的曲面，要把这样一个曲面表现到平面上，就会发生裂隙或褶皱。 在投影面上，可运用经纬线的“拉伸”或“压缩”（通过数学手段）来加以避免， 以便形成一幅完整的地图。但不可避免会产生变形。 地图投影的变形通常有：长度变形、面积变形和角度变形。 在实际应用中，根据使用地图的目的，限定某种变形。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.osgeo.cn/qgis-tutorial/index.html" target="_blank" rel="noopener">QGIS 3 地理信息系统基础教程</a>,osgeo.</li>
 </ol>

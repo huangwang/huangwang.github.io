@@ -314,6 +314,246 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/15/DLL%E5%AF%BC%E5%87%BA%E7%B1%BB%E5%92%8C%E5%87%BD%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/15/DLL%E5%AF%BC%E5%87%BA%E7%B1%BB%E5%92%8C%E5%87%BD%E6%95%B0/" itemprop="url">
+                  DLL导出类和函数
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-15 21:37:53" itemprop="dateCreated datePublished" datetime="2018-06-15T21:37:53+08:00">2018-06-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2022-07-27 20:52:20" itemprop="dateModified" datetime="2022-07-27T20:52:20+08:00">2022-07-27</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近研究在DLL中导出类，探寻最佳的DLL导出类的方法和技术。把整个过程记录一下，防止遗忘。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="动态链接库"><a href="#动态链接库" class="headerlink" title="动态链接库"></a>动态链接库</h2><p>动态链接库（英语：Dynamic-link library，缩写为DLL）是微软公司在微软视窗操作系统中实现共享函数库概念的一种实现方式。这些库函数的扩展名是.DLL、.OCX（包含ActiveX控制的库）或者.DRV（旧式的系统驱动程序)。</p>
+<p>所谓动态链接，就是把一些经常会共用的代码（静态链接的OBJ程序库）制作成DLL档，当可执行文件调用到DLL档内的函数时，Windows操作系统才会把DLL档加载存储器内，DLL档本身的结构就是可执行档，当程序有需求时函数才进行链接。通过动态链接方式，存储器浪费的情形将可大幅降低。静态链接库则是直接链接到可执行文件。</p>
+<h2 id="编写方法"><a href="#编写方法" class="headerlink" title="编写方法"></a>编写方法</h2><p>使用DLL导出C函数或全局变量很简单，具体代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 下列 ifdef 块是创建使从 DLL 导出更简单的</span><br><span class="line">&#x2F;&#x2F; 宏的标准方法。此 DLL 中的所有文件都是用命令行上定义的 DLLDEMO_EXPORTS</span><br><span class="line">&#x2F;&#x2F; 符号编译的。在使用此 DLL 的</span><br><span class="line">&#x2F;&#x2F; 任何其他项目上不应定义此符号。这样，源文件中包含此文件的任何其他项目都会将</span><br><span class="line">&#x2F;&#x2F; DLLDEMO_API 函数视为是从 DLL 导入的，而此 DLL 则将用此宏定义的</span><br><span class="line">&#x2F;&#x2F; 符号视为是被导出的。</span><br><span class="line"></span><br><span class="line">#ifdef DLLDEMO_EXPORTS</span><br><span class="line">#define DLLDEMO_API __declspec(dllexport)</span><br><span class="line">#else</span><br><span class="line">#define DLLDEMO_API __declspec(dllimport)</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">extern &quot;C&quot; extern DLLDEMO_API int nDllDemo;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;不使用extern &quot;C&quot;将导致函数名字改编</span><br><span class="line">DLLDEMO_API int fnDllDemo(int);</span><br><span class="line"></span><br><span class="line">extern &quot;C&quot; DLLDEMO_API int fnExternCDllDemo(int);</span><br></pre></td></tr></table></figure>
+<h2 id="运行时通知DLL进程-线程加载"><a href="#运行时通知DLL进程-线程加载" class="headerlink" title="运行时通知DLL进程/线程加载"></a>运行时通知DLL进程/线程加载</h2><p>进程/线程加载时，可以通过DllMain函数通知DLL相关信息，提供对应处理的机会。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">BOOL WINAPI DLLMain(HINSTANCE hinstDLL,DWORD fdwReason,LPVOID fImpLoad)</span><br><span class="line">&#123;</span><br><span class="line">  switch(fdwReason)</span><br><span class="line">  &#123; </span><br><span class="line">    case DLL_PROCESS_ATTACH:</span><br><span class="line">        &#x2F;&#x2F;当这个DLL第一次被映射到了这个进程的地址空间时。DLLMain函数的返回值为FALSE，说明DLL的初始化没有成功，系统就会终结整个进程，去掉所有文件映象，之后显示一个对话框告诉用户进程不能启动。</span><br><span class="line">    break;</span><br><span class="line">    case DLL_THREAD_ATTACH: </span><br><span class="line">        &#x2F;&#x2F;一个线程被创建，新创建的线程负责执行这次的DllMain函数。系统不会让进程已经存在的线程以DLL_THREAD_ATTACH的值来调用DllMain函数。主线程永远不会以DLL_THREAD_ATTACH的值来调用DllMain函数。系统是顺序调用DllMain函数的，一个线程执行完DllMain函数才会让另外一个线程执行DllMain函数。</span><br><span class="line">    break;</span><br><span class="line">    case DLL_THREAD_DETACH:</span><br><span class="line">       &#x2F;&#x2F;如果线程调用了ExitThread来结束线程（线程函数返回时，系统也会自动调用ExitThread）。线程调用了TerminateThread，系统就不会用值DLL_THREAD_DETACH来调用所有DLL的DllMain函数。</span><br><span class="line">    break;</span><br><span class="line">    case DLL_PROCESS_DETACH:</span><br><span class="line">        &#x2F;&#x2F;这个DLL从进程的地址空间中解除映射。如果进程的终结是因为调用了TerminateProcess，系统就不会用DLL_PROCESS_DETACH来调用DLL的DllMain函数。这就意味着DLL在进程结束前没有机会执行任何清理工作。</span><br><span class="line">    break;</span><br><span class="line">  &#125;</span><br><span class="line">  return(TRUE);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="DLL的静态调用方法"><a href="#DLL的静态调用方法" class="headerlink" title="DLL的静态调用方法"></a>DLL的静态调用方法</h2><p>采用静态调用方法，DLL最终将打包到生成的EXE中。静态调用方法步骤如下<sup>[2]</sup>：</p>
+<ol>
+<li>把你的youApp.DLL拷到你目标工程(需调用youApp.DLL的工程)的Debug目录下;</li>
+<li>把你的youApp.lib拷到你目标工程(需调用youApp.DLL的工程)目录下;</li>
+<li>把你的youApp.h(包含输出函数的定义)拷到你目标工程(需调用youApp.DLL的工程)目<br>录下;</li>
+<li>打开你的目标工程选中工程,选择Visual C++的Project主菜单的Settings菜单;</li>
+<li>执行第4步后，VC将会弹出一个对话框，在对话框的多页显示控件中选择Link页。然<br>后在Object/library modules输入框中输入:youApp.lib</li>
+<li>选择你的目标工程Head Files加入：youApp.h文件;</li>
+<li>最后在你目标工程(*.cpp,需要调用DLL中的函数)中包含你的:#include “youApp.h”</li>
+</ol>
+<h2 id="DLL的动态调用方法"><a href="#DLL的动态调用方法" class="headerlink" title="DLL的动态调用方法"></a>DLL的动态调用方法</h2><p>动态调用DLL的步骤：  </p>
+<ol>
+<li>创建一个函数指针，其指针数据类型要与调用的DLL引出函数相吻合。</li>
+<li>通过Win32 API函数LoadLibrary()显式的调用DLL，此函数返回DLL的实例句柄。</li>
+<li>通过Win32 API函数GetProcAddress()获取要调用的DLL的函数地址, 把结果赋给自定义函数的指针类型。</li>
+<li>使用函数指针来调用DLL函数。</li>
+<li>最后调用完成后，通过Win32 API函数FreeLibrary()释放DLL函数。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	HMODULE hModule &#x3D; LoadLibrary(_T(&quot;DllDemo.dll&quot;));</span><br><span class="line">	typedef int(*TYPE_fnDllDemo) (int);&#x2F;&#x2F;定义函数指针  </span><br><span class="line">	typedef int(*TYPE_fnExternCDllDemo) (int);&#x2F;&#x2F;定义函数指针  </span><br><span class="line">	&#x2F;&#x2F;创建类对象</span><br><span class="line">	CDllDemo* pCDllDemo &#x3D; (CDllDemo*)malloc(sizeof(CDllDemo));</span><br><span class="line"></span><br><span class="line">	TYPE_fnDllDemo fnDllDemo &#x3D; (TYPE_fnDllDemo)GetProcAddress(hModule, &quot;?fnDllDemo@@YAHH@Z&quot;);</span><br><span class="line">	int *nDllDemo &#x3D; (int *)GetProcAddress(hModule, &quot;nDllDemo&quot;);</span><br><span class="line">	TYPE_fnExternCDllDemo fnExternCDllDemo &#x3D; (TYPE_fnExternCDllDemo)GetProcAddress(hModule, &quot;fnExternCDllDemo&quot;);</span><br><span class="line">	</span><br><span class="line">	if (pCDllDemo !&#x3D; NULL)</span><br><span class="line">		&#x2F;&#x2F; printf(&quot;pCDllDemo-&gt;Max(32,42) &#x3D; %d\n&quot;, pCDllDemo-&gt;Max(32, 42));&#x2F;&#x2F;Dll导出类的调用太麻烦，因为DLL本来就是为C函数服务设计的。</span><br><span class="line">	if (fnDllDemo !&#x3D; NULL)</span><br><span class="line">		printf(&quot;fnDllDemo(32) &#x3D; %d\n&quot;, fnDllDemo(32));</span><br><span class="line">	if (nDllDemo !&#x3D; NULL)</span><br><span class="line">		printf(&quot;*nDllDemo &#x3D; %d\n&quot;, *nDllDemo);</span><br><span class="line">	if (fnExternCDllDemo !&#x3D; NULL)</span><br><span class="line">		printf(&quot;fnExternCDllDemo(22) &#x3D; %d\n&quot;, fnExternCDllDemo(22));</span><br><span class="line">	_tsystem(_T(&quot;pause&quot;));</span><br><span class="line">	FreeLibrary(hModule);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="COM技术"><a href="#COM技术" class="headerlink" title="COM技术"></a>COM技术</h2><p>COM主要是一套给C/C++用的接口，当然为了微软的野心，它也被推广到了VB、Delphi以及其他一大堆奇奇怪怪的平台上。它主要为了使用dll发布基于interface的接口。我们知道dll的接口是为了C设计的，它导出的基本都是C的函数，从原理上来说，将dll加载到内存之后，会告诉你一组函数的地址，你自己call进去就可以调用相应的函数<sup>[3]</sup>。  </p>
+<p>但是对于C++来说这个事情就头疼了，现在假设你有一个类，我们知道使用一个类的第一步是创建这个类：new MyClass()。这里直接就出问题了，new方法通过编译器计算MyClass的大小来分配相应的内存空间，但是如果库升级了，相应的类可能会增加新的成员，大小就变了，那么使用旧的定义分配出来的空间就不能在新的库当中使用。 </p>
+<p>要解决这问题，我们必须在dll当中导出一个CreateObject的方法，用来代替构造函数，然后返回一个接口。然而，接口的定义在不同版本当中也是有可能会变化的，为了兼容以前的版本同时也提供新功能，还需要让这个对象可以返回不同版本的接口。接口其实是一个只有纯虚函数的C++类，不过对它进行了一些改造来兼容C和其他一些编程语言。 </p>
+<p>在这样改造之后，出问题的还有析构过程~MyClass()或者说delete myClass，因为同一个对象可能返回了很多个接口，有些接口还在被使用，如果其中一个被人delete了，其他接口都会出错，所以又引入了引用计数，来让许多人可以共享同一个对象。  </p>
+<p>其实到此为止也并不算是很奇怪的技术，我们用C++有的时候也会使用Factory方法来代替构造函数实现某些特殊的多态，也会用引用计数等等。COM技术的奇怪地方在于微软实在是脑洞太大了，它们构造了一个操作系统级别的Factory，规定所有人的Interface都统一用UUID来标识，以后想要哪个Interface只要报出UUID来就行了。这样甚至连链接到特定的dll都省了。  </p>
+<p>这就好比一个COM程序员，只要他在Windows平台上，调用别的库就只要首先翻一下魔导书，查到了一个用奇怪文字写的“Excel = {xxx-xxx-xxxx…}”的记号，然后它只要对着空中喊一声：“召唤，Excel！CoCreateInstance, {xxx-xxx-xxxx…}”然后呼的从魔法阵里面窜出来了一个怪物，它长什么样我们完全看不清，因为这时候它的类型是IUnknow，这是脑洞奇大无比的微软为所有接口设计的一个基类。</p>
+<p>我们需要进一步要求它变成我们能控制的接口形态，于是我们再喊下一条指令：“变身，Excel 2003形态！QueryInterface, {xxx-xxx-xxxx…}”QueryInterface使用的是另一个UUID，用来表示不同版本的接口。于是怪物就变成了我们需要的Excel 2003接口，虽然我们不知道它实际上是2003还是2007还是更高版本。等我们使唤完这只召唤兽，我们就会对它说“回去吧，召唤兽！Release！”但是它不一定听话，因为之前给它的命令也许还没有执行完，它会忠诚地等到执行完再回去，当然我们并不关心这些细节。  </p>
+<p>微软大概会觉得自己设计出了软件史上最完美的二进制接口，从今以后所有的第三方库都可以涵盖在这套接口之下。然而历史的车轮是无情的，它碾过那些自以为是的人的速度总是会比想象的更快。Java的直接基于类的接口被广泛应用，开发使用起来远远来的简单，即便偶尔出点问题大家也都想办法解决了，事实证明程序员并不愿意花10倍的编写代码的时间来解决二进制库的版本兼容问题，他们更愿意假装没看见。很快微软也抄了一个.NET托管dll的方案出来，于是纯的二进制接口COM就慢慢被抛弃了。  </p>
+<p>COM，OLE，ActiveX，OCX，VBScript，历史不会忘记你们的，如果历史忘了，我替历史记住你们。安息吧。</p>
+<h1 id="DLL导出类"><a href="#DLL导出类" class="headerlink" title="DLL导出类"></a>DLL导出类</h1><p>借鉴COM技术，这里直接给出DLL到处类的成熟方法，可有效避免DLL地狱问题。具体结构为：</p>
+<p>导出类是一个派生类，派生自一个抽象类——都是纯虚函数。使用者需要知道这个抽象类的结构。DLL最少只需要提供一个用于获取类对象指针的接口。使用者跟DLL提供者共用一个抽象类的头文件，使用者依赖于DLL的东西很少，只需要知道抽象类的接口，以及获取对象指针的导出函数，对象内存空间的申请是在DLL模块中做的，释放也在DLL模块中完成,最后记得要调用释放对象的函数。</p>
+<p>这种方式比较好，通用，产生的DLL没有特定环境限制。借助了C++类的虚函数。一般都是采用这种方式。除了对DLL导出类有好处外，采用接口跟实现分离，可以使得工程的结构更清晰，使用者只需要知道接口，而不需要知道实现。</p>
+<p>具体代码如下：</p>
+<ol>
+<li><p>DLL导出类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;DLL导出类头文件MatureApproach.h，与DLL使用者共享</span><br><span class="line">#ifdef MATUREAPPROACH_EXPORTS</span><br><span class="line">#define MATUREAPPROACH_API __declspec(dllexport)</span><br><span class="line">#else</span><br><span class="line">#define MATUREAPPROACH_API __declspec(dllimport)</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">class IExport </span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	virtual void Hi() &#x3D; 0;</span><br><span class="line">	virtual void Test() &#x3D; 0; </span><br><span class="line">	virtual void Release() &#x3D; 0;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">extern &quot;C&quot; MATUREAPPROACH_API IExport* _stdcall CreateExportObj();</span><br><span class="line">extern &quot;C&quot; MATUREAPPROACH_API void _stdcall DestroyExportObj(IExport* pExport);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;DLL导出接口函数的实现MatureApproach.cpp</span><br><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &quot;MatureApproach.h&quot;</span><br><span class="line">#include &quot;ExportClassImpl.h&quot;</span><br><span class="line"></span><br><span class="line">BOOL APIENTRY DllMain( HMODULE hModule,</span><br><span class="line">                       DWORD  ul_reason_for_call,</span><br><span class="line">                       LPVOID lpReserved</span><br><span class="line">					 )</span><br><span class="line">&#123;</span><br><span class="line">	switch (ul_reason_for_call)</span><br><span class="line">	&#123;</span><br><span class="line">	case DLL_PROCESS_ATTACH:</span><br><span class="line">	case DLL_THREAD_ATTACH:</span><br><span class="line">	case DLL_THREAD_DETACH:</span><br><span class="line">	case DLL_PROCESS_DETACH:</span><br><span class="line">		break;</span><br><span class="line">	&#125;</span><br><span class="line">    return TRUE;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MATUREAPPROACH_API IExport* APIENTRY CreateExportObj()</span><br><span class="line">&#123;</span><br><span class="line">	return new ExportImpl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;这里不能直接delete pExport，因为没有把IExport的析构函数定义为虚函数</span><br><span class="line">MATUREAPPROACH_API void  APIENTRY DestroyExportObj(IExport* pExport)</span><br><span class="line">&#123;</span><br><span class="line">	pExport-&gt;Release();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>DLL导出类的具体实现</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;DLL导出类头文件ExportClassImpl.h</span><br><span class="line">#include &quot;MatureApproach.h&quot;</span><br><span class="line"></span><br><span class="line">class ExportImpl : public IExport</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	virtual void Hi();</span><br><span class="line">	virtual void Test();</span><br><span class="line">	virtual void Release();</span><br><span class="line">	~ExportImpl();</span><br><span class="line">private:</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;DLL导出类的实现ExportClassImpl.cpp</span><br><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &quot;ExportClassImpl.h&quot;</span><br><span class="line"></span><br><span class="line">void ExportImpl::Hi()</span><br><span class="line">&#123;</span><br><span class="line">	wcout &lt;&lt; L&quot;Hello World&quot; &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void ExportImpl::Test()</span><br><span class="line">&#123;</span><br><span class="line">	wcout &lt;&lt; L&quot;Hi cswuyg&quot; &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void ExportImpl::Release()</span><br><span class="line">&#123;</span><br><span class="line">	delete this;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ExportImpl::~ExportImpl()</span><br><span class="line">&#123;</span><br><span class="line">	cout &lt;&lt; &quot;Release OK&quot; &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Dll导出C-类的3种方式"><a href="#Dll导出C-类的3种方式" class="headerlink" title="Dll导出C++类的3种方式"></a>Dll导出C++类的3种方式</h1><h2 id="Using-pure-C-（纯C语言方式）"><a href="#Using-pure-C-（纯C语言方式）" class="headerlink" title="Using pure C （纯C语言方式）"></a>Using pure C （纯C语言方式）</h2><p>这种方式类似与Win32的窗口句柄，用户将句柄作为参数传递给函数，并对对象执行各种操作。存在以下缺点：</p>
+<ol>
+<li>调用创建对象函数的时候编译器无法判断类型是否匹配</li>
+<li>需要手动调用Release函数，一旦忘记则会造成内存泄露</li>
+<li>如果导出的函数的参数支持除基本数据类型以外的其他类型的参数（例如：class），则也得为这些类型提供接口。</li>
+</ol>
+<h2 id="Using-a-regular-C-class-（C-直接导出类）"><a href="#Using-a-regular-C-class-（C-直接导出类）" class="headerlink" title="Using a regular C++ class （C++直接导出类）"></a>Using a regular C++ class （C++直接导出类）</h2><p>缺点：</p>
+<ol>
+<li>这种方式虽然简单易用，但是局限性很大，而且后期维护会很麻烦，除了导出的东西太多、使用者对类的实现依赖太多之外，还有其它问题：必须保证使用同一种编译器。导出类的本质是导出类里的函数，因为语法上直接导出了类，没有对函数的调用方式、重命名进行设置，导致了产生的dll并不通用。</li>
+<li>Dll地狱问题:</li>
+</ol>
+<h2 id="Using-an-abstract-C-interface-（使用抽象接口方式）"><a href="#Using-an-abstract-C-interface-（使用抽象接口方式）" class="headerlink" title="Using an abstract C++ interface （使用抽象接口方式）"></a>Using an abstract C++ interface （使用抽象接口方式）</h2><p>C++抽象接口（仅包含纯虚函数且不包含数据成员的C++类）同时兼顾以下两个方面：与对象无关的纯净接口，以及方便的的面向对象的调用方式。</p>
+<p><strong>推荐使用该种方式导出类库。</strong></p>
+<p>优点：</p>
+<ul>
+<li>导出的C++类可以通过抽象接口与任何C++编译器一起使用。</li>
+<li>DLL的C运行时库和客户端彼此独立。因为资源获取和释放完全发生在DLL模块内部，客户端不受DLL内部改变的影响。</li>
+<li>实现了真正的模块分离。可以重新设计和重建生成的DLL模块，而不会影响项目的其余部分。</li>
+<li>如果需要，可以将DLL模块轻松转换为成熟的COM模块。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li><p>创建新对象实例并将其删除需要显式函数调用。但是，智能指针可以解决。</p>
+</li>
+<li><p>抽象接口方法不能返回或接受常规C++对象作为参数。它是A内置类型（如int，double，char*等）或另一抽象接口。它与C接口的限制相同。</p>
+</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/动态链接库" target="_blank" rel="noopener">动态链接库</a>, by wikipedia</li>
+<li><a href="http://www.cnblogs.com/micro-chen/p/5937428.html" target="_blank" rel="noopener">C++调用DLL有两种方法——静态调用和动态调用</a>，by 特洛伊-Micro</li>
+<li><a href="https://www.zhihu.com/question/49433640/answer/115952604" target="_blank" rel="noopener">怎么通俗的解释COM组件？</a>, by 灵剑.</li>
+<li><a href="http://www.cnblogs.com/cswuyg/archive/2011/10/06/DLL2.html" target="_blank" rel="noopener">编写DLL所学所思(2)——导出类</a>，by 烛秋.</li>
+<li><a href="http://gcc.gnu.org/wiki/Visibility" target="_blank" rel="noopener">Visibility</a>,by Niall Douglas.</li>
+<li><a href="https://medium.com/fcamels-notes/linux-%E7%B7%A8%E8%AD%AF-shared-library-%E7%9A%84%E6%96%B9%E6%B3%95%E5%92%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85-cb35844ef331" target="_blank" rel="noopener">Linux 編譯 shared library 的方法和注意事項</a>,by fcamel.</li>
+<li><a href="http://abcdxyzk.github.io/blog/2014/11/06/compiler-gcc-lib/" target="_blank" rel="noopener">GCC制作Library–shared部分相当不错</a>,by kk.</li>
+<li><a href="https://bbs.pediy.com/thread-262105.htm" target="_blank" rel="noopener">[原创]Dll导出C++类的3种方式(多干货) </a>,by Jmsrwt.</li>
+<li><a href="https://www.cnblogs.com/huzongzhe/p/6735189.html" target="_blank" rel="noopener">C++类库开发详解</a>,by 奔跑的小河.</li>
+<li><a href="https://www.cnblogs.com/lsgsanxiao/p/11235867.html" target="_blank" rel="noopener">C++ DLL导出类 知识大全</a>,by 三小.</li>
+<li><a href="https://stackoverflow.com/questions/4145605/stdvector-needs-to-have-dll-interface-to-be-used-by-clients-of-class-xt-war" target="_blank" rel="noopener">std::vector needs to have dll-interface to be used by clients of class ‘X<T> warning</a>,by stackoverflow.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/13/Cesium%E5%8D%AB%E6%98%9F%E5%9C%B0%E5%9B%BE%E5%92%8C%E9%AB%98%E7%A8%8B%E6%95%B0%E6%8D%AE%E5%88%87%E7%89%87%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2012,230 +2252,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/13/Windows%E6%89%B9%E5%A4%84%E7%90%86%E7%BC%96%E7%A8%8B%E8%AF%AD%E6%B3%95%E8%A7%A3%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/13/Windows%E6%89%B9%E5%A4%84%E7%90%86%E7%BC%96%E7%A8%8B%E8%AF%AD%E6%B3%95%E8%A7%A3%E6%9E%90/" itemprop="url">
-                  Windows批处理编程语法解析
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-13 09:26:50" itemprop="dateCreated datePublished" datetime="2018-05-13T09:26:50+08:00">2018-05-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2022-05-13 23:04:46" itemprop="dateModified" datetime="2022-05-13T23:04:46+08:00">2022-05-13</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>批处理文件(BAT文件)是DOS，OS/2和Microsoft Windows中的一种脚本文件<sup>[1]</sup>。 它由命令行解释器执行的一系列命令组成，存储在纯文本文件中，通常以BAT为扩展名。批处理文件可以包含解释器交互接受的任何命令，并使用在批处理文件中启用条件分支和循环的构造，如IF，FOR和GOTO标签。在Windows平台自动化部署或处理日常重复性工作时，常使用Windows批处理文件。</p>
-<h1 id="批处理命令简介"><a href="#批处理命令简介" class="headerlink" title="批处理命令简介"></a>批处理命令简介</h1><p>下面简单介绍Windows BAT文件的语法。</p>
-<h2 id="变量操作"><a href="#变量操作" class="headerlink" title="变量操作"></a>变量操作</h2><ul>
-<li>设置变量</li>
-</ul>
-<p>格式：set 变量名=变量值<br>详细：被设定的变量以%变量名%引用</p>
-<ul>
-<li><p>取消变量<br>格式：set 变量名=<br>详细：取消后的变量若被引用%变量名%将为空</p>
-</li>
-<li><p>展示变量<br>格式：set 变量名<br>详细：展示以变量名开头的所有变量的值</p>
-</li>
-<li><p>列出所有可用的变量<br>格式：set</p>
-</li>
-</ul>
-<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><ul>
-<li>@ </li>
-</ul>
-<p>让执行窗口中不显示它后面这一行的命令本身。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 使用@将不显示后面的echo off命令</span><br><span class="line">@ echo off</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>echo</li>
-</ul>
-<p>echo即回显或反馈的意思。它由两种状态：打开和关闭。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 将不显示后续的命令</span><br><span class="line">@ echo off</span><br><span class="line">&#x2F;&#x2F; 将显示后续的命令</span><br><span class="line">@ echo on</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>::</li>
-</ul>
-<p>注释命令。在批处理文件中与rem命令等效</p>
-<ul>
-<li>call</li>
-</ul>
-<p>call命令用来从一个批处理文件调用另一个批处理文件。只有当被调用的批处理文件执行完成时，才返回。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">call pm2-startup install</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>start</li>
-</ul>
-<p>启动单独的“命令提示符”窗口来运行指定程序或命令。如果在没有参数的情况下使用，start 将打开第二个命令提示符窗口。</p>
-<ul>
-<li>pause</li>
-</ul>
-<p>暂停命令。方便用户查看信息，查看完毕后可继续执行。</p>
-<ul>
-<li>explorer</li>
-</ul>
-<p>在 cmd 下输入explorer可打开文件夹图形界面，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 在图形界面中打开当前文件夹</span><br><span class="line">explorer .</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>%i</li>
-</ul>
-<p>for循环在cmd命令行中的固定用法for %i in (set) do (…)，循环变量格式为%i</p>
-<ul>
-<li>%%i</li>
-</ul>
-<p>for循环在bat处理程序中的固定用法for %%i in (set) do (…)，循环变量格式为%%i</p>
-<h1 id="批处理脚本示例"><a href="#批处理脚本示例" class="headerlink" title="批处理脚本示例"></a>批处理脚本示例</h1><p>示例1：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">set PATH&#x3D;E:\Simulation\x64\Release\;%PATH%;</span><br><span class="line">E:</span><br><span class="line">cd E:\Simulation\x64\Release\</span><br><span class="line">cd BlueSimu</span><br><span class="line">start FlightSimServer.exe</span><br><span class="line">cd ..&#x2F;RedSimu</span><br><span class="line">start FlightSimServer.exe</span><br><span class="line">cd ..</span><br><span class="line">start Simulation.exe</span><br><span class="line">start Simulation.exe</span><br><span class="line">pause</span><br></pre></td></tr></table></figure>
-
-<p>示例2：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">:: 定义变量</span><br><span class="line">set dataset&#x3D;j:\tensorflow\dataset\LSOTB-TIR\Training Dataset</span><br><span class="line">set imagedir&#x3D;%dataset%\LSOTB-TIR_TrainingData\TrainingData\TIR_training_004\bird_001</span><br><span class="line">set xmldir&#x3D;%dataset%\LSOTB-TIR_TrainingData\Annotations\TIR_training_004\bird_001</span><br><span class="line">set labelpath&#x3D;j:\tensorflow\workspace\training_demo\annotations\label_map.pbtxt</span><br><span class="line">set outputdir&#x3D;j:\tensorflow\workspace\training_demo\annotations\infrared_train_bird_004_001</span><br><span class="line">set process_script&#x3D;j:\tensorflow\scripts\preprocessing\generate_pascal_tfrecord.py</span><br><span class="line"></span><br><span class="line">:: 调用tfrecord脚本程序, for循环，字符串截取，字符串拼接，路径空格处理 </span><br><span class="line">for &#x2F;L %%i in (1,1,7) do python %process_script% -i &quot;%imagedir:~0,-1%%%i&quot;  -x &quot;%xmldir:~0,-1%%%i&quot;  -l %labelpath% -o %outputdir:~0,-1%%%i.record</span><br><span class="line">:: for &#x2F;L %%i in (10,1,16) do python %process_script% -i &quot;%imagedir:~0,-2%%%i&quot;  -x &quot;%xmldir:~0,-2%%%i&quot;  -l %labelpath% -o %outputdir:~0,-2%%%i.record</span><br><span class="line"></span><br><span class="line">pause</span><br></pre></td></tr></table></figure>
-
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://en.wikipedia.org/wiki/Batch_file" target="_blank" rel="noopener">Batch file</a>,by Wikipedia.</li>
-<li><a href="https://www.cnblogs.com/s1ihome/archive/2009/01/15/batTutorial.html" target="_blank" rel="noopener">批处理最完整人性化教程(.bat文件语法)</a>, by s1ihome.</li>
-<li><a href="https://www.cnblogs.com/qlqwjy/p/8445993.html" target="_blank" rel="noopener">批处理命令之Start的详细用法</a>,by QiaoZhi.</li>
-<li><a href="https://www.cnblogs.com/lm002003/archive/2012/05/15/2502367.html" target="_blank" rel="noopener">windows批处理set命令</a>,by 鹤唳九天.</li>
-<li><a href="https://blog.dangjiahe.com/2018/05/09/windows%E6%89%B9%E5%A4%84%E7%90%86%E2%80%94%E2%80%94%E5%8F%98%E9%87%8F%EF%BC%8C%E5%91%BD%E4%BB%A4%E6%8D%A2%E8%A1%8C/" target="_blank" rel="noopener">windows批处理——变量，命令换行</a>,by undefined.</li>
-<li><a href="https://blog.csdn.net/weixin_44256803/article/details/106636505" target="_blank" rel="noopener">Batch批处理字符串操作、for循环学习记录</a>,by blingbling_110.</li>
-<li><a href="https://blog.csdn.net/albertsh/article/details/102985590" target="_blank" rel="noopener">.bat批处理（八）：各种形式的变量%0、%i、%%i、var、%var%、!var!的含义和区别</a>,by AlbertS.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2283,7 +2299,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">419</span>
+                    <span class="site-state-item-count">420</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2424,7 +2440,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">63</span>
+                      
+                    
+                    <span class="site-state-item-count">64</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

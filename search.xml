@@ -18572,4 +18572,61 @@ console.log(y);</code></pre></li>
         <tag>vuejs</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Java学习笔记</title>
+    <url>/2023/04/03/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>最近处理的几个项目都是用Java语言编写的，学习一下。</p>
+<h1 id="Web-xml配置文件"><a href="#Web-xml配置文件" class="headerlink" title="Web.xml配置文件"></a>Web.xml配置文件</h1><h2 id="Listener"><a href="#Listener" class="headerlink" title="Listener"></a>Listener</h2><p><listener>为web应用程序定义监听器，监听器用来监听各种事件，比如：application和session事件，所有的监听器按照相同的方式定义，功能取决去它们各自实现的接口，常用的Web事件接口有如下几个：</p>
+<ul>
+<li>ServletContextListener：用于监听Web应用的启动和关闭；</li>
+<li>ServletContextAttributeListener：用于监听ServletContext范围（application）内属性的改变；</li>
+<li>ServletRequestListener：用于监听用户的请求；</li>
+<li>ServletRequestAttributeListener：用于监听ServletRequest范围（request）内属性的改变；</li>
+<li>HttpSessionListener：用于监听用户session的开始和结束；</li>
+<li>HttpSessionAttributeListener：用于监听HttpSession范围（session）内属性的改变。</li>
+</ul>
+<p><listener>主要用于监听Web应用事件，其中有两个比较重要的WEB应用事件：应用的启动和停止（starting up or shutting down）和Session的创建和失效（created or destroyed）。</p>
+<h2 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h2><p>Filter可认为是Servle的一种“加强版”，主要用于对用户请求request进行预处理，也可以对Response进行后处理，是个典型的处理链。使用Filter的完整流程是：Filter对用户请求进行预处理，接着将请求HttpServletRequest交给Servlet进行处理并生成响应，最后Filter再对服务器响应HttpServletResponse进行后处理。Filter与Servlet具有完全相同的生命周期，且Filter也可以通过<init-param>来配置初始化参数，获取Filter的初始化参数则使用FilterConfig的getInitParameter()。</p>
+<p>换种说法，Servlet里有request和response两个对象，Filter能够在一个request到达Servlet之前预处理request，也可以在离开Servlet时处理response，Filter其实是一个Servlet链。</p>
+<p>以下是Filter的一些常见应用场合：</p>
+<ul>
+<li>认证Filter</li>
+<li>日志和审核Filter</li>
+<li>图片转换Filter</li>
+<li>数据压缩Filter</li>
+<li>密码Filter</li>
+<li>令牌Filter</li>
+<li>触发资源访问事件的Filter</li>
+<li>XSLT Filter</li>
+<li>媒体类型链Filter</li>
+</ul>
+<h2 id="Servlet"><a href="#Servlet" class="headerlink" title="Servlet"></a>Servlet</h2><p>Servlet通常称为服务器端小程序，是运行在服务器端的程序，用于处理及响应客户的请求。Servlet是个特殊的java类，继承于HttpServlet。客户端通常只有GET和POST两种请求方式，Servlet为了响应则两种请求，必须重写doGet()和doPost()方法。</p>
+<h2 id="Web-xml加载顺序"><a href="#Web-xml加载顺序" class="headerlink" title="Web.xml加载顺序"></a>Web.xml加载顺序</h2><blockquote>
+<p>总的来说，web.xml的加载顺序是:<context-param>-&gt;<listener>-&gt;<filter>-&gt;<servlet>。其中，如果web.xml中出现了相同的元素，则按照在配置文件中出现的先后顺序来加载。</p>
+</blockquote>
+<blockquote>
+<p>对于某类元素而言，与它们出现的顺序是有关的。以<filter>为例，web.xml中当然可以定义多个<filter>，与<filter>相关的一个元素是<filter-mapping>，注意，对于拥有相同<filter-name>的<filter>和<filter-mapping>元素而言，<filter-mapping>必须出现在<filter>之后，否则当解析到<filter-mapping>时，它所对应的<filter-name>还未定义。web容器启动初始化每个<filter>时，按照<filter>出现的顺序来初始化的，当请求资源匹配多个<filter-mapping>时，<filter>拦截资源是按照<filter-mapping>元素出现的顺序来依次调用doFilter()方法的。<servlet>同<filter>类似，此处不再赘述。</p>
+<p>Servlet里有request和response两个对象，Filter能够在一个request到达Servlet之前预处理request，也可以在离开Servlet时处理response，Filter其实是一个Servlet链。</p>
+</blockquote>
+<h1 id="Struct2"><a href="#Struct2" class="headerlink" title="Struct2"></a>Struct2</h1><p>请参考<a href="https://www.cnblogs.com/beilou310/p/10436856.html" target="_blank" rel="noopener">Struct2 基础介绍 </a>。</p>
+<h1 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h1><p>请参考<a href="https://juejin.cn/post/6844903577077415950" target="_blank" rel="noopener">Spring MVC 解析之 DispatcherServlet</a>。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.cnblogs.com/linhuaming/p/9464356.html" target="_blank" rel="noopener">web.xml 配置文件 超详细说明！！！ </a>,by 吴川华仔.</li>
+<li><a href="https://blog.51cto.com/u_3664660/3217638" target="_blank" rel="noopener">web.xml文件中加载顺序的优先级 </a>,by laolu0837.</li>
+<li><a href="https://www.cnblogs.com/wl0000-03/p/7803276.html" target="_blank" rel="noopener">Spring 、SpringMVC 、Struts2之间的区别</a>,by 刘二雄.</li>
+<li><a href="https://www.cnblogs.com/beilou310/p/10436856.html" target="_blank" rel="noopener">Struct2 基础介绍 </a>,by shiyuan310.</li>
+<li><a href="https://www.cnblogs.com/javabg/p/7290496.html" target="_blank" rel="noopener">深入Struts2的过滤器FilterDispatcher–中文乱码及字符编码过滤器</a>,by  关键步就几步.</li>
+<li><a href="https://blog.csdn.net/zhoucheng05_13/article/details/54142632" target="_blank" rel="noopener">Spring整合Struts2步骤及完整实例</a>,by Star_Ship.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/26787293" target="_blank" rel="noopener">Spring和struts2整合详解</a>,by Damon.</li>
+<li><a href="https://www.jb51.net/article/178242.htm" target="_blank" rel="noopener">spring整合struts2过程详解</a>,by 西西嘛呦.</li>
+<li><a href="https://juejin.cn/post/6844903577077415950" target="_blank" rel="noopener">Spring MVC 解析之 DispatcherServlet</a>,by 摆码王子.</li>
+<li><a href="https://www.jianshu.com/p/4851dbedb63d" target="_blank" rel="noopener">一文读懂SpringMVC工作流程</a>,by Wizey.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>常用工具</tag>
+        <tag>Java</tag>
+      </tags>
+  </entry>
 </search>

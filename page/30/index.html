@@ -314,6 +314,219 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/23/gdb%E8%B0%83%E8%AF%95%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/23/gdb%E8%B0%83%E8%AF%95%E5%85%A5%E9%97%A8/" itemprop="url">
+                  gdb调试入门
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-23 14:26:54 / 修改时间：23:17:40" itemprop="dateCreated datePublished" datetime="2019-06-23T14:26:54+08:00">2019-06-23</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>GDB是一个由GNU开源组织发布的、UNIX/LINUX操作系统下的、基于命令行的、功能强大的程序调试工具。 对于一名Linux下工作的c++程序员，gdb是必不可少的工具。</p>
+<h1 id="启动gdb"><a href="#启动gdb" class="headerlink" title="启动gdb"></a>启动gdb</h1><p>对C/C++程序的调试，需要在编译前就加上-g选项。对大型项目，一般选择Debug选项进行编译以 方便gdb调试。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ g++ -g hello.cpp -o hello</span><br></pre></td></tr></table></figure>
+
+<p>调试可执行文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$gdb &lt;program&gt;</span><br></pre></td></tr></table></figure>
+
+<p>program也就是你的执行文件，一般在当前目录下。</p>
+<h1 id="gdb交互命令"><a href="#gdb交互命令" class="headerlink" title="gdb交互命令"></a>gdb交互命令</h1><p>启动gdb后，进入到交互模式，通过以下命令完成对程序的调试；注意高频使用的命令一般都会有缩写，熟练使用这些缩写命令能提高调试的效率；</p>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><ul>
+<li>run：简记为 r ，其作用是运行程序，当遇到断点后，程序会在断点处停止运行，等待用户输入下一步的命令。</li>
+<li>continue （简写c ）：继续执行，到下一个断点处（或运行结束）</li>
+<li>next：（简写 n），单步跟踪程序，当遇到函数调用时，也不进入此函数体；此命令同 step 的主要区别是，step 遇到用户自定义的函数，将步进到函数中去运行，而 next 则直接调用函数，不会进入到函数体内。</li>
+<li>step （简写s）：单步调试如果有函数调用，则进入函数；与命令n不同，n是不进入调用的函数的</li>
+<li>until：当你厌倦了在一个循环体内单步跟踪时，这个命令可以运行程序直到退出循环体。</li>
+<li>until+行号： 运行至某行，不仅仅用来跳出循环</li>
+<li>finish： 运行程序，直到当前函数完成返回，并打印函数返回时的堆栈地址和返回值及参数值等信息。</li>
+<li><strong>call 函数(参数)：调用程序中可见的函数，并传递“参数”，如：call gdb_test(55)</strong></li>
+<li>quit：简记为 q ，退出gdb</li>
+</ul>
+<h2 id="设置断点"><a href="#设置断点" class="headerlink" title="设置断点"></a>设置断点</h2><ul>
+<li><strong>break n （简写b n）:在第n行处设置断点</strong><br>（可以带上代码路径和代码名称： b OAGUPDATE.cpp:578）</li>
+<li>b fn1 if a＞b：条件断点设置</li>
+<li>break func（break缩写为b）：在函数func()的入口处设置断点，如：break cb_button</li>
+<li>delete 断点号n：删除第n个断点</li>
+<li>disable 断点号n：暂停第n个断点</li>
+<li>enable 断点号n：开启第n个断点</li>
+<li>clear 行号n：清除第n行的断点</li>
+<li>info b （info breakpoints） ：显示当前程序的断点设置情况</li>
+<li>delete breakpoints：清除所有断点</li>
+</ul>
+<h2 id="查看源代码"><a href="#查看源代码" class="headerlink" title="查看源代码"></a>查看源代码</h2><ul>
+<li>list ：简记为 l ，其作用就是列出程序的源代码，默认每次显示10行。</li>
+<li>list 行号：将显示当前文件以“行号”为中心的前后10行代码，如：list 12</li>
+<li>list 函数名：将显示“函数名”所在函数的源代码，如：list main</li>
+<li>list ：不带参数，将接着上一次 list 命令的，输出下边的内容。</li>
+</ul>
+<h2 id="打印表达式"><a href="#打印表达式" class="headerlink" title="打印表达式"></a>打印表达式</h2><ul>
+<li>print 表达式：简记为 p ，其中“表达式”可以是任何当前正在被测试程序的有效表达式，比如当前正在调试C语言的程序，那么“表达式”可以是任何C语言的有效表达式，包括数字，变量甚至是函数调用。</li>
+<li>print a：将显示整数 a 的值</li>
+<li>print ++a：将把 a 中的值加1,并显示出来</li>
+<li>print name：将显示字符串 name 的值</li>
+<li>print gdb_test(22)：将以整数22作为参数调用 gdb_test() 函数</li>
+<li>print gdb_test(a)：将以变量 a 作为参数调用 gdb_test() 函数</li>
+<li>display 表达式：在单步运行时将非常有用，使用display命令设置一个表达式后，它将在每次单步进行指令后，紧接着输出被设置的表达式及值。如： display a</li>
+<li>watch 表达式：设置一个监视点，一旦被监视的“表达式”的值改变，gdb将强行终止正在被调试的程序。如： watch a</li>
+<li>whatis ：查询变量或函数</li>
+<li>info function： 查询函数</li>
+<li>扩展info locals： 显示当前堆栈页的所有变量</li>
+</ul>
+<h2 id="查询运行信息"><a href="#查询运行信息" class="headerlink" title="查询运行信息"></a>查询运行信息</h2><ul>
+<li>where/bt ：当前运行的堆栈列表；</li>
+<li>bt backtrace 显示当前调用堆栈</li>
+<li>up/down 改变堆栈显示的深度</li>
+<li><strong>set args 参数:指定运行时的参数</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set args -l a -C abc</span><br><span class="line">set args -l&#x3D;a -C&#x3D;abc</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>show args：查看设置好的参数</li>
+<li>info program： 来查看程序的是否在运行，进程号，被暂停的原因。</li>
+</ul>
+<h2 id="分割窗口"><a href="#分割窗口" class="headerlink" title="分割窗口"></a>分割窗口</h2><ul>
+<li>layout：用于分割窗口，可以一边查看代码，一边测试：</li>
+<li>layout src：显示源代码窗口</li>
+<li>layout asm：显示反汇编窗口</li>
+<li>layout regs：显示源代码/反汇编和CPU寄存器窗口</li>
+<li>layout split：显示源代码和反汇编窗口</li>
+<li>Ctrl + L：刷新窗口</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/gdb.html" target="_blank" rel="noopener">gdb 调试利器</a>,by Linux Tools Quick Tutorial.</li>
+<li><a href="https://blog.csdn.net/blacet/article/details/52385955" target="_blank" rel="noopener">GDB调试带参数的程序（转载＋整理+实践）</a>,by blacet.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/23/%E9%9A%8F%E6%9C%BA%E6%8A%BD%E6%A0%B7%E4%B8%80%E8%87%B4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1977,209 +2190,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/04/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/04/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%85%A5%E9%97%A8/" itemprop="url">
-                  卡尔曼滤波入门
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-04 23:27:07" itemprop="dateCreated datePublished" datetime="2019-06-04T23:27:07+08:00">2019-06-04</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2023-01-31 22:11:13" itemprop="dateModified" datetime="2023-01-31T22:11:13+08:00">2023-01-31</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>卡尔曼滤波（Kalman filter）是一种高效率的递归滤波器（自回归滤波器），它能够从一系列的不完全及包含噪声的测量中，估计动态系统的状态。卡尔曼滤波会根据各测量量在不同时间下的值，考虑各时间下的联合分布，再产生对未知变数的估计，因此会比只以单一测量量为基础的估计方式要准。卡尔曼滤波得名自主要贡献者之一的鲁道夫·卡尔曼。</p>
-<p>卡尔曼滤波在技术领域有许多的应用。常见的有飞机及太空船的导引、导航及控制。卡尔曼滤波也广为使用在时间序列的分析中，例如信号处理及计量经济学中。卡尔曼滤波也是机器人运动规划及控制的重要主题之一，有时也包括在轨迹最佳化。卡尔曼滤波也用在中轴神经系统运动控制的建模中。因为从给与运动命令到收到感觉神经的回授之间有时间差，使用卡尔曼滤波有助于建立符合实际的系统，估计运动系统的目前状态，并且更新命令。</p>
-<h1 id="卡尔曼滤波原理解析"><a href="#卡尔曼滤波原理解析" class="headerlink" title="卡尔曼滤波原理解析"></a>卡尔曼滤波原理解析</h1><p>卡尔曼滤波器的状态矩阵方程如图1所示。</p>
-<p align="center">
-    <img src="images/kfmEquation.jpg" width="90%" alt="卡尔曼滤波器的状态矩阵方程"/>
-</p>
-<center>图1  卡尔曼滤波器的状态矩阵方程</center>
-
-<p>其中，下角标上的k是状态。此处我们将其视为离散时间间隔，比如说k=1 代表 1ms, k=2 代表2ms。</p>
-<p>我们的目的是找到信号 $x$ 的估值 $\hat{x} $，并且希望能对所有的k值都能找到对应的估值。</p>
-<p>另外此处的 $Z_k$ 是实际测量值，记住我们对该值并不完全信任，否则我们也不用费这么多事了。 $K_k$ 称为<strong>卡尔曼增益</strong>（也是最重要的量）， $\hat{x}_k$ 是前一状态下的信号估值。</p>
-<p>现在我们有了测量值，前一状态的信号估值。该方程中唯一未知的量就是卡尔曼增益 $K_k$ 了。对于每个状态，我们都需要计算对应的。这事不简单，但好在我们有所需的计算工具。</p>
-<p>另一方面，假设 $K_k$ 等于0.5，我们会发现该式变成了一个简单的求平均值公式。换句话说，随着状态的变化，我们的 $K_k$ 值将越来越“聪明”。</p>
-<h1 id="卡尔曼滤波器的构造"><a href="#卡尔曼滤波器的构造" class="headerlink" title="卡尔曼滤波器的构造"></a>卡尔曼滤波器的构造</h1><h2 id="建立模型"><a href="#建立模型" class="headerlink" title="建立模型"></a>建立模型</h2><p>此步最为关键，你必须确保卡尔曼滤波器适用于你要解决的问题。</p>
-<p>卡尔曼滤波器的两个方程如下:</p>
-<p>$$x_k=Ax_{k-1}+Bu_k+w_{k-1} \tag{1}$$<br>$$z_k=Hx_k+v_k \tag{2}$$</p>
-<p>式(1)表达的是每个 $x_k$ 都可以通过一个线性随机方程估计出来。任意 $x_k$ 都是其前一时刻的值与<strong>过程噪音</strong>的线性组合（这个很难概念化）。请记住，大部分情况下该式没有控制信号 $u_k$ 项。</p>
-<p>式(2)告诉我们任何测量值 $z_k$ （无法确定精确与否的测量值）都是信号值与<strong>测量噪声</strong>的线性组合。这两个分量符合高斯分布。</p>
-<p>过程噪声与测量噪声互相统计独立。</p>
-<p>$A, B, H$ 是一般形式的矩阵。但在大多数信号处理问题中，这些量仅为数值。而且虽然这些值在状态变换时会改变，大多数情况下我们都可以假设他们为定值。</p>
-<p>如果我们十分确定我们的系统符合此模型，那么唯一剩下要做的事就是估计噪音函数 $w_{k-1}$ 和 $v_k$ 的平均值以及标准差。我们知道，在实际生活中没有信号满足高斯分布，但我们可以近似其为高斯分布。</p>
-<p>该近似问题不大，因为我们将看到卡尔曼滤波器算法会逐渐向正确的（噪音函数的）估计值收敛，即使高斯噪声参数估计不佳。</p>
-<p>唯一需要记住的是：你估计出来的噪音参数越好（越接近实际），你估计的（输出真实值）就越好。</p>
-<h2 id="开始卡尔曼滤波"><a href="#开始卡尔曼滤波" class="headerlink" title="开始卡尔曼滤波"></a>开始卡尔曼滤波</h2><p>如果你的模型适用于卡尔曼滤波器，那么接下来的步骤就是决定一些必要的参数以及初始值。</p>
-<p>卡尔曼滤波器包含的方程可分为两个方程集：时间更新方程组（用于预测）以及测量更新方程组（用于修正）。这两个方程组在滤波器运行的每一步（每个状态）下都会执行，如图2所示。</p>
-<p align="center">
-    <img src="images/kfmStep2.jpg" width="70%" alt="卡尔曼滤波的两个步骤"/>
-</p>
-<center>图2  卡尔曼滤波的两个步骤</center>
-
-<p>建模部分已经在步骤一完成了，所以矩阵A，B和H已知。这些矩阵很可能是一个常数，而且大部分情况下会等于1。</p>
-<p>剩下的最让人难受的部分就是决定R和Q的值了。R的值还是很容易找的，因为一般情况下我们对环境中的噪音还是能够确认的。（起码能用仪器测一下）。但是找Q的值就没那么直观了。</p>
-<p>为了使滤波器能够运行，我们需要知道 $x_0$ 和 $P_0$ 的估计值。</p>
-<h2 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h2><p>在获得了滤波器运行所需的所有信息后，我们就可以估值迭代了。记住：前一状态的估值将成为当前状态的输入。</p>
-<p align="center">
-    <img src="images/kfmStep3.jpg" width="70%" alt="卡尔曼滤波的迭代运行"/>
-</p>
-<center>图3  卡尔曼滤波的迭代运行</center>
-
-<p>此处 $\hat{x}_k^-$ 是<strong>预估值</strong>，从某种角度来说是第二部分运行前对 x 的一个粗略估计值。</p>
-<p>同时 $P_k^-$ 叫做预估误差协方差。在第二步“测量更新”中我们将会用到这两个预估值。</p>
-<p>$\hat{x}_k$为在时间 k 时的 x 的估计值。（也是我们最想获得的值）。同时，我们得到了用于k+1时刻计算的 $P_k$ 值。</p>
-<p>下一次迭代不会用到我们求得的卡尔曼增益 $K_k$ 的值，该值隐藏而神秘，并且是这些方程集的最重要的部分。</p>
-<p>我们在第二步“测量更新”中求得的值也叫做后部值(posterior values)。这个名称也很说得通。</p>
-<h1 id="卡尔曼滤波器的应用示例"><a href="#卡尔曼滤波器的应用示例" class="headerlink" title="卡尔曼滤波器的应用示例"></a>卡尔曼滤波器的应用示例</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/36745755" target="_blank" rel="noopener">卡尔曼滤波：从入门到精通</a>,by David LEE.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/64539108" target="_blank" rel="noopener">傻瓜也能懂的卡尔曼滤波器（翻译自外网博客）</a>,by 彦鑫.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/25598462" target="_blank" rel="noopener">说说卡尔曼滤波</a>,by 李阳.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2" target="_blank" rel="noopener">卡尔曼滤波</a>,by wikipedia.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/39912633" target="_blank" rel="noopener">图说卡尔曼滤波，一份通俗易懂的教程</a>,by 论智.</li>
-<li><a href="http://blog.itpub.net/70024922/viewspace-2933256/" target="_blank" rel="noopener">时间序列基本概念、任务、预测方法</a>,by 带你聊技术.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2227,7 +2237,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">423</span>
+                    <span class="site-state-item-count">424</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2947,8 +2957,6 @@
     
       
     
-      
-        
       
     
   

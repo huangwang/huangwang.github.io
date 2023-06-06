@@ -314,6 +314,164 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/18/Debian-Linux%E4%B8%8B%E5%AE%89%E8%A3%85Docker%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/18/Debian-Linux%E4%B8%8B%E5%AE%89%E8%A3%85Docker%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Debian_Linux下安装Docker的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-18 21:42:00 / 修改时间：22:53:35" itemprop="dateCreated datePublished" datetime="2018-10-18T21:42:00+08:00">2018-10-18</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Docker是一个开放源代码软件项目，让应用程序布署在软件容器下的工作可以自动化进行，借此在Linux操作系统上，提供一个额外的软件抽象层，以及操作系统层虚拟化的自动管理机制。</p>
+<p>Docker利用Linux核心中的资源分离机制，例如cgroups，以及Linux核心名字空间（name space），来创建独立的软件容器（containers）。这可以在单一Linux实体下运作，避免启动一个虚拟机造成的额外负担。Linux核心对名字空间的支持完全隔离了工作环境中应用程序的视野，包括进程树、网上、用户ID与挂载文件系统，而核心的cgroup提供资源隔离，包括CPU、存储器、block I/O与网上。</p>
+<p>下面即记录在Debian Linux下按照Docker社区版的方法。</p>
+<h1 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h1><p>添加Docker的pgp key。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;debian&#x2F;gpg | sudo apt-key add -</span><br></pre></td></tr></table></figure>
+
+<p>配置Docker的Apt仓库。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &#39;deb https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;debian stretch stable&#39; | sudo tee &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;docker.list</span><br></pre></td></tr></table></figure>
+
+<p>更新Apt仓库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
+
+<h1 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 清除之前安装的Docker版本</span><br><span class="line">apt-get remove docker docker-engine docker.io</span><br><span class="line">&#x2F;&#x2F; 在安装最新的Docker社区版</span><br><span class="line">apt-get install docker-ce</span><br><span class="line">&#x2F;&#x2F; 测试docker</span><br><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
+
+<h1 id="以非root用户管理docker"><a href="#以非root用户管理docker" class="headerlink" title="以非root用户管理docker"></a>以非root用户管理docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo groupadd docker</span><br><span class="line">sudo usermod -aG docker $USER</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/Docker" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Docker</a> ,by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/14/tensorflow%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1961,177 +2119,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/15/Emscripten%E6%95%99%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/15/Emscripten%E6%95%99%E7%A8%8B/" itemprop="url">
-                  Emscripten教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-07-15 17:00:04" itemprop="dateCreated datePublished" datetime="2018-07-15T17:00:04+08:00">2018-07-15</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-09-09 21:21:40" itemprop="dateModified" datetime="2018-09-09T21:21:40+08:00">2018-09-09</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Emscripten是一种基于LLVM的编译器，理论上能够将任何能够生成LLVM位码的代码编译成javascript的严格子集asm.js，实际上主要用于将C/C++代码编译成asm.js。本文主要介绍Emscripten的安装过程。</p>
-<h1 id="下载和安装"><a href="#下载和安装" class="headerlink" title="下载和安装"></a>下载和安装</h1><p>从源码编译安装十分麻烦，推荐安装核心的Emscripten SDK。以Windows为例，先使用如下命令下载emsdk。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Get the emsdk repo</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;juj&#x2F;emsdk.git</span><br><span class="line"></span><br><span class="line"># Enter that directory</span><br><span class="line">cd emsdk</span><br></pre></td></tr></table></figure>
-<p>再使用如下命令安装配置Emscripten。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># Fetch the latest registry of available tools.</span><br><span class="line">.\emsdk.bat update</span><br><span class="line"></span><br><span class="line"># Download and install the latest SDK tools. Need install Python first. </span><br><span class="line">.\emsdk.bat install latest</span><br><span class="line"></span><br><span class="line"># Make the &quot;latest&quot; SDK &quot;active&quot; for the current user. (writes ~&#x2F;.emscripten file)</span><br><span class="line">.\emsdk.bat activate latest</span><br><span class="line"></span><br><span class="line"># Activate PATH and other environment variables in the current terminal</span><br><span class="line">.\emsdk_env.bat</span><br></pre></td></tr></table></figure>
-
-<h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p>使用如下命令验证Emscripten是否安装配置正确。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Enter that directory</span><br><span class="line">cd emsdk</span><br><span class="line"></span><br><span class="line"># Activate PATH and other environment variables in the current terminal</span><br><span class="line">.\emsdk_env.bat</span><br><span class="line"></span><br><span class="line"># Verifying Emscripten</span><br><span class="line">emcc.bat -v</span><br></pre></td></tr></table></figure>
-
-<h1 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h1><p>如果验证通过，即可使用Emscripten编译C/C++代码到asm.js。</p>
-<p>创建名为helloWorld.cpp的文件，其内容如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">  printf(&quot;hello, world!\n&quot;);</span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>使用如下命令编译：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">emcc.bat helloWorld.cpp</span><br></pre></td></tr></table></figure>
-<p>编译后将生成a.out.js和a.out.wasm两个文件。后者是包含编译后代码的WebAssembly文件，前者是用于加载和执行后者的Javascipt文件。使用如下命令测试编译后生成的代码，将输出“hello,world!”。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node a.out.js</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://kripken.github.io/emscripten-site/docs/introducing_emscripten/about_emscripten.html" target="_blank" rel="noopener">http://kripken.github.io/emscripten-site/docs/introducing_emscripten/about_emscripten.html</a>. by kripken.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2179,7 +2166,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">427</span>
+                    <span class="site-state-item-count">428</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

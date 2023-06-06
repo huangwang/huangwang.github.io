@@ -314,6 +314,306 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/04/30/TensorFlow%E5%AF%B9%E8%B1%A1%E6%A3%80%E6%B5%8BAPI%E6%B5%8B%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/04/30/TensorFlow%E5%AF%B9%E8%B1%A1%E6%A3%80%E6%B5%8BAPI%E6%B5%8B%E8%AF%95/" itemprop="url">
+                  TensorFlow对象检测API测试
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2022-04-30 23:51:59" itemprop="dateCreated datePublished" datetime="2022-04-30T23:51:59+08:00">2022-04-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2022-05-31 17:15:55" itemprop="dateModified" datetime="2022-05-31T17:15:55+08:00">2022-05-31</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近想研究一下红外图像的对象检测算法，于是先拿TensorFlow对象检测API学习一下。</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>准备工作主要有：</p>
+<h2 id="pyenv安装python-3-9-6。"><a href="#pyenv安装python-3-9-6。" class="headerlink" title="pyenv安装python 3.9.6。"></a>pyenv安装python 3.9.6。</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pyenv install 3.9.6</span><br><span class="line">pyenv global 3.9.6</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建虚拟环境"><a href="#创建虚拟环境" class="headerlink" title="创建虚拟环境"></a>创建虚拟环境</h2><p>在windows系统中，使用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 使用venv</span><br><span class="line">python -m venv tf2_api_env</span><br><span class="line">.\tf2_api_env\Scripts\activate</span><br><span class="line">deactivate</span><br><span class="line"></span><br><span class="line"># 使用virtualenv</span><br><span class="line">pip install virtualenv</span><br><span class="line">pyenv exec virtualenv tf2_api_env</span><br><span class="line">.\tf2_api_env\Scripts\activate</span><br><span class="line">deactivate</span><br></pre></td></tr></table></figure>
+
+<p>在Linux系统中，使用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 使用pyenv</span><br><span class="line"></span><br><span class="line"># 创建虚拟环境</span><br><span class="line">pyenv virtualenv tf2_api_env</span><br><span class="line"># 激活虚拟环境</span><br><span class="line">pyenv activate tf2_api_env</span><br><span class="line"></span><br><span class="line"># 使用venv</span><br><span class="line"></span><br><span class="line"># 创建虚拟环境</span><br><span class="line">python3 venv tf2_api_env</span><br><span class="line"># 激活虚拟环境</span><br><span class="line">source tf2_api_env&#x2F;bin&#x2F;activate</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装ipython，方便测试"><a href="#安装ipython，方便测试" class="headerlink" title="安装ipython，方便测试"></a>安装ipython，方便测试</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 进入虚拟环境</span><br><span class="line">pip install ipython -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装tensorflow"><a href="#安装tensorflow" class="headerlink" title="安装tensorflow"></a>安装tensorflow</h2><h3 id="安装非GPU版本tensorflow"><a href="#安装非GPU版本tensorflow" class="headerlink" title="安装非GPU版本tensorflow"></a>安装非GPU版本tensorflow</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 如果没有独立GPU</span><br><span class="line">pip install tensorflow&#x3D;&#x3D;2.8.0 -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple&#x2F; </span><br><span class="line">pip install protobuf~&#x3D;3.20.1  -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装GPU版本tensorflow"><a href="#安装GPU版本tensorflow" class="headerlink" title="安装GPU版本tensorflow"></a>安装GPU版本tensorflow</h3><p>如果机器上有nvidia的显卡，则安装tensorflow的gpu版本，具体步骤如下：</p>
+<p>第一步，安装tensorflow-gpu。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 如果有独立GPU</span><br><span class="line">pip install tensorflow-gpu&#x3D;&#x3D;2.8.0 -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple&#x2F; --trusted-host pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
+
+<p>第二步，安装CUDA与cuDNN。</p>
+<ul>
+<li>安装CUDA11.2。CUDA的版本由tensorflow-gpu的版本确定。具体请参考<a href="https://www.tensorflow.org/install/source_windows" target="_blank" rel="noopener">在 Windows 环境中从源代码构建</a>。<strong>本步骤在有nvidia独立显卡的前提下执行。</strong></li>
+</ul>
+<ul>
+<li>安装CUDNN v8.1文件。CUDNN的版本由tensorflow-gpu的版本确定。具体请参考<a href="https://www.tensorflow.org/install/source_windows" target="_blank" rel="noopener">在 Windows 环境中从源代码构建</a>。<strong>本步骤在有nvidia独立显卡的前提下执行。</strong></li>
+</ul>
+<p>第三步，测试tensorflow能否识别使用nvidia gpu。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line"># GPU测试</span><br><span class="line">gpu_device_name &#x3D; tf.test.gpu_device_name()</span><br><span class="line">print(gpu_device_name)</span><br><span class="line"> </span><br><span class="line">from tensorflow.python.client import device_lib</span><br><span class="line"> </span><br><span class="line"># 列出所有的本地机器设备</span><br><span class="line">local_device_protos &#x3D; device_lib.list_local_devices()</span><br><span class="line"> </span><br><span class="line"># 只打印GPU设备</span><br><span class="line">[print(x) for x in local_device_protos if x.device_type &#x3D;&#x3D; &#39;GPU&#39;]</span><br></pre></td></tr></table></figure>
+
+<h3 id="tensorflow环境测试"><a href="#tensorflow环境测试" class="headerlink" title="tensorflow环境测试"></a>tensorflow环境测试</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># tensorflow环境测试</span><br><span class="line">import tensorflow as tf</span><br><span class="line">print(tf.__version__) </span><br><span class="line">print(tf.__path__)</span><br><span class="line"></span><br><span class="line"># 测试tensorflow</span><br><span class="line">python -c &quot;import tensorflow as tf;print(tf.reduce_sum(tf.random.normal([1000, 1000])))&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装TensorFlow-Models"><a href="#安装TensorFlow-Models" class="headerlink" title="安装TensorFlow Models"></a>安装TensorFlow Models</h2><h3 id="下载TensorFlow-Models"><a href="#下载TensorFlow-Models" class="headerlink" title="下载TensorFlow Models"></a>下载TensorFlow Models</h3><p>TensorFlow Model Garden。TensorFlow 模型花园是一个存储库，为 TensorFlow 用户提供了许多不同的最先进 (SOTA) 模型和建模解决方案的实现。我们旨在展示建模的最佳实践，以便 TensorFlow 用户可以充分利用 TensorFlow 进行研究和产品开发。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;tensorflow&#x2F;models</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装TensorFlow-Models中的Object-Detection-模块"><a href="#安装TensorFlow-Models中的Object-Detection-模块" class="headerlink" title="安装TensorFlow Models中的Object Detection 模块"></a>安装TensorFlow Models中的Object Detection 模块</h3><p>存在两种安装TensorFlow Models中的Object Detection 模块的方法，如下所示：</p>
+<ul>
+<li>配置目标检测API目录，以便python能找到object detect api。使用pth文件，将object detect模块的路径添加到python模块的搜索路径中。在python安装目录的Lib\site-packages下创建tensorflow.pth文件，在其中添加Object Detection API文件路径：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 创建tensorflow.pth文件，输入如下内容</span><br><span class="line">J:\tensorflow\models</span><br><span class="line">J:\tensorflow\models\research</span><br><span class="line">J:\tensorflow\models\research\object_detection</span><br><span class="line">J:\tensorflow\models\research\slim</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装目标检测API。两种方法二选一即可。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># From within TensorFlow&#x2F;models&#x2F;research&#x2F;</span><br><span class="line">cp object_detection&#x2F;packages&#x2F;tf2&#x2F;setup.py .</span><br><span class="line">pip install -e . -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装Protobuf，生成python语言的消息协议"><a href="#安装Protobuf，生成python语言的消息协议" class="headerlink" title="安装Protobuf，生成python语言的消息协议"></a>安装Protobuf，生成python语言的消息协议</h3><p>安装Protobuf的过程具体参考<a href="https://blog.51cto.com/stq054188/2891184" target="_blank" rel="noopener">TensorFlow2.x目标检测API安装配置步骤详细教程 Object Detection API with TensorFlow2.x </a>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd models&#x2F;research&#x2F;</span><br><span class="line">protoc&#x2F;bin&#x2F;protoc object_detection&#x2F;protos&#x2F;*.proto --python_out&#x3D;.</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试tf-object-detect-api，并安装缺失模块。"><a href="#测试tf-object-detect-api，并安装缺失模块。" class="headerlink" title="测试tf object detect api，并安装缺失模块。"></a>测试tf object detect api，并安装缺失模块。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 测试tf object detect api</span><br><span class="line">python object_detection&#x2F;builders&#x2F;model_builder_tf2_test.py</span><br><span class="line"></span><br><span class="line"># 根据上述测试脚本提示，安装缺失模块</span><br><span class="line">pip install tf-slim</span><br><span class="line">pip install scipy</span><br><span class="line">pip install tensorflow_io</span><br><span class="line">pip install matplotlib</span><br><span class="line">pip install pyyaml</span><br></pre></td></tr></table></figure>
+
+<h1 id="开源数据集"><a href="#开源数据集" class="headerlink" title="开源数据集"></a>开源数据集</h1><p>数据集是进行深度学习的前提和基础。</p>
+<h2 id="Oxford-IIIT-宠物数据集"><a href="#Oxford-IIIT-宠物数据集" class="headerlink" title="Oxford-IIIT 宠物数据集"></a>Oxford-IIIT 宠物数据集</h2><p>我们创建了一个包含 37 个类别的宠物数据集，每个类别大约有 200 张图像。这些图像在比例、姿势和照明方面有很大的变化。所有图像都有相关的品种、头部 ROI 和像素级三元图分割的地面实况注释。</p>
+<p>具体下载地址请参考<a href="https://www.robots.ox.ac.uk/~vgg/data/pets/" target="_blank" rel="noopener">Oxford-IIIT 宠物数据集</a>。</p>
+<h2 id="COCO数据集"><a href="#COCO数据集" class="headerlink" title="COCO数据集"></a>COCO数据集</h2><p>MS COCO的全称是Microsoft Common Objects in Context，起源于微软于2014年出资标注的Microsoft COCO数据集，与ImageNet竞赛一样，被视为是计算机视觉领域最受关注和最权威的比赛之一。 </p>
+<p>COCO数据集是一个大型的、丰富的物体检测，分割和字幕数据集。这个数据集以scene understanding为目标，主要从复杂的日常场景中截取，图像中的目标通过精确的segmentation进行位置的标定。图像包括91类目标，328,000影像和2,500,000个label。目前为止有语义分割的最大数据集，提供的类别有80 类，有超过33 万张图片，其中20 万张有标注，整个数据集中个体的数目超过150 万个。</p>
+<h3 id="COCO数据集使用"><a href="#COCO数据集使用" class="headerlink" title="COCO数据集使用"></a>COCO数据集使用</h3><p>请参考<a href="https://www.cnblogs.com/Meumax/p/12021913.html" target="_blank" rel="noopener">COCO数据集使用</a>。</p>
+<h3 id="COCOAPI"><a href="#COCOAPI" class="headerlink" title="COCOAPI"></a>COCOAPI</h3><p>完整的COCO数据集有十几个G大小，我们没有必要全部下载下来，只需要下载自己感兴趣的类别图像即可。这时就需要使用COCOAPI。</p>
+<p>COCO API 协助加载、解析和可视化 COCO 中的注释。API 支持多种注释格式（请参见数据格式页面）。</p>
+<ul>
+<li>下载cocoapi</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;cocodataset&#x2F;cocoapi.git</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>pythonapi安装</li>
+</ul>
+<p>进入COCOAPI的PythonAPI文件夹，输入如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python setup.py build_ext install</span><br></pre></td></tr></table></figure>
+
+<p>安装错误解决方法请参考<a href="https://blog.csdn.net/weixin_41010198/article/details/94053130" target="_blank" rel="noopener">错误：cl: 命令行 error D8021 :无效的数值参数“/Wno-cpp”</a>。</p>
+<h1 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h1><h2 id="准备数据集"><a href="#准备数据集" class="headerlink" title="准备数据集"></a>准备数据集</h2><h3 id="注解数据集"><a href="#注解数据集" class="headerlink" title="注解数据集"></a>注解数据集</h3><h4 id="安装LabelImg工具"><a href="#安装LabelImg工具" class="headerlink" title="安装LabelImg工具"></a>安装LabelImg工具</h4><p>LabelImg 是一个图形图像标注工具。它是用 Python 编写的，并使用 Qt 作为其图形界面。</p>
+<p>注释以 PASCAL VOC 格式保存为 XML 文件，这是ImageNet使用的格式。此外，它还支持 YOLO 和 CreateML 格式。</p>
+<p>可以从LabelImg的官方存储库<a href="https://github.com/tzutalin/labelImg" target="_blank" rel="noopener">labelImg</a>中下载最新的LabelImg工具。</p>
+<h3 id="使用K折交叉验证分区数据集"><a href="#使用K折交叉验证分区数据集" class="headerlink" title="使用K折交叉验证分区数据集"></a>使用K折交叉验证分区数据集</h3><p>可使用python脚本，请参考<a href="https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/training.html" target="_blank" rel="noopener">partition_dataset.py</a>。</p>
+<h3 id="创建标签映射"><a href="#创建标签映射" class="headerlink" title="创建标签映射"></a>创建标签映射</h3><p>TensorFlow 需要一个标签映射，即将每个使用的标签映射到一个整数值。此标签图用于训练和检测过程。</p>
+<p>下面我们展示一个示例标签映射（例如label_map.pbtxt），假设我们的数据集包含 2 个标签，dogs并且cats：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">item &#123;</span><br><span class="line">    id: 1</span><br><span class="line">    name: &#39;cat&#39;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">item &#123;</span><br><span class="line">    id: 2</span><br><span class="line">    name: &#39;dog&#39;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>标签地图文件有扩展.pbtxt名，应该放在training_demo/annotations文件夹内。</p>
+<h3 id="创建TensorFlow-Records文件"><a href="#创建TensorFlow-Records文件" class="headerlink" title="创建TensorFlow Records文件"></a>创建TensorFlow Records文件</h3><p>TFRecord 是Google官方推荐的一种数据格式，是Google专门为TensorFlow设计的一种数据格式。通过将训练数据或测试数据打包成TFRecord文件，就可以配合TF中相关的DataLoader / Transformer等API实现数据的加载和处理，便于高效地训练和评估模型。</p>
+<p>实际上，TFRecord是一种二进制文件，其能更好的利用内存，其内部包含了多个tf.train.Example， 而Example是protocol buffer(protobuf) 数据标准的实现，在一个Example消息体中包含了一系列的tf.train.feature属性，而 每一个feature 是一个key-value的键值对，其中，key 是string类型，而value 的取值有三种：</p>
+<ul>
+<li>bytes_list: 可以存储string 和byte两种数据类型。</li>
+<li>float_list: 可以存储float(float32)与double(float64) 两种数据类型 。</li>
+<li>int64_list: 可以存储：bool, enum, int32, uint32, int64, uint64 。</li>
+</ul>
+<h2 id="重用预训练模型"><a href="#重用预训练模型" class="headerlink" title="重用预训练模型"></a>重用预训练模型</h2><h3 id="下载预训练模型"><a href="#下载预训练模型" class="headerlink" title="下载预训练模型"></a>下载预训练模型</h3><p>从此处<a href="https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md" target="_blank" rel="noopener">TensorFlow 2 Detection Model Zoo</a>选择预训练模型下载。此处下载<a href="http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.tar.gz" target="_blank" rel="noopener">SSD ResNet50 V1 FPN 640x640 </a>模型。</p>
+<h3 id="重新配置训练管线"><a href="#重新配置训练管线" class="headerlink" title="重新配置训练管线"></a>重新配置训练管线</h3><p>修改模型文件夹下的pipeline.config文件，用于训练自己的模型。以SSD ResNet50 V1 FPN 640x640模型的pipeline.config文件为例，具体些修改内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">model &#123;</span><br><span class="line">  ssd &#123;</span><br><span class="line">    num_classes: 1 &#x2F;&#x2F; 此时修改模型输出类别数量</span><br><span class="line">    image_resizer &#123;</span><br><span class="line">      fixed_shape_resizer &#123;</span><br><span class="line">        height: 640</span><br><span class="line">        width: 640</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">train_config &#123;</span><br><span class="line">  batch_size: 4 &#x2F;&#x2F; 根据GPU显卡或内存大小设置合适的批处理大小</span><br><span class="line">  data_augmentation_options &#123;</span><br><span class="line">    random_horizontal_flip &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  data_augmentation_options &#123;</span><br><span class="line">    random_crop_image &#123;</span><br><span class="line">      min_object_covered: 0.0</span><br><span class="line">      min_aspect_ratio: 0.75</span><br><span class="line">      max_aspect_ratio: 3.0</span><br><span class="line">      min_area: 0.75</span><br><span class="line">      max_area: 1.0</span><br><span class="line">      overlap_thresh: 0.0</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">  fine_tune_checkpoint: &quot;J:&#x2F;tensorflow&#x2F;workspace&#x2F;training_demo&#x2F;pre-trained-models&#x2F;ssd_resnet50_v1_fpn_640x640_coco17_tpu-8&#x2F;checkpoint&#x2F;ckpt-0&quot; &#x2F;&#x2F; 原模型的checkpoint</span><br><span class="line">  num_steps: 25000</span><br><span class="line">  startup_delay_steps: 0.0</span><br><span class="line">  replicas_to_aggregate: 8</span><br><span class="line">  max_number_of_boxes: 100</span><br><span class="line">  unpad_groundtruth_tensors: false</span><br><span class="line">  fine_tune_checkpoint_type: &quot;detection&quot; &#x2F;&#x2F; 为目标检测任务修改此处</span><br><span class="line">  use_bfloat16: false</span><br><span class="line">  fine_tune_checkpoint_version: V2</span><br><span class="line">&#125;</span><br><span class="line">train_input_reader &#123;</span><br><span class="line">  label_map_path: &quot;J:&#x2F;tensorflow&#x2F;workspace&#x2F;training_demo&#x2F;annotations&#x2F;label_map.pbtxt&quot; &#x2F;&#x2F; 标签映射文件路径</span><br><span class="line">  tf_record_input_reader &#123;</span><br><span class="line">    input_path: &quot;J:&#x2F;tensorflow&#x2F;workspace&#x2F;training_demo&#x2F;annotations&#x2F;train.record&quot; &#x2F;&#x2F; 用于训练的tfrecord文件路径</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">eval_config &#123;</span><br><span class="line">  metrics_set: &quot;coco_detection_metrics&quot;</span><br><span class="line">  use_moving_averages: false</span><br><span class="line">&#125;</span><br><span class="line">eval_input_reader &#123;</span><br><span class="line">  label_map_path: &quot;J:&#x2F;tensorflow&#x2F;workspace&#x2F;training_demo&#x2F;annotations&#x2F;label_map.pbtxt&quot; &#x2F;&#x2F; 标签映射文件路径</span><br><span class="line">  shuffle: false</span><br><span class="line">  num_epochs: 1</span><br><span class="line">  tf_record_input_reader &#123;</span><br><span class="line">    input_path: &quot;J:&#x2F;tensorflow&#x2F;workspace&#x2F;training_demo&#x2F;annotations&#x2F;val.record&quot; &#x2F;&#x2F; 用于验证的tfrecord文件路径</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="训练新模型"><a href="#训练新模型" class="headerlink" title="训练新模型"></a>训练新模型</h2><h3 id="准备训练模型"><a href="#准备训练模型" class="headerlink" title="准备训练模型"></a>准备训练模型</h3><p>将TensorFlow/models/research/object_detection/model_main_tf2.py文件粘贴到training_demo文件夹。该文件是训练和评估新模型的入口文件。</p>
+<h3 id="训练模型"><a href="#训练模型" class="headerlink" title="训练模型"></a>训练模型</h3><p>使用如下命令开始训练新模型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd J:\tensorflow\workspace\training_demo</span><br><span class="line">python model_main_tf2.py --model_dir J:\tensorflow\workspace\training_demo\models\my_ssd_resnet50_v1_fpn --pipeline_config_path J:\tensorflow\workspace\training_demo\models\my_ssd_resnet50_v1_fpn\pipeline.config</span><br></pre></td></tr></table></figure>
+
+<p><em>注意：此处参数–model_dir是模型输出目录，除了存在pipeline.config外，应该是空的。*</em>否则将发生错误<a href="https://github.com/tensorflow/models/issues/9703" target="_blank" rel="noopener">Pretrained Models number of classes doesnt match own dataset number of classes : Cannot assign to variable</a>。</p>
+<h3 id="评估模型"><a href="#评估模型" class="headerlink" title="评估模型"></a>评估模型</h3><p>使用如下命令评估训练好的模型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd J:\tensorflow\workspace\training_demo</span><br><span class="line">python model_main_tf2.py --model_dir J:\tensorflow\workspace\training_demo\models\my_ssd_resnet50_v1_fpn --pipeline_config_path J:\tensorflow\workspace\training_demo\models\my_ssd_resnet50_v1_fpn\pipeline.config --checkpoint_dir J:\tensorflow\workspace\training_demo\models\my_ssd_resnet50_v1_fpn</span><br></pre></td></tr></table></figure>
+
+<h3 id="监控训练作业进度"><a href="#监控训练作业进度" class="headerlink" title="监控训练作业进度"></a>监控训练作业进度</h3><p>使用如下命令监控模型训练进度：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd J:\tensorflow\workspace\training_demo</span><br><span class="line">tensorboard --logdir&#x3D;models&#x2F;my_ssd_resnet50_v1_fpn</span><br></pre></td></tr></table></figure>
+
+<p>上面的命令将启动一个新的 TensorBoard 服务器，它（默认）监听你机器的 6006 端口。完成此操作后，转到您的浏览器并<a href="http://localhost:6006/在地址栏中输入，然后您应该会看到一个仪表板（如果您的模型刚刚开始训练，可能会显示较少）。" target="_blank" rel="noopener">http://localhost:6006/在地址栏中输入，然后您应该会看到一个仪表板（如果您的模型刚刚开始训练，可能会显示较少）。</a></p>
+<h3 id="导出训练模型"><a href="#导出训练模型" class="headerlink" title="导出训练模型"></a>导出训练模型</h3><p>训练工作完成后，使用如下步骤导出模型：</p>
+<p>（1）复制TensorFlow/models/research/object_detection/exporter_main_v2.py脚本并将其直接粘贴到您的training_demo文件夹中。</p>
+<p>（2）运行如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd J:\tensorflow\workspace\training_demo</span><br><span class="line">python exporter_main_v2.py --input_type image_tensor --pipeline_config_path .\models\my_ssd_resnet50_v1_fpn\pipeline.config --trained_checkpoint_dir .\models\my_ssd_resnet50_v1_fpn --output_directory .\exported-models\my_ssd_resnet50_v1_fpn</span><br></pre></td></tr></table></figure>
+
+<h1 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h1><p>对于一个目标检测模型的好坏，总的来说可以从以下三个方面来评估：</p>
+<ul>
+<li>分类的精度如何。一般可以用准确度（Accuracy），精度（Precision），召回率（Recall Rate）， PR 曲线，AP，mAP等</li>
+<li>定位的精度如何。比如 IoU</li>
+<li>运行的速度如何。比如 fps，一秒处理几张图。</li>
+</ul>
+<p>具体内容请参考<a href="https://blog.csdn.net/kuweicai/article/details/105082446" target="_blank" rel="noopener">目标检测模型的评价指标(Acc, Precision, Recall, AP, mAP, RoI)</a>。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://github.com/tensorflow/models/tree/master/research/object_detection" target="_blank" rel="noopener">TensorFlow Object Detection API</a>,by tensorflow.</li>
+<li><a href="https://blog.csdn.net/stq054188/article/details/109462843" target="_blank" rel="noopener">TensorFlow2.x GPU版安装与CUDA版本选择指南</a>,by Color_Space.</li>
+<li><a href="https://www.tensorflow.org/install/source_windows" target="_blank" rel="noopener">在 Windows 环境中从源代码构建</a>,by tensorflow.</li>
+<li><a href="https://blog.csdn.net/W1995S/article/details/113123127" target="_blank" rel="noopener">COCO2014/2017数据集</a>,by THE@JOKER.</li>
+<li><a href="https://cloud.tencent.com/developer/article/1745147" target="_blank" rel="noopener">TensorFlow2.x目标检测API测试代码使用演示</a>,by Color Space.</li>
+<li><a href="https://blog.51cto.com/stq054188/2891184" target="_blank" rel="noopener">TensorFlow2.x目标检测API安装配置步骤详细教程 Object Detection API with TensorFlow2.x </a>,by Color_Space.</li>
+<li><a href="https://blog.csdn.net/cc1949/article/details/78286224" target="_blank" rel="noopener">python安装第三方包的安装路径，dist-packages和site-packages区别</a>,by 陈 超.</li>
+<li><a href="https://yanbin.blog/pth-file-append-python-module-search-path/" target="_blank" rel="noopener">用 .pth 文件附加 Python 模块搜索路径</a>,by 隔叶黄莺.</li>
+<li><a href="https://www.jianshu.com/p/b723053a86a6" target="_blank" rel="noopener">Google Protobuf简明教程</a>,by geekpy.</li>
+<li><a href="https://medium.com/analytics-vidhya/tensorflow-gpu-how-to-install-tensorflow-with-nvidia-cuda-cudnn-and-gpu-support-on-windows-6158cffc1c29" target="_blank" rel="noopener">Tensorflow-GPU: How to Install Tensorflow with NVIDIA CUDA,cuDNN and GPU support on Windows</a>,by Ilekura Idowu.</li>
+<li><a href="https://blog.csdn.net/qq_41185868/article/details/82939959" target="_blank" rel="noopener">Dataset之COCO数据集：COCO数据集的简介、下载、使用方法之详细攻略</a>,by 一个处女座的程序猿.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/29393415" target="_blank" rel="noopener">COCO数据集的标注格式</a>,by Gemfield.</li>
+<li><a href="https://cloud.videojj.com/bbs/topic/112/coco%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%87%E6%B3%A8%E8%AF%A6%E8%A7%A3" target="_blank" rel="noopener">COCO数据集标注详解</a>,by 2044914130.</li>
+<li><a href="https://www.aiuai.cn/aifarm1306.html" target="_blank" rel="noopener">RLE格式分割标注文件表示</a>,by AIHGF.</li>
+<li><a href="https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/index.html" target="_blank" rel="noopener">TensorFlow 2 Object Detection API tutorial</a>,by github.</li>
+<li><a href="https://xmfbit.github.io/2020/04/03/tfrecord-introduction/" target="_blank" rel="noopener">TFRecord 简介</a>,by xmfbit.</li>
+<li><a href="https://johnlekberg.com/blog/2020-03-11-regex-flags.html" target="_blank" rel="noopener">Using regular expression flags in Python</a>,by John Lekberg.</li>
+<li><a href="https://blog.csdn.net/weixin_41010198/article/details/94053130" target="_blank" rel="noopener">错误：cl: 命令行 error D8021 :无效的数值参数“/Wno-cpp”</a>,by 点亮～黑夜.</li>
+<li><a href="https://www.cnblogs.com/Meumax/p/12021913.html" target="_blank" rel="noopener">COCO数据集使用</a>,by Meumax-GDUT.</li>
+<li><a href="https://arleyzhang.github.io/articles/1dc20586/" target="_blank" rel="noopener">目标检测数据集PASCAL VOC简介</a>,by arleyzhang.</li>
+<li><a href="https://towardsdatascience.com/building-a-toy-detector-with-tensorflow-object-detection-api-63c0fdf2ac95" target="_blank" rel="noopener">Building a Toy Detector with Tensorflow Object Detection API</a>,by Priya Dwivedi.</li>
+<li><a href="https://blog.csdn.net/TwT520Ly/article/details/79759448" target="_blank" rel="noopener">【Tensorflow】tf.app.run()与命令行参数解析</a>,by TwT520Ly.</li>
+<li><a href="https://zessay.github.io/622148840/" target="_blank" rel="noopener">关于TFRecords和tf.Example的使用</a>,by Zessay.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/101284491" target="_blank" rel="noopener">Pandas教程 | 超好用的Groupby用法详解</a>,by 易执.</li>
+<li><a href="https://www.jianshu.com/p/25cb6d79d8f9" target="_blank" rel="noopener">Pandas组合操作</a>,by lysh1987.</li>
+<li><a href="https://blog.alexanderliu.top/posts/tensorflow-input-format-tfrecord.html" target="_blank" rel="noopener">TensorFlow 数据输入格式之 TFRecord</a>,by 逑识.</li>
+<li><a href="https://laddiexu.github.io/tech/2017/11/04/TF-ODYourData.html" target="_blank" rel="noopener">使用 Tensorflow Object Detection API 训练自己的模型</a>,by 菁菁者莪.</li>
+<li><a href="https://blog.csdn.net/weixin_36558054/article/details/103119691" target="_blank" rel="noopener">tensorflow出现显存不足的提示</a>,by 楠仔码头.</li>
+<li><a href="https://blog.csdn.net/flyfish1986/article/details/104513632" target="_blank" rel="noopener">使用COCOAPI操作COCO数据集 遇到的问题 TypeError: ‘numpy.float64’ object cannot be interpreted</a>,by TheOldManAndTheSea.</li>
+<li><a href="https://github.com/tensorflow/models/issues/9703" target="_blank" rel="noopener">Pretrained Models number of classes doesnt match own dataset number of classes : Cannot assign to variable</a>,by tensorflow.</li>
+<li><a href="https://stackoverflow.com/questions/63552169/some-python-objects-were-not-bound-to-checkpointed-values" target="_blank" rel="noopener">Some Python objects were not bound to checkpointed values</a>,by stackoverflow.</li>
+<li><a href="https://blog.csdn.net/kuweicai/article/details/105082446" target="_blank" rel="noopener">目标检测模型的评价指标(Acc, Precision, Recall, AP, mAP, RoI)</a>,by kuweicai.</li>
+<li><a href="https://blog.csdn.net/xiangxianghehe/article/details/118380755" target="_blank" rel="noopener">tensorflow2转tflite提示OP不支持的解决方案</a>,by nudt_qxx.</li>
+<li><a href="https://stackoverflow.com/questions/56298451/modulenotfounderror-no-module-named-gin" target="_blank" rel="noopener">ModuleNotFoundError: No module named ‘gin’</a>,by stackoverflow.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/04/27/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E8%AE%B0%E5%BD%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1699,161 +1999,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/02/21/QT%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%8F%8A%E5%85%B6%E4%B8%8EGUI%E7%BB%84%E4%BB%B6%E7%9A%84%E9%80%9A%E4%BF%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2022/02/21/QT%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%8F%8A%E5%85%B6%E4%B8%8EGUI%E7%BB%84%E4%BB%B6%E7%9A%84%E9%80%9A%E4%BF%A1/" itemprop="url">
-                  QT多线程及其与GUI组件的通信
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2022-02-21 09:00:52 / 修改时间：15:25:23" itemprop="dateCreated datePublished" datetime="2022-02-21T09:00:52+08:00">2022-02-21</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>每个程序启动后拥有的第一个线程称为主线程，即<strong>GUI线程</strong>。QT中所有的组件类和几个相关的类只能工作在GUI线程，不能工作在次线程，次线程即<strong>工作线程</strong>，主要负责处理GUI线程卸下的工作。</p>
-<p>每个线程都有自己的栈，因此每个线程都要自己的调用历史和本地变量。线程共享相同的地址空间。</p>
-<h1 id="QT线程创建方法"><a href="#QT线程创建方法" class="headerlink" title="QT线程创建方法"></a>QT线程创建方法</h1><h2 id="QThread使用方法1——重写run-函数"><a href="#QThread使用方法1——重写run-函数" class="headerlink" title="QThread使用方法1——重写run()函数"></a>QThread使用方法1——重写run()函数</h2><p>对于使用Qthread创建的进程而言，run()函数则是新线程的入口，run()函数退出，意味着线程的终止。</p>
-<h2 id="QThread使用方法2——moveToThread"><a href="#QThread使用方法2——moveToThread" class="headerlink" title="QThread使用方法2——moveToThread()"></a>QThread使用方法2——moveToThread()</h2><p>如果不想每执行一种任务就自定义一个新线程，那么可以自定义用于完成任务的类，并让它们继承自QObject。</p>
-<p>然后使用moveToThread()将QObject对象实例移动到新线程。注意moveToThread()是QObject的公有函数。移动之后启动子线程。</p>
-<h1 id="多线程与GUI组件的通信"><a href="#多线程与GUI组件的通信" class="headerlink" title="多线程与GUI组件的通信"></a>多线程与GUI组件的通信</h1><p>GUI系统的设计原则：所有界面组件的创建只能在GUI线程（主线程）中完成。子线程与界面组件的通信有两种方式：</p>
-<ul>
-<li>信号槽方式</li>
-<li>发送自定事件方式</li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://www.codebaoku.com/it-c/it-c-215894.html" target="_blank" rel="noopener">深入理解QT多线程编程</a>,by 编程宝库.</li>
-<li><a href="https://wizardforcel.gitbooks.io/wudi-qt4/content/index.html" target="_blank" rel="noopener">零基础学 qt4 编程</a>,by wd007.</li>
-<li><a href="https://its401.com/article/weixin_41211961/103604565" target="_blank" rel="noopener">多线程与界面组件的通信</a>,by 程序员ITS401.</li>
-<li><a href="https://www.cnblogs.com/xyf327/p/15032670.html" target="_blank" rel="noopener">QT从入门到入土（五（1））——多线程（QThread）</a>,by 唯有自己强大.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1901,7 +2046,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">427</span>
+                    <span class="site-state-item-count">428</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

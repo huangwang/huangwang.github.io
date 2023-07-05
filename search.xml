@@ -18791,6 +18791,13 @@ console.log(y);</code></pre></li>
 <li><a href="https://zhuanlan.zhihu.com/p/362748246" target="_blank" rel="noopener">Wireshark C 插件开发之插件框架</a></li>
 <li><a href="https://www.cnblogs.com/little-kwy/p/14888454.html" target="_blank" rel="noopener">wireshark插件开发 - 自定义协议</a></li>
 </ul>
+<p>注意事项：</p>
+<ul>
+<li>一个端口只能绑定一个协议解析器，不管改端口下有多少中报文格式</li>
+<li>解析树的TreeItem添加协议字段时，应使用TvbRange数据类型，否则对应hex数据无法高亮显示，示例如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">local t &#x3D; tree:add( proto_foo, buf() )</span><br><span class="line">t:add( proto_foo.fields.bytes, buf(0,4) )</span><br></pre></td></tr></table></figure>
+
 <h2 id="数据包回放"><a href="#数据包回放" class="headerlink" title="数据包回放"></a>数据包回放</h2><p>wireshark以pcap格式保存抓取的流量。pcap的具体格式请参考<a href="https://blog.csdn.net/Hollake/article/details/90108950" target="_blank" rel="noopener">Wireshark文件pcap的格式详细解析有实例（Global Header、Packet Header）</a></p>
 <p>可使用tcpreplay、scap、xcap、netassisnt等工具回放pcap文件。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>

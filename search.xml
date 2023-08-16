@@ -18960,4 +18960,26 @@ console.log(y);</code></pre></li>
         <tag>mysql</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Python从PE文件中导出资源文件</title>
+    <url>/2023/08/16/Python%E4%BB%8EPE%E6%96%87%E4%BB%B6%E4%B8%AD%E5%AF%BC%E5%87%BA%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6/</url>
+    <content><![CDATA[<p>最近需要修改一个QT编写的应用，就是将资源图片修改一下，但是资源图片被打包到DLL的.rdata段中，无法直接导出，于是想通过Python直接读取导出，然后定位需要修改图片的位置。具体代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># -*- coding:utf-8 -*-</span><br><span class="line"> </span><br><span class="line">import os,sys,re</span><br><span class="line"> </span><br><span class="line">def find_all_pos(filename,feature):</span><br><span class="line">    &quot;&quot;&quot;打开二进制文件，搜索指定特征的位置，并返回所有位置的列表</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    with open(filename, &#39;rb&#39;) as binFile:</span><br><span class="line">        binFileStr &#x3D; binFile.read()</span><br><span class="line">        posArray &#x3D; [m.start() for m in re.finditer(feature, binFileStr)]</span><br><span class="line">        return posArray</span><br><span class="line"></span><br><span class="line">def export_all_png(filename,posArray):</span><br><span class="line">    &quot;&quot;&quot;打开二进制文件，根据特征位置数组，导出所有的PNG文件</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    with open(filename, &#39;rb&#39;) as binFile:    </span><br><span class="line">        for i in range(len(posArray)-1):</span><br><span class="line">            pngLen &#x3D; posArray[i+1] - posArray[i]</span><br><span class="line">            # print(pngLen)</span><br><span class="line">            binFile.seek(posArray[i])</span><br><span class="line">            pngFileBin &#x3D; binFile.read(pngLen)</span><br><span class="line">            pngFile &#x3D; open(&quot;res\\&quot;+str(i)+&quot;.png&quot;, &quot;wb&quot;)</span><br><span class="line">            pngFile.write(pngFileBin)</span><br><span class="line"> </span><br><span class="line">if __name__ &#x3D;&#x3D; &quot;__main__&quot;:</span><br><span class="line">    for path in sys.argv[1:]:</span><br><span class="line">        if os.path.isfile(path):</span><br><span class="line">            posArray &#x3D; find_all_pos(path,b&quot;\x89\x50\x4E\x47\x0D\x0A\x1A\x0A&quot;)</span><br><span class="line">            # 位置数组应该大于1</span><br><span class="line">            if(len(posArray)&gt;1):</span><br><span class="line">                # print(posArray)</span><br><span class="line">                if(os.path.exists(&quot;res&quot;)&#x3D;&#x3D;False):</span><br><span class="line">                    os.makedirs(&quot;res&quot;) </span><br><span class="line">                pngList&#x3D;&quot;&quot;</span><br><span class="line">                for i in range(len(posArray)):</span><br><span class="line">                    pngList &#x3D; pngList + str(i) + &quot;,0x%x&quot;%posArray[i] +&quot;\n&quot;</span><br><span class="line">                # 保存图片位置信息</span><br><span class="line">                pngFileMeta &#x3D; open(&quot;res\\pnglistpos.csv&quot;, &quot;w&quot;)</span><br><span class="line">                pngFileMeta.write(pngList)</span><br><span class="line"></span><br><span class="line">                export_all_png(path,posArray)</span><br></pre></td></tr></table></figure>
+
+<p>运行时采用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python -m venv env</span><br><span class="line">.\env\Scripts\activate</span><br><span class="line">python utf8_to_gbk.py filepath</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.freebuf.com/articles/others-articles/265879.html" target="_blank" rel="noopener">PNG文件格式详解</a>,by oriole.</li>
+<li><a href="https://blog.csdn.net/xjp_xujiping/article/details/88936960" target="_blank" rel="noopener">Python输出列表list</a>,by huang_0430.</li>
+<li><a href="https://blog.csdn.net/MuWinter/article/details/77215768" target="_blank" rel="noopener">python创建目录（文件夹)</a>,by FanWinter.</li>
+<li><a href="https://blog.csdn.net/wowocpp/article/details/79379342" target="_blank" rel="noopener">python 数字 十六进制 打印</a>,by wowocpp.</li>
+<li><a href="https://stackoverflow.com/questions/4664850/how-to-find-all-occurrences-of-a-substring" target="_blank" rel="noopener">How to find all occurrences of a substring?</a>,by stackoverflow.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>python</tag>
+      </tags>
+  </entry>
 </search>

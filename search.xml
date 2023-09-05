@@ -19027,4 +19027,37 @@ console.log(y);</code></pre></li>
         <tag>python</tag>
       </tags>
   </entry>
+  <entry>
+    <title>nodejs参考架构</title>
+    <url>/2023/09/05/nodejs%E5%8F%82%E8%80%83%E6%9E%B6%E6%9E%84/</url>
+    <content><![CDATA[<p>JavaScript 生态系统是快速发展且充满活力的，但是各种各样的选项可能会使在 Node.js 包之间进行选择变得非常困难。因此，拥有参考架构可以帮助团队避免一次又一次地重新学习相同的内容。</p>
+<h1 id="日志记录工具"><a href="#日志记录工具" class="headerlink" title="日志记录工具"></a>日志记录工具</h1><p>Pino 是非常低的开销node.js日志记录器。</p>
+<h2 id="Pino-with-Express"><a href="#Pino-with-Express" class="headerlink" title="Pino with Express"></a>Pino with Express</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install pino-http</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const app &#x3D; require(&#39;express&#39;)()</span><br><span class="line">const pino &#x3D; require(&#39;pino-http&#39;)()</span><br><span class="line"></span><br><span class="line">app.use(pino)</span><br><span class="line"></span><br><span class="line">app.get(&#39;&#x2F;&#39;, function (req, res) &#123;</span><br><span class="line">  req.log.info(&#39;something&#39;)</span><br><span class="line">  res.send(&#39;hello world&#39;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.listen(3000)</span><br></pre></td></tr></table></figure>
+
+<h1 id="代码一致性工具"><a href="#代码一致性工具" class="headerlink" title="代码一致性工具"></a>代码一致性工具</h1><p>ESLint 用于检查JavaScript代码是否符合规则，由Nicholas C. Zakas在2013年创建。</p>
+<h1 id="选择-Web-框架"><a href="#选择-Web-框架" class="headerlink" title="选择 Web 框架"></a>选择 Web 框架</h1><p>构建企业Node.js应用程序时做出的关键选择之一是将作为其基础的 Web 框架。而 Express.js 是一个不错的默认选择。</p>
+<h1 id="代码覆盖率"><a href="#代码覆盖率" class="headerlink" title="代码覆盖率"></a>代码覆盖率</h1><p>代码覆盖率是一种软件测试指标，它确定项目中有多少代码在测试过程下已成功验证，这反过来又有助于分析软件验证的彻底程度。</p>
+<ul>
+<li>nyc，可能是最流行的代码覆盖率工具。该模块最受欢迎的主要原因之一是它与大多数 JavaScript 测试框架都能很好地配合。nyc是 的后继命令行界面 (CLI) istanbul。</li>
+<li>Jest，当您使用该选项运行该工具时，它会生成覆盖范围–coverage。</li>
+</ul>
+<h2 id="测试示例"><a href="#测试示例" class="headerlink" title="测试示例"></a>测试示例</h2><p>以nyc为例，该示例由文件中的两个简单函数以及使用Mocha 测试运行程序index.js的目录中的测试组成。</p>
+<p>第一个函数将两个数字相加：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function addTwoNumbers(x, y) &#123;</span><br><span class="line"></span><br><span class="line">  return x + y;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数可以通过这个简单的测试轻松覆盖：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">describe(&#39;testing for coverage&#39;, () &#x3D;&gt; &#123;</span><br><span class="line"></span><br><span class="line">  it (&#39;should add 2 numbers correctly&#39;, () &#x3D;&gt; &#123;</span><br><span class="line"></span><br><span class="line">    assert.equal(addTwoNumbers(1,1), 2);</span><br><span class="line"></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://developers.redhat.com/blog/2021/03/08/introduction-to-the-node-js-reference-architecture-part-1-overview" target="_blank" rel="noopener">Why we developed the Node.js reference architecture</a>,by redhat.</li>
+<li><a href="https://developers.redhat.com/articles/2022/03/02/introduction-nodejs-reference-architecture-part-7-code-coverage" target="_blank" rel="noopener">Introduction to the Node.js reference architecture, Part 7: Code coverage</a>,by redhat.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>nodejs</tag>
+      </tags>
+  </entry>
 </search>

@@ -314,6 +314,175 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/04/28/Ubuntu-16-04%E5%AE%89%E8%A3%85opencv%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/28/Ubuntu-16-04%E5%AE%89%E8%A3%85opencv%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Ubuntu_16.04安装OpenCV的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-28 19:38:11" itemprop="dateCreated datePublished" datetime="2019-04-28T19:38:11+08:00">2019-04-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-17 12:51:39" itemprop="dateModified" datetime="2019-05-17T12:51:39+08:00">2019-05-17</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本文记录在Ubuntu16.04 LTS操作系统中从源代码编译安装OpenCV的过程。</p>
+<h1 id="安装必需的软件包"><a href="#安装必需的软件包" class="headerlink" title="安装必需的软件包"></a>安装必需的软件包</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[compiler] sudo apt-get install build-essential</span><br><span class="line">[required] sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev</span><br><span class="line">[optional] sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev</span><br></pre></td></tr></table></figure>
+
+<h1 id="下载OpenCV源代码"><a href="#下载OpenCV源代码" class="headerlink" title="下载OpenCV源代码"></a>下载OpenCV源代码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~&#x2F;&lt;my_working_directory&gt;</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;opencv&#x2F;opencv.git</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;opencv&#x2F;opencv_contrib.git</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用CMake构建OpenCV"><a href="#使用CMake构建OpenCV" class="headerlink" title="使用CMake构建OpenCV"></a>使用CMake构建OpenCV</h1><h2 id="创建临时的build目录"><a href="#创建临时的build目录" class="headerlink" title="创建临时的build目录"></a>创建临时的build目录</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd ~&#x2F;opencv</span><br><span class="line"># 查看并检出OpenCV最新发布版</span><br><span class="line">git tag</span><br><span class="line">git checkout 4.1.0</span><br><span class="line"></span><br><span class="line">mkdir build</span><br><span class="line">cd build</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建配置文件"><a href="#创建配置文件" class="headerlink" title="创建配置文件"></a>创建配置文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ cmake -D CMAKE_BUILD_TYPE&#x3D;Release -D CMAKE_INSTALL_PREFIX&#x3D;&#x2F;usr&#x2F;local ..</span><br><span class="line"># 可选，如使用opencv_contrib, 采用如下命令生成编译配置文件</span><br><span class="line">$ cmake -D CMAKE_BUILD_TYPE&#x3D;Release -D CMAKE_INSTALL_PREFIX&#x3D;&#x2F;usr&#x2F;local -D OPENCV_EXTRA_MODULES_PATH&#x3D;..&#x2F;..&#x2F;opencv_contrib&#x2F;modules ..</span><br><span class="line"># 可选，构建示例程序和文档</span><br><span class="line">cmake -D CMAKE_BUILD_TYPE&#x3D;Release -D CMAKE_INSTALL_PREFIX&#x3D;&#x2F;usr&#x2F;local -D BUILD_EXAMPLES&#x3D;1 -D BUILD_DOCS&#x3D;1 ..</span><br></pre></td></tr></table></figure>
+
+<h2 id="构建OpenCV"><a href="#构建OpenCV" class="headerlink" title="构建OpenCV"></a>构建OpenCV</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -j3 # runs 3 jobs in parallel</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装OpenCV"><a href="#安装OpenCV" class="headerlink" title="安装OpenCV"></a>安装OpenCV</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://docs.opencv.org/4.1.0/d7/d9f/tutorial_linux_install.html" target="_blank" rel="noopener">Installation in Linux</a>, by opencv.</li>
+<li><a href="https://github.com/opencv/opencv/issues/13154" target="_blank" rel="noopener">4.0.0 does not produce pkgconfig file</a>, by opencv.</li>
+<li><a href="https://zh.wikipedia.org/zh-hans/Pkg-config" target="_blank" rel="noopener">Pkg-config</a>,by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/04/27/PX4%E5%BC%80%E5%8F%91%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E8%A7%A3%E8%AF%BB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2012,225 +2181,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/03/17/FlightGear%E9%A3%9E%E8%A1%8C%E6%A8%A1%E6%8B%9F%E5%99%A8%E4%B8%AD%E5%88%9B%E5%BB%BA%E6%96%B0%E9%A3%9E%E6%9C%BA%E7%9A%84%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/17/FlightGear%E9%A3%9E%E8%A1%8C%E6%A8%A1%E6%8B%9F%E5%99%A8%E4%B8%AD%E5%88%9B%E5%BB%BA%E6%96%B0%E9%A3%9E%E6%9C%BA%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
-                  FlightGear飞行模拟器中创建新飞机的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-03-17 22:24:54" itemprop="dateCreated datePublished" datetime="2019-03-17T22:24:54+08:00">2019-03-17</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2021-02-08 23:44:42" itemprop="dateModified" datetime="2021-02-08T23:44:42+08:00">2021-02-08</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>FlightGear中创建新飞机粗略地分成四步：创建飞机的3D模型，创建飞机的飞行动力学模型，创建飞机操作动画，实现飞机各子系统。具体而言，又可分成两个主要的开发领域：飞行动力学模型开发和飞机3D模型开发。</p>
-<h1 id="飞机3D模型开发"><a href="#飞机3D模型开发" class="headerlink" title="飞机3D模型开发"></a>飞机3D模型开发</h1><p>主要包括飞机外形、驾驶舱的3D模型开发，为飞行动力学模型设计的动画，声音等。</p>
-<h2 id="加载飞机模型"><a href="#加载飞机模型" class="headerlink" title="加载飞机模型"></a>加载飞机模型</h2><p>通过OpenSceneGraph，FlightGear支持许多不同的3D文件格式，包括VRML1，AC3D，DXF等等。 但是，.ac是大多数FG模型中使用的标准。</p>
-<p>主FlightGear属性树中的属性/ sim / model / path控制将加载的模型; 它需要一个字符串值，从$ FG ROOT给出模型的相对路径。</p>
-<p>加载新模型的最简单方法是使用–prop：命令行选项在启动时设置属性; 例如，要使用已安装在$ FG_ROOT / Models / my-cessna.ac中的3D飞机模型，您可以像这样调用FlightGear（在类Unix系统下）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fgfs --prop:&#x2F;sim&#x2F;model&#x2F;path&#x3D;Models&#x2F;my-cessna.ac</span><br></pre></td></tr></table></figure>
-
-<p>（注意：通常模型使用的所有纹理必须出现在同一目录中。如果my-cessna.ac使用纹理cessna01.rgb和cessna02.rgb，你还应该在$ FG_ROOT / Models /中安装这些纹理。</p>
-<p>如果要将3D模型永久设置为飞机的默认值而不是在命令行上指定，则需要编辑飞机设置文件。 在$ FG_ROOT / Aircraft /目录中有一系列以-set.xml结尾的文件，例如c172-set.xml，dc3-yasim-set.xml和beech99-uiuc-set.xml。 当您使用–aircraft选项启动FlightGear时，它会从其中一个文件中读取属性; 例如</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fgfs --aircraft&#x3D;dc3-yasim</span><br></pre></td></tr></table></figure>
-
-<p>将$ FG_ROOT / Aircraft / dc3-yasim-set.xml中的属性加载到主FlightGear属性树中。 这些文件与$ FG_ROOT / preferences.xml和FlightGear保存文件具有相同的XML属性列表格式。 对于任何单机类型，可能有许多具有不同启动条件，声音，面板，3D模型等的XML文件，因此您最好复制现有的，重命名它，然后更改模型内部路径元素内的值SIM卡：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;PropertyList&gt;</span><br><span class="line">&lt;sim&gt;</span><br><span class="line"> &lt;model&gt;</span><br><span class="line">  &lt;path&gt;Models&#x2F;my-cessna.ac&lt;&#x2F;path&gt;</span><br><span class="line">  &lt;texture-path&gt;.&#x2F;Textures&lt;&#x2F;texture-path&gt;</span><br><span class="line"> &lt;&#x2F;model&gt;</span><br><span class="line">&lt;&#x2F;sim&gt;</span><br><span class="line">&lt;&#x2F;PropertyList&gt;</span><br></pre></td></tr></table></figure>
-
-<h1 id="飞机动力学模型开发"><a href="#飞机动力学模型开发" class="headerlink" title="飞机动力学模型开发"></a>飞机动力学模型开发</h1><p>FlightGear主要使用JSBSim 和 YASim两个开源的飞行动力学模型，也有极少数使用UIUC飞行动力学模型。</p>
-<h2 id="YASim"><a href="#YASim" class="headerlink" title="YASim"></a>YASim</h2><p>FDM是控制模拟器内飞行物理的数学模型。 物理3D飞机模型与飞行动力学无关 - 实质上它只是一张要看的图片。 这是FDM决定模型如何飞行。</p>
-<p>为何选择YASim？ YASim使用飞机的几何形状来生成基本飞行特征。 虽然这表明了一种“现实的”或开箱即用的方法，但在获得接近现实主义的结果之前，这只是一种粗略的近似，需要进行大量的调整。 如果您的飞机有稳定的飞行数据，例如风洞数据，或者您希望最终生成超逼真的模拟，那么JSBSim可能是更好的方法。 如果你缺乏这样的数据但是知道飞机的几何形状并且能够获得与真实飞行员相同的飞行特性和限制，那么YASim可以提供足以满足大多数模拟需求的解决方案。</p>
-<h2 id="JSBSim"><a href="#JSBSim" class="headerlink" title="JSBSim"></a>JSBSim</h2><p>JSBSim是一个开源飞行动力学模型（FDM）软件库，用于模拟航空航天飞行器的飞行动力学。 该库已被纳入飞行模拟软件包FlightGear和OpenEaagles。 它也可以从一个小型独立程序调用，以创建批处理模拟工具。 JSBSim自1996年以来一直在开发和使用，并且已经构建在当今使用的所有最流行的平台上，包括运行Linux，Macintosh和Microsoft Windows操作系统的平台。 JSBSim是用C ++编写的，使用XML配置文件。</p>
-<h1 id="飞机模型开发规范说明"><a href="#飞机模型开发规范说明" class="headerlink" title="飞机模型开发规范说明"></a>飞机模型开发规范说明</h1><h2 id="规则和指导"><a href="#规则和指导" class="headerlink" title="规则和指导"></a>规则和指导</h2><ul>
-<li><p>FlightGear中的所有图像的大小应为2的幂（例如64 * 64,128 * 256或16 * 1024）。大多数计算机无法处理大于4096像素的纹理。从FlightGear 1.9开始，图像不再需要以.rgb格式保存。现在.png是FlightGear开发人员中最常用的.png。</p>
-</li>
-<li><p>请注意，我们在代码中使用空格，一些开发人员使用相应的选项卡，以使我们的代码易于（呃）阅读。每一行开始一个新标签，我们按空格键一次，这样你就可以得到一种楼梯。只要您在所有文件中始终如一地使用它，使用何种方法并不重要。但是JSBSim FDM使用的XML文件必须使用空格而不是制表符。</p>
-</li>
-<li><p>在大多数操作系统上，文件名和目录区分大小写。 Windows不区分大小写，因此当您在Windows计算机上进行开发时，您不会发现任何问题。在其他操作系统上，“波音”和“波音”之间存在差异。由于FlightGear用于多个平台，请确保您的代码正确使用大写字母！</p>
-</li>
-</ul>
-<h2 id="目录结构说明"><a href="#目录结构说明" class="headerlink" title="目录结构说明"></a>目录结构说明</h2><p>创建一个新的飞机模型，应该在$FG_ROOT/Aircraft/路径下创建文件夹，以飞机名称命名。例如在$FG_ROOT/Aircraft/路径下创建一个Su30的文件夹，开始构建Su30飞机模型。在飞机根目录下，其目录结构如下：</p>
-<ul>
-<li>-set.xml file</li>
-</ul>
-<p>描述飞机依赖关系的最重要文件是aircraft-set.xml文件。</p>
-<ul>
-<li>.xml file (FDM)</li>
-</ul>
-<p>该文件包含飞机的整个（或部分）飞行动力学模型。有YASim、JSBSim、UIUC三种不同的飞行动力学模型，他们都有自己的优缺点。</p>
-<p>由于数据有限，YASim通常被认为是最好的方式。 当您访问真实的风洞数据和/或需要更多灵活性时，JSBSim可能是更好的选择。</p>
-<ul>
-<li>Engines/ directory</li>
-</ul>
-<p>仅适用于JSBSim飞机。 在此目录中，存储引擎和推进器/螺旋桨文件。</p>
-<ul>
-<li>Models/ directory</li>
-</ul>
-<p>该目录包含所有与模型相关的文件; 例如纹理，模型和动画文件（.xml）。 在-set.xml文件中，我们将路径设置为一个.xml文件。 该文件应链接（间接）到飞机所需的每个其他模型文件（包括可能的3D驾驶舱）。 整个飞机可以建模为一个文件，但大多数开发人员更喜欢拆分。 例如，驾驶舱可以由几个文件构建，每个文件只存在一个仪器或面板。 这样很容易（重新）移动飞机的某些部件。 您可以像这样设置模型文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;PropertyList&gt;</span><br><span class="line"> </span><br><span class="line"> &lt;path&gt;Aircraft.ac&lt;&#x2F;path&gt;</span><br><span class="line"> </span><br><span class="line"> &lt;model&gt;</span><br><span class="line">  &lt;name&gt;Cockpit&lt;&#x2F;name&gt;</span><br><span class="line">  &lt;path&gt;Aircraft&#x2F;...&#x2F;Models&#x2F;cockpit.xml&lt;&#x2F;path&gt;</span><br><span class="line">  &lt;offsets&gt;</span><br><span class="line">   &lt;x-m&gt; -5.25&lt;&#x2F;x-m&gt;</span><br><span class="line">   &lt;y-m&gt;  0.00&lt;&#x2F;y-m&gt;</span><br><span class="line">   &lt;z-m&gt;  1.30&lt;&#x2F;z-m&gt;</span><br><span class="line">  &lt;&#x2F;offsets&gt;</span><br><span class="line"> &lt;&#x2F;model&gt;</span><br><span class="line"> </span><br><span class="line"> &lt;animation&gt;</span><br><span class="line">  &lt;type&gt;rotate&lt;&#x2F;type&gt;</span><br><span class="line">  &lt;object-name&gt;AileronLeft&lt;&#x2F;object-name&gt;</span><br><span class="line">  &lt;property&gt;&#x2F;controls&#x2F;flight&#x2F;aileron&lt;&#x2F;property&gt;</span><br><span class="line">  &lt;factor&gt;-65&lt;&#x2F;factor&gt;</span><br><span class="line">  &lt;center&gt;</span><br><span class="line">   &lt;x-m&gt; 2.09&lt;&#x2F;x-m&gt;</span><br><span class="line">   &lt;y-m&gt;-5.50&lt;&#x2F;y-m&gt;</span><br><span class="line">   &lt;z-m&gt;-1.50&lt;&#x2F;z-m&gt;</span><br><span class="line">  &lt;&#x2F;center&gt;</span><br><span class="line">  &lt;axis&gt;</span><br><span class="line">   &lt;x&gt;1&lt;&#x2F;x&gt;</span><br><span class="line">   &lt;y&gt;0&lt;&#x2F;y&gt;</span><br><span class="line">   &lt;z&gt;0&lt;&#x2F;z&gt;</span><br><span class="line">  &lt;&#x2F;axis&gt;</span><br><span class="line"> &lt;&#x2F;animation&gt;</span><br><span class="line"> </span><br><span class="line"> &lt;&#x2F;PropertyList&gt;</span><br></pre></td></tr></table></figure>
-
-<p>cockpit.xml文件可以包含相似结构，所有工具都是单独的模型。 模型的数量不受限制，动画的数量也不限。</p>
-<ul>
-<li>Nasal/ directory</li>
-</ul>
-<p>所有针对飞机的Nasal脚本都放在此目录中，但某些系统或仪器特定的Nasal脚本除外。 如果某个Nasal脚本对所有飞机都有用（例如天气或多人相关），它可以放在$ FG_ROOT / Nasal目录中。 可以在$ FG_ROOT / Aircraft / Generic目录中找到可在多架飞机上使用的Nasal脚本（例如空中加油）。</p>
-<ul>
-<li>Sounds/ directory</li>
-</ul>
-<p>声音对于增加你实际进入模拟的感觉非常重要。 在此目录中，存储了特定于飞行器的所有声音文件。 可以在多个飞机上使用的声音（例如，点击开关或雷声）可在$ FG_ROOT / Sounds目录中找到。</p>
-<ul>
-<li>Tutorials/ directory</li>
-</ul>
-<p>FlightGears教程系统是学习如何启动飞机引擎等的有用功能。 它允许您创建一个分步教程，指导用户完成某个过程。 它甚至可以指示应按下哪些开关！</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://wiki.flightgear.org/Howto:Make_an_aircraft" target="_blank" rel="noopener">Howto:Make an aircraft</a>,by flightgear home.</li>
-<li><a href="http://wiki.flightgear.org/Howto:3D_Aircraft_Models" target="_blank" rel="noopener">Howto:3D Aircraft Models</a>,by flightgear home.</li>
-<li><a href="http://wiki.flightgear.org/Howto:Animate_models" target="_blank" rel="noopener">Howto:Animate models</a>,by flightgear home.</li>
-<li><a href="http://wiki.flightgear.org/YASim" target="_blank" rel="noopener">YASim</a>,by flightgear home.</li>
-<li><a href="http://wiki.flightgear.org/JSBSim" target="_blank" rel="noopener">JSBSim</a>,by flightgear home.</li>
-<li><a href="http://wiki.flightgear.org/Portal:Developer/Aircraft" target="_blank" rel="noopener">Welcome to the aircraft developer portal!</a>,by flightgear.</li>
-<li><a href="https://wiki.flightgear.org/Howto:Creating_3D_instruments" target="_blank" rel="noopener">Howto:Creating 3D instruments</a>,by flightgear.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2278,7 +2228,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">437</span>
+                    <span class="site-state-item-count">438</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

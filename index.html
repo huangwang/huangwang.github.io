@@ -540,7 +540,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2023-09-15 22:47:31" itemprop="dateModified" datetime="2023-09-15T22:47:31+08:00">2023-09-15</time>
+                <time title="修改时间：2023-10-08 17:20:25" itemprop="dateModified" datetime="2023-10-08T17:20:25+08:00">2023-10-08</time>
               
             
           </span>
@@ -584,7 +584,19 @@
 <li><a href="https://blog.csdn.net/yanjian_0809/article/details/103079445" target="_blank" rel="noopener">使用VirtualBox打开虚拟机报错：Raw-mode is unavailable courtesy of Hyper-V</a></li>
 <li><a href="https://appuals.com/fix-virtual-machine-has-terminated-unexpectedly-during-startup-with-exit-code-1-0x1/" target="_blank" rel="noopener">5 Ways to Fix ‘Virtual machine has terminated unexpectedly’ Error</a></li>
 </ul>
-<h1 id="VRP简介"><a href="#VRP简介" class="headerlink" title="VRP简介"></a>VRP简介</h1><h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<h1 id="VRP简介"><a href="#VRP简介" class="headerlink" title="VRP简介"></a>VRP简介</h1><h1 id="常用场景"><a href="#常用场景" class="headerlink" title="常用场景"></a>常用场景</h1><h2 id="IP与Mac绑定"><a href="#IP与Mac绑定" class="headerlink" title="IP与Mac绑定"></a>IP与Mac绑定</h2><p>具体流程如下：</p>
+<ol>
+<li>查看目标IP将要接入的交换机管理IP。</li>
+<li>登录接入层交换机</li>
+<li>进入交换机系统视图，静态绑定IP与Mac地址</li>
+</ol>
+<p>具体命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">telnet 192.168.0.111</span><br><span class="line">&gt; display current-configuration</span><br><span class="line">&gt; display mac-address | include c03f-abcd-cc92</span><br><span class="line">&gt; system-view</span><br><span class="line"># 以下命令可将IP、Mac、Interface、Vlan进行绑定</span><br><span class="line">] user-bind static ip-address 10.0.0.32 mac-address c03f-abcd-cc92 vlan 8</span><br><span class="line">] quit</span><br><span class="line">&gt; save</span><br></pre></td></tr></table></figure>
+
+<h2 id="IP与Mac解绑"><a href="#IP与Mac解绑" class="headerlink" title="IP与Mac解绑"></a>IP与Mac解绑</h2><p>具体命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">telnet 192.168.0.111</span><br><span class="line">&gt; system-view</span><br><span class="line">] undo user-bind static ip-address 10.0.0.32 mac-address c03f-abcd-cc92 vlan 8</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://book.douban.com/subject/26629364/" target="_blank" rel="noopener">HCNA网络技术实验指南</a>,by 华为技术有限公司.</li>
 <li><a href="https://bbs.huaweicloud.com/blogs/348672" target="_blank" rel="noopener">ENSP安装教程【手把手教学】</a>,by 黑城笑.</li>
 <li><a href="https://king321.cn/%E8%A7%A3%E5%86%B3virtualbox-host-only-network2%E9%97%AE%E9%A2%98/" target="_blank" rel="noopener">解决VirtualBox Host-Only NetWork #2问题</a>,by King.</li>

@@ -314,6 +314,181 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/12/Web%E5%BA%94%E7%94%A8%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/11/12/Web%E5%BA%94%E7%94%A8%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Web应用压力测试方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-12 18:26:50" itemprop="dateCreated datePublished" datetime="2019-11-12T18:26:50+08:00">2019-11-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-11-25 22:02:25" itemprop="dateModified" datetime="2019-11-25T22:02:25+08:00">2019-11-25</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Web应用在部署前，最好进行压力测试，以衡量其是否达到设计指标，判断其在何种极限条件下应用功能会失效。下面即介绍软件测试中压力测试，尤其是Web应用压力测试的相关知识。</p>
+<h1 id="压力测试"><a href="#压力测试" class="headerlink" title="压力测试"></a>压力测试</h1><p>压力测试（英语：Stress testing）是针对特定系统或是组件，为要确认其稳定性而特意进行的严格测试。会让系统在超过正常使用条件下运作，然后再确认其结果。进行压力测试的原因可能包括：</p>
+<ul>
+<li>确认系统在什么条件下会损坏，以及安全使用条件。</li>
+<li>确认预测系统在什么条件下会损坏或其安全使用条件的数学模型是否准确。</li>
+<li>确认是否符合预期的规格。</li>
+<li>确认失效原因。</li>
+<li>确认系统在正常工作条件以外，是否可以正常运作。</li>
+</ul>
+<p>软件测试中的压力测试是在超过正常运作条件以外的条件下运作系统，以确认健壮性的方式。压力测试对于关键任务软件格外的重要，但可以适用于各种的软件。压力测试一般较强调软件在高负载下的健壮性、可用性及异常处理，以及哪些在一般使用环境下算是正常行为。</p>
+<p>例如一个网站设计容量是100个人同时点击，压力测试就要是采用120个同时点击的条件测试。</p>
+<h1 id="性能指标"><a href="#性能指标" class="headerlink" title="性能指标"></a>性能指标</h1><p>web应用的性能指标主要有响应时间，吞吐量，并发量，性能计数器。</p>
+<h2 id="响应时间"><a href="#响应时间" class="headerlink" title="响应时间"></a>响应时间</h2><p>响应时间指应用执行一个操作需要的时间，即从发出请求到最后收到响应数据所需要的时间。例如：打开一个网站的响应时间、数据库查询一条记录（有索引）的响应时间等等。</p>
+<p>实践中通常采用的办法是重复请求，比如一个请求操作重复执行1万次，测试一万次执行的总响应时间之和，然后除以1万，就得到单次请求的响应时间。</p>
+<h2 id="吞吐量"><a href="#吞吐量" class="headerlink" title="吞吐量"></a>吞吐量</h2><p>吞吐量指单位时间内系统处理的请求数量，体现系统的整体处理能力。对于网站，可用“请求数/秒”、“页面数/秒”或“访问人数/天”、“处理业务数/小时”等来衡量。重要指标有TPS(每秒处理的事物数)、QPS(每秒查询的请求数)、HPS（每秒HTTP请求数）等。</p>
+<h2 id="并发量"><a href="#并发量" class="headerlink" title="并发量"></a>并发量</h2><p>并发量指系统能够同时处理的请求的数目，这个数字反映了系统的负载性能。对于网站而言，并发数指网站用户同时提交请求的用户数目。</p>
+<h2 id="性能计数器"><a href="#性能计数器" class="headerlink" title="性能计数器"></a>性能计数器</h2><p>性能计数器描述服务器或操作系统性能的一些数据指标。如System Load、对象与线程数、内存使用、CPU使用、磁盘与网络I/O等使用情况。通过对这些指标设置报警阈值，当监控系统发现性能计数器超过阈值时，就向开发人员和运维报警，及时发现异常并处理。</p>
+<h1 id="测试工具"><a href="#测试工具" class="headerlink" title="测试工具"></a>测试工具</h1><p>压力测试工具有http_load、apache ab、siege。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95" target="_blank" rel="noopener">压力测试</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%A3%93%E5%8A%9B%E6%B8%AC%E8%A9%A6_(%E8%BB%9F%E9%AB%94)" target="_blank" rel="noopener">压力测试 (软件)</a>,by wikipedia.</li>
+<li><a href="https://www.cnblogs.com/sunshineliulu/p/7509810.html" target="_blank" rel="noopener">网站性能测试指标及网站压力测试</a>,by 呦呦鹿鸣.</li>
+<li><a href="https://juejin.im/entry/5913d544da2f600064deb31d" target="_blank" rel="noopener">Web 性能压测工具 ApacheBench（ab）使用总结</a>,by juejin.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/11/11/Axios%E8%AF%B7%E6%B1%82%E8%B6%85%E6%97%B6%E5%A4%84%E7%90%86%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2146,185 +2321,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/13/SQLServer2008%E4%B8%AD%E6%97%A5%E6%9C%9F%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E7%9A%84%E5%AD%98%E5%82%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/13/SQLServer2008%E4%B8%AD%E6%97%A5%E6%9C%9F%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E7%9A%84%E5%AD%98%E5%82%A8/" itemprop="url">
-                  SQLServer2008中日期类型数据的存储
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-10-13 18:15:02" itemprop="dateCreated datePublished" datetime="2019-10-13T18:15:02+08:00">2019-10-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-12-30 19:00:31" itemprop="dateModified" datetime="2019-12-30T19:00:31+08:00">2019-12-30</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="日期类型比较"><a href="#日期类型比较" class="headerlink" title="日期类型比较"></a>日期类型比较</h1><p>SQL Server 2008中有datetime、datetime2、datetimeoffset三种数据类型用于存储时间类型数据。它们之间的差别主要有：</p>
-<ul>
-<li>datetime、datetime2不存储时区信息，datetimeoffset存储时区信息。</li>
-<li>datetime与datetime2区别是两者存储字节大小和精度不同，后者优于前者。</li>
-</ul>
-<p>因此，在存储时间信息时，优先使用datetimeoffset数据类型。当使用datetime和datetime2数据类型时，因没有时区信息，很多客户端链接库会将存储的时间默认为UTC时间。例如：</p>
-<p>SQL Server2008中存储某人的出生日期为“1970-01-01 00:00:00”，通过sequelizejs框架读取得到出生日期将是“1970-01-01T00:00:00Z”，<strong>这里 T 仅仅是分隔日期和时间的符号，没有其他含义，而 Z 表示 UTC 时间。</strong></p>
-<p>这时需要根据自己所在时区对时间进行修正。最简单的方法是在SQL语句中进行修正，代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select birthday1, dateadd(hour,-8,birthday) from students</span><br></pre></td></tr></table></figure>
-<h1 id="日期转换"><a href="#日期转换" class="headerlink" title="日期转换"></a>日期转换</h1><p>有时时间会以字符串类型存储在数据库中，当需要对时间进行比较时，需要先将字符串类型时间转换成日期类型，可使用convert函数进行转换，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 字符串转日期</span><br><span class="line">select convert(date, &#39;2005-12-31 23:59:59.9999999&#39;)</span><br><span class="line"># 日期转字符串</span><br><span class="line">select convert(varchar, getdate(), 1)</span><br></pre></td></tr></table></figure>
-
-<p>其中date是要转换的数据的类型，’2005-12-31 23:59:59.9999999’是被转换的数据。</p>
-<h1 id="日期比较"><a href="#日期比较" class="headerlink" title="日期比较"></a>日期比较</h1><p>在mssql中比较两个日期的大小，可采用DATEDIFF函数，其语法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DATEDIFF ( datepart , startdate , enddate )</span><br></pre></td></tr></table></figure>
-
-<p>其中，datepart是时间单位，startdate和enddate是合法的日期表达式。datediff用法示例如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SELECT DATEDIFF(year,        &#39;2005-12-31 23:59:59.9999999&#39;, &#39;2006-01-01 00:00:00.0000000&#39;);</span><br><span class="line">SELECT DATEDIFF(quarter,     &#39;2005-12-31 23:59:59.9999999&#39;, &#39;2006-01-01 00:00:00.0000000&#39;);</span><br><span class="line">SELECT DATEDIFF(month,       &#39;2005-12-31 23:59:59.9999999&#39;, &#39;2006-01-01 00:00:00.0000000&#39;);</span><br><span class="line">SELECT DATEDIFF(dayofyear,   &#39;2005-12-31 23:59:59.9999999&#39;, &#39;2006-01-01 00:00:00.0000000&#39;);</span><br><span class="line">SELECT DATEDIFF(day,         &#39;2005-12-31 23:59:59.9999999&#39;, &#39;2006-01-01 00:00:00.0000000&#39;);</span><br><span class="line">SELECT DATEDIFF(week,        &#39;2005-12-31 23:59:59.9999999&#39;, &#39;2006-01-01 00:00:00.0000000&#39;);</span><br><span class="line">SELECT DATEDIFF(hour,        &#39;2005-12-31 23:59:59.9999999&#39;, &#39;2006-01-01 00:00:00.0000000&#39;);</span><br><span class="line">SELECT DATEDIFF(minute,      &#39;2005-12-31 23:59:59.9999999&#39;, &#39;2006-01-01 00:00:00.0000000&#39;);</span><br><span class="line">SELECT DATEDIFF(second,      &#39;2005-12-31 23:59:59.9999999&#39;, &#39;2006-01-01 00:00:00.0000000&#39;);</span><br><span class="line">SELECT DATEDIFF(millisecond, &#39;2005-12-31 23:59:59.9999999&#39;, &#39;2006-01-01 00:00:00.0000000&#39;);</span><br><span class="line">SELECT DATEDIFF(microsecond, &#39;2005-12-31 23:59:59.9999999&#39;, &#39;2006-01-01 00:00:00.0000000&#39;);</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://stackoverflow.com/questions/18518290/how-to-add-hours-to-current-date-in-sql-server/18518412" target="_blank" rel="noopener">How to add hours to current date in SQL Server?</a>,by stackoverflow.</li>
-<li><a href="https://docs.microsoft.com/en-us/dotnet/standard/datetime/choosing-between-datetime" target="_blank" rel="noopener">Choosing between DateTime, DateTimeOffset, TimeSpan, and TimeZoneInfo</a>,by microsoft.</li>
-<li><a href="https://blog.csdn.net/happymagic/article/details/45065321" target="_blank" rel="noopener">datetime、datetime2的区别</a>,by happymagic.</li>
-<li><a href="https://www.cnblogs.com/Gin-23333/p/5066823.html" target="_blank" rel="noopener">DateTime , DateTime2 ,DateTimeOffset 之间的小区别</a>,by 神崎橙.</li>
-<li><a href="https://segmentfault.com/a/1190000004292140" target="_blank" rel="noopener">关于“时间”的一次探索</a>,by KohPoll.</li>
-<li><a href="https://www.mssqltips.com/sqlservertip/1145/date-and-time-conversions-using-sql-server/" target="_blank" rel="noopener">Date and Time Conversions Using SQL Server</a>,by Edgewood Solutions.</li>
-<li><a href="https://docs.microsoft.com/en-us/sql/t-sql/functions/datediff-transact-sql?view=sql-server-ver15" target="_blank" rel="noopener">DATEDIFF (Transact-SQL)</a>,by microsoft.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2372,7 +2368,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">438</span>
+                    <span class="site-state-item-count">439</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

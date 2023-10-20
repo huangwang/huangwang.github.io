@@ -18865,7 +18865,7 @@ console.log(y);</code></pre></li>
 <li>一个端口只能绑定一个协议解析器，不管改端口下有多少中报文格式</li>
 <li>解析树的TreeItem添加协议字段时，应使用TvbRange数据类型，否则对应hex数据无法高亮显示，示例如下：</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">local t &#x3D; tree:add( proto_foo, buf() )</span><br><span class="line">t:add( proto_foo.fields.bytes, buf(0,4) )</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">local t &#x3D; tree:add( proto_foo, buf() )</span><br><span class="line">t:add_le( proto_foo.fields.bytes, buf(0,4) )</span><br><span class="line"># 实现日期字段的显示</span><br><span class="line">t:add_le( proto_foo.fields.string, buf(0,8), datetime)</span><br></pre></td></tr></table></figure>
 
 <h2 id="数据包回放"><a href="#数据包回放" class="headerlink" title="数据包回放"></a>数据包回放</h2><p>wireshark以pcap格式保存抓取的流量。pcap的具体格式请参考<a href="https://blog.csdn.net/Hollake/article/details/90108950" target="_blank" rel="noopener">Wireshark文件pcap的格式详细解析有实例（Global Header、Packet Header）</a></p>
 <p>可使用tcpreplay、scap、xcap、netassisnt等工具回放pcap文件。</p>
@@ -18884,6 +18884,7 @@ console.log(y);</code></pre></li>
 <li><a href="https://jingyan.baidu.com/article/647f01158e6cda3e2048a848.html" target="_blank" rel="noopener">报文回放工具：xcap的使用方法</a>,by 荭知.</li>
 <li><a href="https://www.cnblogs.com/little-kwy/p/14888454.html" target="_blank" rel="noopener">wireshark插件开发 - 自定义协议</a>,by m0w3n.</li>
 <li><a href="https://www.jianshu.com/p/e0ed83516031" target="_blank" rel="noopener">Wireshark录取自定义报文的方法</a>,by 卓_然.</li>
+<li><a href="https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_Tree.html" target="_blank" rel="noopener">Adding Information To The Dissection Tree</a>,by wireshark.</li>
 </ol>
 ]]></content>
       <tags>
@@ -19103,7 +19104,7 @@ console.log(y);</code></pre></li>
 <li>进入交换机系统视图，静态绑定IP与Mac地址</li>
 </ol>
 <p>具体命令如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">telnet 192.168.0.111</span><br><span class="line">&gt; display current-configuration</span><br><span class="line"># 查看mac要绑定的交换机端口</span><br><span class="line">&gt; display mac-address | include c03f-abcd-cc92</span><br><span class="line">&gt; system-view</span><br><span class="line">] interface GigabitEthernet 0&#x2F;0&#x2F;8</span><br><span class="line"># 查看交换机网口配置</span><br><span class="line">] display this</span><br><span class="line"># 使能动态arp检测功能</span><br><span class="line">] arp anti-attack check user-bind enable</span><br><span class="line"># 使能ip报文检查功能</span><br><span class="line">] ip source check user-bind enable</span><br><span class="line">] display this</span><br><span class="line"># 以下命令可将IP、Mac、Interface、Vlan进行绑定</span><br><span class="line">] user-bind static ip-address 10.0.0.32 mac-address c03f-abcd-cc92 interface GigabitEthernet 0&#x2F;0&#x2F;8 vlan 8</span><br><span class="line">] quit</span><br><span class="line">&gt; save</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">telnet 192.168.0.111</span><br><span class="line">&gt; display current-configuration</span><br><span class="line"># 查看mac要绑定的交换机端口</span><br><span class="line">&gt; display mac-address | include c03f-abcd-cc92</span><br><span class="line"># 查看路由表</span><br><span class="line">&gt; display ip routing-table</span><br><span class="line">&gt; system-view</span><br><span class="line">] interface GigabitEthernet 0&#x2F;0&#x2F;8</span><br><span class="line"># 查看交换机网口配置</span><br><span class="line">] display this</span><br><span class="line"># 使能动态arp检测功能</span><br><span class="line">] arp anti-attack check user-bind enable</span><br><span class="line"># 使能ip报文检查功能</span><br><span class="line">] ip source check user-bind enable</span><br><span class="line">] display this</span><br><span class="line"># 以下命令可将IP、Mac、Interface、Vlan进行绑定</span><br><span class="line">] user-bind static ip-address 10.0.0.32 mac-address c03f-abcd-cc92 interface GigabitEthernet 0&#x2F;0&#x2F;8 vlan 8</span><br><span class="line">] quit</span><br><span class="line">&gt; save</span><br></pre></td></tr></table></figure>
 
 <h2 id="IP与Mac解绑"><a href="#IP与Mac解绑" class="headerlink" title="IP与Mac解绑"></a>IP与Mac解绑</h2><p>具体命令如下：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">telnet 192.168.0.111</span><br><span class="line">&gt; system-view</span><br><span class="line">] undo user-bind static ip-address 10.0.0.32 mac-address c03f-abcd-cc92 vlan 8</span><br></pre></td></tr></table></figure>
@@ -19147,7 +19148,7 @@ console.log(y);</code></pre></li>
   <entry>
     <title>网络拓扑自动发现的方法</title>
     <url>/2023/10/11/%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E7%9A%84%E6%96%B9%E6%B3%95/</url>
-    <content><![CDATA[<p>作为网络管理员，了解整个单位的网络拓扑结构，是保障和维护网络的基础。通常可以通过手动绘制的方式获得网络拓扑结构，但这种方法效率低，不精确，无法实时更新，因此需要一种网络拓扑自动发现的方法。下面记录一些与网络拓扑自动发现的方法与技术。</p>
+    <content><![CDATA[<p>作为网络管理员，了解整个单位的网络拓扑结构，是保障和维护网络的基础。通常可以通过手动绘制的方式获得网络拓扑结构，但这种方法效率低，不精确，无法实时更新，因此需要一种网络拓扑自动发现的方法。下面记录一些与网络拓扑自动发现相关的方法与技术。</p>
 <h1 id="SNMP"><a href="#SNMP" class="headerlink" title="SNMP"></a>SNMP</h1><p>SNMP是广泛应用于TCP/IP网络的网络管理标准协议，该协议能够支持网络管理系统，用以监测连接到网络上的设备是否有任何引起管理上关注的情况。</p>
 <p>SNMP基本组件包括网络管理系统NMS（Network Management System）、代理进程（Agent）、被管对象（Managed Object）和管理信息库MIB（Management Information Base）。</p>
 <p align="center" style="display: flex;">

@@ -314,6 +314,170 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/07/11/Python%E6%96%87%E6%9C%AC%E6%96%87%E4%BB%B6%E7%BC%96%E7%A0%81%E6%A0%BC%E5%BC%8F%E6%89%B9%E9%87%8F%E8%BD%AC%E6%8D%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2023/07/11/Python%E6%96%87%E6%9C%AC%E6%96%87%E4%BB%B6%E7%BC%96%E7%A0%81%E6%A0%BC%E5%BC%8F%E6%89%B9%E9%87%8F%E8%BD%AC%E6%8D%A2/" itemprop="url">
+                  Python文本文件编码格式批量转换
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2023-07-11 17:43:23" itemprop="dateCreated datePublished" datetime="2023-07-11T17:43:23+08:00">2023-07-11</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-08-17 18:17:13" itemprop="dateModified" datetime="2023-08-17T18:17:13+08:00">2023-08-17</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近获得一个Matlab高版本的项目代码，其文本文件时utf8编码格式，而我的Matlab版本比较低，只支持gbk编码格式，于是采用Python批量转换文本编码格式。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">import os,sys</span><br><span class="line"></span><br><span class="line">extArray&#x3D;(&quot;.m&quot;,&quot;.txt&quot;)</span><br><span class="line"> </span><br><span class="line">def convert( filename, in_enc &#x3D; &quot;UTF-8&quot;, out_enc&#x3D;&quot;GBK&quot; ):</span><br><span class="line">    try:</span><br><span class="line">        print(&quot;convert &quot; + filename)</span><br><span class="line">        targetFile &#x3D; open(filename,&#39;r&#39;,encoding&#x3D;in_enc)</span><br><span class="line">        content &#x3D; targetFile.read()</span><br><span class="line">        targetFile.close()</span><br><span class="line"></span><br><span class="line">        targetFile &#x3D; open(filename,&#39;w&#39;,encoding&#x3D;out_enc)</span><br><span class="line">        targetFile.write(content)</span><br><span class="line">        targetFile.close()</span><br><span class="line">    except:</span><br><span class="line">        targetFile.close()</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">def explore(dir):</span><br><span class="line">    for root, dirs, files in os.walk(dir):</span><br><span class="line">        for file in files:</span><br><span class="line">            path &#x3D; os.path.join(root, file)</span><br><span class="line">            if(path.endswith(extArray)):</span><br><span class="line">                convert(path)</span><br><span class="line"> </span><br><span class="line">def main():</span><br><span class="line">    for path in sys.argv[1:]:</span><br><span class="line">        if os.path.isfile(path):</span><br><span class="line">            convert(path)</span><br><span class="line">        elif os.path.isdir(path):</span><br><span class="line">            explore(path)</span><br><span class="line"> </span><br><span class="line">if __name__ &#x3D;&#x3D; &quot;__main__&quot;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<p>运行时采用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python -m venv env</span><br><span class="line">.\env\Scripts\activate</span><br><span class="line">python utf8_to_gbk.py filepath</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/weixin_33826268/article/details/85535203" target="_blank" rel="noopener">Python遍历路径下文件并转换成UTF-8编码</a>,by weixin_33826268.</li>
+<li><a href="https://blog.csdn.net/huang_0430/article/details/72638269" target="_blank" rel="noopener">Python 批量转换文件编码格式</a>,by huang_0430.</li>
+<li><a href="https://www.zhihu.com/question/19677619" target="_blank" rel="noopener">GB2312、GBK、GB18030 这几种字符集的主要区别是什么？</a>,by zhihu.</li>
+<li><a href="https://cloud.tencent.com/developer/article/1343240" target="_blank" rel="noopener">一图弄懂ASCII、GB2312、GBK、GB18030编码</a>,by horstxu.</li>
+<li><a href="https://www.51cto.com/article/661981.html" target="_blank" rel="noopener">Unicode、UTF-8、UTF-16 终于懂了</a>,by LinuxThings.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/06/15/%E6%8F%90%E5%8F%96%E5%AE%89%E5%8D%93%E5%B7%B2%E5%AE%89%E8%A3%85%E5%BA%94%E7%94%A8APK%E6%96%87%E4%BB%B6%E7%9A%84%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1826,157 +1990,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/03/20/js%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%96%B9%E6%B3%95%E6%B1%87%E6%80%BB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2023/03/20/js%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%96%B9%E6%B3%95%E6%B1%87%E6%80%BB/" itemprop="url">
-                  js创建对象的方法汇总
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2023-03-20 22:47:45 / 修改时间：23:10:43" itemprop="dateCreated datePublished" datetime="2023-03-20T22:47:45+08:00">2023-03-20</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>以下是几种创建js对象的方法。</p>
-<h1 id="Object构造函数创建"><a href="#Object构造函数创建" class="headerlink" title="Object构造函数创建"></a>Object构造函数创建</h1><h1 id="使用对象字面量表示法来创建对象"><a href="#使用对象字面量表示法来创建对象" class="headerlink" title="使用对象字面量表示法来创建对象"></a>使用对象字面量表示法来创建对象</h1><h1 id="使用工厂模式创建对象"><a href="#使用工厂模式创建对象" class="headerlink" title="使用工厂模式创建对象"></a>使用工厂模式创建对象</h1><h1 id="使用构造函数创建对象"><a href="#使用构造函数创建对象" class="headerlink" title="使用构造函数创建对象"></a>使用构造函数创建对象</h1><h1 id="原型创建对象模式"><a href="#原型创建对象模式" class="headerlink" title="原型创建对象模式"></a>原型创建对象模式</h1><h1 id="组合使用构造函数模式和原型模式"><a href="#组合使用构造函数模式和原型模式" class="headerlink" title="组合使用构造函数模式和原型模式"></a>组合使用构造函数模式和原型模式</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://juejin.cn/post/6844903616512278536" target="_blank" rel="noopener">JS创建对象的几种方法</a>,by fishfan.</li>
-<li><a href="https://www.ruanyifeng.com/blog/2012/07/three_ways_to_define_a_javascript_class.html" target="_blank" rel="noopener">Javascript定义类（class）的三种方法</a>,by 阮一峰.</li>
-<li><a href="https://juejin.cn/post/7098891689955164168" target="_blank" rel="noopener">JavaScript Class类详解</a>,by 前端农民晨曦.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/35458229" target="_blank" rel="noopener">理解JS的prototype</a>,by 登来.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/">上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/44/">44</a><a class="extend next" rel="next" href="/page/3/">下一页</a>
+    <a class="extend prev" rel="prev" href="/">上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/3/">下一页</a>
   </nav>
 
 
@@ -2019,7 +2037,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">440</span>
+                    <span class="site-state-item-count">441</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

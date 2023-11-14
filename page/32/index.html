@@ -314,6 +314,359 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/23/%E9%9A%8F%E6%9C%BA%E6%8A%BD%E6%A0%B7%E4%B8%80%E8%87%B4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/23/%E9%9A%8F%E6%9C%BA%E6%8A%BD%E6%A0%B7%E4%B8%80%E8%87%B4/" itemprop="url">
+                  随机抽样一致
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-23 09:26:08 / 修改时间：11:23:28" itemprop="dateCreated datePublished" datetime="2019-06-23T09:26:08+08:00">2019-06-23</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>随机抽样一致算法（RANdom SAmple Consensus，RANSAC）。它采用迭代的方式从一组包含离群(outlier)的被观测数据中估算出数学模型的参数。 RANSAC是一个非确定性算法，在某种意义上说，它会产生一个在一定概率下合理的结果，而更多次的迭代会使这一概率增加。此RANSAC算法在1981年由Fischler和Bolles首次提出。</p>
+<p>RANSAC的基本假设是</p>
+<ul>
+<li>“内群”(inlier)数据可以通过几组模型的参数来叙述其分布，而“离群”(outlier)数据则是不适合模型化的数据。</li>
+<li>数据会受噪声影响，噪声指的是离群，例如从极端的噪声或错误解释有关数据的测量或不正确的假设。</li>
+<li>RANSAC假定，给定一组（通常很小）的内群，存在一个程序，这个程序可以估算最佳解释或最适用于这一数据模型的参数。</li>
+</ul>
+<h1 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h1><p>这里用一个简单的例子来说明，在一组数据点中找到一条最适合的线。假设，此有一组集合包含了内群以及离群，其中内群为可以被拟合到线段上的点，而离群则是无法被拟合的点。如果我们用简单的最小二乘法来找此线，我们将无法得到一条适合于内群的线，因为最小二乘法会受离群影响而影响其结果。而RANSAC，可以只由内群来计算出模型，而且概率还够高。然而，RANSAC无法保证结果一定最好，所以必须小心选择参数，使其能有足够的概率。</p>
+<div style="display:flex">
+    <div style="width: 45%;margin: 0 2.5%;">
+        <img display="block" src="images/255px-Line_with_outliers.svg.png" width="100%" alt="包含许多离群的一组数据"/>
+        <div>包含许多离群的一组数据，要找一条最适合的线。</div>
+    </div>
+    <div style="width: 45%;margin: 0 2.5%;">
+        <img display="block" src="images/255px-Fitted_line.svg.png" width="100%" alt="RANSAC找到的线"/>
+        <div>RANSAC找到的线，离群值对结果没影响（蓝色点为内群，红色点为离群）</div>
+    </div>   
+</div>
+
+<h1 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h1><p>RANSAC算法是一个学习的技巧，通过使用观测数据的随机样本来估计模型参数。RANSAC使用投票机制来寻找优化的拟合结果。每个数据元被用来投票一或多个模型。投票机制基于两点假设：</p>
+<ul>
+<li><p>噪音大的特征并不能一直单独为某个模型投票</p>
+</li>
+<li><p>有足够多的特征来拟合一个好的模型</p>
+</li>
+</ul>
+<p>一般RANSAC算法由两步骤迭代计算：</p>
+<ul>
+<li><p>一个样本子集，包含数据选取（随机选取）。通过使用这些数据得到一个拟合模型和相关的模型参数。样本子集的数量是最小充分的得到模型参数。</p>
+</li>
+<li><p>算法检查数据集中的哪些元素是一直在第一步估计到的模型当中的。如果在阈值（相对噪声的最大偏离度）外的话，该模型元素不能拟合估计到的模型便会被当做outlier。</p>
+</li>
+</ul>
+<p>inliers的设置称作“一致性设置”RANSAC算法会一直迭代直到获得足够的inliers。</p>
+<p>RANSAC的输入是一些观测数据和一些“可信度”参数，实现步骤：</p>
+<ol>
+<li>随机选择一些原始数据，叫作假设inliers子集</li>
+<li>建立模型拟合</li>
+<li>用其他数据来验证，根据模型特定的loss-function来计算是否符合该模型</li>
+<li>如果足够的点都算是“一致性”设置里则该模型算是好模型</li>
+<li>比较所有的“一致性”设置（就是建立的所有模型）看看哪个inliers多就是我们要的。</li>
+</ol>
+<h2 id="参数决定"><a href="#参数决定" class="headerlink" title="参数决定"></a>参数决定</h2><p>假设每个点是真正内群的几率是 $w$ :<br>$$ w = 真正內群的數目 / 數據總共的數量$$</p>
+<p>通常我们不知道 $w$ 是多少, $w^n$ 是所选择的n个点都是内群的几率, $1-w^n$ 是所选择的n个点至少有一个不是内群的几率, $(1 − w^n)^k$ 是表示重复k次都没有全部的n个点都是内群的几率, 这边定算法跑k次以后成功的几率是p，那么,</p>
+<p>$$ 1 − p =(1 − w^n)^k $$<br>$$ p = 1 −(1 − w^n)^k $$</p>
+<p>所以如果希望成功几率高，p = 0.99, 当n不变时，k越大,p越大, 当w不变时，n越大，所需的k就越大, 通常w未知，所以n选小一点比较好。</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>RANSAC常被用在计算机视觉，例如，对应点问题和 估算立体摄影机双眼相对点的基本矩阵。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/36301702" target="_blank" rel="noopener">随机抽样一致RANSAC: Random Sample Consensus</a>,by 江知季.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E9%9A%A8%E6%A9%9F%E6%8A%BD%E6%A8%A3%E4%B8%80%E8%87%B4" target="_blank" rel="noopener">随机抽样一致</a>,by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/22/%E5%B0%BA%E5%BA%A6%E7%A9%BA%E9%97%B4%E7%90%86%E8%AE%BA%E7%AE%80%E4%BB%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/22/%E5%B0%BA%E5%BA%A6%E7%A9%BA%E9%97%B4%E7%90%86%E8%AE%BA%E7%AE%80%E4%BB%8B/" itemprop="url">
+                  尺度空间理论简介
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-22 18:53:42 / 修改时间：21:30:21" itemprop="dateCreated datePublished" datetime="2019-06-22T18:53:42+08:00">2019-06-22</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>尺度空间理论最早可以追溯到1962年的T.Iijima最先提出，学术界开始关注尺度空间技术主要在1986年IEEE PAMI上同时刊出的4篇关于尺度空间理论的文章奠定了发展基础。</p>
+<p>现实世界中物体只有具备一定的尺度才能够倍人眼所察觉，计算机视觉学术研究就是在不断的尝试与突破来模拟人眼的观察方法。因此，尺度空间就是试图在图像领域中模拟人眼观察物体的概念与方法。</p>
+<h1 id="尺度空间理论"><a href="#尺度空间理论" class="headerlink" title="尺度空间理论"></a>尺度空间理论</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>图像的尺度空间是指图像的模糊程度，而非图像的大小。近距离看一个物体和远距离看一个物体，模糊程度是不一样的；从近到远，图像越来越模糊的过程，也是图像的尺度越来越大的过程。</p>
+<h2 id="尺度空间的作用"><a href="#尺度空间的作用" class="headerlink" title="尺度空间的作用"></a>尺度空间的作用</h2><ul>
+<li><p>用计算机视觉系统分析未知场景时，计算机并不预先知道图像中物体的尺度。需要同时考虑图像在多尺度下的描述，获知感兴趣物体的最佳尺度；</p>
+</li>
+<li><p>不同的尺度下都有同样的关键点，那么在不同的尺度的输入图像下就都可以检测出来关键点匹配，也就是尺度不变性；</p>
+</li>
+</ul>
+<h2 id="尺度空间的应用"><a href="#尺度空间的应用" class="headerlink" title="尺度空间的应用"></a>尺度空间的应用</h2><ul>
+<li>David G. Lowe教授基于描述数字图像局部特征的尺度空间概念，于1999年提出尺度不变特征变换算法（Scale-invariant feature transform，SIFT）；</li>
+<li>在信息获取与处理、建筑、城市学等不同学科中，都有类似的概念，或有借用尺度空间的概念与方法的可能；</li>
+</ul>
+<h1 id="尺度不变特征转换"><a href="#尺度不变特征转换" class="headerlink" title="尺度不变特征转换"></a>尺度不变特征转换</h1><p>尺度不变特征转换(Scale-invariant feature transform 或 SIFT)是一种机器视觉的算法用来侦测与描述影像中的局部性特征，它在空间尺度中寻找极值点，并提取出其位置、尺度、旋转不变数，此算法由 David Lowe 在1999年所发表，2004年完善总结。 [1] 后续的论文中也有许多基于 SIFT 改进的论文，例如 SURF 将 SIFT 的许多过程近似，达到加速的效果；PCA-SIFT利用主成分分析降低描述子的维度，减少内存的使用并加快配对速度。</p>
+<p>其应用范围包含物体辨识、机器人地图感知与导航、影像缝合、3D模型建立、手势辨识、影像追踪和动作比对。</p>
+<p>此算法有其专利，专利拥有者为 英属哥伦比亚大学。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/Small_Munich/article/details/79968229" target="_blank" rel="noopener">SIFT算法系列之尺度空间</a>,by small_munich.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%B0%BA%E5%BA%A6%E4%B8%8D%E8%AE%8A%E7%89%B9%E5%BE%B5%E8%BD%89%E6%8F%9B" target="_blank" rel="noopener">尺度不变特征转换</a>,by wikipedia.</li>
+<li><a href="https://www.cnblogs.com/ronny/p/3886013.html" target="_blank" rel="noopener">尺度空间理论</a>,by ☆Ronny丶.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/48594812" target="_blank" rel="noopener">特征点检测一</a>,by 张帅宾.</li>
+<li><a href="http://zhaoxuhui.top/blog/2018/01/29/ORB%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96-%E5%8C%B9%E9%85%8D%E5%8F%8A%E5%AE%9E%E7%8E%B0.html" target="_blank" rel="noopener">ORB特征提取、匹配及实现</a>,by zhaoxuhui.</li>
+<li><a href="https://senitco.github.io/2017/07/05/image-feature-brief/" target="_blank" rel="noopener">图像特征描述子之BRIEF</a>,by Senit_Co.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/16/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%BA%94%E5%A4%A7%E5%8E%9F%E5%88%99SOLID/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1827,383 +2180,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/04/%E6%B1%82%E8%A7%A3%E5%B0%84%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E4%BA%A4%E7%82%B9%E7%9A%84%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/04/%E6%B1%82%E8%A7%A3%E5%B0%84%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E4%BA%A4%E7%82%B9%E7%9A%84%E7%AE%97%E6%B3%95/" itemprop="url">
-                  求解射线与三角形交点的算法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-04 19:46:52 / 修改时间：23:21:13" itemprop="dateCreated datePublished" datetime="2019-06-04T19:46:52+08:00">2019-06-04</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>求解射线与三角形的交点，在光线追踪、碰撞检测、目标拾取等场景中经常使用，是计算机图形学中最基本的操作。下面介绍常用的求解射线与三角形交点的算法。</p>
-<h1 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h1><p>求解射线与三角形交点示意图如图1所示。</p>
-<p align="center" style="display: flex;">
-    <img src="images/rayInterSection1.png" width="40%" alt="求解射线与三角形交点示意图"/>
-    <img src="images/rayInterSection2.png" width="40%" alt="求解射线与三角形交点示意图"/>
-</p>
-<center>图1  求解射线与三角形交点示意图</center>
-
-<p>射线的参数方程如下，其中O是射线的起点，D是射线的方向，t是常数。</p>
-<p>$$O+Dt$$</p>
-<p>该方程的含义是一个点从起点O开始，沿着方向D移动任意长度，得到终点R，根据t值的不同，得到的R值也不同，所有这些不同的R值便构成了整条射线，比如下面的射线，起点是P0，方向是u，p0 + tu也就构成了整条射线。</p>
-<p align="center">
-    <img src="images/ray.jpeg" width="50%" alt="射线方程示意图"/>
-</p>
-<center>图2  射线方程示意图</center>
-
-<p>三角形的参数方程如下，其中$V_0$，$V_1$和$V_2$是三角形的三个点，$u, v$是$V_1$和$V_2$的权重，$1-u-v$是$V_0$的权重，并且满足$u&gt;=0, v &gt;= 0,u+v&lt;=1$。</p>
-<p>$$(1-u-v)V_0+uV_1+vV_2$$</p>
-<p align="center">
-    <img src="images/triangle.png" width="50%" alt="三角形方程示意图"/>
-</p>
-<center>图3  三角形方程示意图</center>
-
-
-<h1 id="直观方法"><a href="#直观方法" class="headerlink" title="直观方法"></a>直观方法</h1><p>求解射线与三角形的交点最直观的方法如下：</p>
-<ol>
-<li>判断射线是否与平面相交</li>
-<li>判断点是否在三角形内</li>
-</ol>
-<p>但该方法需要额外计算三角形所在平面，效率不高。</p>
-<h1 id="Moller-Trumbore方法-Journal-of-Graphic-Tools-1997"><a href="#Moller-Trumbore方法-Journal-of-Graphic-Tools-1997" class="headerlink" title="Moller-Trumbore方法(Journal of Graphic Tools, 1997)"></a>Moller-Trumbore方法(Journal of Graphic Tools, 1997)</h1><p>Moller-Trumbore方法中，求射线与三角形的交点即求解如下方程:</p>
-<p>$$O+Dt=(1-u-v)V_0+uV_1+vV_2$$</p>
-<p>其中t,u,v是未知数，其他都是已知的。</p>
-<p>移项并整理，将t,u,v提取出来作为未知数，得到下面的线性方程组：</p>
-<p>$$\begin{bmatrix}<br>    -D&amp; V_1-V_0 &amp;V_2-V_0<br>\end{bmatrix}\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}=O-V_0$$</p>
-<p>现在开始解这个方程组，这里要用到两个知识点，一是克莱姆法则，二是向量的混合积。</p>
-<p>令$E_1 = V_1 - V_0，E_2 = V_2 - V_0，T = O - V_0$上式可以改写成:</p>
-<p>$$\begin{bmatrix}<br>    -D&amp; E_1 &amp; E_2<br>\end{bmatrix}\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}=T$$</p>
-<p>根据克莱姆法则，可得到t,u,v的解为：</p>
-<p>$$<br>\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}<br>=\frac{1}{\begin{vmatrix}<br>    -D &amp; E_1 &amp; E_2<br>\end{vmatrix} }<br>\begin{vmatrix}<br>    T&amp;E_1&amp;E_2\<br>    -D&amp; T&amp; E_2\<br>    -D &amp; E_1&amp; T<br>\end{vmatrix}<br>$$</p>
-<p>根据混合积公式:</p>
-<p>$$\begin{vmatrix}<br>    a&amp;b&amp;c<br>\end{vmatrix}<br>=a\times{b}\cdot{c}$$</p>
-<p>上式改写为：</p>
-<p>$$<br>\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}<br>=\frac{1}{\begin{bmatrix}<br>    -D \times E_2 \cdot E_1<br>\end{bmatrix} }<br>\begin{vmatrix}<br>    T \times E_1 \cdot E_2\<br>    D \times E_2 \cdot T\<br>    T \times E_1 \cdot D<br>\end{vmatrix}<br>$$</p>
-<p>令$P=D \times E_2$，$Q=T \times E_1$，得到最终的公式:</p>
-<p>$$\begin{bmatrix}<br>    t\u\v<br>\end{bmatrix}<br>=\frac{1}{\begin{bmatrix}<br>    P \cdot E_1<br>\end{bmatrix} }<br>\begin{vmatrix}<br>    Q \cdot E_2\<br>    P \cdot T\<br>    Q \cdot D<br>\end{vmatrix}<br>$$</p>
-<p>之所以提炼出P和Q是为了避免重复计算。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.cnblogs.com/graphics/archive/2010/08/09/1795348.html" target="_blank" rel="noopener">射线和三角形的相交检测（ray triangle intersection test）</a>,by zdd.</li>
-<li><a href="http://pkuwwt.github.io/scholarship/2014-04-03-ray-triangle-intersection-tests-for-dummies/" target="_blank" rel="noopener">光线-三角形求交测试算法[译]</a>, by PKUWWT.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E5%85%8B%E8%90%8A%E5%A7%86%E6%B3%95%E5%89%87" target="_blank" rel="noopener">克莱姆法则</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E4%B8%89%E9%87%8D%E7%A7%AF" target="_blank" rel="noopener">混合积</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E9%87%8D%E5%BF%83%E5%9D%90%E6%A0%87" target="_blank" rel="noopener">重心坐标</a>,by wikipedia.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/58199366" target="_blank" rel="noopener">重心坐标（Barycentric coordinates）</a>,by 杨超.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/04/PLY%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/04/PLY%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/" itemprop="url">
-                  PLY文件格式分析
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-04 19:20:26 / 修改时间：19:42:40" itemprop="dateCreated datePublished" datetime="2019-06-04T19:20:26+08:00">2019-06-04</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>PLY文件是一种存储3D模型的文件格式，全名为多边形档案（Polygon File Format）或 史丹佛三角形档案（Stanford Triangle Format）。</p>
-<p>该格式主要用以储存立体扫描结果的三维数值，透过多边形片面的集合描述三维物体，与其他格式相较之下这是较为简单的方法。它可以储存的资讯包含颜色、透明度、表面法向量、材质座标与资料可信度，并能对多边形的正反两面设定不同的属性。</p>
-<p>在档案内容的储存上PLY有两种版本，分别是纯文字（ASCII）版本与二元码（binary）版本，其差异在储存时是否以ASCII编码表示元素资讯。</p>
-<p>通过分析PLY文件格式，我们可以进而初窥存储3D模型的文件奥秘。</p>
-<h1 id="文件格式"><a href="#文件格式" class="headerlink" title="文件格式"></a>文件格式</h1><p>各种文件格式通常分成文件头和文件内容，PLY格式也不例外。</p>
-<p>每个PLY档都包含档头（header），用以设定网格模型的“元素”与“属性”，以及在档头下方接着一连串的元素“数值资料”。一般而言，网格模型的“元素”就是顶点（vertices）、面（faces），另外还可能包含有边（edges）、深度图样本（samples of range maps）与三角带（triangle strips）等元素。无论是纯文字与二元码的PLY档，档头资讯都是以ASCII编码编写，接续其后的数值资料才有编码之分。</p>
-<p>PLY档案以此行作为开头，以识别PLY格式：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ply</span><br></pre></td></tr></table></figure>
-
-<p>接着第二行是版本资讯，目前有三种写法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">format ascii 1.0</span><br><span class="line">format binary_little_endian 1.0</span><br><span class="line">format binary_big_endian 1.0</span><br></pre></td></tr></table></figure>
-
-<p>其中ascii, binary_little_endian, binary_big_endian是档案储存的编码方式，而1.0是遵循的标准版本（现阶段仅有PLY 1.0版）。在档头中可使用’comment’作为一行的开头以编写注解，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">comment This is a comment!</span><br></pre></td></tr></table></figure>
-
-<p>描述元素及属性，必须使用’element’及’property’的关键字，一般的格式为element下方接着属性列表，例如:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">element &lt;element name&gt; &lt;number in file&gt;</span><br><span class="line">property &lt;data_type&gt; &lt;property name 1&gt;</span><br><span class="line">property &lt;data_type&gt; &lt;property name 2&gt;</span><br><span class="line">property &lt;data_type&gt; &lt;property name 3&gt;</span><br></pre></td></tr></table></figure>
-
-<p>‘property’不仅定义了资料的型态，其出现顺序亦定义了资料的顺序。内定的资料形态有两种写法：一种是char uchar short ushort int uint float double,另外一种是具有位元长度的int8 uint8 int16 uint16 int32 uint32 float32 float64。 例如，描述一个包含12个顶点的物体，每个顶点使用3个单精度浮点数 (x,y,z）代表点的座标，使用3个unsigned char代表顶点颜色，颜色顺序为 (B, G, R),则档头的写法为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">element vertex 12</span><br><span class="line">property float x</span><br><span class="line">property float y</span><br><span class="line">property float z</span><br><span class="line">property uchar blue</span><br><span class="line">property uchar green</span><br><span class="line">property uchar red</span><br></pre></td></tr></table></figure>
-
-<p>其中vertex是内定的元素类型，接续的6行property描述构成vertex元素的数值字段顺序代表的意义，及其资料形态。</p>
-<p>另一个常使用的元素是面。由于一个面是由3个以上的顶点所组成，因此使用一个“顶点列表”即可描述一个面, PLY格式使用一个特殊关键字’property list’定义之。 例如，一个具有10个面的物体，其PLY档头可能包含：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">element face 10</span><br><span class="line">property list uchar int vertex_indices</span><br></pre></td></tr></table></figure>
-
-<p>‘property list’表示该元素face的特性是由一行的顶点列表来描述。列表开头以uchar型态的数值表示列表的项目数，后面接着资料型态为int的顶点索引值（vertex_indices），顶点索引值从0开始。</p>
-<p>最后，标头必须以此行结尾：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">end_header</span><br></pre></td></tr></table></figure>
-
-<p>档头后接着的是元素资料（端点座标、拓朴连结等）。在ASCII格式中各个端点与面的资讯都是以独立的一行描述，而二元编码格式则连续储存这些资料，载入时须以’element’定义的元素数目以及’property’中设定的资料形态计算各笔字段的长度。</p>
-<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>一个典型的PLY文件结构分成三部分：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">文件头 (从ply开始到end_header）</span><br><span class="line">顶点元素列表</span><br><span class="line">面元素列表</span><br></pre></td></tr></table></figure>
-
-<p>其中的顶点元素列表一般以x y z方式排列，形态如文件头所定义；而面元素列表是以下列格式表示。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;组成面的端点數N&gt; &lt;端点#1的索引&gt; &lt;端点#2的索引&gt; ... &lt;端点#N的索引&gt;</span><br></pre></td></tr></table></figure>
-
-<p>以存储一个立方体模型的PLY文件为例，其内容为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">ply</span><br><span class="line">format ascii 1.0</span><br><span class="line">comment made by anonymous</span><br><span class="line">comment this file is a cube</span><br><span class="line">element vertex 8</span><br><span class="line">property float32 x</span><br><span class="line">property float32 y</span><br><span class="line">property float32 z</span><br><span class="line">element face 12</span><br><span class="line">property list uint8 int32 vertex_index</span><br><span class="line">end_header</span><br><span class="line">0 0 0</span><br><span class="line">0 25.8 0</span><br><span class="line">18.9 0 0</span><br><span class="line">18.9 25.8 0</span><br><span class="line">0 0 7.5</span><br><span class="line">0 25.8 7.5</span><br><span class="line">18.9 0 7.5</span><br><span class="line">18.9 25.8 7.5</span><br><span class="line">3 5 1 0</span><br><span class="line">3 5 4 0</span><br><span class="line">3 4 0 2</span><br><span class="line">3 4 6 2</span><br><span class="line">3 7 5 4</span><br><span class="line">3 7 6 4</span><br><span class="line">3 3 2 1</span><br><span class="line">3 1 2 0</span><br><span class="line">3 5 7 1</span><br><span class="line">3 7 1 3</span><br><span class="line">3 7 6 3</span><br><span class="line">3 6 3 2</span><br></pre></td></tr></table></figure>
-
-<p>PLY文件可用blender软件打开。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/PLY" target="_blank" rel="noopener">PLY</a>,by wikipedia.</li>
-<li><a href="https://blog.csdn.net/sinat_20530977/article/details/44805107" target="_blank" rel="noopener">Opengl学习笔记：（一）.Ply文件文件格式和文件读取</a>,by  为何走到这里.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2251,7 +2227,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">441</span>
+                    <span class="site-state-item-count">443</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2972,11 +2948,11 @@
       
     
       
+    
+      
+    
+      
         
-      
-    
-      
-    
       
     
   

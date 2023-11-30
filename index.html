@@ -314,6 +314,175 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/11/30/QT%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6%E5%8F%8A%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2023/11/30/QT%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6%E5%8F%8A%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/" itemprop="url">
+                  QT自定义控件及使用方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2023-11-30 17:56:06 / 修改时间：21:13:54" itemprop="dateCreated datePublished" datetime="2023-11-30T17:56:06+08:00">2023-11-30</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Qt自带控件有时候不满足个性化的需求，需要自定义控件。如果自定义控件比较通用，最好在QT Designer下显示，以方便使用。最后介绍在Qt Creator中测试验证自定义控件。</p>
+<h1 id="Qt-Creator编写自定义控件"><a href="#Qt-Creator编写自定义控件" class="headerlink" title="Qt Creator编写自定义控件"></a>Qt Creator编写自定义控件</h1><p>在Qt Creator编写自定义控件可使用 “Qt4 设计师自定义控件” 模板工程，具体可参考：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/17e8e2a275f6" target="_blank" rel="noopener">Qt创建Qt Designer自定义控件及使用</a></li>
+</ul>
+<p>需要注意的是：</p>
+<ul>
+<li>自定义控件的编译器应选择与编译生成Qt Creater应用的编译器相同。例如：在Windows平台，一般使用MSVC 32位编译器。当然可以不一定完全相同，例如MSVC 2015 32位编译器和MSVC 2017 32位编译器编译的自定义控件DLL可以通用。</li>
+<li>自定义控件类的声明中不需要使用 QDESIGNER_WIDGET_EXPORT 导出宏，否则后面使用自定义控件时将报错。 </li>
+</ul>
+<h1 id="Qt-Designer显示自定义控件"><a href="#Qt-Designer显示自定义控件" class="headerlink" title="Qt Designer显示自定义控件"></a>Qt Designer显示自定义控件</h1><p>自定义控件编译链接后的Release目录中，将产生自定义控件的dll，将该dll拷贝至Qt Creator的插件目录，例如：</p>
+<ul>
+<li>D:\Qt\Qt5.12.0\Tools\QtCreator\bin\plugins\designer</li>
+</ul>
+<p>之后重启Qt Creator，创建Qt Widgets Application，打开Qt Designer，在其自定义窗口部件中即可发现自定义控件的图标。此外还需将自定义控件的头文件放到编译器的include目录，以msvc为例：</p>
+<ul>
+<li>D:\Qt\Qt5.12.0\5.12.0\msvc2017\include\MyLabel\mylabel.h</li>
+</ul>
+<h1 id="Qt-Creator测试自定义控件"><a href="#Qt-Creator测试自定义控件" class="headerlink" title="Qt Creator测试自定义控件"></a>Qt Creator测试自定义控件</h1><p>打开Qt Creator，创建Qt Widgets Application 应用，打开Qt Designer，使用自定义控件，然后编译链接，将报如下错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mainwindow.obj:-1: error: LNK2019: 无法解析的外部符号 &quot;public: __thiscall MyLabel::MyLabel(class QWidget *)&quot; (??0MyLabel@@QAE@PAVQWidget@@@Z)，该符号在函数 &quot;public: void __thiscall Ui_MainWindow::setupUi(class QMainWindow *)&quot; (?setupUi@Ui_MainWindow@@QAEXPAVQMainWindow@@@Z) 中被引用</span><br></pre></td></tr></table></figure>
+
+<p>其原因是没有将自定义控件包含到测试自定义控件的工程中。</p>
+<ul>
+<li>拷贝mylabel.h、mylabel.cpp、mylabel.pri到新建工程目录下，在新建工程pro文件中添加include(mylabel.pri)</li>
+<li>右键工程清除、执行qmake、重新构建应该就解决该编译链接错误了</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.jianshu.com/p/17e8e2a275f6" target="_blank" rel="noopener">Qt创建Qt Designer自定义控件及使用</a>,by BrokenRainK.</li>
+<li><a href="https://www.cnblogs.com/dingc-jc/p/9969658.html" target="_blank" rel="noopener">Qt Designer 插件测试报错问题</a>,by  翻滚的雪球.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/11/14/%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B8%88%E6%95%99%E7%A8%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1829,162 +1998,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/08/16/Python%E4%BB%8EPE%E6%96%87%E4%BB%B6%E4%B8%AD%E5%AF%BC%E5%87%BA%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2023/08/16/Python%E4%BB%8EPE%E6%96%87%E4%BB%B6%E4%B8%AD%E5%AF%BC%E5%87%BA%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6/" itemprop="url">
-                  Python从PE文件中导出资源文件
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2023-08-16 12:39:03 / 修改时间：22:35:47" itemprop="dateCreated datePublished" datetime="2023-08-16T12:39:03+08:00">2023-08-16</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近需要修改一个QT编写的应用，就是将资源图片修改一下，但是资源图片被打包到DLL的.rdata段中，无法直接导出，于是想通过Python直接读取导出，然后定位需要修改图片的位置。具体代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding:utf-8 -*-</span><br><span class="line"> </span><br><span class="line">import os,sys,re</span><br><span class="line"> </span><br><span class="line">def find_all_pos(filename,feature):</span><br><span class="line">    &quot;&quot;&quot;打开二进制文件，搜索指定特征的位置，并返回所有位置的列表</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    with open(filename, &#39;rb&#39;) as binFile:</span><br><span class="line">        binFileStr &#x3D; binFile.read()</span><br><span class="line">        posArray &#x3D; [m.start() for m in re.finditer(feature, binFileStr)]</span><br><span class="line">        return posArray</span><br><span class="line"></span><br><span class="line">def export_all_png(filename,posArray):</span><br><span class="line">    &quot;&quot;&quot;打开二进制文件，根据特征位置数组，导出所有的PNG文件</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    with open(filename, &#39;rb&#39;) as binFile:    </span><br><span class="line">        for i in range(len(posArray)-1):</span><br><span class="line">            pngLen &#x3D; posArray[i+1] - posArray[i]</span><br><span class="line">            # print(pngLen)</span><br><span class="line">            binFile.seek(posArray[i])</span><br><span class="line">            pngFileBin &#x3D; binFile.read(pngLen)</span><br><span class="line">            pngFile &#x3D; open(&quot;res\\&quot;+str(i)+&quot;.png&quot;, &quot;wb&quot;)</span><br><span class="line">            pngFile.write(pngFileBin)</span><br><span class="line"> </span><br><span class="line">if __name__ &#x3D;&#x3D; &quot;__main__&quot;:</span><br><span class="line">    for path in sys.argv[1:]:</span><br><span class="line">        if os.path.isfile(path):</span><br><span class="line">            posArray &#x3D; find_all_pos(path,b&quot;\x89\x50\x4E\x47\x0D\x0A\x1A\x0A&quot;)</span><br><span class="line">            # 位置数组应该大于1</span><br><span class="line">            if(len(posArray)&gt;1):</span><br><span class="line">                # print(posArray)</span><br><span class="line">                if(os.path.exists(&quot;res&quot;)&#x3D;&#x3D;False):</span><br><span class="line">                    os.makedirs(&quot;res&quot;) </span><br><span class="line">                pngList&#x3D;&quot;&quot;</span><br><span class="line">                for i in range(len(posArray)):</span><br><span class="line">                    pngList &#x3D; pngList + str(i) + &quot;,0x%x&quot;%posArray[i] +&quot;\n&quot;</span><br><span class="line">                # 保存图片位置信息</span><br><span class="line">                pngFileMeta &#x3D; open(&quot;res\\pnglistpos.csv&quot;, &quot;w&quot;)</span><br><span class="line">                pngFileMeta.write(pngList)</span><br><span class="line"></span><br><span class="line">                export_all_png(path,posArray)</span><br></pre></td></tr></table></figure>
-
-<p>运行时采用如下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python -m venv env</span><br><span class="line">.\env\Scripts\activate</span><br><span class="line">python utf8_to_gbk.py filepath</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.freebuf.com/articles/others-articles/265879.html" target="_blank" rel="noopener">PNG文件格式详解</a>,by oriole.</li>
-<li><a href="https://blog.csdn.net/xjp_xujiping/article/details/88936960" target="_blank" rel="noopener">Python输出列表list</a>,by huang_0430.</li>
-<li><a href="https://blog.csdn.net/MuWinter/article/details/77215768" target="_blank" rel="noopener">python创建目录（文件夹)</a>,by FanWinter.</li>
-<li><a href="https://blog.csdn.net/wowocpp/article/details/79379342" target="_blank" rel="noopener">python 数字 十六进制 打印</a>,by wowocpp.</li>
-<li><a href="https://developer.aliyun.com/article/889827" target="_blank" rel="noopener">python文件的打开、读取、关闭、写入与二进制文件的读写操作</a>,by aliyun.</li>
-<li><a href="https://stackoverflow.com/questions/4664850/how-to-find-all-occurrences-of-a-substring" target="_blank" rel="noopener">How to find all occurrences of a substring?</a>,by stackoverflow.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/54581546" target="_blank" rel="noopener">如何逆向解决QT程序汉化中的乱码问题-干货</a>,by 葫芦娃很厉害.</li>
-<li><a href="https://bbs.kanxue.com/thread-28321.htm" target="_blank" rel="noopener">如何汉化一个软件</a>,by CCDebuger.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/60457016" target="_blank" rel="noopener">Qt 资源系统（Qt Resource System）</a>,by 南理汉子.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2032,7 +2045,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">443</span>
+                    <span class="site-state-item-count">444</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

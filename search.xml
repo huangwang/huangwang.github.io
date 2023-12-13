@@ -4974,6 +4974,26 @@
     <url>/2020/05/24/Matlab%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/</url>
     <content><![CDATA[<p>本文梳理记录Matlab的基本知识，为Simulink仿真打下基础。</p>
 <h1 id="矩阵和数组"><a href="#矩阵和数组" class="headerlink" title="矩阵和数组"></a>矩阵和数组</h1><p>矩阵和数组是 MATLAB® 中信息和数据的基本表示形式。</p>
+<h2 id="数组元素选取"><a href="#数组元素选取" class="headerlink" title="数组元素选取"></a>数组元素选取</h2><ul>
+<li>应用单个条件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">rng default</span><br><span class="line">A &#x3D; randi(15,5)</span><br><span class="line"></span><br><span class="line">A &#x3D; 5×5</span><br><span class="line"></span><br><span class="line">    13     2     3     3    10</span><br><span class="line">    14     5    15     7     1</span><br><span class="line">     2     9    15    14    13</span><br><span class="line">    14    15     8    12    15</span><br><span class="line">    10    15    13    15    11</span><br><span class="line"></span><br><span class="line">B &#x3D; A &lt; 9</span><br><span class="line"></span><br><span class="line">B &#x3D; 5x5 logical array</span><br><span class="line"></span><br><span class="line">   0   1   1   1   0</span><br><span class="line">   0   1   0   1   1</span><br><span class="line">   1   0   0   0   0</span><br><span class="line">   0   0   1   0   0</span><br><span class="line">   0   0   0   0   0</span><br><span class="line"></span><br><span class="line">A(B)</span><br><span class="line"></span><br><span class="line">ans &#x3D; 8×1</span><br><span class="line"></span><br><span class="line">     2</span><br><span class="line">     2</span><br><span class="line">     5</span><br><span class="line">     3</span><br><span class="line">     8</span><br><span class="line">     3</span><br><span class="line">     7</span><br><span class="line">     1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>应用多个条件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">A(A&lt;9 &amp; A&gt;2)</span><br><span class="line"></span><br><span class="line">ans &#x3D; 5×1</span><br><span class="line"></span><br><span class="line">     5</span><br><span class="line">     3</span><br><span class="line">     8</span><br><span class="line">     3</span><br><span class="line">     7</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>替换符合条件的值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">A(A&gt;10) &#x3D; 10</span><br><span class="line"></span><br><span class="line">A &#x3D; 5×5</span><br><span class="line"></span><br><span class="line">    10     2     3     3    10</span><br><span class="line">    10     5    10     7     1</span><br><span class="line">     2     9    10    10    10</span><br><span class="line">    10    10     8    10    10</span><br><span class="line">    10    10    10    10    10</span><br></pre></td></tr></table></figure>
+
+<h2 id="删除数组元素"><a href="#删除数组元素" class="headerlink" title="删除数组元素"></a>删除数组元素</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">A &#x3D; [1 2 3 4 5];</span><br><span class="line">A(3) &#x3D; [];  % 删除第三个元素</span><br></pre></td></tr></table></figure>
+
+<p>这样，数组 A 中的第三个元素就被删除了，它的值从 3 变成了 4。注意，这个操作会改变原始数组 A 的大小和内容，因此需要谨慎使用。</p>
+<h2 id="添加数组元素"><a href="#添加数组元素" class="headerlink" title="添加数组元素"></a>添加数组元素</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 方法一</span><br><span class="line">A&#x3D;[A;2]</span><br><span class="line"></span><br><span class="line"># 方法二</span><br><span class="line">A&#x3D;[];</span><br><span class="line">A(1)&#x3D;2;</span><br><span class="line">A(2)&#x3D;3;</span><br></pre></td></tr></table></figure>
+
 <h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><ul>
 <li>数值类型</li>
 </ul>
@@ -4982,10 +5002,18 @@
 <li>字符和字符串</li>
 </ul>
 <p>字符数组和字符串数组用于存储 MATLAB® 中的文本数据。</p>
+<p>字符串拼接是常用操作，通常有三种方法，请参考：</p>
 <ul>
-<li>日期时间</li>
+<li><p><a href="https://blog.csdn.net/qing101hua/article/details/78425854" target="_blank" rel="noopener">matlab 字符串拼接的3个方式:[]、strcat、sprintf</a></p>
+</li>
+<li><p>日期时间</p>
+</li>
 </ul>
 <p>日期时间数据类型 datetime、duration 和 calendarDuration 支持高效的日期时间计算、比较以及格式化显示方式。</p>
+<p><strong>使用duration时要注意跨 24:00:00 的问题</strong>。 </p>
+<p>日期转字符串主要使用datestr函数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">t &#x3D; [datetime(&#39;now&#39;);datetime(&#39;tomorrow&#39;)]</span><br><span class="line">DateString &#x3D; datestr(t)</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>分类数组</li>
 </ul>
@@ -5036,6 +5064,9 @@
 <ul>
 <li><a href="https://zhuanlan.zhihu.com/p/476664237" target="_blank" rel="noopener">MATLAB App Designer如何打包EXE安装程序</a></li>
 </ul>
+<h1 id="Matlab函数设计"><a href="#Matlab函数设计" class="headerlink" title="Matlab函数设计"></a>Matlab函数设计</h1><p>函数的输入输出参数应该有明确的含义，最好通过参数名称即可识别。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function y &#x3D; square(x)</span><br><span class="line">%</span><br><span class="line">%  calculate the square of the given number &#39;x&#39;</span><br><span class="line">%  </span><br><span class="line">%  Arguments:</span><br><span class="line">%  </span><br><span class="line">%       x           (input)   value to be squared</span><br><span class="line">%</span><br><span class="line">%       y           (output)  the result of the square</span><br><span class="line">%       </span><br><span class="line"></span><br><span class="line">  y &#x3D; x*x;</span><br><span class="line"></span><br><span class="line">% end of square function</span><br></pre></td></tr></table></figure>
+
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://blog.csdn.net/u013303743/article/details/48134795" target="_blank" rel="noopener">【Matlab学习笔记】（六）基本数据结构（矩阵定义方法）</a>,by 末树之墨.</li>
 <li><a href="https://cloud.tencent.com/developer/ask/81165" target="_blank" rel="noopener">MATLAB中是否有“队列”？</a>,by tencent.</li>
@@ -5045,6 +5076,8 @@
 <li><a href="https://ww2.mathworks.cn/help/matlab/creating_guis/create-a-simple-app-or-gui-using-app-designer.html" target="_blank" rel="noopener">使用 App 设计工具创建并运行简单 App</a>,by mathworks.</li>
 <li><a href="https://zhuanlan.zhihu.com/p/476664237" target="_blank" rel="noopener">MATLAB App Designer如何打包EXE安装程序</a>,by 阿Q在江湖.</li>
 <li><a href="https://ww2.mathworks.cn/help/matlab/data-types.html" target="_blank" rel="noopener">MATLAB 数据类型</a>,by mathwork.</li>
+<li><a href="https://blog.csdn.net/qing101hua/article/details/78425854" target="_blank" rel="noopener">matlab 字符串拼接的3个方式:[]、strcat、sprintf</a>,by qing101hua.</li>
+<li><a href="https://www.mathworks.com/help/matlab/matlab_prog/find-array-elements-that-meet-a-condition_zh_CN.html" target="_blank" rel="noopener">查找符合条件的数组元素</a>,by mathworks.</li>
 </ol>
 ]]></content>
       <tags>
@@ -19444,7 +19477,7 @@ console.log(y);</code></pre></li>
 <p>需要注意的是：</p>
 <ul>
 <li>自定义控件的编译器应选择与编译生成Qt Creater应用的编译器相同。例如：在Windows平台，一般使用MSVC 32位编译器。当然可以不一定完全相同，例如MSVC 2015 32位编译器和MSVC 2017 32位编译器编译的自定义控件DLL可以通用。</li>
-<li>自定义控件类的声明中不需要使用 QDESIGNER_WIDGET_EXPORT 导出宏，否则后面使用自定义控件时将报错。 </li>
+<li>自定义控件类的声明中不需要使用 QDESIGNER_WIDGET_EXPORT 导出宏，否则后面使用自定义控件时将报错。</li>
 </ul>
 <h1 id="Qt-Designer显示自定义控件"><a href="#Qt-Designer显示自定义控件" class="headerlink" title="Qt Designer显示自定义控件"></a>Qt Designer显示自定义控件</h1><p>自定义控件编译链接后的Release目录中，将产生自定义控件的dll，将该dll拷贝至Qt Creator的插件目录，例如：</p>
 <ul>

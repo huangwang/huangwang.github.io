@@ -314,6 +314,369 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/08/10/%E7%BD%91%E9%A1%B5%E5%B8%83%E5%B1%80%E6%96%B9%E6%B3%95%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/10/%E7%BD%91%E9%A1%B5%E5%B8%83%E5%B1%80%E6%96%B9%E6%B3%95%E5%85%A5%E9%97%A8/" itemprop="url">
+                  网页布局方法入门
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-10 08:56:46" itemprop="dateCreated datePublished" datetime="2019-08-10T08:56:46+08:00">2019-08-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-01-13 22:12:08" itemprop="dateModified" datetime="2023-01-13T22:12:08+08:00">2023-01-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>使用CSS对网页布局进行设计是前端工程师的重要工作。下面即介绍各种CSS网页布局的方法，以及相应的技术。</p>
+<h1 id="居中方法"><a href="#居中方法" class="headerlink" title="居中方法"></a>居中方法</h1><p>居中在布局中很常见，假设DOM文档结构如下，子元素要在父元素中居中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class&#x3D;&quot;parent&quot;&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;child&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="水平居中"><a href="#水平居中" class="headerlink" title="水平居中"></a>水平居中</h2><p>子元素为行内元素还是块状元素，宽度一定还是宽度未定，采取的布局方案不同。以下即根据子元素的类型给出对应水平居中方法：</p>
+<ul>
+<li><strong>行内元素</strong>：对父元素设置text-align:center;</li>
+<li><strong>定宽块状元素</strong>: 设置左右margin值为auto;</li>
+<li><strong>不定宽块状元素</strong>: 设置子元素为display:inline,然后在父元素上设置text-align:center;</li>
+<li><strong>通用方案</strong>: flex布局，对父元素设置display:flex;justify-content:center;</li>
+</ul>
+<h2 id="垂直居中"><a href="#垂直居中" class="headerlink" title="垂直居中"></a>垂直居中</h2><p>垂直居中对于子元素是单行内联文本、多行内联文本以及块状元素采用的方案是不同的。具体方法如下：</p>
+<ul>
+<li><strong>父元素一定，子元素为单行内联文本</strong>：设置父元素的height等于行高line-height</li>
+<li><strong>父元素一定，子元素为多行内联文本</strong>：设置父元素的display:table-cell或inline-block，再设置vertical-align:middle;</li>
+<li><strong>块状元素</strong>:设置子元素position:absolute 并设置top、bottom为0，父元素要设置定位为static以外的值，margin:auto;</li>
+</ul>
+<h1 id="单列布局"><a href="#单列布局" class="headerlink" title="单列布局"></a>单列布局</h1><p>单列布局如图1所示，可分成两种类型，有定宽、水平居中的特点。</p>
+<ul>
+<li>一种是header、content、footer宽度都相同，其一般不会占满浏览器的最宽宽度，但当浏览器宽度缩小低于其最大宽度时，宽度会自适应。</li>
+<li>一种是header、footer宽度为浏览器宽度，但content以及header和footer里的内容却不会占满浏览器宽度。</li>
+</ul>
+<p align="center">
+    <img src="images/layout1.png" width="60%" alt="单列布局的两种形式"/>
+</p>
+<center>图1 单列布局的两种形式</center>
+
+<p>对于第一种，对header、content、footer统一设置width或max-width，并通过margin:auto实现居中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class&#x3D;&quot;layout&quot;&gt;</span><br><span class="line">  &lt;div id&#x3D;&quot;header&quot;&gt;头部&lt;&#x2F;div&gt;</span><br><span class="line">  &lt;div id&#x3D;&quot;content&quot;&gt;内容&lt;&#x2F;div&gt;</span><br><span class="line">  &lt;div id&#x3D;&quot;footer&quot;&gt;尾部&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.layout&#123;</span><br><span class="line">  &#x2F;*   width: 960px; *&#x2F;&#x2F;*设置width当浏览器窗口宽度小于960px时，单列布局不会自适应。*&#x2F;</span><br><span class="line">    max-width: 960px;</span><br><span class="line">    margin: 0 auto;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于第二种，header、footer的内容宽度为100%，但header、footer的内容区以及content统一设置width 或 max-width，并通过margin:auto实现居中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id&#x3D;&quot;header&quot;&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;layout&quot;&gt;头部&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div id&#x3D;&quot;content&quot; class&#x3D;&quot;layout&quot;&gt;内容&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div id&#x3D;&quot;footer&quot;&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;layout&quot;&gt;尾部&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.layout&#123;</span><br><span class="line">  &#x2F;*   width: 960px; *&#x2F;&#x2F;*设置width当浏览器窗口宽度小于960px时，单列布局不会自适应。*&#x2F;</span><br><span class="line">    max-width: 960px;</span><br><span class="line">    margin: 0 auto;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="二列-amp-三列布局"><a href="#二列-amp-三列布局" class="headerlink" title="二列&amp;三列布局"></a>二列&amp;三列布局</h1><p><strong>二列布局的特征是侧栏固定宽度，主栏自适应宽度。三列布局的特征是两侧两列固定宽度，中间列自适应宽度。</strong> 之所以将二列布局和三列布局写在一起，是因为二列布局可以看做去掉一个侧栏的三列布局，其布局的思想有异曲同工之妙。</p>
+<p>对于传统的实现方法，主要讨论上图2中前三种布局，经典的带有侧栏的二栏布局以及带有左右侧栏的三栏布局。使用flex技术，可实现图2的五种布局。</p>
+<p align="center">
+    <img src="images/layout2.png" width="60%" alt="二列&三列布局"/>
+</p>
+<center>图2  二列&三列布局</center>
+
+<p>实现二列&amp;三列布局的CSS技术主要有：</p>
+<h2 id="float-margin"><a href="#float-margin" class="headerlink" title="float+margin"></a>float+margin</h2><p>原理说明：设置两个侧栏分别向左向右浮动，中间列通过外边距给两个侧栏腾出空间，中间列的宽度根据浏览器窗口自适应。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id&#x3D;&quot;content&quot;&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;sub&quot;&gt;sub&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;extra&quot;&gt;extra&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;main&quot;&gt;main&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">.sub&#123;</span><br><span class="line">    width: 100px;</span><br><span class="line">    float: left;</span><br><span class="line">&#125;</span><br><span class="line">.extra&#123;</span><br><span class="line">    width: 200px;</span><br><span class="line">    float: right;</span><br><span class="line">&#125;</span><br><span class="line">.main&#123;</span><br><span class="line">    margin-left: 100px; </span><br><span class="line">    margin-right: 200px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<ul>
+<li>DOM文档的书写顺序，先写两侧栏，再写主面板，更换后则侧栏会被挤到下一列（圣杯布局和双飞翼布局都会用到）。 　</li>
+<li>这种布局方式比较简单明了，但缺点是渲染时先渲染了侧边栏，而不是比较重要的主面板。</li>
+</ul>
+<h2 id="position-margin"><a href="#position-margin" class="headerlink" title="position+margin"></a>position+margin</h2><p>原理说明：通过绝对定位将两个侧栏固定，同样通过外边距给两个侧栏腾出空间，中间列自适应。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class&#x3D;&quot;sub&quot;&gt;left&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;main&quot;&gt;main&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;extra&quot;&gt;right&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">.sub, .extra &#123;</span><br><span class="line">    position: absolute;</span><br><span class="line">    top: 0; </span><br><span class="line">    width: 200px;</span><br><span class="line">&#125;</span><br><span class="line">.sub &#123; </span><br><span class="line">    left: 0;</span><br><span class="line">&#125;</span><br><span class="line">.extra &#123; </span><br><span class="line">    right: 0; </span><br><span class="line">&#125;</span><br><span class="line">.main &#123; </span><br><span class="line">    margin: 0 200px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<ul>
+<li>本方法不限制DOM书写顺序，先写主面板会使主面板部分优先渲染（一般主面板会比侧栏内容重要）。</li>
+<li>与上一种方法相比，本种方法是通过定位来实现侧栏的位置固定。</li>
+<li>如果中间栏含有最小宽度限制，或是含有宽度的内部元素，则浏览器窗口小到一定程度，主面板与侧栏会发生重叠。</li>
+</ul>
+<h2 id="圣杯布局-float-负margin"><a href="#圣杯布局-float-负margin" class="headerlink" title="圣杯布局(float + 负margin)"></a>圣杯布局(float + 负margin)</h2><p>原理说明：</p>
+<p>主面板设置宽度为100%，主面板与两个侧栏都设置浮动，常见为左浮动，这时两个侧栏会被主面板挤下去。通过负边距将浮动的侧栏拉上来，左侧栏的负边距为100%，刚好是窗口的宽度，因此会从主面板下面的左边跑到与主面板对齐的左边，右侧栏此时浮动在主面板下面的左边，设置负边距为负的自身宽度刚好浮动到主面板对齐的右边。为了避免侧栏遮挡主面板内容，在外层设置左右padding值为左右侧栏的宽度，给侧栏腾出空间，此时主面板的宽度减小。由于侧栏的负margin都是相对主面板的，两个侧栏并不会像我们理想中的停靠在左右两边，而是跟着缩小的主面板一起向中间靠拢。此时使用相对布局，调整两个侧栏到相应的位置。</p>
+<h2 id="双飞翼布局-float-负margin"><a href="#双飞翼布局-float-负margin" class="headerlink" title="双飞翼布局(float + 负margin )"></a>双飞翼布局(float + 负margin )</h2><p>原理说明：</p>
+<p>双飞翼布局和圣杯布局的思想有些相似，都利用了浮动和负边距，但双飞翼布局在圣杯布局上做了改进，在main元素上加了一层div, 并设置margin,由于两侧栏的负边距都是相对于main-wrap而言，main的margin值变化便不会影响两个侧栏，因此省掉了对两侧栏设置相对布局的步骤。</p>
+<h2 id="flex布局"><a href="#flex布局" class="headerlink" title="flex布局"></a>flex布局</h2><p>与之前所讲的几种传统布局方案相比，flex布局的代码可谓异常简洁，而且非常通用，利用简单的三行CSS即实现了常见的五种布局。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class&#x3D;&quot;layout&quot;&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;main&quot;&gt;主内容栏宽度自适应&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;layout&quot;&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;main&quot;&gt;主内容栏宽度自适应&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;layout&quot;&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;左侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;main&quot;&gt;主内容栏宽度自适应&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;右侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;layout&quot;&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;第1个侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;第2个侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;main&quot;&gt;主内容栏宽度自适应&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div class&#x3D;&quot;layout&quot;&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;main&quot;&gt;主内容栏宽度自适应&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;第1个侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">    &lt;aside class&#x3D;&quot;aside&quot;&gt;第2个侧边栏宽度固定&lt;&#x2F;aside&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.layout &#123;</span><br><span class="line">    display: flex;</span><br><span class="line">&#125;</span><br><span class="line">.main &#123;</span><br><span class="line">    flex: 1;</span><br><span class="line">&#125;</span><br><span class="line">.aside &#123;</span><br><span class="line">    width: 200px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="自适应与响应式布局"><a href="#自适应与响应式布局" class="headerlink" title="自适应与响应式布局"></a>自适应与响应式布局</h1><p>自适应是为了解决如何才能在不同大小的设备上呈现同样的网页，实现一次设计，普遍适用而提出的技术，以避免维护多个版本的针对不同分辨率设备的网页。</p>
+<p>但自适应存在一个问题，如果屏幕太小，即使网页能够根据屏幕大小进行适配，但是会感觉在小屏幕上查看，内容过于拥挤。响应式正是为了解决这个问题而衍生出来的概念。它可以自动识别屏幕宽度、并做出相应调整的网页设计，布局和展示的内容可能会有所变动。</p>
+<p>目前网页的响应式布局解决方案成为当前主流，并因 twitter 开源的 bootstrap 而被大家熟知。响应式布局的实现原理如下：</p>
+<ul>
+<li>允许网页宽度自动调整</li>
+</ul>
+<p>网页代码的头部，加入一行viewport元标签。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;meta name&#x3D;&quot;viewport&quot; content&#x3D;&quot;width&#x3D;device-width, initial-scale&#x3D;1&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure>
+<p>viewport是网页默认的宽度和高度，上面这行代码的意思是，网页宽度默认等于屏幕宽度（width=device-width），原始缩放比例（initial-scale=1）为1.0，即网页初始大小占屏幕面积的100%。</p>
+<ul>
+<li>尽量少使用绝对宽度</li>
+</ul>
+<p>由于网页会根据屏幕宽度调整布局，所以不能使用绝对宽度的布局，也不能使用具有绝对宽度的元素。这一条非常重要。具体说，CSS代码不能指定像素宽度：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">width:xxx px;</span><br></pre></td></tr></table></figure>
+
+<p>通过指定百分比宽度来替代：同时还可以配合css的cal，进行计算宽度。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">width: xx%;</span><br><span class="line">width:auto;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>相对大小的字体</li>
+</ul>
+<p>字体也不能使用绝对大小（px），而只能使用相对大小（em）或者高清方案（rem）,rem不局限于字体大小，前面的宽度width也可以使用，代替百分比。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">body &#123;</span><br><span class="line">  font: normal 100% Helvetica, Arial, sans-serif;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码指定，字体大小是页面默认大小的100%，即16像素。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">h1 &#123;</span><br><span class="line">　　font-size: 1.5em; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后，h1的大小是默认大小的1.5倍，即24像素（24/16=1.5）。</p>
+<ul>
+<li>流动布局（fluid grid）</li>
+</ul>
+<p>“流动布局”的含义是，各个区块的位置都是浮动的，不是固定不变的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.main &#123;</span><br><span class="line">　　float: right;</span><br><span class="line">　　width: 70%; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.leftBar &#123;</span><br><span class="line">　　float: left;</span><br><span class="line">　　width: 25%;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>float的好处是，如果宽度太小，放不下两个元素，后面的元素会自动滚动到前面元素的下方，不会在水平方向overflow（溢出），避免了水平滚动条的出现。</p>
+<ul>
+<li>选择加载CSS</li>
+</ul>
+<p>“自适应网页设计”的核心，就是CSS3引入的Media Query模块。</p>
+<p>它的意思就是，自动探测屏幕宽度，然后加载相应的CSS文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;link rel&#x3D;&quot;stylesheet&quot; type&#x3D;&quot;text&#x2F;css&quot;</span><br><span class="line">　　　　media&#x3D;&quot;screen and (max-device-width: 400px)&quot;</span><br><span class="line">　　　　href&#x3D;&quot;tinyScreen.css&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;link rel&#x3D;&quot;stylesheet&quot; type&#x3D;&quot;text&#x2F;css&quot;</span><br><span class="line">　　　　media&#x3D;&quot;screen and (min-width: 400px) and (max-device-width: 600px)&quot;</span><br><span class="line">　　　　href&#x3D;&quot;smallScreen.css&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>除了用html标签加载CSS文件，还可以在现有CSS文件中加载。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@import  url(&quot;tinyScreen.css&quot;) screen and (max-device-width: 400px);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>CSS的@media规则</li>
+</ul>
+<p>同一个CSS文件中，也可以根据不同的屏幕分辨率，选择应用不同的CSS规则。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@media  screen and (max-device-width: 400px) &#123;</span><br><span class="line">　　.column &#123;</span><br><span class="line">　　　　float: none;</span><br><span class="line">　　　　width:auto;</span><br><span class="line">　　&#125;</span><br><span class="line"></span><br><span class="line">　　#sidebar &#123;</span><br><span class="line">　　　　display:none;</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>图片的自适应（fluid image）</li>
+</ul>
+<p>除了布局和文本，”自适应网页设计”还必须实现图片的自动缩放。这只要一行CSS代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">img &#123; max-width: 100%;&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="布局相关CSS"><a href="#布局相关CSS" class="headerlink" title="布局相关CSS"></a>布局相关CSS</h1><h2 id="display"><a href="#display" class="headerlink" title="display"></a>display</h2><p>display CSS 属性指定了元素的显示类型，它包含两类基础特征，用于指定元素怎样生成盒模型——<strong>外部显示类型</strong>定义了元素怎样参与流式布局的处理，<strong>内部显示类型</strong>定义了元素内子元素的布局方式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* &lt;display-outside&gt; values *&#x2F;</span><br><span class="line">display: block;</span><br><span class="line">display: inline;</span><br><span class="line">display: run-in;</span><br><span class="line"></span><br><span class="line">&#x2F;* &lt;display-inside&gt; values *&#x2F;</span><br><span class="line">display: flow;</span><br><span class="line">display: flow-root;</span><br><span class="line">display: table;</span><br><span class="line">display: flex;</span><br><span class="line">display: grid;</span><br><span class="line">display: ruby;</span><br><span class="line"></span><br><span class="line">&#x2F;* &lt;display-outside&gt; plus &lt;display-inside&gt; values *&#x2F;</span><br><span class="line">display: block flow;</span><br><span class="line">display: inline table;</span><br><span class="line">display: flex run-in;</span><br><span class="line"></span><br><span class="line">&#x2F;* &lt;display-listitem&gt; values *&#x2F;</span><br><span class="line">display: list-item;</span><br><span class="line">display: list-item block;</span><br><span class="line">display: list-item inline;</span><br><span class="line">display: list-item flow;</span><br><span class="line">display: list-item flow-root;</span><br><span class="line">display: list-item block flow;</span><br><span class="line">display: list-item block flow-root;</span><br><span class="line">display: flow list-item block;</span><br><span class="line"></span><br><span class="line">&#x2F;* &lt;display-internal&gt; values *&#x2F;</span><br><span class="line">display: table-row-group;</span><br><span class="line">display: table-header-group;</span><br><span class="line">display: table-footer-group;</span><br><span class="line">display: table-row;</span><br><span class="line">display: table-cell;</span><br><span class="line">display: table-column-group;</span><br><span class="line">display: table-column;</span><br><span class="line">display: table-caption;</span><br><span class="line">display: ruby-base;</span><br><span class="line">display: ruby-text;</span><br><span class="line">display: ruby-base-container;</span><br><span class="line">display: ruby-text-container;</span><br><span class="line"></span><br><span class="line">&#x2F;* &lt;display-box&gt; values *&#x2F;</span><br><span class="line">display: contents;</span><br><span class="line">display: none;</span><br><span class="line"></span><br><span class="line">&#x2F;* &lt;display-legacy&gt; values *&#x2F;</span><br><span class="line">display: inline-block;</span><br><span class="line">display: inline-table;</span><br><span class="line">display: inline-flex;</span><br><span class="line">display: inline-grid;</span><br><span class="line"></span><br><span class="line">&#x2F;* Global values *&#x2F;</span><br><span class="line">display: inherit;</span><br><span class="line">display: initial;</span><br><span class="line">display: unset;</span><br></pre></td></tr></table></figure>
+
+<h2 id="position"><a href="#position" class="headerlink" title="position"></a>position</h2><p>CSS position属性用于指定一个元素在文档中的定位方式。top，right，bottom 和 left 属性则决定了该元素的最终位置。position 属性被指定为从下面的值列表中选择的单个关键字：</p>
+<ul>
+<li>static</li>
+</ul>
+<p>该关键字指定元素使用正常的布局行为，即元素在文档常规流中当前的布局位置。此时 top, right, bottom, left 和 z-index 属性无效。</p>
+<ul>
+<li>relative</li>
+</ul>
+<p>该关键字下，元素先放置在未添加定位时的位置，再在不改变页面布局的前提下调整元素位置（因此会在此元素未添加定位时所在位置留下空白）。position:relative 对 table-*-group, table-row, table-column, table-cell, table-caption 元素无效。</p>
+<ul>
+<li>absolute</li>
+</ul>
+<p>不为元素预留空间，通过指定元素相对于最近的非 static 定位祖先元素的偏移，来确定元素位置。绝对定位的元素可以设置外边距（margins），且不会与其他边距合并。</p>
+<ul>
+<li>fixed</li>
+</ul>
+<p>不为元素预留空间，而是通过指定元素相对于屏幕视口（viewport）的位置来指定元素位置。元素的位置在屏幕滚动时不会改变。打印时，元素会出现在的每页的固定位置。fixed 属性会创建新的层叠上下文。当元素祖先的 transform  属性非 none 时，容器由视口改为该祖先。</p>
+<ul>
+<li>sticky </li>
+</ul>
+<p>盒位置根据正常流计算(这称为正常流动中的位置)，然后相对于该元素在流中的 flow root（BFC）和 containing block（最近的块级祖先元素）定位。在所有情况下（即便被定位元素为 table 时），该元素定位均不对后续元素造成影响。当元素 B 被粘性定位时，后续元素的位置仍按照 B 未定位时的位置来确定。position: sticky 对 table 元素的效果与 position: relative 相同。</p>
+<h2 id="float"><a href="#float" class="headerlink" title="float"></a>float</h2><p>float CSS属性指定一个元素应沿其容器的左侧或右侧放置，允许文本和内联元素环绕它。该元素从网页的正常流动(文档流)中移除，尽管仍然保持部分的流动性（与绝对定位相反）。float 属性的值被指定为单一的关键字，值从下面的值列表中选择:</p>
+<ul>
+<li>left</li>
+</ul>
+<p>表明元素必须浮动在其所在的块容器左侧的关键字。</p>
+<ul>
+<li>right</li>
+</ul>
+<p>表明元素必须浮动在其所在的块容器右侧的关键字。</p>
+<ul>
+<li>none</li>
+</ul>
+<p>表明元素不进行浮动的关键字。</p>
+<ul>
+<li>inline-start</li>
+</ul>
+<p>关键字，表明元素必须浮动在其所在块容器的开始一侧，在ltr脚本中是左侧，在rtl脚本中是右侧。</p>
+<ul>
+<li>inline-end</li>
+</ul>
+<p>关键字，表明元素必须浮动在其所在块容器的结束一侧，在ltr脚本中是右侧，在rtl脚本中是左侧。</p>
+<p>float属性具有<strong>包裹性和高度欺骗</strong>两个特性。</p>
+<h3 id="包裹性"><a href="#包裹性" class="headerlink" title="包裹性"></a>包裹性</h3><p>block元素不指定width的话，默认是100%，一旦让该div浮动起来，立刻会像inline元素一样产生包裹性，宽度会跟随内容自适应。（这也是通常float元素需要手动指定width的原因）。</p>
+<p align="center">
+    <img src="images/float1.png" width="60%" alt="float的包裹性"/>
+</p>
+<center>图3  float的包裹性</center>
+
+<p>效果非常近似于display:inline-block。但相比之下，浮动能设定为左浮和右浮，但display:inline-block都是从左到右排列的。（还有些细微差别，两个display:inline-block间会有空隙，但两个float间没有。）</p>
+<h3 id="高度欺骗性"><a href="#高度欺骗性" class="headerlink" title="高度欺骗性"></a>高度欺骗性</h3><p align="center">
+    <img src="images/float2.png" width="60%" alt="float的高度欺骗性"/>
+</p>
+<center>图4  float的高度欺骗性</center>
+
+<p>外层div在没有手动设定height的前提下，其高度是由内部content的最大高度决定的，由于img的float使得img具有高度塌陷的欺骗性，让div误以为img的line-height为0，因此div的高度就是文字的匿名inline-box的inline-height。</p>
+<h3 id="闭合浮动"><a href="#闭合浮动" class="headerlink" title="闭合浮动"></a>闭合浮动</h3><p>闭合浮动的实现方法很多，最合理的方法是用:after伪元素，思路是用:after元素在div后面插入一个隐藏文本”.”，隐藏文本用clear来实现闭合浮动。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.clearfix:after &#123;</span><br><span class="line">    clear: both;</span><br><span class="line">    content: &quot;.&quot;;   &#x2F;&#x2F;你头可以改成其他任意文本如“abc”</span><br><span class="line">    display: block;</span><br><span class="line">    height: 0;      &#x2F;&#x2F;高度为0且hidden让该文本彻底隐藏</span><br><span class="line">    visibility: hidden;</span><br><span class="line">&#125;</span><br><span class="line">.clearfix &#123;</span><br><span class="line">    *zoom: 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;div style&#x3D;&quot;border:4px solid blue;&quot; class&#x3D;&quot;clearfix&quot;&gt;</span><br><span class="line">    &lt;div style&#x3D;&quot;width:200px; border:4px solid red; float:left;&quot;&gt;</span><br><span class="line">        我是浮动元素1</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">    &lt;div style&#x3D;&quot;width:200px; border:4px solid yellow; float:left;&quot;&gt;</span><br><span class="line">        我是浮动元素2</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;div style&#x3D;&quot;border:4px solid gray;&quot;&gt;我是页脚&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/25565751" target="_blank" rel="noopener">CSS布局十八般武艺都在这里了</a>,by Shelley Lee.</li>
+<li><a href="http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html?utm_source=tuicool" target="_blank" rel="noopener">Flex 布局教程：语法篇</a>,by 阮一峰.</li>
+<li><a href="http://www.ruanyifeng.com/blog/2015/07/flex-examples.html" target="_blank" rel="noopener">Flex 布局教程：实例篇</a>,by 阮一峰.</li>
+<li><a href="http://www.ruanyifeng.com/blog/2018/10/flexbox-form.html" target="_blank" rel="noopener">Flexbox 布局的最简单表单</a>,by 阮一峰.</li>
+<li><a href="http://www.ruanyifeng.com/blog/2012/05/responsive_web_design.html" target="_blank" rel="noopener">自适应网页设计（Responsive Web Design）</a>,by 阮一峰.</li>
+<li><a href="http://www.ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html" target="_blank" rel="noopener">CSS Grid 网格布局教程</a>,by 阮一峰.</li>
+<li><a href="https://juejin.im/entry/58b6414a128fe1006421bfa7" target="_blank" rel="noopener">响应式和自适应的区别</a>,by LorinLuo.</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/display" target="_blank" rel="noopener">display</a>,by mozilla.</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/position" target="_blank" rel="noopener">position</a>,by mozilla.</li>
+<li><a href="https://www.jianshu.com/p/07eb19957991" target="_blank" rel="noopener">CSS浮动float详解</a>,by 张歆琳.</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/CSS/float" target="_blank" rel="noopener">float</a>,by mozilla.</li>
+<li><a href="https://stackoverflow.com/questions/21515042/scrolling-a-flexbox-with-overflowing-content" target="_blank" rel="noopener">Scrolling a flexbox with overflowing content</a>,by stackoverflow.</li>
+<li><a href="https://moduscreate.com/blog/how-to-fix-overflow-issues-in-css-flex-layouts/" target="_blank" rel="noopener">How to Fix Overflow Issues in CSS Flex Layouts</a>,by moduscreate.</li>
+<li><a href="https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/" target="_blank" rel="noopener">An Interactive Guide to Flexbox</a>,by joshwcomeau.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/08/09/Mockjs%E5%85%A5%E9%97%A8%E7%AE%80%E4%BB%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1947,219 +2310,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/26/Vue-js%E5%85%A5%E9%97%A8%E7%AE%80%E4%BB%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/26/Vue-js%E5%85%A5%E9%97%A8%E7%AE%80%E4%BB%8B/" itemprop="url">
-                  Vue-js入门简介
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-07-26 17:55:53" itemprop="dateCreated datePublished" datetime="2019-07-26T17:55:53+08:00">2019-07-26</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2023-03-23 17:19:42" itemprop="dateModified" datetime="2023-03-23T17:19:42+08:00">2023-03-23</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Vue (读音 /vjuː/，类似于 view) 是一套用于构建用户界面的渐进式框架。与其它大型框架不同的是，Vue 被设计为可以自底向上逐层应用。Vue 的核心库只关注视图层，不仅易于上手，还便于与第三方库或既有项目整合。另一方面，当与现代化的工具链以及各种支持类库结合使用时，Vue 也完全能够为复杂的单页应用提供驱动。</p>
-<h1 id="Vue实例生命周期图示"><a href="#Vue实例生命周期图示" class="headerlink" title="Vue实例生命周期图示"></a>Vue实例生命周期图示</h1><p align="center">
-    <img src="https://v2.cn.vuejs.org/images/lifecycle.png" width="90%" alt="Vue实例生命周期图示"/>
-</p>
-
-<h1 id="核心插件Vuex"><a href="#核心插件Vuex" class="headerlink" title="核心插件Vuex"></a>核心插件Vuex</h1><p>Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以一种可预测的方式发生变化。</p>
-<p align="center">
-    <img src="https://vuex.vuejs.org/vuex.png" width="90%" alt="Vuex工作原理示意图"/>
-</p>
-
-<h2 id="Vuex核心store"><a href="#Vuex核心store" class="headerlink" title="Vuex核心store"></a>Vuex核心store</h2><p>每一个 Vuex 应用的核心就是 store（仓库）。“store”基本上就是一个容器，它包含着你的应用中大部分的状态 (state)。Vuex 和单纯的全局对象有以下两点不同：</p>
-<ol>
-<li><p>Vuex 的状态存储是响应式的。当 Vue 组件从 store 中读取状态的时候，若 store 中的状态发生变化，那么相应的组件也会相应地得到高效更新。</p>
-</li>
-<li><p>你不能直接改变 store 中的状态。改变 store 中的状态的唯一途径就是显式地提交 (commit) mutation。这样使得我们可以方便地跟踪每一个状态的变化，从而让我们能够实现一些工具帮助我们更好地了解我们的应用。</p>
-</li>
-</ol>
-<p>安装 Vuex 之后，让我们来创建一个 store。创建过程直截了当——仅需要提供一个初始 state 对象和一些 mutation：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 如果在模块化构建系统中，请确保在开头调用了 Vue.use(Vuex)</span><br><span class="line"></span><br><span class="line">const store &#x3D; new Vuex.Store(&#123;</span><br><span class="line">  state: &#123;</span><br><span class="line">    count: 0</span><br><span class="line">  &#125;,</span><br><span class="line">  mutations: &#123;</span><br><span class="line">    increment (state) &#123;</span><br><span class="line">      state.count++</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>现在，你可以通过 store.state 来获取状态对象，以及通过 store.commit 方法触发状态变更：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">store.commit(&#39;increment&#39;)</span><br><span class="line"></span><br><span class="line">console.log(store.state.count) &#x2F;&#x2F; -&gt; 1</span><br></pre></td></tr></table></figure>
-
-<h2 id="Vuex核心概念"><a href="#Vuex核心概念" class="headerlink" title="Vuex核心概念"></a>Vuex核心概念</h2><h3 id="State"><a href="#State" class="headerlink" title="State"></a>State</h3><p>Vuex 使用单一状态树——是的，用一个对象就包含了全部的应用层级状态。至此它便作为一个“唯一数据源 (SSOT)”而存在。这也意味着，每个应用将仅仅包含一个 store 实例。单一状态树让我们能够直接地定位任一特定的状态片段，在调试的过程中也能轻易地取得整个当前应用状态的快照。</p>
-<p>Vuex 通过 store 选项，提供了一种机制将状态从根组件“注入”到每一个子组件中（需调用 Vue.use(Vuex)）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const app &#x3D; new Vue(&#123;</span><br><span class="line">  el: &#39;#app&#39;,</span><br><span class="line">  &#x2F;&#x2F; 把 store 对象提供给 “store” 选项，这可以把 store 的实例注入所有的子组件</span><br><span class="line">  store,</span><br><span class="line">  components: &#123; Counter &#125;,</span><br><span class="line">  template: &#96;</span><br><span class="line">    &lt;div class&#x3D;&quot;app&quot;&gt;</span><br><span class="line">      &lt;counter&gt;&lt;&#x2F;counter&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">  &#96;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>通过在根实例中注册 store 选项，该 store 实例会注入到根组件下的所有子组件中，且子组件能通过 this.$store 访问到。</p>
-<h3 id="Getter"><a href="#Getter" class="headerlink" title="Getter"></a>Getter</h3><p>Vuex 允许我们在 store 中定义“getter”（可以认为是 store 的计算属性）。就像计算属性一样，getter 的返回值会根据它的依赖被缓存起来，且只有当它的依赖值发生了改变才会被重新计算。</p>
-<p>Getter 接受 state 作为其第一个参数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">const store &#x3D; new Vuex.Store(&#123;</span><br><span class="line">  state: &#123;</span><br><span class="line">    todos: [</span><br><span class="line">      &#123; id: 1, text: &#39;...&#39;, done: true &#125;,</span><br><span class="line">      &#123; id: 2, text: &#39;...&#39;, done: false &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  getters: &#123;</span><br><span class="line">    doneTodos: state &#x3D;&gt; &#123;</span><br><span class="line">      return state.todos.filter(todo &#x3D;&gt; todo.done)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>Getter 会暴露为 store.getters 对象，你可以以属性的形式访问这些值：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">store.getters.doneTodos &#x2F;&#x2F; -&gt; [&#123; id: 1, text: &#39;...&#39;, done: true &#125;]</span><br></pre></td></tr></table></figure>
-
-<h3 id="Mutation"><a href="#Mutation" class="headerlink" title="Mutation"></a>Mutation</h3><p>更改 Vuex 的 store 中的状态的唯一方法是提交 mutation。Vuex 中的 mutation 非常类似于事件：每个 mutation 都有一个字符串的 事件类型 (type) 和 一个 回调函数 (handler)。这个回调函数就是我们实际进行状态更改的地方，并且它会接受 state 作为第一个参数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const store &#x3D; new Vuex.Store(&#123;</span><br><span class="line">  state: &#123;</span><br><span class="line">    count: 1</span><br><span class="line">  &#125;,</span><br><span class="line">  mutations: &#123;</span><br><span class="line">    increment (state) &#123;</span><br><span class="line">      &#x2F;&#x2F; 变更状态</span><br><span class="line">      state.count++</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>你不能直接调用一个 mutation handler。这个选项更像是事件注册：“当触发一个类型为 increment 的 mutation 时，调用此函数。”要唤醒一个 mutation handler，你需要以相应的 type 调用 store.commit 方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">store.commit(&#39;increment&#39;)</span><br></pre></td></tr></table></figure>
-
-<p><strong>注意，Mutation必须是同步函数。</strong></p>
-<h3 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h3><p>Action 类似于 mutation，不同在于：</p>
-<ul>
-<li>Action 提交的是 mutation，而不是直接变更状态。</li>
-<li>Action 可以包含任意异步操作。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">const store &#x3D; new Vuex.Store(&#123;</span><br><span class="line">  state: &#123;</span><br><span class="line">    count: 0</span><br><span class="line">  &#125;,</span><br><span class="line">  mutations: &#123;</span><br><span class="line">    increment (state) &#123;</span><br><span class="line">      state.count++</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  actions: &#123;</span><br><span class="line">    increment (context) &#123;</span><br><span class="line">      context.commit(&#39;increment&#39;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>Action 通过 store.dispatch 方法触发：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">store.dispatch(&#39;increment&#39;)</span><br></pre></td></tr></table></figure>
-
-<h3 id="Module"><a href="#Module" class="headerlink" title="Module"></a>Module</h3><p>由于使用单一状态树，应用的所有状态会集中到一个比较大的对象。当应用变得非常复杂时，store 对象就有可能变得相当臃肿。</p>
-<p>为了解决以上问题，Vuex 允许我们将 store 分割成模块（module）。每个模块拥有自己的 state、mutation、action、getter、甚至是嵌套子模块——从上至下进行同样方式的分割：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">const moduleA &#x3D; &#123;</span><br><span class="line">  state: &#123; ... &#125;,</span><br><span class="line">  mutations: &#123; ... &#125;,</span><br><span class="line">  actions: &#123; ... &#125;,</span><br><span class="line">  getters: &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const moduleB &#x3D; &#123;</span><br><span class="line">  state: &#123; ... &#125;,</span><br><span class="line">  mutations: &#123; ... &#125;,</span><br><span class="line">  actions: &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const store &#x3D; new Vuex.Store(&#123;</span><br><span class="line">  modules: &#123;</span><br><span class="line">    a: moduleA,</span><br><span class="line">    b: moduleB</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">store.state.a &#x2F;&#x2F; -&gt; moduleA 的状态</span><br><span class="line">store.state.b &#x2F;&#x2F; -&gt; moduleB 的状态</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://cn.vuejs.org/v2/guide/" target="_blank" rel="noopener">Vue.js 教程</a>,by Vue.js Homepage.</li>
-<li><a href="https://vuex.vuejs.org/zh/" target="_blank" rel="noopener">Vuex教程</a>,by Vue.js Homepage.</li>
-<li><a href="https://blog.csdn.net/weixin_31021649/article/details/113452898" target="_blank" rel="noopener">vue 页面销毁函数_45. 聊聊 Vue 的生命周期</a>,by atone2003.</li>
-<li><a href="https://blog.csdn.net/longtengg1/article/details/118758447" target="_blank" rel="noopener">使用vue-router切换组件时使组件不销毁</a>,by 龙易安.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2207,7 +2357,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">444</span>
+                    <span class="site-state-item-count">445</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

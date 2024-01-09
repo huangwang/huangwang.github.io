@@ -19668,4 +19668,41 @@ console.log(y);</code></pre></li>
         <tag>计算机网络</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Python提取PDF部分区域文字的方法</title>
+    <url>/2024/01/09/Python%E6%8F%90%E5%8F%96PDF%E9%83%A8%E5%88%86%E5%8C%BA%E5%9F%9F%E6%96%87%E5%AD%97%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>最近遇到一个需求，需要提取PDF部分区域的文字，具体方法如下：</p>
+<ol>
+<li>提取PDF中目标内容所在区域</li>
+<li>提取或识别目标区域内容</li>
+</ol>
+<p>为了快速验证方法的可行性，使用Python结合PyMuPDF库进行开发。</p>
+<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><h2 id="依赖环境"><a href="#依赖环境" class="headerlink" title="依赖环境"></a>依赖环境</h2><ul>
+<li>python 3.8.5，可在windows7上运行，python 3.9以后版本不支持windows7</li>
+<li>numpy==1.24.4</li>
+<li>pandas==2.0.3</li>
+<li>PyMuPDF==1.23.8</li>
+<li>PyMuPDFb==1.23.7</li>
+<li>python-dateutil==2.8.2</li>
+<li>pytz==2023.3.post1</li>
+<li>six==1.16.0</li>
+<li>tzdata==2023.4</li>
+</ul>
+<h2 id="虚拟环境"><a href="#虚拟环境" class="headerlink" title="虚拟环境"></a>虚拟环境</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir pdf_extract</span><br><span class="line">cd pdf_extract</span><br><span class="line">python -m venv env</span><br><span class="line">env\Scripts\activate.bat</span><br><span class="line">pip install pymupdf</span><br><span class="line">pip install pandas</span><br><span class="line">pip freeze &gt; requirement.txt</span><br><span class="line">pip download -d packages -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="离线迁移"><a href="#离线迁移" class="headerlink" title="离线迁移"></a>离线迁移</h2><p>创建envConfig.bat批处理文件，一键执行离线环境配置。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python -m venv env</span><br><span class="line">call env\Scripts\activate.bat</span><br><span class="line">pip install --no-index --find-links&#x3D;packages -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<h1 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import fitz # imports the pymupdf library</span><br><span class="line">pdfDoc &#x3D; fitz.open(&quot;test.pdf&quot;) # open a document</span><br><span class="line">page &#x3D; pdfDoc[0]</span><br><span class="line">mat &#x3D; fitz.Matrix(1, 1)  # 1.5表示放大1.5倍</span><br><span class="line">rect &#x3D; page.rect</span><br><span class="line">#print(rect)</span><br><span class="line">clip &#x3D; fitz.Rect(0.22*rect.width, 0.19*rect.height,0.35*rect.width, 0.40*rect.height)</span><br><span class="line">pix &#x3D; page.get_pixmap(matrix&#x3D;mat, alpha&#x3D;False, clip&#x3D;clip)</span><br><span class="line">pix.save(&quot;test.png&quot;) </span><br><span class="line">a_text &#x3D; page.get_text(clip&#x3D;clip)</span><br><span class="line">print(a_text)</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://cloud.tencent.com/developer/article/1857888" target="_blank" rel="noopener">Python截图PDF，在指定区域并提取文本</a>,by 快学Python.</li>
+<li><a href="https://pymupdf.readthedocs.io/en/latest/index.html" target="_blank" rel="noopener">pymupdf doc</a>,by pymupdf.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>python</tag>
+      </tags>
+  </entry>
 </search>

@@ -314,6 +314,243 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/26/%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/26/%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8/" itemprop="url">
+                  光线追踪基本概念入门
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-26 22:16:23" itemprop="dateCreated datePublished" datetime="2019-05-26T22:16:23+08:00">2019-05-26</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2022-05-11 08:47:23" itemprop="dateModified" datetime="2022-05-11T08:47:23+08:00">2022-05-11</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>光线追踪（Ray tracing）是三维计算机图形学中的特殊渲染算法，跟踪从眼睛发出的光线而不是光源发出的光线，通过这样一项技术生成编排好的场景的数学模型显现出来。光线追踪的优点可以提供更为真实的光影效果，缺点是计算量巨大。</p>
+<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p>光线追踪与光栅化渲染作为相对的两个概念，理解光栅化渲染更能解释光线追踪的概念。</p>
+<p>光栅化渲染是将向量图形格式表示的图像转换成位图以用于显示器或者打印机输出的过程，如图1所示。</p>
+<p align="center">
+    <img src="images/rasterrizer.png" width="90%" alt="光线追踪示意图"/>
+</p>
+<center>图1  光栅化渲染示意图</center>
+
+<p>光线追踪的示意图如图2所示。[Whitted 1980]提出了使用光线跟踪来在计算机上生成图像的方法，这一方法后来也被称为经典光线跟踪方法或Whitted-style 光线跟踪方法。其主要思想是从视点向成像平面上的像素发射光线，找到与该光线相交的最近物体的交点，如果该点处的表面是散射面，则计算光源直接照射该点产生的颜色；如果该点处表面是镜面或折射面，则继续向反射或折射方向跟踪另一条光线，如此递归下去，直到光线逃逸出场景或达到设定的最大递归深度。这种经典的方法可以产生镜面反射、折射、阴影等效果，不过不能实现其他的全局光照的效果。</p>
+<p align="center">
+    <img src="images/ray_track.jpg" width="90%" alt="光线追踪示意图"/>
+</p>
+<center>图2  光线追踪示意图</center>
+
+<h1 id="辐射度学基本量"><a href="#辐射度学基本量" class="headerlink" title="辐射度学基本量"></a>辐射度学基本量</h1><p>图形学模拟可见光与各种材质的交互，这个过程涉及到能量的传输。辐射度学（Radiometry）是度量电磁辐射能量传输的学科，也是基于物理着色模型的基础。</p>
+<ul>
+<li>能量</li>
+</ul>
+<p>能量（Energy），用符号Q表示，单位焦耳（J），每个光子都具有一定量的能量，和频率相关，频率越高，能量也越高。</p>
+<ul>
+<li>功率</li>
+</ul>
+<p>功率（Power），单位瓦特（Watts），或者焦耳／秒（J/s）。辐射度学中，辐射功率也被称为辐射通量（Radiant Flux）或者通量（Flux），指单位时间内通过表面或者空间区域的能量的总量，用符号\Phi 表示，定义 $\Phi = \frac{ dQ}{dt}$。</p>
+<ul>
+<li>辐照度和辐出度</li>
+</ul>
+<p>辐照度（Irradiance），指单位时间内到达单位面积的辐射能量，或到达单位面积的辐射通量，也就是通量对于面积的密度。用符号E表示，单位 $W / m^{2}$ 。定义为 $E = \frac{d\Phi }{dA}$。</p>
+<p>辐出度（Radiant Existance），也称为辐射出射度、辐射度（Radiosity），用符号M表示。辐出度与辐照度类似，唯一的区别在辐出度衡量的是离开表面的通量密度，辐照度衡量的是到达表面的通量密度。辐照度和辐出度都可以称为辐射通量密度（Radiant Flux Density）。</p>
+<ul>
+<li>辐射强度</li>
+</ul>
+<p>立体角则是度量三维角度的量，用符号 $\omega$ 表示，单位为立体弧度（也叫球面度，Steradian，简写为sr），等于立体角在单位球上对应的区域的面积（实际上也就是在任意半径的球上的面积除以半径的平方 $\omega = \frac {s}{r^{2} }$ ），单位球的表面积是 $4\pi$ ，所以整个球面的立体角也是$4\pi$ 。</p>
+<p>辐射强度（Radiant Intensity），指通过单位立体角的辐射通量。用符号I表示，单位 $W / sr$，定义为 $I = \frac{d \Phi }{d \omega }$ 。之所以引入辐射强度，是因为有时候要度量通过一个点的通量的密度，但因为点的面积是0，无法使用辐照度，所以引入辐射强度。辐射强度不会随距离变化而变化，不像点光源的辐照度会随距离增大而衰减，这是因为立体角不会随距离变化而变化。</p>
+<ul>
+<li>辐射率</li>
+</ul>
+<p>辐射率（Radiance），指每单位面积每单位立体角的辐射通量密度。用符号 $L$ 表示，单位 $W/m^{2} sr$ ，定义为 $L = \frac{d \Phi }{d\omega d A^{\bot } }$ 。其中  $dA^{\bot}$是微分面积dA在垂直于光线方向的投影。</p>
+<h1 id="渲染方程（The-Rendering-Equation）"><a href="#渲染方程（The-Rendering-Equation）" class="headerlink" title="渲染方程（The Rendering Equation）"></a>渲染方程（The Rendering Equation）</h1><p>[Kajiya 1986]第一次将渲染方程引入图形学，使用它来解释光能传输的产生的各种现象。这一方程描述了场景中光能传输达到稳定状态以后，物体表面某个点在某个方向上的辐射亮度（Radiance）与入射辐射亮度等的关系。</p>
+<p>$$L_o(x,w_o)=L_e(x,w_0)+\int_\Omega{f_r(x,w_i,w_0)L_i(x,w_i)cos\theta_idw_i}$$</p>
+<p>其中，$L_o(x,w_o)$ 表示物体表面点 $x$ 处在方向  $𝜔_𝑜$  上出射的辐射亮度，$𝐿𝑒(𝑥, 𝜔_0)$ 表示在该点该方向上自辐射的亮度。$𝐿𝑖(𝑥,𝜔_𝑖)$ 表示该点处 $𝜔_𝑖$ 方向入射的辐射亮度，$𝑓𝑟(𝑥, 𝜔_𝑖, 𝜔_𝑜)$ 是双向反射分布函数（BRDF），描述的是入射方向的辐射亮度对出射方向的贡献，$cos 𝜃𝑖$ 是$𝜔_𝑖$与表面法向的点积。在这一方程的基础上，辐射度方法和蒙特卡罗光线跟踪的方法就可以看成是对方程中积分的不同的数值求解方法。</p>
+<p>BRDF描述的是表面本身的性质，比如它的光滑程度，导电程度等等。由于四面八方的光线都会作用在这个表面，所以我们需要对所有方向进行积分，也就是一个球面上的积分，考虑到积分项中的 $(w_i\cdot n)$ ，那么只有位于正半空间的方向才会对最终积分有贡献，所以最后这个球面的积分就变成了一个半球的积分，如图3所示。</p>
+<p align="center">
+    <img src="images/brdf.jpg" width="90%" alt="光线追踪示意图"/>
+</p>
+<center>图3  BRDF示意图</center>
+
+<h1 id="双向反射分布函数（bidirectional-reflectance-distribution-function-BRDF）"><a href="#双向反射分布函数（bidirectional-reflectance-distribution-function-BRDF）" class="headerlink" title="双向反射分布函数（bidirectional reflectance distribution function, BRDF）"></a>双向反射分布函数（bidirectional reflectance distribution function, BRDF）</h1><p>在计算机图形学领域，着色（Shading）是指根据表面或者多边形相对光源和相机的角度和距离来计算它的颜色的过程。不同的用途可以使用不同的着色算法，CAD等追求响应速度的交互式图形领域可以使用简单快速的着色算法，卡通油画等艺术效果可以使用非真实感（Nonphotorealistic）着色算法，而追求真实感的CG电影或游戏则可以使用基于物理建模的着色算法。而BRDF是基于物理建模的着色算法的理论基础。</p>
+<p>我们看到一个表面，实际上是周围环境的光照射到表面上，然后表面将一部分光反射到我们眼睛里。双向反射分布函数BRDF（Bidirectional Reflectance Distribution Function）就是描述表面入射光和反射光关系的。</p>
+<p>对于一个方向的入射光，表面会将光反射到表面上半球的各个方向，不同方向反射的比例是不同的，我们用BRDF来表示指定方向的反射光和入射光的比例关系，BRDF定义为：</p>
+<p>$$f(l,v)=\frac{dL_o(v)}{dE(l)}$$</p>
+<p>其中，$f$就是BRDF，$l$是入射光方向，$v$是观察方向，也就是我们关心的反射光方向。$d L_o(v)$ 是表面反射到$v$方向的反射光的微分辐射率。表面反射到$v$方向的反射光的辐射率为$L_o(v)$，来自于表面上半球所有方向的入射光线的贡献，而微分辐射率 $d L_o(v)$ 特指来自方向 $l$ 的入射光贡献的反射辐射率。$dE(l)$是表面上来自入射光方向 $l$ 的微分辐照度。表面接收到的辐照度为 $E$ ，来自上半球所有方向的入射光线的贡献，而微分辐照度 $dE(l)$ 特指来自于方向 $l$ 的入射光。</p>
+<h1 id="光照模型（illumination-model）"><a href="#光照模型（illumination-model）" class="headerlink" title="光照模型（illumination model）"></a>光照模型（illumination model）</h1><p>当光照射到物体表面时,物体对光会发生反射、透射、吸收、衍射、折射、和干涉,其中被物体吸收的部分转化为热,反射、透射的光进入人的视觉系统,使我们能看见物体。<strong>为模拟这一现象,我们建立一些数学模型来替代复杂的物理模型，这些模型就称为明暗效应模型或者光照明模型。</strong></p>
+<h2 id="局部光照模型"><a href="#局部光照模型" class="headerlink" title="局部光照模型"></a>局部光照模型</h2><p>在真实感图形学中,仅处理光源直接照射物体表面的光照明模型被称为局部光照明模型。局部光照明模型的分类如图4所示。</p>
+<p align="center">
+    <img src="images/localLightModel.jpg" width="90%" alt="局部光照模型分类"/>
+</p>
+<center>图4  局部光照模型分类</center>
+
+<p>局部光照模型是一种比较简单的光照模型，它是与光栅化渲染算法相适应的，光栅化算法一次只考虑一个像素的光照强度，因此局部光照模型不能计算某像素受其他像素影响的光照强度部分。也就是说，局部光照模型只对物体进行直接光照的计算，而不考虑其他的间接影响。</p>
+<h2 id="全局光照模型"><a href="#全局光照模型" class="headerlink" title="全局光照模型"></a>全局光照模型</h2><p>全局光照模型是基于光学物理原理的，光照强度的计算依赖于光能在现实世界中的传播情况，考虑光线与整个场景中各物体表面及物体表面间的相互影响，包括多次反射 、透射 、散射等。因此，与局部光照模型相比，全局光照模型需要相当大的计算量 ，但同时也能取得非常逼真的真实效果 。全局光照模型分类如图5所示。</p>
+<p align="center">
+    <img src="images/globalLightModel.jpg" width="90%" alt="全局光照模型分类"/>
+</p>
+<center>图5  全局光照模型分类</center>
+
+<h1 id="求交检测"><a href="#求交检测" class="headerlink" title="求交检测"></a>求交检测</h1><p>在光线追踪过程中，从眼睛发出的光线与3D模型的三角面求交是一个复杂问题。通常精致的3D模型可能由几十万至上百万三角面构成，如果采用穷举法求交点，其时间复杂度将是O(n), 过于复杂。为了减少不必要的求交检测，应采用空间划分技术，最常用的是平衡kdtree算法，提高求交检测的效率。</p>
+<h2 id="k-d-tree"><a href="#k-d-tree" class="headerlink" title="k-d tree"></a>k-d tree</h2><p>在计算机科学里，k-d树（ k-维树的缩写）是在k维欧几里德空间组织点的数据结构。k-d树可以使用在多种应用场合，如多维键值搜索（例：范围搜寻及最邻近搜索）。k-d树是空间二分树（Binary space partitioning ）的一种特殊情况。</p>
+<p>k-d树是每个节点都为k维点的二叉树。所有非叶子节点可以视作用一个超平面把空间分割成两个半空间。节点左边的子树代表在超平面左边的点，节点右边的子树代表在超平面右边的点。选择超平面的方法如下：每个节点都与k维中垂直于超平面的那一维有关。因此，如果选择按照x轴划分，所有x值小于指定值的节点都会出现在左子树，所有x值大于指定值的节点都会出现在右子树。这样，超平面可以用该x值来确定，其法线为x轴的单位向量。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/zh-hans/%E5%85%89%E7%B7%9A%E8%BF%BD%E8%B9%A4" target="_blank" rel="noopener">光线追踪</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%A0%85%E6%A0%BC%E5%8C%96" target="_blank" rel="noopener">栅格化</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%B8%B2%E6%9F%93" target="_blank" rel="noopener">渲染</a>,by wikipedia.</li>
+<li><a href="https://blog.csdn.net/baishuo8/article/details/81476422" target="_blank" rel="noopener">光线追踪基本概念与代码实现</a>,by 鹅城惊喜师爷.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/41269520" target="_blank" rel="noopener">一篇光线追踪的入门</a>,by 洛城.</li>
+<li><a href="https://www.jun.ninja/projects/gcg/report.pdf" target="_blank" rel="noopener">基于蒙特卡罗的光线跟踪绘制方法</a>,by 严俊.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/21376124" target="_blank" rel="noopener">基于物理着色：BRDF</a>,by Maple.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/29536356" target="_blank" rel="noopener">Monte-Carlo Ray Tracing System (一)原理以及设计</a>,by 已退逼乎.</li>
+<li><a href="https://blog.csdn.net/ZCMUCZX/article/details/79683263" target="_blank" rel="noopener">冯氏光照模型–镜面光的计算</a>,by MooAiFighting.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/49474631" target="_blank" rel="noopener">什么是光照模型</a>,by 黄琦.</li>
+<li><a href="https://blog.csdn.net/sunacmer/article/details/7451861" target="_blank" rel="noopener">蒙特卡洛光线追踪</a>,by sunacmer.</li>
+<li><a href="https://zh.wikipedia.org/wiki/K-d%E6%A0%91" target="_blank" rel="noopener">k-d树</a>,by wikipedia.</li>
+<li><a href="https://blog.csdn.net/a6333230/article/details/82968484" target="_blank" rel="noopener">辐射强度、辐亮度、辐照度——一文搞定</a>,by 三眼二郎.</li>
+<li><a href="https://www.bilibili.com/video/BV1vB4y1P7Ar/" target="_blank" rel="noopener">从光栅化到光线追踪</a>,by CrazyEngineCo.</li>
+<li><a href="https://blog.csdn.net/zhazhiqiang/article/details/19676477" target="_blank" rel="noopener">windows下没有srand48和drand48的解决方法</a>,by 查志强.</li>
+<li><a href="https://blog.csdn.net/a6333230/article/details/90036993" target="_blank" rel="noopener">辐射照度、辐射强度、光照度、发光强度（差异以及如何相互转换）（易懂讲解）</a>,by 三眼二郎.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/20/SLAM%E4%B8%AD%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A1%E7%9A%84%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1969,238 +2206,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/04/28/OpenCV4-0%E7%9B%B8%E6%9C%BA%E6%A0%87%E5%AE%9A%E6%95%99%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/28/OpenCV4-0%E7%9B%B8%E6%9C%BA%E6%A0%87%E5%AE%9A%E6%95%99%E7%A8%8B/" itemprop="url">
-                  OpenCV4.0相机标定教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-04-28 22:55:38" itemprop="dateCreated datePublished" datetime="2019-04-28T22:55:38+08:00">2019-04-28</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-05-20 21:59:33" itemprop="dateModified" datetime="2019-05-20T21:59:33+08:00">2019-05-20</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>相机已经存在了很长时间。 然而，随着20世纪后期廉价针孔相机的推出，它们成为我们日常生活中的常见现象。 不幸的是，这种便宜与其价格有关：严重失真。 幸运的是，这些是常数，并且通过校准和一些重新映射，我们可以纠正这一点。 此外，通过校准，您还可以确定相机的自然单位（像素）与真实世界单位（例如毫米）之间的关系。这个校准过程就是相机标定。</p>
-<h1 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h1><p>对于失真，OpenCV考虑了径向和切向因子。 对于径向因子，使用以下公式：</p>
-<p>$$x_{distorted} = x( 1 + k_1 r^2 + k_2 r^4 + k_3 r^6) \ y_{distorted} = y( 1 + k_1 r^2 + k_2 r^4 + k_3 r^6)$$</p>
-<p>因此，对于$（x，y）$坐标处的未失真像素点，其在失真图像上的位置将是$（x_{distorted},y_{distorted}）$。 径向变形的存在表现为“桶状”或“鱼眼”效应。</p>
-<p>由于摄像镜头与成像平面不完全平行，因此会发生偏心畸变。 它可以通过公式表示：</p>
-<p>$$x_{distorted} = x + [ 2p_1xy + p_2(r^2+2x^2)] \ y_{distorted} = y + [ p_1(r^2+ 2y^2)+ 2p_2xy]$$</p>
-<p>所以我们有五个失真参数，在OpenCV中呈现为一行矩阵，有5列：</p>
-<p>$$distortion_coefficients=(k_1 \hspace{10pt} k_2 \hspace{10pt} p_1 \hspace{10pt} p_2 \hspace{10pt} k_3)$$</p>
-<p>现在我们使用以下公式进行单位转换：</p>
-<p>$$\left [ \begin{matrix} x \ y \ w \end{matrix} \right ] = \left [ \begin{matrix} f_x &amp; 0 &amp; c_x \ 0 &amp; f_y &amp; c_y \ 0 &amp; 0 &amp; 1 \end{matrix} \right ] \left [ \begin{matrix} X \ Y \ Z \end{matrix} \right ]$$</p>
-<p>这里通过使用单应性坐标系（和$w = Z$）来解释$w$的存在。 未知参数是$f_x$和$f_y$（相机焦距）和（$c_x，c_y$），它们是以像素坐标表示的光学中心。 如果对于两个轴，使用具有给定纵横比（通常为1）的共同焦距，则$f_y = f_x * a$，并且在上部公式中，我们将具有单个焦距$f$。 包含这四个参数的矩阵称为<strong>相机矩阵</strong>。 虽然无论使用何种相机分辨率，失真系数都是相同的，但应根据校准分辨率的当前分辨率进行缩放。</p>
-<p>确定这两个矩阵的过程是校准。 通过基本几何方程计算这些参数。 使用的等式取决于所选择的校准对象。 目前，OpenCV支持三种类型的校准对象：</p>
-<ul>
-<li>古典黑白棋枰</li>
-<li>对称的圆圈图案</li>
-<li>不对称的圆圈图案</li>
-</ul>
-<p>基本上，您需要使用相机拍摄这些图案的快照，然后让OpenCV找到它们。 每个找到的模式都会产生一个新的等式。 要求解方程，您需要至少预定数量的模式快照，以形成一个良好的方程系统。 棋盘图案的数量较高，圆圈图案的数量较少。 例如，理论上棋盘图案需要至少两个快照。 但是，实际上我们的输入图像中存在大量噪声，因此为了获得良好的结果，您可能需要至少10个不同位置的输入模式的快照。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>OpenCV4.0中相机标定样例程序的目标：</p>
-<ul>
-<li>确定失真矩阵</li>
-<li>确定相机矩阵</li>
-<li>从摄像机，视频和图像文件列表中获取输入</li>
-<li>从XML / YAML文件中读取配置</li>
-<li>将结果保存到XML / YAML文件中</li>
-<li>计算重新投影误差</li>
-</ul>
-<h1 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h1><p>您也可以在OpenCV源库的samples / cpp / tutorial_code / calib3d / camera_calibration /文件夹中找到源代码，或从此处下载。要使用该程序，请使用-h参数运行它。该程序有一个重要的参数：配置文件的名称。如果没有给出，那么它将尝试打开名为“default.xml”的那个。这是XML格式的示例配置文件。在配置文件中，您可以选择将相机用作输入，视频文件或图像列表。如果选择最后一个，则需要创建一个配置文件，用于枚举要使用的图像。这是一个例子。要记住的重要部分是需要使用绝对路径或应用程序工作目录中的相对路径来指定图像。您可以在上面提到的samples目录中找到所有这些。</p>
-<p>应用程序启动时从配置文件中读取设置。虽然这是它的一个重要部分，但它与本教程的主题无关：摄像机校准。因此，我选择不在此处发布该部分的代码。有关如何执行此操作的技术背景，您可以在使用XML和YAML文件的文件输入和输出教程中找到。</p>
-<h1 id="构建相机标定程序"><a href="#构建相机标定程序" class="headerlink" title="构建相机标定程序"></a>构建相机标定程序</h1><p>切换到camera_calibration示例教程源代码所在目录，创建build临时目录并创建CMakeLists.txt文件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~&#x2F;opencv&#x2F;samples&#x2F;cpp&#x2F;tutorial_code&#x2F;calib3d&#x2F;camera_calibration&#x2F;</span><br><span class="line">mkdir build</span><br><span class="line">touch CMakeLists.txt</span><br></pre></td></tr></table></figure>
-
-<p>CMakeLists.txt文件内容如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cmake_minimum_required(VERSION 2.8)</span><br><span class="line">set (CMAKE_CXX_STANDARD 11)</span><br><span class="line">project( camera_calibration )</span><br><span class="line">find_package( OpenCV REQUIRED )</span><br><span class="line">include_directories( $&#123;OpenCV_INCLUDE_DIRS&#125; )</span><br><span class="line">add_executable( camera_calibration camera_calibration.cpp )</span><br><span class="line">target_link_libraries( camera_calibration $&#123;OpenCV_LIBS&#125; )</span><br></pre></td></tr></table></figure>
-
-<p>构建相机标定程序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd build</span><br><span class="line">cmake ..</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
-
-<h1 id="运行相机标定程序"><a href="#运行相机标定程序" class="headerlink" title="运行相机标定程序"></a>运行相机标定程序</h1><p>运行相机标定程序的目的在于获得相机的失真参数和内外参，其中相机的失真参数和内参只需标定一次便不再变化。下面以标定笔记本自带摄像头说明运行相机标定程序的步骤。</p>
-<h2 id="修改标定配置参数"><a href="#修改标定配置参数" class="headerlink" title="修改标定配置参数"></a>修改标定配置参数</h2><p>找到camera_calibration/in_VID5.xml文件，这是标定程序使用的配置文件，需要设置里面的几个参数。</p>
-<ul>
-<li>修改棋盘格交叉点参数</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- Number of inner corners per a item row and column. (square, circle) --&gt;</span><br><span class="line">&lt;BoardSize_Width&gt;9&lt;&#x2F;BoardSize_Width&gt;</span><br><span class="line">&lt;BoardSize_Height&gt;6&lt;&#x2F;BoardSize_Height&gt;</span><br></pre></td></tr></table></figure>
-
-<p>需要特别注意的是，这里的宽度和高度是指内部交叉点的个数，而不是方形格的个数。如图1所示的棋盘格，内部交叉点的宽度是9，高度是6。请务必填写正确，否则无法标定。</p>
-<p align="center">
-    <img src="images/chess.png" width="90%" alt="用于相机标定的棋盘格"/>
-</p>
-<center>图1  用于相机标定的棋盘格</center>
-
-<ul>
-<li>修改每格的宽度</li>
-</ul>
-<p>每格的宽度应设置为实际的毫米数，该参数的实际用途尚待考证。目前看来，即使设置的不准确也无大碍。根据我使用的棋盘格，设置棋盘格参数42。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- The size of a square in some user defined metric system (pixel, millimeter)--&gt;</span><br><span class="line">&lt;Square_Size&gt;42&lt;&#x2F;Square_Size&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>设置图像输入方式</li>
-</ul>
-<p>例程提供了三种输入方式。不过，如果待标定的摄像头已经接入电脑，建议使用input camera方式。该方式只需要设置视频输入设备号，对于笔记本电脑来说，通常0表示笔记本自带摄像头，1表示外接摄像头。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  &lt;!-- The input to use for calibration. </span><br><span class="line">        To use an input camera -&gt; give the ID of the camera, like &quot;1&quot;</span><br><span class="line">        To use an input video  -&gt; give the path of the input video, like &quot;&#x2F;tmp&#x2F;x.avi&quot;</span><br><span class="line">        To use an image list   -&gt; give the path to the XML or YAML file containing the list of the images, like &quot;&#x2F;tmp&#x2F;circles_list.xml&quot;</span><br><span class="line">        --&gt;</span><br><span class="line">&lt;Input&gt;&quot;0&quot;&lt;&#x2F;Input&gt;</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="执行相机标定程序"><a href="#执行相机标定程序" class="headerlink" title="执行相机标定程序"></a>执行相机标定程序</h2><p>运行如下命令开始标定笔记本自带摄像头，标定完成后将得到保存相关参数的文件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;camera_calibration ..&#x2F;in_VID5.xml</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://docs.opencv.org/4.1.0/db/df5/tutorial_linux_gcc_cmake.html" target="_blank" rel="noopener">Using OpenCV with gcc and CMake</a>,by opencv.</li>
-<li><a href="https://docs.opencv.org/4.1.0/d4/d94/tutorial_camera_calibration.html" target="_blank" rel="noopener">Camera calibration With OpenCV</a>,by opencv.</li>
-<li><a href="https://stackoverflow.com/questions/49012222/c11-activation-with-target-compile-feature-or-set-cmake-cxx-standard" target="_blank" rel="noopener">C++11 activation with <target_compile_feature> or &lt;set (CMAKE_CXX_STANDARD)&gt;</a>,by stackoverflow.</li>
-<li><a href="https://huangwang.github.io/2018/11/19/计算机视觉之相机成像原理与坐标系转换/">计算机视觉之相机成像原理与坐标系转换</a>,by jack huang.</li>
-<li><a href="https://www.jianshu.com/p/967a35dbb56a" target="_blank" rel="noopener">OpenCV 相机参数标定（Camera Calibration）</a>,by Wafei.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/32030223" target="_blank" rel="noopener">图像二维坐标转世界三维坐标</a>, by 橙子.</li>
-<li><a href="https://blog.csdn.net/cocoaqin/article/details/77485436" target="_blank" rel="noopener">solvepnp三维位姿估算</a>,by cocoaqin.</li>
-<li><a href="http://zhaoxuhui.top/blog/2018/03/08/%E5%8D%95%E7%9B%AESLAM%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80.html" target="_blank" rel="noopener">单目SLAM理论基础</a>,by zhaoxuhui.</li>
-<li><a href="http://zhaoxuhui.top/blog/2018/03/18/Location&PoseEstimationInSLAM.html" target="_blank" rel="noopener">SLAM相机位姿估计(1)</a>,by zhaoxuhui.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/24651968" target="_blank" rel="noopener">张氏法相机标定</a>,by Lstyle.</li>
-<li><a href="https://www.zhihu.com/question/29448299" target="_blank" rel="noopener">机器视觉的相机标定到底是什么？</a>, by zhihu.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/30813733" target="_blank" rel="noopener">相机标定究竟在标定什么？</a>,by 许翔翔.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2248,7 +2253,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">448</span>
+                    <span class="site-state-item-count">449</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2954,6 +2959,8 @@
   
   
     
+      
+        
       
     
       

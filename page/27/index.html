@@ -314,6 +314,200 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/20/GDAL%E5%A4%84%E7%90%86%E5%9C%B0%E5%9B%BE%E6%A0%85%E6%A0%BCTif%E9%BB%91%E8%BE%B9%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/10/20/GDAL%E5%A4%84%E7%90%86%E5%9C%B0%E5%9B%BE%E6%A0%85%E6%A0%BCTif%E9%BB%91%E8%BE%B9%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
+                  GDAL处理地图栅格Tif黑边的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-20 09:32:28" itemprop="dateCreated datePublished" datetime="2019-10-20T09:32:28+08:00">2019-10-20</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-02-02 20:45:41" itemprop="dateModified" datetime="2023-02-02T20:45:41+08:00">2023-02-02</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>通过地图下载软件LocaSpaceViewer下载卫星影像拼接成Tif文件后，会出现黑边问题。此外在Cesium中浏览瓦片地图会出现蓝色区域。下面即分析这两个问题出现的原因和解决方法。</p>
+<h1 id="下载方法"><a href="#下载方法" class="headerlink" title="下载方法"></a>下载方法</h1><p>LocaSpaceViewer中可选择行政区域下载卫星影像，这种方式拼接后的tif文件必然会出现黑边，如图1所示。</p>
+<p align="center">
+    <img src="images/black1.jpg" width="60%" alt="黑边问题1"/>
+</p>
+<center>图1 黑边问题1</center>
+
+<p>推荐在LocaSpaceViewer中以瓦片矩形区域下载卫星影像。具体方法为：</p>
+<ol>
+<li>在该链接<a href="https://www.maptiler.com/google-maps-coordinates-tile-bounds-projection/" target="_blank" rel="noopener">google-maps-coordinates-tile-bounds-projection</a>处查询瓦片的经纬度。</li>
+<li>在LocaSpaceViewer中绘制矩形，并将矩形顶点的经纬度设置为待下载瓦片的经纬度。</li>
+<li>在LocaSpaceViewer下载指定瓦片。</li>
+</ol>
+<p>该方法也可能会出现黑边，如图2所示。</p>
+<p align="center">
+    <img src="images/black2.jpg" width="60%" alt="黑边问题2"/>
+</p>
+<center>图1 黑边问题2</center>
+
+<p>此外，将tif文件转换成标准瓦片后，在Cesium中浏览瓦片地图会出现蓝色区域，如图3所示。</p>
+<p align="center">
+    <img src="images/blue.jpg" width="90%" alt="蓝边问题"/>
+</p>
+<center>图3 蓝边问题</center>
+
+<h1 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h1><p>对问题1，下载不规则边界的地图时，地图下载软件不会自动填充白色或变成透明，所以导致黑边问题1的产生。</p>
+<p>对问题2，产生原因目前不清楚，但因黑边的产生很有规则，所以解决方法会比较简单。</p>
+<p>对问题3，产生原因是蓝边对应的瓦片不存在。</p>
+<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>对问题1，可采用链接<a href="http://blog.locaspace.cn:81/?p=971" target="_blank" rel="noopener">用LSV下载的高清地图去黑边教程</a>指明的方法去除黑边，但使用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdal2tiles.py &lt;image&gt; &lt;tilesdir&gt;</span><br></pre></td></tr></table></figure>
+
+<p>生成瓦片时会报错，因此建议采用瓦片矩形区域下载卫星影像，不要下载行政区域卫星地图。</p>
+<p>对问题2，使用如下命令去除黑边：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 查看tif文件元数据信息</span><br><span class="line">gdalinfo 10.tif</span><br><span class="line">&#x2F;&#x2F; 根据黑边位置使用如下命令去除</span><br><span class="line">gdal_translate -srcwin 0 0 4096 4096 10.tif test.tif</span><br></pre></td></tr></table></figure>
+
+<p>对问题3，使用LocaSpaceViewer下载指定级别指定区域的卫星影像即可。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://huangwang.github.io/2018/06/13/Cesium%E5%8D%AB%E6%98%9F%E5%9C%B0%E5%9B%BE%E5%92%8C%E9%AB%98%E7%A8%8B%E6%95%B0%E6%8D%AE%E5%88%87%E7%89%87%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/">Cesium卫星地图和高程数据切片经验总结</a>,by jackhuang.</li>
+<li><a href="http://blog.locaspace.cn:81/?p=971" target="_blank" rel="noopener">用LSV下载的高清地图去黑边教程</a>,by LocaSpaceViewer.</li>
+<li><a href="https://www.cnblogs.com/nygfcn1234/p/8876711.html" target="_blank" rel="noopener">cesium加载离线tms切片</a>,by nygfcn.</li>
+<li><a href="https://www.cnblogs.com/mumu122GIS/p/11236694.html" target="_blank" rel="noopener">python gdal安装与简单使用</a>,by mumu122.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/141226948" target="_blank" rel="noopener">windows10 环境中安装GDAL及其python绑定</a>,by 蔚蓝小栈.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/13/Qt%E9%9B%86%E6%88%90OSG%E5%BC%80%E5%8F%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1950,194 +2144,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/09/26/VS2017%E6%89%93%E5%8C%85Windows%E6%A1%8C%E9%9D%A2%E7%A8%8B%E5%BA%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/26/VS2017%E6%89%93%E5%8C%85Windows%E6%A1%8C%E9%9D%A2%E7%A8%8B%E5%BA%8F/" itemprop="url">
-                  VS2017打包Windows桌面程序
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-09-26 12:37:33" itemprop="dateCreated datePublished" datetime="2019-09-26T12:37:33+08:00">2019-09-26</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2022-07-30 20:02:19" itemprop="dateModified" datetime="2022-07-30T20:02:19+08:00">2022-07-30</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Microsoft Visual Studio 2017 Installer Projects是一个易于发布 VS 项目的官方插件，下面简要介绍该插件的使用。</p>
-<h1 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h1><p>VS 工具栏 &gt; 工具 &gt; 扩展和更新 &gt; 联机 &gt; 搜索 Microsoft Visual Studio 2017 Installer Projects 并安装。安装完成后需要重启 VS。</p>
-<h1 id="添加-Setup-Project"><a href="#添加-Setup-Project" class="headerlink" title="添加 Setup Project"></a>添加 Setup Project</h1><p>打开VS2017，新建Setup Project。</p>
-<h1 id="配置安装项目"><a href="#配置安装项目" class="headerlink" title="配置安装项目"></a>配置安装项目</h1><h2 id="设置Setup-Project"><a href="#设置Setup-Project" class="headerlink" title="设置Setup Project"></a>设置Setup Project</h2><p>选中添加的Setup Project，配置其属性。比较重要的属性有：</p>
-<table>
-<thead>
-<tr>
-<th>key</th>
-<th>val</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Author</td>
-<td>一般填公司名，会使用其作为软件安装目录名</td>
-</tr>
-<tr>
-<td>Localization</td>
-<td>指定软件运行地语种，如果你的软件是多语言的话</td>
-</tr>
-<tr>
-<td>TargetPlatform</td>
-<td>指定软件目标平台 x86 or x64</td>
-</tr>
-<tr>
-<td>Version</td>
-<td>发布版本号</td>
-</tr>
-</tbody></table>
-<h2 id="桌面快捷方式"><a href="#桌面快捷方式" class="headerlink" title="桌面快捷方式"></a>桌面快捷方式</h2><h2 id="开始菜单快捷方式"><a href="#开始菜单快捷方式" class="headerlink" title="开始菜单快捷方式"></a>开始菜单快捷方式</h2><h2 id="设置快捷方式Icon"><a href="#设置快捷方式Icon" class="headerlink" title="设置快捷方式Icon"></a>设置快捷方式Icon</h2><h2 id="生成安装文件-msi"><a href="#生成安装文件-msi" class="headerlink" title="生成安装文件.msi"></a>生成安装文件.msi</h2><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.jianshu.com/p/514fc27d8bf3" target="_blank" rel="noopener">Microsoft Visual Studio 2017 Installer Projects</a>,by SkyRiN.</li>
-<li><a href="https://blog.csdn.net/jxyb2012/article/details/83009765" target="_blank" rel="noopener">Vistual Studio Community 2017 30天许可证过期</a>,by 井底一蛤蟆.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/26/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/28/">下一页</a>
+    <a class="extend prev" rel="prev" href="/page/26/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><span class="space">&hellip;</span><a class="page-number" href="/page/46/">46</a><a class="extend next" rel="next" href="/page/28/">下一页</a>
   </nav>
 
 
@@ -2180,7 +2191,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">450</span>
+                    <span class="site-state-item-count">451</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -314,6 +314,388 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/09/08/MySQL%E6%96%AD%E7%94%B5%E5%B4%A9%E6%BA%83%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/09/08/MySQL%E6%96%AD%E7%94%B5%E5%B4%A9%E6%BA%83%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%96%B9%E6%B3%95/" itemprop="url">
+                  MySQL断电崩溃数据恢复方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2022-09-08 15:29:47" itemprop="dateCreated datePublished" datetime="2022-09-08T15:29:47+08:00">2022-09-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-07-07 21:55:52" itemprop="dateModified" datetime="2023-07-07T21:55:52+08:00">2023-07-07</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>服务器使用wamp提供web服务，因断电导致mysql无法启动。下面记录恢复mysql的方法流程。</p>
+<h1 id="服务器配置"><a href="#服务器配置" class="headerlink" title="服务器配置"></a>服务器配置</h1><ul>
+<li>wampserver 3.2.0</li>
+<li>apache 2.4.41</li>
+<li>php 7.3.12</li>
+<li>mysql 8.0.18</li>
+</ul>
+<h1 id="mysql数据库恢复过程"><a href="#mysql数据库恢复过程" class="headerlink" title="mysql数据库恢复过程"></a>mysql数据库恢复过程</h1><h2 id="故障表现"><a href="#故障表现" class="headerlink" title="故障表现"></a>故障表现</h2><p>mysql后台服务无法启动。查找mysql.log日志文件发现innodb数据库引擎报如下错误，说明mysql表空间损坏，线程在数据页中读取不到需要的 page 和数据，因此判断mysql的innodb奔溃了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ERROR] InnoDB: Database page corruption on disk or a failed file read of page [page id: space&#x3D;86, page number&#x3D;4]. You may have to recover from a backup.</span><br></pre></td></tr></table></figure>
+
+<h2 id="修复方法"><a href="#修复方法" class="headerlink" title="修复方法"></a>修复方法</h2><h3 id="启动mysql后台服务"><a href="#启动mysql后台服务" class="headerlink" title="启动mysql后台服务"></a>启动mysql后台服务</h3><p>首先使用mysql的Forcing InnoDB Recovery特性，启动mysql后台服务。打开my.ini配置文件，设置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">innodb_force_recovery&#x3D;1</span><br></pre></td></tr></table></figure>
+
+<p>再重启mysql后台服务成功。</p>
+<p>innodb_force_recovery 可以设置为 1-6，大的值包含前面所有小于它的值的影响。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">1 (SRV_FORCE_IGNORE_CORRUPT): 忽略检查到的 corrupt 页。尽管检测到了损坏的 page 仍强制服务运行。一般设置为该值即可，然后 dump 出库表进行重建。</span><br><span class="line"></span><br><span class="line">2 (SRV_FORCE_NO_BACKGROUND): 阻止主线程的运行，如主线程需要执行 full purge 操作，会导致 crash。 阻止 master thread 和任何 purge thread 运行。若 crash 发生在 purge 环节则使用该值。</span><br><span class="line"></span><br><span class="line">3 (SRV_FORCE_NO_TRX_UNDO): 不执行事务回滚操作。</span><br><span class="line"></span><br><span class="line">4 (SRV_FORCE_NO_IBUF_MERGE): 不执行插入缓冲的合并操作。如果可能导致崩溃则不要做这些操作。不要进行统计操作。该值可能永久损坏数据文件。若使用了该值，则将来要删除和重建辅助索引。</span><br><span class="line"></span><br><span class="line">5 (SRV_FORCE_NO_UNDO_LOG_SCAN): 不查看重做日志，InnoDB 存储引擎会将未提交的事务视为已提交。此时 InnoDB 甚至把未完成的事务按照提交处理。该值可能永久性的损坏数据文件。</span><br><span class="line"></span><br><span class="line">6 (SRV_FORCE_NO_LOG_REDO): 不执行前滚的操作。恢复时不做 redo log roll-forward。使数据库页处于废止状态，继而可能引起 B 树或者其他数据库结构更多的损坏。</span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">为了安全，当设置参数值大于 0 后，可以对表进行 select, create, drop 操作,但 insert, update 或者 delete 这类操作是不允许的。MySQL 5.6.15 以后，当 innodb_force_recovery 的值大于等于 4 的时候，InnoDB 表处于只读模式。</span><br><span class="line"></span><br><span class="line">在值小于等于 3 时可以通过 select 来 dump 表，可以 drop 或者 create 表。MySQL 5.6.27 后大于 3 的值也支持 DROP TABLE；</span><br><span class="line"></span><br><span class="line">如果事先知道哪个表导致了崩溃则可 drop 掉这个表。如果碰到了由失败的大规模导入或大量 ALTER TABLE 操作引起的 runaway rollback，则可 kill 掉 mysqld 线程然后设置 innodb_force_recovery &#x3D; 3 使数据库重启后不进行 rollback。然后删除导致 runaway rollback 的表；</span><br><span class="line"></span><br><span class="line">如果表内的数据损坏导致不能 dump 整个表内容。那么附带 order by primary_key desc 从句的查询或许能够 dump 出损坏部分之后的部分数据；</span><br><span class="line"></span><br><span class="line">若使用更高的 innodb_force_recovery 值，那么一些损坏的数据结构可能引起复杂的查询无法运行。此时可能只能运行最基本的 select * from table 语句。</span><br></pre></td></tr></table></figure>
+
+<h3 id="修复备份mysql数据库"><a href="#修复备份mysql数据库" class="headerlink" title="修复备份mysql数据库"></a>修复备份mysql数据库</h3><p>使用如下命名自动修复数据库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqlcheck -u root -p --all-databases --auto-repair</span><br></pre></td></tr></table></figure>
+
+<p>修复完成后，使用如下命令备份重要数据库的数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 备份全部数据库（包含存储过程、自定义函数及事件） </span><br><span class="line">mysqldump -uroot -p --single-transaction -R -E --all-databases &gt; &#x2F;tmp&#x2F;all_database.sql </span><br><span class="line"></span><br><span class="line"># 备份指定数据库 </span><br><span class="line">mysqldump -uroot -p --single-transaction -R -E --databases db1 &gt; &#x2F;tmp&#x2F;db1.sql </span><br><span class="line">mysqldump -uroot -p --single-transaction -R -E --databases db1 db2 &gt; &#x2F;tmp&#x2F;db1_db2.sql </span><br><span class="line"></span><br><span class="line"># 备份部分表 </span><br><span class="line">mysqldump -uroot -pxxxxxx --single-transaction db1 tb1 &gt; &#x2F;tmp&#x2F;tb1.sql </span><br><span class="line">mysqldump -uroot -pxxxxxx --single-transaction db1 tb1 tb2 tb3 &gt; &#x2F;tmp&#x2F;tb.sql</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：一定要先修复再备份，防止备份数据时因页表错误丢失数据。</strong></p>
+<p>完成修复备份后，注释my.ini中innodb_force_recovery，再重启mysql数据库后台服务，如果成功，则修复完成。如果未成功，则准备利用备份数据重建数据库。</p>
+<h3 id="wamp备份修复"><a href="#wamp备份修复" class="headerlink" title="wamp备份修复"></a>wamp备份修复</h3><p>当mysql遭遇严重错误，修复备份后仍然不能启动，可考虑重装wamp。具体操作如下：</p>
+<ul>
+<li>备份整个wamp文件夹，以便保留mysql数据库文件、apache、php关键配置文件等。</li>
+<li>重装wamp后，重建mysql数据库，重设apache、php关键配置，参考之前备份的wamp文件夹</li>
+<li>apache主要配置httpd.conf和httpd-vhost.conf，设置documentroot和vhost</li>
+<li>php主要配置php.ini文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 针对mysql 8.0.18，使用如下命令修改root密码</span><br><span class="line">ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;123456&#39;</span><br><span class="line"></span><br><span class="line"># 通过增加参数 --default-character-set &#x3D; utf8 解决乱码问题</span><br><span class="line">mysql -u root -p &lt; path_to_import_file --default-character-set &#x3D; utf8</span><br></pre></td></tr></table></figure>
+
+<p>重装后配置遇到的问题请参考：</p>
+<ul>
+<li><a href="https://www.programminghunter.com/article/932374354/" target="_blank" rel="noopener">关于Apache本地能访问外网不能访问的问题</a></li>
+<li><a href="https://www.quyu.net/info/85.html" target="_blank" rel="noopener">php中的时区设置和php.ini中配置时区的方法</a></li>
+<li><a href="https://developer.aliyun.com/article/433022" target="_blank" rel="noopener">设置修改 Apache 文件根目录 (Document Root)</a></li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.sudops.com/mysql-innodb-crash-recover.html" target="_blank" rel="noopener">mysql InnoDB crash and recover</a>,by Fisher.</li>
+<li><a href="https://www.cnblogs.com/glon/p/6728380.html" target="_blank" rel="noopener">利用 Forcing InnoDB Recovery 特性解决 MySQL 重启失败的问题</a>,by GlonHo.</li>
+<li><a href="https://blog.csdn.net/L835311324/article/details/86767895" target="_blank" rel="noopener">INFORMATION_SCHEMA获取元数据</a>,by 十五十六.</li>
+<li><a href="https://www.51cto.com/article/672563.html" target="_blank" rel="noopener">MySQLDump的备份小技巧</a>,by MySQL技术.</li>
+<li><a href="https://www.cnblogs.com/bolang100/p/10755538.html" target="_blank" rel="noopener">MYSQL 自带4个默认数据库</a>,by bolang100.</li>
+<li><a href="https://wokan.chawen.org/post/918" target="_blank" rel="noopener">wamp设置mysql8.0.18初始密码问题</a>,by PHPer.</li>
+<li><a href="https://segmentfault.com/a/1190000020339810" target="_blank" rel="noopener">MySQL字符集和排序规则</a>,by 流逝的傷.</li>
+<li><a href="https://www.programminghunter.com/article/932374354/" target="_blank" rel="noopener">关于Apache本地能访问外网不能访问的问题</a>,by programminghunter.</li>
+<li><a href="https://www.quyu.net/info/85.html" target="_blank" rel="noopener">php中的时区设置和php.ini中配置时区的方法</a>,by quyu.</li>
+<li><a href="https://developer.aliyun.com/article/433022" target="_blank" rel="noopener">设置修改 Apache 文件根目录 (Document Root)</a>,by needrunning.</li>
+<li><a href="https://blog.csdn.net/u013967628/article/details/80633790" target="_blank" rel="noopener">windows 下自动备份mysql数据库，删除以前的数据库文件</a>,by 森林屿麓.</li>
+<li><a href="https://www.cnblogs.com/lkj371/p/15179949.html" target="_blank" rel="noopener">windows下mysql自动备份脚本</a>,by 雪竹子.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/08/27/Vuejs%E7%94%9F%E6%88%90Doc%E6%96%87%E6%A1%A3%E7%A4%BA%E4%BE%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/08/27/Vuejs%E7%94%9F%E6%88%90Doc%E6%96%87%E6%A1%A3%E7%A4%BA%E4%BE%8B/" itemprop="url">
+                  Vuejs生成Doc文档示例
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2022-08-27 11:15:10" itemprop="dateCreated datePublished" datetime="2022-08-27T11:15:10+08:00">2022-08-27</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-04-17 22:21:13" itemprop="dateModified" datetime="2023-04-17T22:21:13+08:00">2023-04-17</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="文档生成"><a href="#文档生成" class="headerlink" title="文档生成"></a>文档生成</h1><p>请参考<a href="https://blog.51cto.com/u_14213614/5226127" target="_blank" rel="noopener">使用vue+docxtemplater导出word</a>。</p>
+<h1 id="文档预览"><a href="#文档预览" class="headerlink" title="文档预览"></a>文档预览</h1><p>请参考<a href="https://juejin.cn/post/7087162603926978567" target="_blank" rel="noopener">docx-preview实现移动端word文件预览</a>。</p>
+<h1 id="PDF预览"><a href="#PDF预览" class="headerlink" title="PDF预览"></a>PDF预览</h1><p>使用docx-preview的文档预览方案不够完善，显示不够完美，因此采用后端使用docxtemplater文档生成，再使用libreoffice-convert转换成pdf，再下载到前端使用pdfjs预览pdf的方案。</p>
+<h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><ul>
+<li>nodejs: v12.18.4</li>
+<li>express: “^4.18.2”</li>
+<li>docxtemplater: “^3.36.1”</li>
+<li>libreoffice-convert: “^1.4.1”</li>
+<li>spark-md5: “^3.0.2”</li>
+<li>pdfjs: 2.16.105</li>
+</ul>
+<p><strong>注意：在使用libreoffice-convert将docx转换成pdf之前，需要安装libre office软件，使用默认配置安装。</strong></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.51cto.com/u_14213614/5226127" target="_blank" rel="noopener">使用vue+docxtemplater导出word</a>,by 实迷途其未远.</li>
+<li><a href="https://juejin.cn/post/7090061215057051679" target="_blank" rel="noopener">详细|vue中使用PDF.js预览文件实践</a>,by 灵扁扁.</li>
+<li><a href="https://juejin.cn/post/7087162603926978567" target="_blank" rel="noopener">docx-preview实现移动端word文件预览</a>,by LXLong.</li>
+<li><a href="https://juejin.cn/post/6909252620741787656" target="_blank" rel="noopener">vue项目，npm install方式使用pdfjs</a>,by 下一秒.</li>
+<li><a href="https://kalacloud.com/blog/how-build-vuejs-pdf-viewer-pdfjs/" target="_blank" rel="noopener">Vue 实现 PDF 文件在线预览 - 手把手教你写 Vue PDF 预览功能</a>,by 蒋川.</li>
+<li><a href="https://blog.csdn.net/xinlingdexueba/article/details/79555678" target="_blank" rel="noopener">PDF.js访问远程服务器报file origin does not match viewer’s</a>,by 心灵的学霸.</li>
+<li><a href="https://www.cnblogs.com/candlia/p/11919885.html" target="_blank" rel="noopener">深入理解xhr responseType blob arrayBuffer document text json使用</a>,by 柚子=_=.</li>
+<li><a href="https://blog.csdn.net/weixin_53312997/article/details/124794126" target="_blank" rel="noopener">【实战分享】js生成word(docx)，以及将word转成pdf解决方案分享</a>,by 前端开发小陈.</li>
+<li><a href="https://stackoverflow.com/questions/64811076/libreoffice-convert-not-working-in-nodejs" target="_blank" rel="noopener">libreoffice-convert not working in nodejs</a>,by stackoverflow.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/08/27/Vuejs%E5%86%85%E8%81%94%E7%BC%96%E8%BE%91%E7%AE%80%E5%8D%95%E7%A4%BA%E4%BE%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1515,311 +1897,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/07/11/CPlusPlus%E4%B9%8B%E5%AE%8F%E5%AE%9A%E4%B9%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2022/07/11/CPlusPlus%E4%B9%8B%E5%AE%8F%E5%AE%9A%E4%B9%89/" itemprop="url">
-                  CPlusPlus之宏定义
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2022-07-11 20:31:42 / 修改时间：20:32:18" itemprop="dateCreated datePublished" datetime="2022-07-11T20:31:42+08:00">2022-07-11</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.cnblogs.com/fnlingnzb-learner/p/6903966.html" target="_blank" rel="noopener">C++宏定义详解</a>,by Boblim.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/07/05/Wireshark%E6%8A%93%E5%8F%96%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E8%A7%86%E9%A2%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2022/07/05/Wireshark%E6%8A%93%E5%8F%96%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E8%A7%86%E9%A2%91/" itemprop="url">
-                  Wireshark抓取微信小程序中的视频
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2022-07-05 19:28:08" itemprop="dateCreated datePublished" datetime="2022-07-05T19:28:08+08:00">2022-07-05</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2023-11-16 12:32:51" itemprop="dateModified" datetime="2023-11-16T12:32:51+08:00">2023-11-16</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最终发现还是Fiddler抓取微信小程序中的视频比较靠谱。Fiddler截取HTTPS报文的原理请参考<a href="https://www.cnblogs.com/sucretan2010/p/11526467.html" target="_blank" rel="noopener">Fiddler抓包原理和使用详解 </a>。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/baidu_38290612/article/details/114522978" target="_blank" rel="noopener">用Wireshark下载微信小程序里的视频【图文教程】</a>,by 微风星雨.</li>
-<li><a href="https://blog.csdn.net/tp7309/article/details/53057429" target="_blank" rel="noopener">Wireshark抓包微信Web详细分析HTTPS通信中TLS/SSL工作原理</a>,by 亦游.</li>
-<li><a href="https://www.cnblogs.com/zyfd/p/9552451.html" target="_blank" rel="noopener">Wireshark对HTTPS数据的解密</a>,by tianshidan1998.</li>
-<li><a href="https://blog.51cto.com/liuzhengwei521/2430427" target="_blank" rel="noopener">基于wireshark抓包解析TLS1.2的通讯过程</a>,by weilovepan520 .</li>
-<li><a href="https://www.laoqingcai.com/tls1.2-premasterkey/" target="_blank" rel="noopener">TLS1.2 PreMasterSecret And MasterSecret</a>,by 老青菜.</li>
-<li><a href="https://www.csdn.net/tags/MtTaMg0sNTk3MTM5LWJsb2cO0O0O.html" target="_blank" rel="noopener">fiddler抓取微信小程序失败解决方案</a>,by csdn.</li>
-<li><a href="https://blog.csdn.net/zd123_/article/details/110630876" target="_blank" rel="noopener">Fiddler获取微信视频太好用了呀</a>,by 给自己上发条.</li>
-<li><a href="https://www.cnblogs.com/sucretan2010/p/11526467.html" target="_blank" rel="noopener">Fiddler抓包原理和使用详解 </a>,by sucre_tan.</li>
-<li><a href="https://github.com/lecepin/WeChatVideoDownloader/issues/66" target="_blank" rel="noopener">WeChatVideoDownloader下载微信视频号视频</a>,by LazzyFatty.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1867,7 +1944,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">452</span>
+                    <span class="site-state-item-count">454</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

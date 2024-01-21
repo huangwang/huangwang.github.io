@@ -314,6 +314,327 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/05/31/OpenCV%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/05/31/OpenCV%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  OpenCV学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2022-05-31 23:40:23" itemprop="dateCreated datePublished" datetime="2022-05-31T23:40:23+08:00">2022-05-31</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2022-07-10 20:13:16" itemprop="dateModified" datetime="2022-07-10T20:13:16+08:00">2022-07-10</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="背景提取"><a href="#背景提取" class="headerlink" title="背景提取"></a>背景提取</h1><p>当观察场景的是一个固定的相机，背景几乎保持不变。在这种情况下，感兴趣的元素是在场景中运动的物体。我们将这些运动的物体称为前景，为了提取出这些前景物体，我们需要对背景建模，然后将当前帧的模型与背景模型进行比较，以检测前景物体。</p>
+<p>运动前景对象的有效检测对于对象跟踪、目标分类、行为理解等后期处理至关重要。区分前景对象，关键的一个问题是：确定一个非常合适的背景。背景从象素的角度来理解，每一个象素就是有可能是前景点，也有可能是背景点，那么我们就要防止背景中误进入原属于前景点的对象，目前有几种常用的方法，但分别有利弊。</p>
+<p>具体请参考<a href="https://blog.csdn.net/qq_41498261/article/details/103633583" target="_blank" rel="noopener">OpenCV视频篇——背景/前景提取</a>。</p>
+<h2 id="固定背景提取法"><a href="#固定背景提取法" class="headerlink" title="固定背景提取法"></a>固定背景提取法</h2><h2 id="根据视频序列动态建立背景"><a href="#根据视频序列动态建立背景" class="headerlink" title="根据视频序列动态建立背景"></a>根据视频序列动态建立背景</h2><h3 id="均值法、中值法、滑动均值滤波、单高斯"><a href="#均值法、中值法、滑动均值滤波、单高斯" class="headerlink" title="均值法、中值法、滑动均值滤波、单高斯"></a>均值法、中值法、滑动均值滤波、单高斯</h3><h3 id="帧间差分法"><a href="#帧间差分法" class="headerlink" title="帧间差分法"></a>帧间差分法</h3><p>背景就是上一帧图像。每一帧与上一帧进行差分运算。</p>
+<p>优点：速度较快，稳定性较好。</p>
+<p>缺点：可能出现物体的“空洞现象”，空洞是由于某一大型运动物体，它的两帧之间存在象素十分接近的重合部分，所以导致这部分被差分剪去了。</p>
+<h3 id="混合高斯法"><a href="#混合高斯法" class="headerlink" title="混合高斯法"></a>混合高斯法</h3><h1 id="参考连接"><a href="#参考连接" class="headerlink" title="参考连接"></a>参考连接</h1><ol>
+<li><a href="https://blog.csdn.net/LaoYuanPython/article/details/109105916" target="_blank" rel="noopener">OpenCV-Python图像乘法运算cv2.multiply函数详解及像素值溢出归一化处理</a>,by LaoYuanPython.</li>
+<li><a href="https://www.cnblogs.com/shine-lee/p/9884551.html" target="_blank" rel="noopener">OpenCV各版本差异与演化，从1.x到4.0</a>,by 日拱一卒.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/37777074" target="_blank" rel="noopener">主成分分析（PCA）原理详解</a>.</li>
+<li><a href="https://www.ruanyifeng.com/blog/2017/12/image-and-wave-filters.html" target="_blank" rel="noopener">图像与滤波</a>,by 阮一峰.</li>
+<li><a href="https://blog.csdn.net/wsp_1138886114/article/details/102553174" target="_blank" rel="noopener">OpenCV—python 视频分析背景提取与前景提取</a>,by SongpingWang.</li>
+<li><a href="https://blog.csdn.net/qq_41498261/article/details/103633583" target="_blank" rel="noopener">OpenCV视频篇——背景/前景提取</a>,by WaitFoF.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/126580277" target="_blank" rel="noopener">40. 如何消除摄影中的运动模糊?</a>,by Wang Hawk.</li>
+<li><a href="https://its401.com/article/weixin_43532890/114523558" target="_blank" rel="noopener">基于opencv对高空拍摄视频消抖处理_js君-程序员ITS401</a>,by its401.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/38343732" target="_blank" rel="noopener">马尔科夫随机场(MRF)在深度学习图像处理中的应用-图像分割、纹理迁移</a>,by OLDPAN.</li>
+<li><a href="http://www.apmygs.com/2479.html" target="_blank" rel="noopener">图像去噪（噪声）的主要算法</a>,by 工程之家.</li>
+<li><a href="https://blog.csdn.net/liyuqian199695/article/details/49148053" target="_blank" rel="noopener">opencv2中的背景/前景分离（类BackgroundSubtractor）</a>,by 阳光下的Smiles.</li>
+<li><a href="https://blog.csdn.net/jinshengtao/article/details/26278725" target="_blank" rel="noopener">混合高斯背景建模原理及实现</a>,by taotao1233.</li>
+<li><a href="https://blog.csdn.net/Small_Munich/article/details/111957481" target="_blank" rel="noopener">【OpenCV学习系列】之Background Subtraction</a>,by AutoSleep.</li>
+<li><a href="https://blog.csdn.net/iracer/article/details/51339377" target="_blank" rel="noopener">OpenCV —数据持久化: FileStorage类的数据存取操作与示例</a>,by iracer.</li>
+<li><a href="https://www.cnblogs.com/freshmen/p/4534966.html" target="_blank" rel="noopener">OpenCV中InputArray和OutputArray使用方法</a>,by Curnane.</li>
+<li><a href="https://blog.csdn.net/llh_1178/article/details/77833447" target="_blank" rel="noopener">图像处理之灰色图转化为RGB图像</a>,by llh_1178.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%87%A0%E4%BD%95%E4%B8%AD%E5%BF%83" target="_blank" rel="noopener">几何中心</a>,by wikipedia.</li>
+<li><a href="https://www.cnblogs.com/xudong-bupt/p/3522457.html" target="_blank" rel="noopener">C++ vector 删除符合条件的元素</a>,by 旭东.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/05/27/%E5%8F%8C%E7%9B%AE%E6%B5%8B%E8%B7%9D%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/05/27/%E5%8F%8C%E7%9B%AE%E6%B5%8B%E8%B7%9D%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  双目测距笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2022-05-27 15:38:14 / 修改时间：15:42:47" itemprop="dateCreated datePublished" datetime="2022-05-27T15:38:14+08:00">2022-05-27</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>双目测距实际操作分4个步骤：相机标定——双目校正——双目匹配——计算深度信息。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://cloud.tencent.com/developer/article/1824593" target="_blank" rel="noopener">一篇文章认识《双目立体视觉》</a>,by 一颗小树x.</li>
+<li><a href="https://blog.csdn.net/piaoxuezhong/article/details/79016615" target="_blank" rel="noopener">双目视觉测距原理，数学推导及三维重建资源</a>,by Naruto_Q.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/05/19/nginx%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1831,298 +2152,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/03/04/python%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2022/03/04/python%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E6%96%B9%E6%B3%95/" itemprop="url">
-                  python项目组织方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2022-03-04 09:19:04 / 修改时间：09:39:06" itemprop="dateCreated datePublished" datetime="2022-03-04T09:19:04+08:00">2022-03-04</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>如何科学的组织是构建大型项目的基础，可是人员分工协作的前提。下面介绍Python项目的组织方法</p>
-<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><h2 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h2><h2 id="包"><a href="#包" class="headerlink" title="包"></a>包</h2><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.cnblogs.com/ningskyer/articles/6025964.html" target="_blank" rel="noopener">Python 大型项目基础：包、模块、类的组织</a>,by 小天儿.</li>
-<li><a href="https://marlous.github.io/2019/04/03/Python-%E8%BD%AF%E4%BB%B6%E9%A1%B9%E7%9B%AE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E7%BB%84%E7%BB%87/" target="_blank" rel="noopener">Python 软件项目文件结构组织</a>,by Marlous.</li>
-<li><a href="https://pyguide.readthedocs.io/zh_CN/latest/writing/structure.html" target="_blank" rel="noopener">组织好你的项目</a>,by hitchhiker.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/02/26/ProcessMonitor%E7%9B%91%E6%8E%A7%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2022/02/26/ProcessMonitor%E7%9B%91%E6%8E%A7%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/" itemprop="url">
-                  ProcessMonitor监控软件安装过程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2022-02-26 18:50:52 / 修改时间：19:00:10" itemprop="dateCreated datePublished" datetime="2022-02-26T18:50:52+08:00">2022-02-26</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近在安装Office2013的过程中，提示需要卸载已安装的Office2010，然而卸载了Office2010之后，依然提示该错误，无法安装Office2013。</p>
-<p>分析其原因，可能是卸载Office2010不干净，在注册表中还存留Office2010的注册表信息，而当运行Office2013的Setup.exe安装程序时，刚好读到存留的Office2010注册表信息，于是Office2013的Setup.exe安装程序认为Office2010没有卸载，从而无法继续安装。</p>
-<p>解决方法是找到并删除Office2013的Setup.exe安装程序读取的Office2010的注册表信息，该条注册表信息导致Office2013的Setup.exe无法继续。</p>
-<p>可以使用Process Monitor监控软件解决该问题。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/wcs_sdu/article/details/80065386" target="_blank" rel="noopener">ProcessMonitor文件以及注册表监视器的使用</a>,by Amrecs.</li>
-<li><a href="https://www.cnblogs.com/zhaotianff/p/15172987.html" target="_blank" rel="noopener">如何知道安装程序在进行安装时对你的电脑到底做了什么？</a>,by zhaotianff.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2170,7 +2199,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">452</span>
+                    <span class="site-state-item-count">454</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

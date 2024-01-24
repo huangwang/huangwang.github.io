@@ -314,6 +314,203 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/18/%E7%B3%BB%E7%BB%9F%E4%BB%BF%E7%9C%9F%E4%B8%AD%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E7%9A%84%E6%80%9D%E8%80%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/18/%E7%B3%BB%E7%BB%9F%E4%BB%BF%E7%9C%9F%E4%B8%AD%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E7%9A%84%E6%80%9D%E8%80%83/" itemprop="url">
+                  系统仿真中一些问题的思考
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-18 18:41:42 / 修改时间：22:49:50" itemprop="dateCreated datePublished" datetime="2018-12-18T18:41:42+08:00">2018-12-18</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>系统仿真（system simulation）就是根据系统分析的目的，在分析系统各要素性质及其相互关系的基础上，建立能描述系统结构或行为过程的、且具有一定逻辑关系或数量关系的仿真模型，据此进行试验或定量分析，以获得正确决策所需的各种信息。</p>
+<h1 id="系统仿真与仿真游戏的区别"><a href="#系统仿真与仿真游戏的区别" class="headerlink" title="系统仿真与仿真游戏的区别"></a>系统仿真与仿真游戏的区别</h1><p>系统仿真与仿真游戏本质上没有区别，都是计算机程序对现实的模拟，所不同的是各自对仿真保真度（Simulation Fidelity）的要求不同。</p>
+<p>仿真保真度（Simulation Fidelity）用于描述仿真精度，模拟真实对应物有多近似：</p>
+<ul>
+<li>低保真：对系统的最小模拟，接受输入产生输出</li>
+<li>中等保真：对刺激能自动响应，有限精度</li>
+<li>高保真：接近不可辨识或者尽可能地接近真实系统</li>
+</ul>
+<p>通常系统仿真对仿真保真度的要求比仿真游戏要高。</p>
+<h1 id="计算步长与采样周期"><a href="#计算步长与采样周期" class="headerlink" title="计算步长与采样周期"></a>计算步长与采样周期</h1><p>采用计算机进行数值模拟或系统仿真时，经常需要采用数值解法求解模型方程。系统模型一般采用微分方程描述（也有其它形式），采用数值方法求解，就是采用迭代法逐步逼近。</p>
+<h2 id="计算步长"><a href="#计算步长" class="headerlink" title="计算步长"></a>计算步长</h2><p>积分与微分是互逆。对一个曲线（包括直线）方程求积分，其实就是求曲线与横轴围成的面积。该面积可以用一系列间隔很小的面积块相加得到。这些小间隔的宽度就是计算步长。显然，纯粹从精度的角度考虑，步长越小越精确，因为近似面积更接近实际图形面积。</p>
+<h2 id="采样周期"><a href="#采样周期" class="headerlink" title="采样周期"></a>采样周期</h2><p>采样周期是对一个实际信号测量时，相邻两次测量之间的时间间隔。有时候，采样周期和计算步长相似，但采样周期要考虑实际限制，且是时间单位，而计算步长不一定是时间单位，且相对自由些。两者在数值上没必然联系。<strong>对于同一问题，且都是时间量纲的话，采样周期大于等于计算步长，前者是后者的整数倍</strong>。</p>
+<p>系统仿真包含系统模型求解，也就是在每个采样周期内，要解出模型方程。控制系统仿真时在采样周期内要解出两个模型方程：控制器模型和系统模型。</p>
+<p><strong>一个采样周期内可对系统模型迭代求解一次或多次</strong>。</p>
+<h2 id="计算步长和采样周期大小的选择"><a href="#计算步长和采样周期大小的选择" class="headerlink" title="计算步长和采样周期大小的选择"></a>计算步长和采样周期大小的选择</h2><p>关于采样周期和计算步长的选择，一般考虑以下因素：</p>
+<ul>
+<li><p>从求解精度考虑，越小越好。</p>
+</li>
+<li><p>从计算量考虑，越大越好。</p>
+</li>
+</ul>
+<h2 id="采样周期与每秒帧数-Frames-Per-Second，FPS"><a href="#采样周期与每秒帧数-Frames-Per-Second，FPS" class="headerlink" title="采样周期与每秒帧数(Frames Per Second，FPS)"></a>采样周期与每秒帧数(Frames Per Second，FPS)</h2><p>采样周期以秒为单位，则</p>
+<p>$$FPS=\frac{1}{采样周期}$$</p>
+<p>FPS是指每秒画面重绘的次数，用于衡量画面切换速度。FPS越大，则动画效果越平滑，当FPS小于20时，一般就能明显感受到画面的卡滞现象。</p>
+<p>当FPS足够大(比如达到60)，再增加帧数人眼也不会感受到明显的变化，反而相应地就要消耗更多资源(比如电影的胶片就需要更长了，或是电脑刷新画面需要消耗计算资源等等)。因此，选择一个适中的FPS即可。</p>
+<p>NTSC标准的电视FPS是30，PAL标准的电视FPS是25，电影的FPS标准为24。</p>
+<h1 id="WebGL动画"><a href="#WebGL动画" class="headerlink" title="WebGL动画"></a>WebGL动画</h1><p>WebGL是一种JavaScript API，用于在不使用插件的情况下在任何兼容的网页浏览器中呈现交互式2D和3D图形。但要产生WebGL动画，需要对运动的场景不停的采样，即不停地拍照。JavaScript的采样函数主要有setInterval方法和requestAnimationFrame方法。</p>
+<h2 id="setInterval方法"><a href="#setInterval方法" class="headerlink" title="setInterval方法"></a>setInterval方法</h2><blockquote>
+<p>如果要设置特定的FPS(虽然严格来说，即使使用这种方法，JavaScript也不能保证帧数精确性)，可以使用JavaScript DOM定义的方法：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setInterval(fn,mesc)</span><br></pre></td></tr></table></figure>
+
+<p>其中，fn是每过msec毫秒执行的函数，如果将fn定义为重绘画面的函数，就能实现动画效果。setInterval函数返回一个变量timer，如果需要停止重绘，需要使用clearInterval方法，并传入该变量timer。</p>
+<h2 id="requestAnimationFrame方法"><a href="#requestAnimationFrame方法" class="headerlink" title="requestAnimationFrame方法"></a>requestAnimationFrame方法</h2><blockquote>
+<p>大多数时候，我们并不在意多久重绘一次，这时候就适合用requestAnimationFrame方法了。它告诉浏览器在合适的时候调用指定函数，通常可能达到60FPS。</p>
+</blockquote>
+<ul>
+<li>requestAnimationFrame同样有对应的cancelAnimationFrame取消动画</li>
+<li>和setInterval不同的是，由于requestAnimationFrame只请求一帧画面，因此，除了在init函数中需要调用，在被其调用的函数中需要再次调用requestAnimationFrame</li>
+</ul>
+<h2 id="使用stat-js记录FPS"><a href="#使用stat-js记录FPS" class="headerlink" title="使用stat.js记录FPS"></a>使用stat.js记录FPS</h2><p>stat.js是Three.js的作者Mr.Doob的另一个有用的JavaScript库。很多情况下，我们希望知道实时的FPS信息，从而更好地监测动画效果。这时候，stat.js就能提供一个很好的帮助，它占据屏幕中的一小块位置(如左上角)，显示实时的FPS信息。</p>
+<p>在HTML中引用stat.js:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type&#x3D;&quot;text&#x2F;javascript&quot; src&#x3D;&quot;&#x2F;&#x2F;mrdoob.github.io&#x2F;stats.js&#x2F;build&#x2F;stats.min.js&quot;&gt;&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>再使用如下代码监视实时FPS：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">var stats &#x3D; new Stats();</span><br><span class="line">stats.showPanel( 1 ); &#x2F;&#x2F; 0: fps, 1: ms, 2: mb, 3+: custom</span><br><span class="line">document.body.appendChild( stats.dom );</span><br><span class="line"></span><br><span class="line">function animate() &#123;</span><br><span class="line"></span><br><span class="line">	stats.begin();</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F; monitored code goes here</span><br><span class="line"></span><br><span class="line">	stats.end();</span><br><span class="line"></span><br><span class="line">	requestAnimationFrame( animate );</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">requestAnimationFrame( animate );</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://blog.sciencenet.cn/blog-341979-776318.html" target="_blank" rel="noopener">计算步长和采样周期</a>,by 王永林.</li>
+<li><a href="http://www.ufgame.com/5951.html" target="_blank" rel="noopener">离散和连续模拟之间的实际区别是什么？</a>,by UF Game.</li>
+<li><a href="https://baike.baidu.com/item/系统仿真" target="_blank" rel="noopener">系统仿真</a>,by 百度百科.</li>
+<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-physicsengines/index.html" target="_blank" rel="noopener">开源的物理引擎</a>,by M. Jones.</li>
+<li><a href="https://zh.wikipedia.org/wiki/数值分析" target="_blank" rel="noopener">数值分析</a>,by wikipedia.</li>
+<li><a href="https://segmentfault.com/a/1190000012238927" target="_blank" rel="noopener">three.js 入门详解(二)</a>,by Levi.</li>
+<li><a href="https://zh.wikipedia.org/wiki/WebGL" target="_blank" rel="noopener">WebGL</a>,by wikipedia.</li>
+<li><a href="https://github.com/mrdoob/stats.js" target="_blank" rel="noopener">stats.js</a>, by mydoob.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/33058983" target="_blank" rel="noopener">详解JavaScript中的Event Loop（事件循环）机制</a>,by 暮雨清秋.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/17/%E6%92%B0%E5%86%99%E5%AD%A6%E6%9C%AF%E8%AE%BA%E6%96%87%E7%9A%84%E6%80%9D%E8%80%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1967,174 +2164,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/05/%E4%B8%89%E7%BB%B4%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95%E7%AE%80%E4%BB%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/05/%E4%B8%89%E7%BB%B4%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95%E7%AE%80%E4%BB%8B/" itemprop="url">
-                  三维建模方法简介
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-05 21:17:42" itemprop="dateCreated datePublished" datetime="2018-12-05T21:17:42+08:00">2018-12-05</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2022-12-19 11:43:16" itemprop="dateModified" datetime="2022-12-19T11:43:16+08:00">2022-12-19</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>三维建模是一种常用技术，奈何心向往之，却没有时间去系统学习，也没有做出过一个作品。下面将我看到的一些好的有关三维建模的资料记录一下，以做备忘。</p>
-<h1 id="三维建模方法"><a href="#三维建模方法" class="headerlink" title="三维建模方法"></a>三维建模方法</h1><h2 id="选择软件"><a href="#选择软件" class="headerlink" title="选择软件"></a>选择软件</h2><p>当前三维软件层出不穷，既有商业级的3ds MAX、MAYA、Creator，也有免费使用的Blender、MilkShape。</p>
-<h2 id="下载蓝图"><a href="#下载蓝图" class="headerlink" title="下载蓝图"></a>下载蓝图</h2><p>飞行仿真的三维模型主要有飞行器、机场建筑等。和大多数虚拟现实中使用的模型一样，并不需要CAD级别的精度，一般是下载一些图片或飞机整体蓝图作为蓝本，采用多边形建模的方法分部建模。蓝图下载网址首推：</p>
-<p><a href="http://www.the-blueprints.com/" target="_blank" rel="noopener">the‑blueprints.com</a></p>
-<p>这里免费提供各种汽车、国内外飞机、船舶的三视图图纸下载。</p>
-<h2 id="多边形建模"><a href="#多边形建模" class="headerlink" title="多边形建模"></a>多边形建模</h2><p>采用下载的蓝图，作为贴图放置在相应的投影平面上，然后采用多边形建模的方法画出各部分细节。多边形建模的思想就是采用一个诸如一个最接近的多边形，进行点线面的操作就可以绘制出复杂的飞机外形。</p>
-<p>多边形建模从最基本的外形开始变形，可以从点线面及整体四个级别的操作，在越需要突出外形细节处用越多的点，通过建立网格模型，然后使用网格平滑功能生成平滑的曲面模型。</p>
-<p>建模时不能有重复的点线面等几何体，否则即使表面上已经贴好了材质，但载入程序后，往往会因为Z向深度冲突的原因产生闪烁效果。其细节取决于您的需求，需要花费大量的时间。</p>
-<h2 id="贴图"><a href="#贴图" class="headerlink" title="贴图"></a>贴图</h2><p>真实世界的模型带有各种彩色并具有光泽度。完成了几何体的建模对于一个模型来说只完成了一小半工作，还需要给模型添加材质。</p>
-<p>与一般的模型不同，飞行器出于气动设计的考虑，其表面模型一般成流线型的曲面，且部件组成复杂，界线较难区分，即使是UVW贴图也难以胜任。因此，对飞行器的贴图主要采用3ds MAX的UVW展开贴图技术贴图。</p>
-<p>一个模型最好只有一个贴图，因为贴图数目过多零散会影响计算机载入三维模型时间和效率。因此，一般将整个模型各个部件组合为一个多边形，各部件为元素，待完成UVW贴图后再分离成单独的部件。UVW展开贴图有多重形式，如长方体展开（即按六个视图投影）、平面展开等，按需选择。</p>
-<p>在一张贴图上展开整个模型的UV坐标显然是有限的，需要根据现实精度调整各个部分的贴图大小。保存这些展开的贴图坐标并渲染输出UV模板图像文件。UV模板图像其实就是整个模型的贴图的界线图像，通过Photoshop等图像处理软件处理，采用尽可能真实的图像放置在对应的区域。最后将材质赋给对象即完成贴图渲染。</p>
-<h2 id="数据导出"><a href="#数据导出" class="headerlink" title="数据导出"></a>数据导出</h2><p>直接采用3ds MAX绘制的三维模型当然是<em>.max格式，它不能为外界程序读取。这时就需要根据自己的开发环境选择导出的数据格式，比如用开源的OSG做仿真开发，就需要OSGExp插件的支持，导成</em>.ive、<em>.osg、</em>.osgb等格式即可。但无论导出何种格式，<strong>切记保证模型质心与建模的原点不能相差不远，还要注意光照、贴图格式以及单位问题</strong>。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/34555581" target="_blank" rel="noopener">飞行仿真–1.三维建模篇</a>,by WFYX.</li>
-<li><a href="https://www.zhihu.com/question/381828861/answer/1206628295" target="_blank" rel="noopener">调整边缘画笔工具怎么用？</a>,by zhihu.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2182,7 +2211,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">456</span>
+                    <span class="site-state-item-count">457</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2895,9 +2924,9 @@
       
     
       
-        
-      
     
+      
+        
       
     
       

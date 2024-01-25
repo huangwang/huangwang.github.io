@@ -19868,6 +19868,15 @@ console.log(y);</code></pre></li>
 <li>配置VNC服务器</li>
 </ul>
 <p>默认的配置文件在/lib/systemd/system/vncserver@.service，以及/etc/tigervnc/目录。</p>
+<p>编辑用户配置文件:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo vim &#x2F;etc&#x2F;tigervnc&#x2F;vncserver.users</span><br><span class="line"></span><br><span class="line"># TigerVNC User assignment</span><br><span class="line">#</span><br><span class="line"># This file assigns users to specific VNC display numbers.</span><br><span class="line"># The syntax is &lt;display&gt;&#x3D;&lt;username&gt;. E.g.:</span><br><span class="line">#</span><br><span class="line"># :1&#x3D;andrew</span><br><span class="line"># :2&#x3D;lisa</span><br><span class="line"># :1 表示这个启动的端口为。5901，之后一次类推 :2 为 5902;</span><br><span class="line"># :2&#x3D;pgsql 表示 5902 为 pgsql 用户的远程连接;</span><br><span class="line">:2&#x3D;pgsql</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置VNC服务器开机自启动</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 将创建vncserver@:2.service符号链接到vncserver@.service</span><br><span class="line">systemctl enable vncserver@:2.service</span><br><span class="line"># 启动服务</span><br><span class="line">systemctl start  vncserver@:2.service</span><br></pre></td></tr></table></figure>
+
+<p>在 @: 后面的数字 2 定义了 VNC 服务将会监听的显示端口，我们将会使用 2 ，这意味着 VNC 服务器将会监听 5902端口。</p>
 <ul>
 <li>连接VNC服务器</li>
 </ul>

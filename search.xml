@@ -9763,7 +9763,7 @@
 <ul>
 <li>call</li>
 </ul>
-<p>call命令用来从一个批处理文件调用另一个批处理文件。只有当被调用的批处理文件执行完成时，才返回。</p>
+<p>call命令用来从一个批处理文件调用另一个批处理文件。<strong>只有当被调用的批处理文件执行完成时，才返回。</strong></p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">call pm2-startup install</span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -9784,10 +9784,42 @@
 <li>%i</li>
 </ul>
 <p>for循环在cmd命令行中的固定用法for %i in (set) do (…)，循环变量格式为%i</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for %i in (1,2,3,5,8) do echo %i</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>%%i</li>
 </ul>
 <p>for循环在bat处理程序中的固定用法for %%i in (set) do (…)，循环变量格式为%%i</p>
+<ul>
+<li>&amp;  </li>
+</ul>
+<p>顺序执行多条命令，而不管命令是否执行成功</p>
+<ul>
+<li>&amp;&amp;</li>
+</ul>
+<p>顺序执行多条命令，当碰到执行出错的命令后将不执行后面的命令</p>
+<ul>
+<li>||</li>
+</ul>
+<p>顺序执行多条命令，当碰到执行正确的命令后将不执行后面的命令（即：只有前面命令执行错误时才执行后面命令）</p>
+<ul>
+<li>|  </li>
+</ul>
+<p>管道命令 前一个命令的执行结果输出到后一个命令 如：help|more</p>
+<ul>
+<li><blockquote>
+</blockquote>
+</li>
+</ul>
+<p>清除文件中原有的内容后再写入</p>
+<ul>
+<li><blockquote>
+<blockquote>
+</blockquote>
+</blockquote>
+</li>
+</ul>
+<p>追加内容到文件末尾，而不会清除原有的内容主要将本来显示在屏幕上的内容输出到指定文件中指定文件如果不存在，则自动生成该文件</p>
 <h1 id="批处理脚本示例"><a href="#批处理脚本示例" class="headerlink" title="批处理脚本示例"></a>批处理脚本示例</h1><p>示例1：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">set PATH&#x3D;E:\Simulation\x64\Release\;%PATH%;</span><br><span class="line">E:</span><br><span class="line">cd E:\Simulation\x64\Release\</span><br><span class="line">cd BlueSimu</span><br><span class="line">start FlightSimServer.exe</span><br><span class="line">cd ..&#x2F;RedSimu</span><br><span class="line">start FlightSimServer.exe</span><br><span class="line">cd ..</span><br><span class="line">start Simulation.exe</span><br><span class="line">start Simulation.exe</span><br><span class="line">pause</span><br></pre></td></tr></table></figure>
 
@@ -9802,6 +9834,7 @@
 <li><a href="https://blog.dangjiahe.com/2018/05/09/windows%E6%89%B9%E5%A4%84%E7%90%86%E2%80%94%E2%80%94%E5%8F%98%E9%87%8F%EF%BC%8C%E5%91%BD%E4%BB%A4%E6%8D%A2%E8%A1%8C/" target="_blank" rel="noopener">windows批处理——变量，命令换行</a>,by undefined.</li>
 <li><a href="https://blog.csdn.net/weixin_44256803/article/details/106636505" target="_blank" rel="noopener">Batch批处理字符串操作、for循环学习记录</a>,by blingbling_110.</li>
 <li><a href="https://blog.csdn.net/albertsh/article/details/102985590" target="_blank" rel="noopener">.bat批处理（八）：各种形式的变量%0、%i、%%i、var、%var%、!var!的含义和区别</a>,by AlbertS.</li>
+<li><a href="https://blog.csdn.net/iloli/article/details/44339893" target="_blank" rel="noopener">Bat命令学习-批处理中的&amp;、&amp;&amp;、|、||、&gt;、&gt;&gt;符号</a>,by iloli.</li>
 </ol>
 ]]></content>
       <tags>
@@ -12475,7 +12508,7 @@
 <li>随着服务的不停升级，总有些意想不到的事发生，比如cache写错了导致内存溢出，故障不可避免，每次核心服务一挂，影响一大片，人心慌慌，如何控制故障的影响面？服务是否可以功能降级？或者资源劣化？</li>
 </ul>
 <p>为解决上述问题，可采用以下关键技术。</p>
-<h2 id="消息队列架构"><a href="#消息队列架构" class="headerlink" title="消息队列架构"></a>消息队列架构</h2><p>消息对列通过消息对象分解系统耦合性，不同子系统处理同一个消息。</p>
+<h2 id="消息队列架构"><a href="#消息队列架构" class="headerlink" title="消息队列架构"></a>消息队列架构</h2><p>消息队列通过消息对象分解系统耦合性，不同子系统处理同一个消息。</p>
 <p align="center">
     <img src="images/msgQueue.jpg" width="90%" alt="消息队列原理"/>
 </p>
@@ -12514,6 +12547,7 @@
 <li><a href="https://github.com/doocs/advanced-java" target="_blank" rel="noopener">互联网 Java 工程师进阶知识完全扫盲</a>,by dooc.</li>
 <li><a href="https://juejin.im/post/5a5ee63d518825732914748c" target="_blank" rel="noopener">聊聊Dubbo（一）：为何选择</a>, by 猿码道.</li>
 <li><a href="https://juejin.im/post/5d84e21f6fb9a06ac8248149" target="_blank" rel="noopener">“12306”的架构到底有多牛逼？</a>,by 绘你一世倾城.</li>
+<li><a href="https://read.engineerscodex.com/p/how-pinterest-scaled-to-11-million" target="_blank" rel="noopener">How Pinterest scaled to 11 million users with only 6 engineers</a>,by engineerscodex.</li>
 </ol>
 ]]></content>
       <tags>
@@ -20301,6 +20335,33 @@ console.log(y);</code></pre></li>
       <tags>
         <tag>笔记本</tag>
         <tag>JavaScript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>FTP大文件传输之哈希验证</title>
+    <url>/2024/03/02/FTP%E5%A4%A7%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E4%B9%8B%E5%93%88%E5%B8%8C%E9%AA%8C%E8%AF%81/</url>
+    <content><![CDATA[<p>最近使用Filezilla下载GB级别的压缩文件时，发现文件完整性验证失败，导致压缩包无法解压。下载大文件出问题的原因是什么呢？如何解决该问题呢？下面简单探讨一下。</p>
+<h1 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h1><p>根据数字通信系统的基本模型（如图1所示）可知，大文件传输失败的原因最有可能是信道存在干扰。</p>
+<p align="center">
+    <img src="images/communication.jpg" width="50%" alt="数字通信系统模型"/>
+</p>
+<center>图1  数字通信系统模型</center>
+
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><p>目前采用的解决方案如下：</p>
+<ol>
+<li>将GB级别的文件分卷压缩，放入文件夹中。</li>
+<li>使用HashCalculator工具对文件夹中分卷压缩包进行哈希计算，并将结果保存到文件夹中。</li>
+<li>使用Filezilla下载整个文件夹</li>
+<li>使用HashCalculator工具对下载的文件夹进行哈希验证，哪个分卷压缩包哈希验证不通过，就重新下载该分卷压缩包。</li>
+</ol>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/508470963?utm_id=0" target="_blank" rel="noopener">数字通信系统模型（重点内容）</a>,by 通信小达人.</li>
+<li><a href="https://github.com/hrpzcf/HashCalculator" target="_blank" rel="noopener">HashCalculator</a>,by hrpzcf.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>计算机网络</tag>
       </tags>
   </entry>
 </search>

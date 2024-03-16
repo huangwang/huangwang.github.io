@@ -6339,6 +6339,18 @@
 <p>提示：解压完成后，将 [protoc安装目录]/bin 路径添加到PATH环境变量中</p>
 </blockquote>
 <p>打开cmd，命令窗口执行protoc命令，没有报错的话，就已经安装成功。</p>
+<h1 id="源码编译"><a href="#源码编译" class="headerlink" title="源码编译"></a>源码编译</h1><p>因为需要protobuf的header、lib、dll用于测试，需要编译protobuf的源代码。请参考：</p>
+<ul>
+<li><a href="https://blog.csdn.net/dai_jing/article/details/83010324" target="_blank" rel="noopener">protobuf的编译和使用，在windows平台上</a></li>
+<li><a href="https://www.itheima.com/news/20200421/135308.html" target="_blank" rel="noopener">如何在Qt下编译以及使用protobuf？【C++培训】</a></li>
+<li><a href="https://blog.csdn.net/hp_cpp/article/details/106140704" target="_blank" rel="noopener">解决protobuf的Undefined reference to google::protobuf cxx11</a></li>
+</ul>
+<p>如果使用qt进行开发，请参考：</p>
+<ul>
+<li><a href="https://blog.csdn.net/lb1885727/article/details/74949883" target="_blank" rel="noopener">Qt MinGW版编译使用protobuf</a></li>
+<li><a href="https://www.cnblogs.com/h2zZhou/p/10253840.html" target="_blank" rel="noopener">QT中使用MinGW 编译的protobuf库–包含库的生成和使用</a></li>
+</ul>
+<p><strong>注意：项目依赖库使用的编译链接工具应与项目使用的编译链接工具相同。例如：都使用 msvc2017 64编译链接。或者考虑跨平台使用mingw 64编译链接。</strong></p>
 <h1 id="创建-proto-文件，定义数据结构"><a href="#创建-proto-文件，定义数据结构" class="headerlink" title="创建 .proto 文件，定义数据结构"></a>创建 .proto 文件，定义数据结构</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 指定protobuf的版本，proto3是最新的语法版本</span><br><span class="line">syntax &#x3D; &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">package dream;</span><br><span class="line"></span><br><span class="line">message helloworld</span><br><span class="line">&#123;</span><br><span class="line">   int32     id &#x3D; 1;  &#x2F;&#x2F; ID</span><br><span class="line">   string    str &#x3D; 2;  &#x2F;&#x2F; str</span><br><span class="line">   int32     opt &#x3D; 3;  &#x2F;&#x2F;optional field</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h1 id="将-proto文件，编译成指定语言类库"><a href="#将-proto文件，编译成指定语言类库" class="headerlink" title="将.proto文件，编译成指定语言类库"></a>将.proto文件，编译成指定语言类库</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">protoc -I&#x3D;$SRC_DIR --cpp_out&#x3D;$DST_DIR $SRC_DIR&#x2F;addressbook.proto</span><br></pre></td></tr></table></figure>

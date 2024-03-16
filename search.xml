@@ -6351,15 +6351,30 @@
 <li><a href="https://www.cnblogs.com/h2zZhou/p/10253840.html" target="_blank" rel="noopener">QT中使用MinGW 编译的protobuf库–包含库的生成和使用</a></li>
 </ul>
 <p><strong>注意：项目依赖库使用的编译链接工具应与项目使用的编译链接工具相同。例如：都使用 msvc2017 64编译链接。或者考虑跨平台使用mingw 64编译链接。</strong></p>
-<h1 id="创建-proto-文件，定义数据结构"><a href="#创建-proto-文件，定义数据结构" class="headerlink" title="创建 .proto 文件，定义数据结构"></a>创建 .proto 文件，定义数据结构</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 指定protobuf的版本，proto3是最新的语法版本</span><br><span class="line">syntax &#x3D; &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">package dream;</span><br><span class="line"></span><br><span class="line">message helloworld</span><br><span class="line">&#123;</span><br><span class="line">   int32     id &#x3D; 1;  &#x2F;&#x2F; ID</span><br><span class="line">   string    str &#x3D; 2;  &#x2F;&#x2F; str</span><br><span class="line">   int32     opt &#x3D; 3;  &#x2F;&#x2F;optional field</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="创建-proto-文件，定义数据结构"><a href="#创建-proto-文件，定义数据结构" class="headerlink" title="创建 .proto 文件，定义数据结构"></a>创建 .proto 文件，定义数据结构</h1><p>proto3 的语法请参考：</p>
+<ul>
+<li><a href="https://www.liwenzhou.com/posts/Go/Protobuf3-language-guide-zh/" target="_blank" rel="noopener">Protocol Buffers V3中文语法指南[翻译]</a></li>
+</ul>
+<p>proto3 与 proto2 的区别请参考：</p>
+<ul>
+<li><a href="https://blog.csdn.net/huanggang982/article/details/77944174" target="_blank" rel="noopener">Protobuf 的 proto3 与 proto2 的区别</a></li>
+</ul>
+<p>下面是一个proto简单示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 指定protobuf的版本，proto3是最新的语法版本</span><br><span class="line">syntax &#x3D; &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">package dream;</span><br><span class="line"></span><br><span class="line">message helloworld</span><br><span class="line">&#123;</span><br><span class="line">   int32     id &#x3D; 1;  &#x2F;&#x2F; ID</span><br><span class="line">   string    str &#x3D; 2;  &#x2F;&#x2F; str</span><br><span class="line">   int32     opt &#x3D; 3;  &#x2F;&#x2F;optional field</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h1 id="将-proto文件，编译成指定语言类库"><a href="#将-proto文件，编译成指定语言类库" class="headerlink" title="将.proto文件，编译成指定语言类库"></a>将.proto文件，编译成指定语言类库</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">protoc -I&#x3D;$SRC_DIR --cpp_out&#x3D;$DST_DIR $SRC_DIR&#x2F;addressbook.proto</span><br></pre></td></tr></table></figure>
+
+<p>在生成的头文件中添加如下宏定义：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define PROTOBUF_USE_DLLS</span><br></pre></td></tr></table></figure>
 
 <h1 id="测试程序"><a href="#测试程序" class="headerlink" title="测试程序"></a>测试程序</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://colobu.com/2019/10/03/protobuf-ultimate-tutorial-in-go/" target="_blank" rel="noopener">Protobuf 终极教程</a>,by 鸟窝.</li>
 <li><a href="https://zhuanlan.zhihu.com/p/141415216" target="_blank" rel="noopener">Protobuf通信协议详解：代码演示、详细原理介绍等</a>,by CPP加油站.</li>
 <li><a href="https://www.liwenzhou.com/posts/Go/Protobuf3-language-guide-zh/" target="_blank" rel="noopener">Protocol Buffers V3中文语法指南[翻译]</a>,by 李文周.</li>
 <li><a href="https://www.cnblogs.com/WindSun/p/12594801.html" target="_blank" rel="noopener">Qt中使用Protobuf简单案例(Windows + msvc)</a>,by WindSun.</li>
+<li><a href="https://blog.csdn.net/huanggang982/article/details/77944174" target="_blank" rel="noopener">Protobuf 的 proto3 与 proto2 的区别</a>,by huanggang982.</li>
+<li><a href="https://www.eet-china.com/mp/a63366.html" target="_blank" rel="noopener">长文图解Google的protobuf思考、设计、应用</a>,by 嵌入式客栈.</li>
+<li><a href="https://www.cnblogs.com/niuben/p/14212711.html" target="_blank" rel="noopener">protobuf优缺点及编码原理</a>,by 牛奔.</li>
 </ol>
 ]]></content>
       <tags>
@@ -20432,6 +20447,38 @@ console.log(y);</code></pre></li>
 </blockquote>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://mybatis.org/mybatis-3/zh_CN/index.html" target="_blank" rel="noopener">什么是 MyBatis？</a>,by mybatis.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot学习笔记</title>
+    <url>/2024/03/16/SpringBoot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>Spring Boot 是一个基于 Java 的开源框架，用于以最小的工作量编写独立的、生产级的基于 Spring 的应用程序。Spring Boot 是 Spring Java 平台的约定优先于配置的扩展，旨在帮助在创建基于 Spring 的应用程序时最大程度地减少配置问题。</p>
+<p>由于其易用性和健壮性，它被广泛用于构建微服务、Web 应用程序和其他基于 Java 的项目。</p>
+<h1 id="常用工具介绍"><a href="#常用工具介绍" class="headerlink" title="常用工具介绍"></a>常用工具介绍</h1><h2 id="MyBatis"><a href="#MyBatis" class="headerlink" title="MyBatis"></a>MyBatis</h2><h2 id="MyBatis-Plus"><a href="#MyBatis-Plus" class="headerlink" title="MyBatis-Plus"></a>MyBatis-Plus</h2><h2 id="SWagger"><a href="#SWagger" class="headerlink" title="SWagger"></a>SWagger</h2><p>Swagger是一个可以根据你的代码，自动生成接口文档的一个工具，并且可以用作接口测试工具。</p>
+<p>请参考：</p>
+<ul>
+<li><a href="https://blog.csdn.net/ldy1016/article/details/136502829" target="_blank" rel="noopener">springboot3.x集成SpringDoc Swagger3</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/529772728" target="_blank" rel="noopener">从 SpringFox 迁移到 SpringDoc</a></li>
+</ul>
+<h1 id="跨域问题"><a href="#跨域问题" class="headerlink" title="跨域问题"></a>跨域问题</h1><blockquote>
+<p>在用SpringBoot开发后端服务时，我们一般是提供接口给前端使用，但前端通过浏览器调我们接口时，浏览器会有个同源策略的限制，即协议，域名，端口任一不一样时都会导致跨域，这篇文章主要介绍跨域的几种常用解决方案。</p>
+</blockquote>
+<p>具体方案请参考：</p>
+<ul>
+<li><a href="https://juejin.cn/post/7229139006080253989" target="_blank" rel="noopener">SpringBoot 项目解决跨域的几种方案</a></li>
+</ul>
+<h2 id="测试跨域问题"><a href="#测试跨域问题" class="headerlink" title="测试跨域问题"></a>测试跨域问题</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var xhr &#x3D; new XMLHttpRequest()</span><br><span class="line">xhr.open(&#39;GET&#39;, &#39;http:&#x2F;&#x2F;localhost:8080&#x2F;user&#39;) &#x2F;&#x2F; 替换请求的方法和地址</span><br><span class="line">xhr.send()</span><br><span class="line">xhr.onreadystatechange &#x3D; function() &#123;</span><br><span class="line">    if (xhr.readyState &#x3D;&#x3D; 4 &amp;&amp; xhr.status &#x3D;&#x3D; 200) &#123;</span><br><span class="line">        console.log(xhr.responseText)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://spring.io/projects/spring-boot" target="_blank" rel="noopener">Spring Boot</a>,by spring.</li>
+<li><a href="https://www.bilibili.com/video/BV1U44y1W77D/" target="_blank" rel="noopener">从0开始带你手撸一套SpringBoot+Vue后台管理系统，让小白能跟着学会的项目实战</a>,by 程序员青戈.</li>
+<li><a href="https://juejin.cn/post/7229139006080253989" target="_blank" rel="noopener">SpringBoot 项目解决跨域的几种方案</a>,by JK凯.</li>
+<li><a href="https://blog.csdn.net/ldy1016/article/details/136502829" target="_blank" rel="noopener">springboot3.x集成SpringDoc Swagger3</a>,by 咚咚阳.</li>
 </ol>
 ]]></content>
       <tags>

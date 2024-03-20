@@ -314,6 +314,176 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/05/11/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/11/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  MongoDB学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-05-11 08:01:59" itemprop="dateCreated datePublished" datetime="2021-05-11T08:01:59+08:00">2021-05-11</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-02-11 11:10:01" itemprop="dateModified" datetime="2023-02-11T11:10:01+08:00">2023-02-11</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MongoDB是一种NoSQL类型数据库，与关系型数据库相比，它具有很强的灵活性，无需类似Sequelize这样的ORM库，即可直接访问。例如，使用nodejs访问MongoDB：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const &#123; MongoClient &#125; &#x3D; require(&quot;mongodb&quot;);</span><br><span class="line">const db&#x3D; await MongoClient.connect(appConfig.mongoUri);</span><br><span class="line">var dbo &#x3D; db.db(appConfig.mongodbName);</span><br><span class="line">var actions &#x3D; await dbo.collection(&quot;actions&quot;).find(&#123;&quot;equipmentId&quot;:req.query.equipmentId&#125;, &#123;</span><br><span class="line">    &quot;limit&quot;:parseInt(req.query.limit) || 25,</span><br><span class="line">    &quot;skip&quot;:parseInt(req.query.offset)|| 0</span><br><span class="line">&#125;).toArray();</span><br><span class="line">db.close()</span><br></pre></td></tr></table></figure>
+
+<p>尽管MongoDB很灵活，但在设计其数据模型时，为了确保数据组织的一致性，应遵循一下原则:</p>
+<ul>
+<li>一个文档就是一个实体对象，应精心设计</li>
+<li>文档中包含的任何对象，都对应实体</li>
+</ul>
+<h1 id="分页查询及排序"><a href="#分页查询及排序" class="headerlink" title="分页查询及排序"></a>分页查询及排序</h1><p>请参考以下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var departments &#x3D; await dbConnect.collection(&quot;departments&quot;).find(&#123;&#125;, &#123;</span><br><span class="line">            &quot;limit&quot;:parseInt(req.query.limit) || 25,</span><br><span class="line">            &quot;skip&quot;:parseInt(req.query.offset)|| 0</span><br><span class="line">        &#125;).sort(&#123;_id:-1&#125;).toArray();</span><br></pre></td></tr></table></figure>
+<h1 id="更新数组中某个对象的字段值"><a href="#更新数组中某个对象的字段值" class="headerlink" title="更新数组中某个对象的字段值"></a>更新数组中某个对象的字段值</h1><p>请参考<a href="https://zackku.com/mongo-update-array/" target="_blank" rel="noopener">MongoDB更新数组中某个对象的元素</a>。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://docs.mongodb.com/manual/" target="_blank" rel="noopener">The MongoDB 4.4 Manual</a>,by mongodb.</li>
+<li><a href="https://sequelize.org/" target="_blank" rel="noopener">Sequelize ORM</a>,by sequelize.</li>
+<li><a href="https://www.cnblogs.com/capqueen/p/MongoDBPagination.html" target="_blank" rel="noopener">MongoDB 分页查询的方法及性能</a>,by 笋干.</li>
+<li><a href="https://testerhome.com/articles/23818" target="_blank" rel="noopener">移动测试开发 Mongodb 的分页优化及索引使用</a>,by <a href="mailto:opentest-oper@360.cn">opentest-oper@360.cn</a>.</li>
+<li><a href="https://zackku.com/mongo-update-array/" target="_blank" rel="noopener">MongoDB更新数组中某个对象的元素</a>,by zackku.</li>
+<li><a href="https://blog.csdn.net/yaomingyang/article/details/78696759" target="_blank" rel="noopener">Mongodb数组操作$(update)、$占位符更新嵌套数组、嵌套文档集合</a>,by OceanSky6.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/05/10/Hexo%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1912,209 +2082,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/03/13/OpenGL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/03/13/OpenGL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
-                  OpenGL学习笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2021-03-13 21:57:46" itemprop="dateCreated datePublished" datetime="2021-03-13T21:57:46+08:00">2021-03-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2022-11-27 20:07:06" itemprop="dateModified" datetime="2022-11-27T20:07:06+08:00">2022-11-27</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>OpenGL（英语：Open Graphics Library，译名：开放图形库或者“开放式图形库”）是用于渲染2D、3D矢量图形的跨语言、跨平台的应用程序编程接口（API）。这个接口由近350个不同的函数调用组成，用来从简单的图形比特绘制复杂的三维景象。而另一种程序接口系统是仅用于Microsoft Windows上的Direct3D。OpenGL常用于CAD、虚拟现实、科学可视化程序和电子游戏开发。</p>
-<h1 id="核心模式与立即渲染模式"><a href="#核心模式与立即渲染模式" class="headerlink" title="核心模式与立即渲染模式"></a>核心模式与立即渲染模式</h1><p>早期的OpenGL使用立即渲染模式（Immediate mode，也就是固定渲染管线），这个模式下绘制图形很方便。OpenGL的大多数功能都被库隐藏起来，开发者很少有控制OpenGL如何进行计算的自由。而开发者迫切希望能有更多的灵活性。随着时间推移，规范越来越灵活，开发者对绘图细节有了更多的掌控。立即渲染模式确实容易使用和理解，但是效率太低。因此从OpenGL3.2开始，规范文档开始废弃立即渲染模式，并鼓励开发者在OpenGL的核心模式(Core-profile)下进行开发，这个分支的规范完全移除了旧的特性。</p>
-<p>当使用OpenGL的核心模式时，OpenGL迫使我们使用现代的函数。当我们试图使用一个已废弃的函数时，OpenGL会抛出一个错误并终止绘图。现代函数的优势是更高的灵活性和效率，然而也更难于学习。立即渲染模式从OpenGL实际运作中抽象掉了很多细节，因此它在易于学习的同时，也很难让人去把握OpenGL具体是如何运作的。现代函数要求使用者真正理解OpenGL和图形编程，它有一些难度，然而提供了更多的灵活性，更高的效率，更重要的是可以更深入的理解图形编程。</p>
-<h1 id="着色器"><a href="#着色器" class="headerlink" title="着色器"></a>着色器</h1><blockquote>
-<p>着色器(Shader)是运行在GPU上的小程序。这些小程序为图形渲染管线的某个特定部分而运行。从基本意义上来说，着色器只是一种把输入转化为输出的程序。着色器也是一种非常独立的程序，因为它们之间不能相互通信；它们之间唯一的沟通只有通过输入和输出。</p>
-</blockquote>
-<p align="center">
-    <img src="images/RenderingPipeline.png" width="50%" alt="GPU渲染管线"/>
-</p>
-<center>图1 GPU渲染管线</center>
-
-<h2 id="着色器分类"><a href="#着色器分类" class="headerlink" title="着色器分类"></a>着色器分类</h2><p>每个着色器使用这两个关键字设定输入和输出，只要一个输出变量与下一个着色器阶段的输入匹配，它就会传递下去。但在顶点和片段着色器中会有点不同。</p>
-<h3 id="顶点着色器"><a href="#顶点着色器" class="headerlink" title="顶点着色器"></a>顶点着色器</h3><p>用来描述顶点属性（如位置、颜色等）的程序。顶点是二维或者三维空间中的一个点，比如二维或者三维图形的端点或交点。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;顶点着色器程序</span><br><span class="line">var VSHADER_SCOURCE &#x3D; </span><br><span class="line">&#39;void main() &#123;\n&#39; +</span><br><span class="line">  &#39; gl_Position &#x3D; vec4(0.0, 0.0, 0.0, 1.0);\n&#39; +</span><br><span class="line">  &#39; gl_PointSize &#x3D; 5.0;\n&#39;+</span><br><span class="line">&#39;&#125;\n&#39;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="细分着色器"><a href="#细分着色器" class="headerlink" title="细分着色器"></a>细分着色器</h3><p>曲面细分着色器包含细分控制着色器 (Tessellation Control Shader / Hull Shader) 和细分计算着色器 (Tessellation Evaluation Shader / Domain Shader) 。在这个阶段可以操作三角形 (tri patch) 、四边形 (quad patch) 或者线段 (isoline) 等 patch 。</p>
-<p>低精度网格、置换贴图和法线贴图等，在曲面细分着色器 (Tessellation Shader) 中，使用合适的细分算法，可以生成高精度网格，从而提高游戏画面的细节。</p>
-<h3 id="几何着色器"><a href="#几何着色器" class="headerlink" title="几何着色器"></a>几何着色器</h3><p>几何着色器(Geometry Shader)是由第四代显卡着色器架构 Shader Model 4 正式引入的第三个着色器，属于渲染管线的一个可选阶段，位于曲面细分(Tessellation)和光栅化(Rasterization)之间。顶点着色器以顶点数据作为输入数据，而几何着色器则以完整的图元(Primitive)作为输入数据。例如，以三角形的三个顶点作为输入，然后输出对应的图元。与顶点着色器不能销毁或创建顶点不同，几何着色器的主要亮点就是可以创建或销毁几何图元，此功能让GPU可以实现一些有趣的效果。例如，根据输入图元类型扩展为一个或更多其他类型的图元，或者不输出任何图元。需要注意的是，几何着色器的输出图元不一定和输入图元相同。几何着色器的一个拿手好戏就是将一个点扩展为一个四边形(即两个三角形)。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#version 330 core</span><br><span class="line">layout (points) in;</span><br><span class="line">layout (line_strip, max_vertices &#x3D; 2) out;</span><br><span class="line"></span><br><span class="line">void main() &#123;</span><br><span class="line">    gl_Position &#x3D; gl_in[0].gl_Position + vec4(-0.1, 0.0, 0.0, 0.0);</span><br><span class="line">    EmitVertex();</span><br><span class="line"></span><br><span class="line">    gl_Position &#x3D; gl_in[0].gl_Position + vec4(0.1, 0.0, 0.0, 0.0);</span><br><span class="line">    EmitVertex();</span><br><span class="line"></span><br><span class="line">    EndPrimitive();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="片元着色器"><a href="#片元着色器" class="headerlink" title="片元着色器"></a>片元着色器</h3><p>进行逐片元处理过程如光照的程序。片元可理解为像素。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;片元着色器程序</span><br><span class="line">var FSHADER_SCOURCE &#x3D; </span><br><span class="line">&#39;void main() &#123;\n&#39; +</span><br><span class="line">      &#39; gl_FragColor &#x3D; vec4(1.0, 0.0, 0.0, 1.0);\n&#39; +</span><br><span class="line">   &#39;&#125;\n&#39;;</span><br></pre></td></tr></table></figure>
-
-<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><h2 id="attribute变量"><a href="#attribute变量" class="headerlink" title="attribute变量"></a>attribute变量</h2><p>attribute变量是只能在vertex shader中使用的变量。（它不能在fragment shader中声明attribute变量，也不能被fragment shader中使用）</p>
-<p>一般用attribute变量来表示一些顶点的数据，如：顶点坐标，法线，纹理坐标，顶点颜色等。</p>
-<h2 id="uniform变量"><a href="#uniform变量" class="headerlink" title="uniform变量"></a>uniform变量</h2><p>Uniform变量简单理解就是一个GLSL shader中的全局常量，可以随意在任意shader(vertex shader, geometry shader, or fragment shader)访问，不同的shader中uniform是一起链接的，初始化之后，不能修改其值，否则会引起编译错误。</p>
-<h2 id="varying变量"><a href="#varying变量" class="headerlink" title="varying变量"></a>varying变量</h2><p>varying变量是vertex和fragment shader之间做数据传递用的。一般vertex shader修改varying变量的值，然后fragment shader使用该varying变量的值。因此varying变量在vertex和fragment shader二者之间的声明必须是一致的。application不能使用此变量。</p>
-<h1 id="坐标系"><a href="#坐标系" class="headerlink" title="坐标系"></a>坐标系</h1><p>OSG中采用的X轴正方向向右，Y轴正方向朝里，Z轴正方向向上。</p>
-<p>OpenGL中采用的X轴正方向向右，Y轴正方向朝上，Z轴正方向朝外。</p>
-<p align="center">
-    <img src="images/axis.jpg" width="80%" alt="OSG与OpenGL坐标系"/>
-</p>
-<center>图2 OSG与OpenGL坐标系</center>
-
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/OpenGL" target="_blank" rel="noopener">OpenGL</a>,by wikipedia.</li>
-<li><a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">LearnOpenGL</a>,by Joey de Vries.</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E7%9D%80%E8%89%B2%E5%99%A8" target="_blank" rel="noopener">着色器</a>,by wikipedia.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/76775024" target="_blank" rel="noopener">几何着色器</a>,by 学无止境.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/51714057" target="_blank" rel="noopener">曲面细分着色器 1 简介</a>,by MultivacX.</li>
-<li><a href="https://www.khronos.org/opengl/wiki/Rendering_Pipeline_Overview" target="_blank" rel="noopener">Rendering Pipeline Overview</a>,by opengl homepage.</li>
-<li><a href="https://www.cnblogs.com/zenny-chen/p/4280100.html" target="_blank" rel="noopener">OpenGL 4.0的Tessellation Shader（细分曲面着色器）</a>,by  zenny_chen.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/33093968" target="_blank" rel="noopener">OpenGL基础 - 统一变量Uniform</a>,by 靖空间.</li>
-<li><a href="https://www.cnblogs.com/graphics/archive/2010/07/10/1774809.html" target="_blank" rel="noopener">点到平面的距离公式</a>,by 翰墨小生.</li>
-<li><a href="http://www.cppblog.com/acmiyou/archive/2009/08/02/91942.html" target="_blank" rel="noopener">OSG 碰撞检测之多面体求交器代码解读(PloytopeIntersector)</a>,by 风一样消逝的青春.</li>
-<li><a href="https://blog.csdn.net/dcrmg/article/details/53133112" target="_blank" rel="noopener">OpenGL（八） 显示列表</a>,by -牧野-.</li>
-<li><a href="https://xiaobazhang.github.io/2016/07/31/OSG-coordinate/" target="_blank" rel="noopener">OSG三维渲染引擎–OSG渲染引擎中坐标系</a>,by 苏黎.</li>
-<li><a href="https://www.cnblogs.com/clingingboy/archive/2010/10/26/1861928.html" target="_blank" rel="noopener">OpenGL学习笔记(12)基本光照</a>,by Clingingboy.</li>
-<li><a href="https://www.jianshu.com/p/eed3ebdad4fb" target="_blank" rel="noopener">GLSL 三种变量类型（uniform，attribute和varying）理解</a>,by wo不懂.</li>
-<li><a href="https://blog.51cto.com/u_15753490/5581681" target="_blank" rel="noopener">OpenGL之glPolygonMode函数的用法</a>,by 草上爬_.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2162,7 +2129,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">464</span>
+                    <span class="site-state-item-count">465</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

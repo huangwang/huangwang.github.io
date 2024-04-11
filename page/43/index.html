@@ -314,6 +314,182 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/09/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AD%A6%E4%B9%A0%E4%B9%8BSFTP%E7%AE%A1%E7%90%86%E6%96%87%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/09/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AD%A6%E4%B9%A0%E4%B9%8BSFTP%E7%AE%A1%E7%90%86%E6%96%87%E4%BB%B6/" itemprop="url">
+                  树莓派学习之SFTP管理文件
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-09 21:53:11 / 修改时间：22:39:13" itemprop="dateCreated datePublished" datetime="2018-11-09T21:53:11+08:00">2018-11-09</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>当需要向树莓派发送文件时，可使用SFTP上传下载文件。下面介绍如何使用SFTP向树莓派发送下载文件。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><p>SFTP是Secure File Transfer Protocol的缩写，安全文件传送协议。可以为传输文件提供一种安全的网络的加密方法。sftp 与 ftp 有着几乎一样的语法和功能。</p>
+<p>SFTP 为 SSH的其中一部分，是一种传输文件至服务器的安全方式。在SSH软件包中，已经包含了一个叫作SFTP(Secure File Transfer Protocol)的安全文件信息传输子系统，SFTP本身没有单独的守护进程，它必须使用sshd守护进程（端口号默认是22）来完成相应的连接和答复操作。</p>
+<p>SFTP传输使用了加密/解密技术，所以传输效率比普通的FTP要低得多，如果您对网络安全性要求更高时，可以使用SFTP代替FTP。</p>
+<h2 id="SFTP客户端程序"><a href="#SFTP客户端程序" class="headerlink" title="SFTP客户端程序"></a>SFTP客户端程序</h2><p>在Windows平台，常用的SFTP客户端程序有：</p>
+<ul>
+<li>FileZilla</li>
+<li>WinSCP</li>
+<li>Xftp</li>
+<li>Core FTP</li>
+</ul>
+<p>在Linux平台，可直接使用sftp命令进行连接服务器。</p>
+<h1 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h1><p>下面介绍在Debian平台使用sftp命令连接树莓派，<strong>在此之前应配置树莓派开启ssh服务</strong>。</p>
+<ol>
+<li>建立连接</li>
+</ol>
+<p>使用如下命令连接树莓派：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sftp pi@192.168.0.103</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>查看帮助</li>
+</ol>
+<p>通过help查看在sftp连接下能使用的命令。从帮助中可知，在命令前加前缀“l”或者“！”即可在本地操作系统shell执行命令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">sftp&gt; help</span><br><span class="line">Available commands:</span><br><span class="line">bye                                Quit sftp</span><br><span class="line">cd path                            Change remote directory to &#39;path&#39;</span><br><span class="line">chgrp grp path                     Change group of file &#39;path&#39; to &#39;grp&#39;</span><br><span class="line">chmod mode path                    Change permissions of file &#39;path&#39; to &#39;mode&#39;</span><br><span class="line">chown own path                     Change owner of file &#39;path&#39; to &#39;own&#39;</span><br><span class="line">df [-hi] [path]                    Display statistics for current directory or</span><br><span class="line">                                   filesystem containing &#39;path&#39;</span><br><span class="line">exit                               Quit sftp</span><br><span class="line">get [-afPpRr] remote [local]       Download file</span><br><span class="line">reget [-fPpRr] remote [local]      Resume download file</span><br><span class="line">reput [-fPpRr] [local] remote      Resume upload file</span><br><span class="line">help                               Display this help text</span><br><span class="line">lcd path                           Change local directory to &#39;path&#39;</span><br><span class="line">lls [ls-options [path]]            Display local directory listing</span><br><span class="line">lmkdir path                        Create local directory</span><br><span class="line">ln [-s] oldpath newpath            Link remote file (-s for symlink)</span><br><span class="line">lpwd                               Print local working directory</span><br><span class="line">ls [-1afhlnrSt] [path]             Display remote directory listing</span><br><span class="line">lumask umask                       Set local umask to &#39;umask&#39;</span><br><span class="line">mkdir path                         Create remote directory</span><br><span class="line">progress                           Toggle display of progress meter</span><br><span class="line">put [-afPpRr] local [remote]       Upload file</span><br><span class="line">pwd                                Display remote working directory</span><br><span class="line">quit                               Quit sftp</span><br><span class="line">rename oldpath newpath             Rename remote file</span><br><span class="line">rm path                            Delete remote file</span><br><span class="line">rmdir path                         Remove remote directory</span><br><span class="line">symlink oldpath newpath            Symlink remote file</span><br><span class="line">version                            Show SFTP version</span><br><span class="line">!command                           Execute &#39;command&#39; in local shell</span><br><span class="line">!                                  Escape to local shell</span><br><span class="line">?                                  Synonym for help</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><p>下载远程文件到本地主机<br>使用get命令下载远程文件到本地主机：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sftp&gt; get README.TXT </span><br><span class="line">Fetching &#x2F;home&#x2F;pi&#x2F;wiringPi&#x2F;README.TXT to README.TXT</span><br><span class="line">&#x2F;home&#x2F;pi&#x2F;wiringPi&#x2F;README.TXT                  100%  606    39.1KB&#x2F;s   00:00</span><br></pre></td></tr></table></figure>
+<p>get命令还有一些有用参数，如递归选项“ -r ”来递归的复制一个文件夹里面的内容，“ -P ”或者“ -p ”参数来告诉 SFTP 保持文件的权限访问位的设置和访问时间。</p>
+</li>
+<li><p>上传本地文件到远程主机<br>使用“ put ”命令将文件上传到远程主机：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sftp&gt; put README.TXT </span><br><span class="line">Uploading README.TXT to &#x2F;home&#x2F;pi&#x2F;README.TXT</span><br><span class="line">README.TXT                                    100%  606    33.6KB&#x2F;s   00:00</span><br></pre></td></tr></table></figure>
+<p>” put “具有类似“ get ”的参数。例如，递归选项“ -r ”可以上传整个文件夹。</p>
+</li>
+</ol>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li>华华. <a href="https://linuxstory.org/how-to-use-sftp-to-securely-transfer-files-with-a-remote-server/" target="_blank" rel="noopener">手把手教你使用 SFTP 安全地传输文件</a>.2015-12-5.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/08/Cesium%E6%91%84%E5%83%8F%E5%A4%B4%E8%B7%9F%E8%B8%AA%E9%A3%9E%E6%9C%BA%E5%AE%9E%E4%BD%93%E6%97%B6%E6%99%83%E5%8A%A8%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2155,164 +2331,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/18/Debian-Linux%E4%B8%8B%E5%AE%89%E8%A3%85Docker%E7%9A%84%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/18/Debian-Linux%E4%B8%8B%E5%AE%89%E8%A3%85Docker%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
-                  Debian_Linux下安装Docker的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-10-18 21:42:00 / 修改时间：22:53:35" itemprop="dateCreated datePublished" datetime="2018-10-18T21:42:00+08:00">2018-10-18</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Docker是一个开放源代码软件项目，让应用程序布署在软件容器下的工作可以自动化进行，借此在Linux操作系统上，提供一个额外的软件抽象层，以及操作系统层虚拟化的自动管理机制。</p>
-<p>Docker利用Linux核心中的资源分离机制，例如cgroups，以及Linux核心名字空间（name space），来创建独立的软件容器（containers）。这可以在单一Linux实体下运作，避免启动一个虚拟机造成的额外负担。Linux核心对名字空间的支持完全隔离了工作环境中应用程序的视野，包括进程树、网上、用户ID与挂载文件系统，而核心的cgroup提供资源隔离，包括CPU、存储器、block I/O与网上。</p>
-<p>下面即记录在Debian Linux下按照Docker社区版的方法。</p>
-<h1 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h1><p>添加Docker的pgp key。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;debian&#x2F;gpg | sudo apt-key add -</span><br></pre></td></tr></table></figure>
-
-<p>配置Docker的Apt仓库。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &#39;deb https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;debian stretch stable&#39; | sudo tee &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;docker.list</span><br></pre></td></tr></table></figure>
-
-<p>更新Apt仓库</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
-
-<h1 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 清除之前安装的Docker版本</span><br><span class="line">apt-get remove docker docker-engine docker.io</span><br><span class="line">&#x2F;&#x2F; 在安装最新的Docker社区版</span><br><span class="line">apt-get install docker-ce</span><br><span class="line">&#x2F;&#x2F; 测试docker</span><br><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
-
-<h1 id="以非root用户管理docker"><a href="#以非root用户管理docker" class="headerlink" title="以非root用户管理docker"></a>以非root用户管理docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo groupadd docker</span><br><span class="line">sudo usermod -aG docker $USER</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Docker" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Docker</a> ,by wikipedia.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2360,7 +2378,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">467</span>
+                    <span class="site-state-item-count">468</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

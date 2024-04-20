@@ -314,6 +314,174 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/01/09/Python%E6%8F%90%E5%8F%96PDF%E9%83%A8%E5%88%86%E5%8C%BA%E5%9F%9F%E6%96%87%E5%AD%97%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/01/09/Python%E6%8F%90%E5%8F%96PDF%E9%83%A8%E5%88%86%E5%8C%BA%E5%9F%9F%E6%96%87%E5%AD%97%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Python提取PDF部分区域文字的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-01-09 20:34:47 / 修改时间：21:01:02" itemprop="dateCreated datePublished" datetime="2024-01-09T20:34:47+08:00">2024-01-09</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近遇到一个需求，需要提取PDF部分区域的文字，具体方法如下：</p>
+<ol>
+<li>提取PDF中目标内容所在区域</li>
+<li>提取或识别目标区域内容</li>
+</ol>
+<p>为了快速验证方法的可行性，使用Python结合PyMuPDF库进行开发。</p>
+<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><h2 id="PyMuPDF介绍"><a href="#PyMuPDF介绍" class="headerlink" title="PyMuPDF介绍"></a>PyMuPDF介绍</h2><p>PyMuPDF是一个高性能的Python库，用于PDF（和其他）文档的数据提取、分析、转换和操作。</p>
+<h2 id="依赖环境"><a href="#依赖环境" class="headerlink" title="依赖环境"></a>依赖环境</h2><ul>
+<li>python 3.8.5，可在windows7上运行，python 3.9以后版本不支持windows7</li>
+<li>numpy==1.24.4</li>
+<li>pandas==2.0.3</li>
+<li>PyMuPDF==1.23.8</li>
+<li>PyMuPDFb==1.23.7</li>
+<li>python-dateutil==2.8.2</li>
+<li>pytz==2023.3.post1</li>
+<li>six==1.16.0</li>
+<li>tzdata==2023.4</li>
+</ul>
+<h2 id="虚拟环境"><a href="#虚拟环境" class="headerlink" title="虚拟环境"></a>虚拟环境</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mkdir pdf_extract</span><br><span class="line">cd pdf_extract</span><br><span class="line">python -m venv env</span><br><span class="line">env\Scripts\activate.bat</span><br><span class="line">pip install pymupdf</span><br><span class="line">pip install pandas</span><br><span class="line">pip freeze &gt; requirement.txt</span><br><span class="line">pip download -d packages -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="离线迁移"><a href="#离线迁移" class="headerlink" title="离线迁移"></a>离线迁移</h2><p>创建envConfig.bat批处理文件，一键执行离线环境配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python -m venv env</span><br><span class="line">call env\Scripts\activate.bat</span><br><span class="line">pip install --no-index --find-links&#x3D;packages -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<h1 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import fitz # imports the pymupdf library</span><br><span class="line">pdfDoc &#x3D; fitz.open(&quot;test.pdf&quot;) # open a document</span><br><span class="line">page &#x3D; pdfDoc[0]</span><br><span class="line">mat &#x3D; fitz.Matrix(1, 1)  # 1.5表示放大1.5倍</span><br><span class="line">rect &#x3D; page.rect</span><br><span class="line">#print(rect)</span><br><span class="line">clip &#x3D; fitz.Rect(0.22*rect.width, 0.19*rect.height,0.35*rect.width, 0.40*rect.height)</span><br><span class="line">pix &#x3D; page.get_pixmap(matrix&#x3D;mat, alpha&#x3D;False, clip&#x3D;clip)</span><br><span class="line">pix.save(&quot;test.png&quot;) </span><br><span class="line">a_text &#x3D; page.get_text(clip&#x3D;clip)</span><br><span class="line">print(a_text)</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://cloud.tencent.com/developer/article/1857888" target="_blank" rel="noopener">Python截图PDF，在指定区域并提取文本</a>,by 快学Python.</li>
+<li><a href="https://pymupdf.readthedocs.io/en/latest/index.html" target="_blank" rel="noopener">pymupdf doc</a>,by pymupdf.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/01/07/IP%E7%9B%91%E6%8E%A7%E5%88%86%E6%9E%90%E7%9A%84%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1976,161 +2144,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/10/11/%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E7%9A%84%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2023/10/11/%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
-                  网络拓扑自动发现的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2023-10-11 21:27:28 / 修改时间：21:58:54" itemprop="dateCreated datePublished" datetime="2023-10-11T21:27:28+08:00">2023-10-11</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>作为网络管理员，了解整个单位的网络拓扑结构，是保障和维护网络的基础。通常可以通过手动绘制的方式获得网络拓扑结构，但这种方法效率低，不精确，无法实时更新，因此需要一种网络拓扑自动发现的方法。下面记录一些与网络拓扑自动发现相关的方法与技术。</p>
-<h1 id="SNMP"><a href="#SNMP" class="headerlink" title="SNMP"></a>SNMP</h1><p>SNMP是广泛应用于TCP/IP网络的网络管理标准协议，该协议能够支持网络管理系统，用以监测连接到网络上的设备是否有任何引起管理上关注的情况。</p>
-<p>SNMP基本组件包括网络管理系统NMS（Network Management System）、代理进程（Agent）、被管对象（Managed Object）和管理信息库MIB（Management Information Base）。</p>
-<p align="center" style="display: flex;">
-    <img src="images/snmp_model.png" width="40%" alt="snmp管理模型"/>
-</p>
-<center>图1 snmp管理模型</center>
-
-<h1 id="Nmap"><a href="#Nmap" class="headerlink" title="Nmap"></a>Nmap</h1><p>Nmap（网络映射器）是一款用于网络发现和安全审计的网络安全工具。Nmap可以检测目标主机是否在线、端口开放情况、侦测运行的服务类型及版本信息、侦测操作系统与设备类型等信息。 它是网络管理员必用的软件之一，用以评估网络系统安全。</p>
-<h1 id="Traceroute"><a href="#Traceroute" class="headerlink" title="Traceroute"></a>Traceroute</h1><p>Traceroute命令是TCP/IP家族内另一个比较早的工具，它可用来发现测试点 和目标主机之间的路由器。路由器在转发包之前总是将其TTL值减1，如果TTL降为0，则路由器向源地址发送TTL-Expired ICMP消息。</p>
-<h1 id="Ping"><a href="#Ping" class="headerlink" title="Ping"></a>Ping</h1><p>Ping命令是IP网上最古老的一种工具，用来监测网络节点是否活着，或用于监测到网络节点间的往返时延（RTT）。通常Ping只涉及网络上的源和目的两节点，而忽略网络细节。另外我们可以使用广播 Ping，其Ping的地址不是一个单一的地址，而是子网的广播地址，所有位于该子网的主机均对此Ping包进行响应，从而一次就可得到子网内的全部活动主机。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://patents.google.com/patent/CN103490926A/zh" target="_blank" rel="noopener">一种网络拓扑自动获取的方法</a>,by 马黎黎,梁鹏飞.</li>
-<li><a href="https://info.support.huawei.com/info-finder/encyclopedia/zh/SNMP.html" target="_blank" rel="noopener">什么是SNMP？</a>,by huawei.</li>
-<li><a href="https://zh.wikipedia.org/zh-cn/Nmap" target="_blank" rel="noopener">Nmap</a>,by wikipedia.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2178,7 +2191,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">468</span>
+                    <span class="site-state-item-count">469</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

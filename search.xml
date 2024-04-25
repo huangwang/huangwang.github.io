@@ -1114,10 +1114,18 @@
     <url>/2021/12/14/CPlusPlus%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8F/</url>
     <content><![CDATA[<p>static 是 C/C++ 中很常用的修饰符，它被用来控制变量的存储方式和可见性。</p>
 <p>我们知道在函数内部定义的变量，当程序执行到它的定义处时，编译器为它在栈上分配空间，函数在栈上分配的空间在此函数执行结束时会释放掉，这样就产生了一个问题: 如果想将函数中此变量的值保存至下一次调用时，如何实现？ 最容易想到的方法是定义为全局的变量，但定义一个全局变量有许多缺点，最明显的缺点是破坏了此变量的访问范围（使得在此函数中定义的变量，不仅仅只受此函数控制）。static 关键字则可以很好的解决这个问题。</p>
-<p>另外，在 C++ 中，需要一个数据对象为整个类而非某个对象服务,同时又力求不破坏类的封装性,即要求此成员隐藏在类的内部，对外不可见时，可将其定义为静态数据</p>
+<p>另外，在 C++ 中，需要一个数据对象为整个类而非某个对象服务,同时又力求不破坏类的封装性,即要求此成员隐藏在类的内部，对外不可见时，可将其定义为静态数据。</p>
+<h1 id="c-类静态成员函数调用成员变量"><a href="#c-类静态成员函数调用成员变量" class="headerlink" title="c++类静态成员函数调用成员变量"></a>c++类静态成员函数调用成员变量</h1><h2 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h2><p>一种最简单的方法就是在类静态函数的形参列表里面加入类指针，到时候直接传入实例的this指针就能操作类成员变量了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class A</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    static void test(A *a)</span><br><span class="line">    &#123;</span><br><span class="line">        a-&gt;m_a +&#x3D; 1;</span><br><span class="line">    &#125;</span><br><span class="line">    void hello()</span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line">private:</span><br><span class="line">    static int m_staticA;</span><br><span class="line">    int m_a</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h1><p>一开始定义的时候就把实例的this指针复制给一个静态的类指针，这样不用传入this指针直接操作，但是这样如果多个实例都需要操作的时候会出现问题，定义多个变量的时候需要注意静态指针指向的是哪个实例。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class A</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    A()</span><br><span class="line">    &#123;</span><br><span class="line">        m_gA &#x3D; this;</span><br><span class="line">    &#125;</span><br><span class="line">    static void test()</span><br><span class="line">    &#123;</span><br><span class="line">        m_gA.m_a +&#x3D; 1;</span><br><span class="line">    &#125;</span><br><span class="line">    void hello()</span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line">private:</span><br><span class="line">    static int m_staticA;</span><br><span class="line">    static A *m_gA;</span><br><span class="line">    int m_a</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.runoob.com/w3cnote/cpp-static-usage.html" target="_blank" rel="noopener">C/C++ 中 static 的用法全局变量与局部变量</a>,by runoob.</li>
 <li><a href="https://zhuanlan.zhihu.com/p/37439983" target="_blank" rel="noopener">C/C++ 中的static关键字</a>,by Arkin.</li>
+<li><a href="https://blog.csdn.net/xxwtiancai/article/details/129288845" target="_blank" rel="noopener">c++类静态成员函数调用成员变量</a>,by xxwtiancai.</li>
 </ol>
 ]]></content>
       <tags>

@@ -689,6 +689,8 @@
 </ul>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://blog.csdn.net/qq_40955914/article/details/80767404" target="_blank" rel="noopener">c++&amp;的用法</a>,by Knigh_art.</li>
+<li><a href="https://liaohuming.com/2016/01/21/notes/20160121-%E6%88%91%E6%89%80%E7%90%86%E8%A7%A3%E7%9A%84C++%E7%B1%BB%E8%AE%BE%E8%AE%A1%E4%B8%ADprivate%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E5%92%8C%E8%BF%94%E5%9B%9Econst%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B/" target="_blank" rel="noopener">我所理解的C++类设计中private成员变量和返回const引用类型</a>,by Huming.</li>
+<li><a href="https://www.cnblogs.com/tangmiao/p/11217657.html" target="_blank" rel="noopener">C++返回引用的需求</a>,by 唐淼.</li>
 </ol>
 ]]></content>
       <tags>
@@ -1119,13 +1121,14 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class A</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    static void test(A *a)</span><br><span class="line">    &#123;</span><br><span class="line">        a-&gt;m_a +&#x3D; 1;</span><br><span class="line">    &#125;</span><br><span class="line">    void hello()</span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line">private:</span><br><span class="line">    static int m_staticA;</span><br><span class="line">    int m_a</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <h1 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h1><p>一开始定义的时候就把实例的this指针复制给一个静态的类指针，这样不用传入this指针直接操作，但是这样如果多个实例都需要操作的时候会出现问题，定义多个变量的时候需要注意静态指针指向的是哪个实例。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class A</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    A()</span><br><span class="line">    &#123;</span><br><span class="line">        m_gA &#x3D; this;</span><br><span class="line">    &#125;</span><br><span class="line">    static void test()</span><br><span class="line">    &#123;</span><br><span class="line">        m_gA.m_a +&#x3D; 1;</span><br><span class="line">    &#125;</span><br><span class="line">    void hello()</span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line">private:</span><br><span class="line">    static int m_staticA;</span><br><span class="line">    static A *m_gA;</span><br><span class="line">    int m_a</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class A</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    A()</span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    static void test()</span><br><span class="line">    &#123;</span><br><span class="line">        m_gA.m_a +&#x3D; 1;</span><br><span class="line">    &#125;</span><br><span class="line">    void hello()</span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line">private:</span><br><span class="line">    static int m_staticA;</span><br><span class="line">    static A *m_gA;</span><br><span class="line">    int m_a</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">A* A::m_gA&#x3D;NULL;</span><br></pre></td></tr></table></figure>
 
 
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.runoob.com/w3cnote/cpp-static-usage.html" target="_blank" rel="noopener">C/C++ 中 static 的用法全局变量与局部变量</a>,by runoob.</li>
 <li><a href="https://zhuanlan.zhihu.com/p/37439983" target="_blank" rel="noopener">C/C++ 中的static关键字</a>,by Arkin.</li>
 <li><a href="https://blog.csdn.net/xxwtiancai/article/details/129288845" target="_blank" rel="noopener">c++类静态成员函数调用成员变量</a>,by xxwtiancai.</li>
+<li><a href="https://www.cnblogs.com/vivian187/p/12698252.html" target="_blank" rel="noopener">C++类里面定义一个指向自己的静态成员函数</a>,by JJ_S.</li>
 </ol>
 ]]></content>
       <tags>
@@ -20601,6 +20604,11 @@ console.log(y);</code></pre></li>
 <h1 id="ACE日志设施"><a href="#ACE日志设施" class="headerlink" title="ACE日志设施"></a>ACE日志设施</h1><p>请参考：</p>
 <ul>
 <li><a href="https://blog.csdn.net/calmreason/article/details/21384545" target="_blank" rel="noopener">使用ACE日志设施（二）详细介绍（v4）</a></li>
+</ul>
+<h1 id="ACE组播通信"><a href="#ACE组播通信" class="headerlink" title="ACE组播通信"></a>ACE组播通信</h1><p>请参考：</p>
+<ul>
+<li><a href="https://lyingbo.github.io/2013/04/14/ACE%E7%BB%84%E6%92%AD%E9%80%9A%E4%BF%A1/" target="_blank" rel="noopener">ACE组播通信</a>,by NoName.</li>
+<li><a href="https://www.cnblogs.com/wangfengju/p/6172358.html" target="_blank" rel="noopener">linux网络编程之一—–多播（组播）编程 </a>,by 胡永光.</li>
 </ul>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://blog.csdn.net/peirenlei/article/details/1760445" target="_blank" rel="noopener">ACE 示例2 — Echo Server</a>,by peirenlei.</li>

@@ -20831,4 +20831,23 @@ console.log(y);</code></pre></li>
         <tag>笔记本</tag>
       </tags>
   </entry>
+  <entry>
+    <title>CPlusPlus之让程序只启动一个实例</title>
+    <url>/2024/05/07/CPlusPlus%E4%B9%8B%E8%AE%A9%E7%A8%8B%E5%BA%8F%E5%8F%AA%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AA%E5%AE%9E%E4%BE%8B/</url>
+    <content><![CDATA[<p>C++中让程序只启动一个实例的方法主要有以下几种：</p>
+<h1 id="互斥体实现方式"><a href="#互斥体实现方式" class="headerlink" title="互斥体实现方式"></a>互斥体实现方式</h1><p>主要利用如下函数实现：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">函数原型：</span><br><span class="line">HANDLE CreateMutex(   </span><br><span class="line">  LPSECURITY_ATTRIBUTES lpMutexAttributes,&#x2F;&#x2F;必须为NULL</span><br><span class="line">  BOOL bInitialOwner, &#x2F;&#x2F;表示mutex的范围是本线程还是全系统</span><br><span class="line">  LPCTSTR lpName  &#x2F;&#x2F;互斥量的名字</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">bool    checkMyselfExist()&#x2F;&#x2F;如果程序已经有一个在运行，则返回true</span><br><span class="line">&#123;</span><br><span class="line">    HANDLE  hMutex &#x3D; CreateMutex(NULL, FALSE, L&quot;DevState&quot;);</span><br><span class="line">    if (hMutex &amp;&amp; (GetLastError() &#x3D;&#x3D; ERROR_ALREADY_EXISTS))</span><br><span class="line">    &#123;</span><br><span class="line">        CloseHandle(hMutex);</span><br><span class="line">        hMutex &#x3D; NULL;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    if (checkMyselfExist())&#123;</span><br><span class="line">        cout &lt;&lt; &quot;program has been runnin&quot; &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        cout &lt;&lt; &quot;start running&quot; &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    system(&quot;pause&quot;);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.cnblogs.com/PeterZ1997/p/10452688.html" target="_blank" rel="noopener">C++实现程序单实例运行的两种方式</a>,by 倚剑问天.</li>
+<li><a href="https://blog.csdn.net/cgb0210/article/details/5800949" target="_blank" rel="noopener">C / C++ 如何让程序只启动一个实例</a>,by C你.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>C/C++</tag>
+      </tags>
+  </entry>
 </search>

@@ -314,6 +314,218 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/25/express-jwt%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/25/express-jwt%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/" itemprop="url">
+                  express-jwt使用帮助
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-25 10:42:14" itemprop="dateCreated datePublished" datetime="2019-07-25T10:42:14+08:00">2019-07-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-07-31 21:53:21" itemprop="dateModified" datetime="2019-07-31T21:53:21+08:00">2019-07-31</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>express-jwt是一个验证JsonWebTokens并设置req.user的connect/express中间件。此模块允许您使用Node.js应用程序中的JWT令牌验证HTTP请求。 JWT通常用于保护API端点，通常使用OpenID Connect发布。</p>
+<h1 id="Json-web-token结构"><a href="#Json-web-token结构" class="headerlink" title="Json web token结构"></a>Json web token结构</h1><p>JWT 的三个部分依次如下：</p>
+<ul>
+<li>Header（头部）</li>
+<li>Payload（负载）</li>
+<li>Signature（签名）</li>
+</ul>
+<h2 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h2><p>Header 部分是一个 JSON 对象，描述 JWT 的元数据，通常是下面的样子。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;alg&quot;: &quot;HS256&quot;,</span><br><span class="line">  &quot;typ&quot;: &quot;JWT&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，alg属性表示签名的算法（algorithm），默认是 HMAC SHA256（写成 HS256）；typ属性表示这个令牌（token）的类型（type），JWT 令牌统一写为JWT。最后，将上面的 JSON 对象使用 Base64URL 算法转成字符串。</p>
+<h2 id="Payload"><a href="#Payload" class="headerlink" title="Payload"></a>Payload</h2><p>Payload 部分也是一个 JSON 对象，用来存放实际需要传递的数据。JWT 规定了7个官方字段，供选用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">iss (issuer)：签发人</span><br><span class="line">exp (expiration time)：过期时间</span><br><span class="line">sub (subject)：主题</span><br><span class="line">aud (audience)：受众</span><br><span class="line">nbf (Not Before)：生效时间</span><br><span class="line">iat (Issued At)：签发时间</span><br><span class="line">jti (JWT ID)：编号</span><br></pre></td></tr></table></figure>
+
+<p>除了官方字段，你还可以在这个部分定义私有字段，下面就是一个例子。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;sub&quot;: &quot;1234567890&quot;,</span><br><span class="line">  &quot;name&quot;: &quot;John Doe&quot;,</span><br><span class="line">  &quot;admin&quot;: true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意，JWT 默认是不加密的，任何人都可以读到，所以不要把秘密信息放在这个部分。这个 JSON 对象也要使用 Base64URL 算法转成字符串。</p>
+<h2 id="Signature"><a href="#Signature" class="headerlink" title="Signature"></a>Signature</h2><p>ignature 部分是对前两部分的签名，防止数据篡改。</p>
+<p>首先，需要指定一个密钥（secret）。这个密钥只有服务器才知道，不能泄露给用户。然后，使用 Header 里面指定的签名算法（默认是 HMAC SHA256），按照下面的公式产生签名。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HMACSHA256(</span><br><span class="line">  base64UrlEncode(header) + &quot;.&quot; +</span><br><span class="line">  base64UrlEncode(payload),</span><br><span class="line">  secret)</span><br></pre></td></tr></table></figure>
+
+<p>算出签名以后，把 Header、Payload、Signature 三个部分拼成一个字符串，每个部分之间用”点”（.）分隔，就可以返回给用户。</p>
+<h1 id="基于JWT的身份验证流程"><a href="#基于JWT的身份验证流程" class="headerlink" title="基于JWT的身份验证流程"></a>基于JWT的身份验证流程</h1><p>使用基于 JWT 的身份验证方法，在服务端不需要存储用户的登录记录。大概的流程是这样的：</p>
+<ol>
+<li>客户端使用用户名跟密码请求登录</li>
+<li>服务端收到请求，去验证用户名与密码</li>
+<li>验证成功后，服务端会签发一个 Token，再把这个 Token 发送给客户端</li>
+<li>客户端收到 Token 以后可以把它存储起来，比如放在 Cookie 里或者 Local Storage 里</li>
+<li>客户端每次向服务端请求资源的时候需要带着服务端签发的 Token</li>
+<li>服务端收到请求，然后去验证客户端请求里面带着的 Token，如果验证成功，就向客户端返回请求的数据</li>
+</ol>
+<h1 id="jsonwebtoken的使用"><a href="#jsonwebtoken的使用" class="headerlink" title="jsonwebtoken的使用"></a>jsonwebtoken的使用</h1><p>jsonwebtoken是JSON Web Tokens在Nodejs平台的实现。它可以与express-jwt模块配合，在expressjs中实现基于JWT的身份验证。</p>
+<h2 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install jsonwebtoken --save</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用帮助"><a href="#使用帮助" class="headerlink" title="使用帮助"></a>使用帮助</h2><p>在expressjs中主要使用该模块生成JSON Web Tokens。其接口定义为：</p>
+<ul>
+<li>jwt.sign(payload, secretOrPrivateKey, [options, callback])</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var token &#x3D; jwt.sign(&#123;</span><br><span class="line">    userId: users[0].id</span><br><span class="line">  &#125;,</span><br><span class="line">  appConfig.secretOrPrivateKey, &#123;</span><br><span class="line">    expiresIn: 60 * 60 * 6</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>jwt.verify(token, secretOrPublicKey, [options, callback])</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; verify a token symmetric - synchronous</span><br><span class="line">var decoded &#x3D; jwt.verify(req.body.token.split(&#39; &#39;)[1], appConfig.secretOrPrivateKey);</span><br><span class="line">var user &#x3D; await models.User.findByPk(decoded.userId);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>jwt.decode(token [, options])</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; get the decoded payload ignoring signature, no secretOrPrivateKey needed</span><br><span class="line">var decoded &#x3D; jwt.decode(token);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; get the decoded payload and header</span><br><span class="line">var decoded &#x3D; jwt.decode(token, &#123;complete: true&#125;);</span><br><span class="line">console.log(decoded.header);</span><br><span class="line">console.log(decoded.payload)</span><br></pre></td></tr></table></figure>
+
+<h1 id="express-jwt的使用"><a href="#express-jwt的使用" class="headerlink" title="express-jwt的使用"></a>express-jwt的使用</h1><h2 id="安装帮助"><a href="#安装帮助" class="headerlink" title="安装帮助"></a>安装帮助</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install express-jwt --save</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">app.use(expressJWT(&#123;</span><br><span class="line">    secret: appConfig.secretOrPrivateKey</span><br><span class="line">&#125;));</span><br><span class="line"></span><br><span class="line">app.use(function(err, req, res, next) &#123;</span><br><span class="line">    console.log(err);</span><br><span class="line">    if (err.name &#x3D;&#x3D;&#x3D; &#39;UnauthorizedError&#39;) &#123;</span><br><span class="line">        res.status(err.status || 401).send(err.message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.jianshu.com/p/576dbf44b2ae" target="_blank" rel="noopener">什么是 JWT – JSON WEB TOKEN</a>, by Dearmadman</li>
+<li><a href="http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html" target="_blank" rel="noopener">JSON Web Token 入门教程</a>,by 阮一峰.</li>
+<li><a href="https://huangwang.github.io/2018/07/08/Cookie-Session%E5%92%8CToken%E4%BC%9A%E8%AF%9D%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/">Cookie,Session和Token会话知识整理</a>,by jack huang.</li>
+<li><a href="https://github.com/auth0/node-jsonwebtoken" target="_blank" rel="noopener">node-jsonwebtoken</a>,by auth0.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/24/Expressjs%E7%BB%84%E4%BB%B6morgan%E4%BF%9D%E5%AD%98%E6%97%A5%E5%BF%97%E5%88%B0%E6%96%87%E4%BB%B6%E7%9A%84%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1975,359 +2187,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/16/Excel%E5%AE%8F%E7%BC%96%E7%A8%8B%E7%AE%80%E6%98%93%E6%95%99%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/16/Excel%E5%AE%8F%E7%BC%96%E7%A8%8B%E7%AE%80%E6%98%93%E6%95%99%E7%A8%8B/" itemprop="url">
-                  Excel宏编程简易教程
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-07-16 20:00:15" itemprop="dateCreated datePublished" datetime="2019-07-16T20:00:15+08:00">2019-07-16</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-07-17 12:41:44" itemprop="dateModified" datetime="2019-07-17T12:41:44+08:00">2019-07-17</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>期末了，媳妇计算学生平时成绩好辛苦，于是准备编写Excel宏程序提高媳妇工作的效率，节省时间。于是简单记录Excel宏编程的相关知识。</p>
-<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p>为了编写Excel宏，首先需要了解一些基本概念：</p>
-<h2 id="工作簿"><a href="#工作簿" class="headerlink" title="工作簿"></a>工作簿</h2><p>工作簿相关概念有：Workbooks、Workbook、ActiveWorkbook、ThisWorkbook。</p>
-<ul>
-<li><p>Workbooks集合包含excel中所有当前打开的excel工作簿，亦即所有打开的excel文件；</p>
-</li>
-<li><p>Workbook对应Workbooks中的成员，即其中的excel文件；</p>
-</li>
-<li><p>ActiveWorkbook代表当前处于活动状态的工作簿，即当前显示的excel文件；</p>
-</li>
-<li><p>ThisWorkbook代表其中有Visual Basic代码正在运行的工作簿。</p>
-</li>
-</ul>
-<p>在具体使用中可用Workbooks(index)来引用Workbook对象，其中index为工作簿名称或编号，如Workbooks(1)、 Workbooks(“年度报表.xls”)。而编号按照创建或打开工作簿的顺序来确定，第一个打开的工作簿编号为1，第二个打开的工作簿为2……。</p>
-<h2 id="工作表"><a href="#工作表" class="headerlink" title="工作表"></a>工作表</h2><p>工作表相关概念有：Worksheets、Worksheet、ActiveSheet。</p>
-<ul>
-<li><p>Worksheets集合包含工作簿中所有的工作表，即一个excel文件中的所有数据表页；</p>
-</li>
-<li><p>Worksheet则代表其中的一个工作表；</p>
-</li>
-<li><p>ActiveSheet代表当前处于的活动状态工作表，即当前显示的一个工作表。</p>
-</li>
-</ul>
-<h2 id="图表"><a href="#图表" class="headerlink" title="图表"></a>图表</h2><p>图表相关概念有：Chart 、Charts、ChartObject、ChartObjects、ActiveChart。</p>
-<ul>
-<li><p>Chart代表工作簿中的图表。该图表既可为嵌入式图表（包含在ChartObject中），也可为一个分开的（单独的）图表工作表。</p>
-</li>
-<li><p>Charts代表指定工作簿或活动工作簿中所有图表工作表的集合，但不包括嵌入式在工作表或对话框编辑表中的图表。使用Charts(index) 可引用单个Chart图表，其中index是该图表工作表的索引号或名称；如Charts(1)、Charts(“销售图表”)。</p>
-</li>
-<li><p>ChartObject代表工作表中的嵌入式图表，其作用是作为Chart对象的容器。利用ChartObject可以控制工作表上嵌入式图表的外观和尺寸。</p>
-</li>
-<li><p>ChartObjects代表指定的图表工作表、对话框编辑表或工作表上所有嵌入式图表的集合。</p>
-</li>
-</ul>
-<h2 id="单元格"><a href="#单元格" class="headerlink" title="单元格"></a>单元格</h2><p>单元格相关概念有：Cells、ActiveCell、Range、Areas。</p>
-<ul>
-<li><p>Cells(row,column)代表单个单元格，其中row为行号，column为列号。如可以用Cells(1,1)、Cells(10,4)来引用”A1”、”D10” 单元格。</p>
-</li>
-<li><p>ActiveCell代表活动工作表的活动单元格，或指定工作表的活动单元格。</p>
-</li>
-<li><p>Range代表工作表中的某一单元格、某一行、某一列、某一选定区域（该选定区域可包含一个或若干连续单元格区域）或者某一三维区域。可用Range(arg)来引用单元格或单元格区域，其中arg可为单元格号、单元格号范围、单元格区域名称。如Range(“A5”)、 Range(“A1:H8”)、Range(“Criteria”)。虽然可用Range(“A1”)返回单元格A1，但用Cells更方便，因为此时可 用变量指定行和列。</p>
-</li>
-<li><p>Areas 为选定区域内的连续单元格块的集合，其成员是Range对象。</p>
-</li>
-</ul>
-<h2 id="行与列"><a href="#行与列" class="headerlink" title="行与列"></a>行与列</h2><p>行与列相关概念有：Rows、Columns、Row、Column。</p>
-<p>Rows、Columns分别代表活动工作表、单元格区域范围Range、指定工作表中的所有行数、列数。</p>
-<h1 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h1><p>Visual Basic for Applications（VBA）是一种Visual Basic的一种宏语言，主要能用来扩展Windows的应用程序功能，特别是Microsoft Office软件。也可说是一种应用程序视觉化的Basic Sc​​ript。 1994年发行的Excel 5.0版本中，即具备了VBA的宏功能。Excel宏编程主要使用VBA。</p>
-<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><h3 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h3><p>即Primary Type Data，下述列表的括号内为字节数：</p>
-<ul>
-<li>Byte (1)：无符号类型，取值范围0-255</li>
-<li>Boolean (2)</li>
-<li>Integer (2)</li>
-<li>Long (4)</li>
-<li>Single (4)</li>
-<li>Double (8)</li>
-<li>Currency (8)</li>
-<li>Decimal (14)</li>
-<li>Date (8)</li>
-<li>String</li>
-<li>Object (4)</li>
-<li>Variant （根据分配确定）</li>
-</ul>
-<h3 id="自定义的数据类型"><a href="#自定义的数据类型" class="headerlink" title="自定义的数据类型"></a>自定义的数据类型</h3><p>相当于C语言的struct，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Type 自定义类型名</span><br><span class="line">     元素名  As 类型</span><br><span class="line">      …</span><br><span class="line">     [元素名 As 类型]</span><br><span class="line">End Type</span><br></pre></td></tr></table></figure>
-
-<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Option Base 0 &#39;數組索引值從0開始</span><br><span class="line">Option Base 1 &#39;數組索引值從1開始</span><br><span class="line">Dim MyArray(10) &#39;聲明一個數組變量，10是最大的可用的數組索引值</span><br><span class="line">MyArray(5) &#x3D; 101 &#39;給數組的元素賦值</span><br><span class="line">Dim Data(10,5) &#39;聲明一個二維數組變量</span><br><span class="line">Data(1,1) &#x3D; &quot;A001&quot; &#39;給數組元素賦值</span><br><span class="line">Dim cArr(-11 To 20, 1 To 3) As String &#39;聲明一個數組，定義數組索引值的上下界</span><br><span class="line">Dim dArr() As String &#39;聲明動態數組</span><br><span class="line">ReDim dArr(0 To 5, 1 To 2) &#39;改變動態數組的尺寸默認把原數據清除。如果保留原來的數據，必須加上參數Preserve。</span><br><span class="line">                                &#39;使用Preserve參數時只能改變最後一維的大小</span><br><span class="line">If UBound(vTemp) &#x3D; -1 Then</span><br><span class="line">     &#39;判斷數組變量vTemp是否為 空數組</span><br><span class="line">End If</span><br><span class="line">Erase MyArrar, Data &#39;Eras​​e語句清除數組元素，釋放變量佔用的空間</span><br></pre></td></tr></table></figure>
-
-<h3 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h3><p>日期常量由符号“#”将字符括起来，如#2012-1-1#。</p>
-<p>系统定义常量有3个：True、False和Null。</p>
-<p>固有常量是编程时引用的对象库定义的常量。所有固有常量都可以在宏或VBA代码中使用。通常，固有常量通过前两个字母来指明定义该常量。来自VB库的常量则以“vb”开头。来自Access的常量以“ac”开头。可以使用对象浏览器来查看所有对象库中的固有常量列表。</p>
-<p>可以自行定义常量。如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Global Const 符号常量名称 &#x3D; 常量值</span><br></pre></td></tr></table></figure>
-
-<h2 id="控制结构"><a href="#控制结构" class="headerlink" title="控制结构"></a>控制结构</h2><h3 id="if-语句"><a href="#if-语句" class="headerlink" title="if 语句"></a>if 语句</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if 條件1 then</span><br><span class="line">   語句1</span><br><span class="line">elseif 條件2 then</span><br><span class="line">   語句2</span><br><span class="line">elseif ...</span><br><span class="line">    ...</span><br><span class="line">else</span><br><span class="line">   語句n</span><br><span class="line">end if</span><br></pre></td></tr></table></figure>
-
-<h3 id="Select-Case-语句"><a href="#Select-Case-语句" class="headerlink" title="Select Case 语句"></a>Select Case 语句</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Select Case 表達式</span><br><span class="line">   Case 表達式列表1</span><br><span class="line">       語句1</span><br><span class="line">   Case 表達式列表2</span><br><span class="line">       語句2</span><br><span class="line">       ...</span><br><span class="line">   Case 表達式列表n</span><br><span class="line">       語句n</span><br><span class="line">End Select</span><br></pre></td></tr></table></figure>
-
-<h3 id="Do…Loop-语句"><a href="#Do…Loop-语句" class="headerlink" title="Do…Loop 语句"></a>Do…Loop 语句</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Do While或Until 條件</span><br><span class="line">   語句塊1</span><br><span class="line">   Exit Do</span><br><span class="line">   語句塊2</span><br><span class="line">Loop</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Do</span><br><span class="line">   語句塊1</span><br><span class="line">   Exit Do</span><br><span class="line">   語句塊2</span><br><span class="line">Loop While或Until 條件</span><br></pre></td></tr></table></figure>
-
-<h3 id="For…Next语句"><a href="#For…Next语句" class="headerlink" title="For…Next语句"></a>For…Next语句</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">For 循環控制變量&#x3D;初值To 終值Step 步長</span><br><span class="line">   語句塊 ‘Exit For語句可以跳出循環體</span><br><span class="line">Next</span><br></pre></td></tr></table></figure>
-
-<h3 id="For-Each-…-Next语句"><a href="#For-Each-…-Next语句" class="headerlink" title="For Each … Next语句"></a>For Each … Next语句</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">For Each 循環控制變量 In 集合變量</span><br><span class="line">   語句塊 </span><br><span class="line">   Exit For語句可以跳出循環體</span><br><span class="line">Next 循環控制變量</span><br></pre></td></tr></table></figure>
-
-<h3 id="跳出本次循环的continue语句"><a href="#跳出本次循环的continue语句" class="headerlink" title="跳出本次循环的continue语句"></a>跳出本次循环的continue语句</h3><p>VBA没有类似C语言的continue语句。通常可如此写程序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">For 循環控制變量&#x3D;初值 To 終值 Step 步長</span><br><span class="line">   Do &#39;用于模拟continue</span><br><span class="line">       語句塊 </span><br><span class="line">       If 条件 Then Exit Do &#39;用于模拟continue</span><br><span class="line">       語句塊 </span><br><span class="line">   Loop While False &#39;用于模拟continue</span><br><span class="line">Next</span><br></pre></td></tr></table></figure>
-
-<h3 id="With语句"><a href="#With语句" class="headerlink" title="With语句"></a>With语句</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">With 對象引用</span><br><span class="line">   語句塊</span><br><span class="line">End With</span><br></pre></td></tr></table></figure>
-
-<h3 id="On-Error语句"><a href="#On-Error语句" class="headerlink" title="On Error语句"></a>On Error语句</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">On Error Goto 出錯處理語句的label &#39;跳轉到出錯處理語句</span><br></pre></td></tr></table></figure>
-
-<p>或者</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">On Error Resume Next &#39;遇到錯誤，不管錯誤，繼續往下執行</span><br></pre></td></tr></table></figure>
-
-<h2 id="过程与函数"><a href="#过程与函数" class="headerlink" title="过程与函数"></a>过程与函数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Sub 過程名(參數表)</span><br><span class="line">    語句塊</span><br><span class="line">    Exit Sub</span><br><span class="line">    語句塊</span><br><span class="line">End Sub</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Function 函數名(參數表) As Type</span><br><span class="line">   語句塊</span><br><span class="line">   函數名&#x3D;表達式</span><br><span class="line">   Exit Function</span><br><span class="line">End Function</span><br></pre></td></tr></table></figure>
-
-<h2 id="常用内置函数"><a href="#常用内置函数" class="headerlink" title="常用内置函数"></a>常用内置函数</h2><p>VBA的常用内置函数列表:</p>
-<ul>
-<li>MsgBox</li>
-<li>InputBox</li>
-<li>舍入函数：Fix 向0取整,Int向下取整, Round四舍五入</li>
-<li>Rnd 返回0-1内的单精度随机数</li>
-<li>字符串函数：<ul>
-<li>Filter：对字符串的一维数组的过滤</li>
-<li>InStr([Start, ]<Str1>,<Str2>[, Compare])与InStrRev： 查找子串</li>
-<li>Len 字符串长度</li>
-<li>Join：连接一维数组中的所有子字符串</li>
-<li>Left,Right,Mid 截取子字符串</li>
-<li>Space(数值) 生成空格字符串</li>
-<li>Ucase,Lcase 大小写转换函数</li>
-<li>Ltrim, Rtrim,Trim 删除首尾空格</li>
-<li>Replace</li>
-<li>Split：分割一个字符串成为一维数组</li>
-<li>StrComp：字符串比较</li>
-<li>StrConv：字符串转换</li>
-<li>String(number, character)：制定字符重复若干次</li>
-<li>StrReverse</li>
-</ul>
-</li>
-<li>日期/时间有关函数：<ul>
-<li>Year, Month, Day, WeekDay,Hour,Minute,Second 截取日期时间分量</li>
-<li>DateAdd 日期/时间增量函数</li>
-<li>DateDiff(&lt;间隔类型&gt;,&lt;日期1&gt;,&lt;日期2&gt;[,W1][,W2])日期/时间的距离函数</li>
-<li>DatePart(&lt;分割类型&gt;,&lt;日期&gt;[,w1][,w2])时间分割函数</li>
-<li>DateSerial(&lt;表达式1&gt;,&lt;表达式2&gt;,&lt;表达式3&gt;) 合成日期；DateValue(“字符串表达式”)返回日期；</li>
-<li>Date,Time,Now,Timer 返回日期时间</li>
-<li>DateValue</li>
-<li>TimeSerial：由时间序列得到时间对象</li>
-<li>TimeValue：由时间字符串得到时间对象</li>
-<li>Weekday：获得日期的周几</li>
-<li>WeekdayName</li>
-</ul>
-</li>
-<li>转换函数：CBool、CByte、CCur、 CDate、 CDbl、CDec、CInt、 CLng、CLngLng、CLngPtr、CSng、CStr、CVar、CVErr、Asc(&lt;字符串表达式&gt;)返回第一个字符的Ascii编码值、Chr(ASCII码)返回字符、Hex、Oct、Str(&lt;数值表达式&gt;)返回字符串、Val(string)、Format、FormatCurrency、FormatDateTime、FormatNumber、FormatPercent、MonthName</li>
-<li>Nz(表达式或字段属性值[,规定值])如果是空，则返回0或者””或者函数的第二个参数值</li>
-<li>验证函数：isNumeric、isDate、isNull、isEmpty IsArray、IsError、IsMissing、IsObject</li>
-<li>数学函数：Abs、Sqr、Tan、Atn（即atan）、Sin、Cos、Exp（e为基的指数）、Log自然对数</li>
-<li>Array:构造一个Array对象</li>
-<li>CallByName: get or set a property, or invoke a method at run time using a string name.</li>
-<li>控制流：Choose:类似于C语言的select语句、IIf相当于IF-ELSE语句、Switch</li>
-<li>Command：获取命令行参数</li>
-<li>CreateObject：创建ActiveX对象</li>
-<li>CurDir：返回指定驱动器的当前工作路径</li>
-<li>由基本数学函数导出的函数：Sec、Cosec、Cotangent、Cotan、Arcsin、Arccos、Arcsec、Arccosec、Arccotan、HSin、HCos、HTan、HSec、HCosec、HCotan、HArcsin、HArccos、HArctan、HArcsec、HArccosec、HArccotan、LogN</li>
-<li>DoEvents：暂时把CPU控制权交回给系统。</li>
-<li>Environ：返回环境变量的值</li>
-<li>文件操作：<ul>
-<li>Dir：返回满足条件的所有文件、目录的名字</li>
-<li>EOF</li>
-<li>FileAttr</li>
-<li>FileDateTime</li>
-<li>FileLen</li>
-<li>FreeFile Function</li>
-<li>GetAttr：返回文件、目录的属性值</li>
-<li>Input：读取文件</li>
-<li>Loc：文件指针位置</li>
-<li>LOF：文件打开时的指针位置</li>
-<li>Seek：文件指针定位</li>
-<li>Spc：使用Print做position output</li>
-<li>Tab：用于Print函数</li>
-<li>Error:错误号对应的错误消息</li>
-<li>Windows Registry中的数据：GetAllSettings、SaveSetting、DeleteSetting、GetSetting</li>
-<li>GetObject：ActiveX组建的引用</li>
-<li>IMEStatus：返回当前Input Method Editor (IME)。</li>
-<li>Macintosh平台：MacID、MacScript</li>
-</ul>
-</li>
-<li>金融函数：<ul>
-<li>DDB：使用double-declining balance计算贬值</li>
-<li>FV:计算固定利率的年金</li>
-<li>IPmt：计算利率</li>
-<li>IRR：计算利率</li>
-<li>MIRR：计算利率</li>
-<li>NPer：计算周期数</li>
-<li>NPV：计算net present value</li>
-<li>Pmt：计算支付数</li>
-<li>PPmt：计算本金支付数</li>
-<li>PV：计算present value</li>
-<li>Rate：利息率</li>
-<li>SLN：straight-line depreciation</li>
-<li>SYD：计算sum-of-years’ digits depreciation</li>
-</ul>
-</li>
-<li>Partition：返回字符串，表示一个数值名字落在各个range内。常用于SQL select语句</li>
-<li>QBColor：颜色值</li>
-<li>RGB：颜色值</li>
-<li>TypeName：得到变量的类型名</li>
-<li>VarType：得到变量的类型数</li>
-</ul>
-<h2 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h2><p>比较特殊的运算符有指数运算^，浮点除法/，整数除法\，取模运算Mod，不等逻辑比较运算&lt;&gt;</p>
-<h1 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h1><p>在Excel开发工具中点击录制宏，生成一个VBA过程，创建如下代码计算学生平均成绩：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">Sub 计算平均成绩()</span><br><span class="line">&#39;</span><br><span class="line">&#39; 计算平均成绩 宏</span><br><span class="line">&#39; 计算平均成绩</span><br><span class="line">&#39;</span><br><span class="line">&#39; 快捷键: Ctrl+l</span><br><span class="line">&#39;</span><br><span class="line">    Application.Goto Reference:&#x3D;&quot;计算平均成绩&quot;</span><br><span class="line">    </span><br><span class="line">    Dim count As Integer &#39; 统计学生总数</span><br><span class="line">    count &#x3D; Range(&quot;A1&quot;).CurrentRegion.Rows.count &#39; 统计学生总数</span><br><span class="line">    </span><br><span class="line">    ActiveSheet.Cells(1, &quot;E&quot;).Value &#x3D; &quot;平均成绩&quot;</span><br><span class="line">    Dim workSocre  As Double &#39; 课程分</span><br><span class="line">    Dim videoScore As Double &#39; 视频分</span><br><span class="line">    Dim discussScore As Double &#39; 讨论分</span><br><span class="line">    </span><br><span class="line">    For i &#x3D; 2 To count</span><br><span class="line">        &#39; 计算学生平均成绩</span><br><span class="line">        workSocre &#x3D; ActiveSheet.Cells(i, &quot;A&quot;).Value</span><br><span class="line">        videoScore &#x3D; ActiveSheet.Cells(i, &quot;B&quot;).Value</span><br><span class="line">        discussScore &#x3D; Discuss(ActiveSheet.Cells(i, &quot;C&quot;).Value)</span><br><span class="line">        ActiveSheet.Cells(i, &quot;E&quot;).Value &#x3D; workSocre * 0.6 + videoScore * 100 * 0.2 + discussScore * 0.2</span><br><span class="line">    Next</span><br><span class="line">    MsgBox (&quot;平均成绩计算完成!&quot;)</span><br><span class="line">End Sub</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Function Discuss(discussCount As Integer) As Integer</span><br><span class="line">    Dim score As Integer</span><br><span class="line">    Select Case discussCount</span><br><span class="line">        Case Is &gt;&#x3D; 20</span><br><span class="line">        score &#x3D; 100</span><br><span class="line">        Case Is &gt;&#x3D; 15</span><br><span class="line">        score &#x3D; 80</span><br><span class="line">        Case Is &gt;&#x3D; 10</span><br><span class="line">        score &#x3D; 60</span><br><span class="line">        Case Is &gt;&#x3D; 5</span><br><span class="line">        score &#x3D; 40</span><br><span class="line">        Case Is &gt; 0</span><br><span class="line">        score &#x3D; 20</span><br><span class="line">        Case Is &#x3D; 0</span><br><span class="line">        score &#x3D; 0</span><br><span class="line">    End Select</span><br><span class="line">    Discuss &#x3D; score</span><br><span class="line">End Function</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/lyhdream/article/details/9060801" target="_blank" rel="noopener">Excel宏教程 (宏的介绍与基本使用)</a>,by 远洪.</li>
-<li><a href="https://zh.wikipedia.org/wiki/Visual_Basic_for_Applications" target="_blank" rel="noopener">Visual Basic for Applications</a>,by wikipedia.</li>
-<li><a href="https://www.jianshu.com/p/bd760f3c82fd" target="_blank" rel="noopener">VBA——Range操作</a>,by 风之工程师.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2375,7 +2234,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">472</span>
+                    <span class="site-state-item-count">473</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

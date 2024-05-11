@@ -20631,12 +20631,18 @@ console.log(y);</code></pre></li>
 <li><a href="https://blog.csdn.net/wangyongjun_cn/article/details/5200048" target="_blank" rel="noopener">ACE的开发和使用 - FAQ</a></li>
 <li><a href="https://stackoverflow.com/questions/30915000/how-to-solve-unresolved-external-symbol-error-if-nametoindex-in-visual-studio" target="_blank" rel="noopener">How to solve unresolved external symbol error - if_nametoindex in visual studio 2013</a></li>
 </ul>
+<h1 id="ACE-TCP-Server无法Open的问题"><a href="#ACE-TCP-Server无法Open的问题" class="headerlink" title="ACE TCP Server无法Open的问题"></a>ACE TCP Server无法Open的问题</h1><p>最近突然发现ACE_SOCK_Acceptor.open方法报错，无法初始化，错误代码是10093，通过分析是WSAStartup()未初始化。最后在main函数文件中通过 #include &lt;ace/OS_main.h&gt; 解决。解决原因是该文件中将调用 WSAStartup() 函数初始化。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ACE_INET_Addr commAddr(1500);</span><br><span class="line">if (m_acceptor-&gt;open(commAddr, 1) &#x3D;&#x3D; -1) &#123;</span><br><span class="line">	ACE_DEBUG((LM_ERROR, &quot;errno&#x3D;%d&quot;, ACE_OS::last_error()));</span><br><span class="line">	return -1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://blog.csdn.net/peirenlei/article/details/1760445" target="_blank" rel="noopener">ACE 示例2 — Echo Server</a>,by peirenlei.</li>
 <li><a href="https://zh.wikipedia.org/zh-cn/ACE%E8%87%AA%E9%80%82%E9%85%8D%E9%80%9A%E4%BF%A1%E7%8E%AF%E5%A2%83" target="_blank" rel="noopener">ACE自适配通信环境</a>,by wikipedia.</li>
 <li><a href="https://maodanp.github.io/2016/05/19/server-concurrent/" target="_blank" rel="noopener">服务器并发策略</a>,by maodanp.</li>
 <li><a href="https://medium.com/@hnasr/threads-and-connections-in-backend-applications-a225eed3eddb" target="_blank" rel="noopener">Threads and Connections in Backend Applications</a>,by Hussein Nasser.</li>
 <li><a href="https://blog.csdn.net/wojiuguowei/article/details/90402403" target="_blank" rel="noopener">error LNK2019: 无法解析的外部符号 “int __cdecl ace_main_i(int,char * * const)” </a>,by 金士顿.</li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/winsock/windows-sockets-error-codes-2" target="_blank" rel="noopener">Windows Sockets Error Codes</a>,by microsoft.</li>
+<li><a href="https://learn.microsoft.com/zh-cn/windows/win32/api/winsock/nf-winsock-wsastartup" target="_blank" rel="noopener">WSAStartup 函数 (winsock.h)</a>,by microsoft.</li>
+<li><a href="https://learn.microsoft.com/zh-cn/windows/win32/api/winsock2/nf-winsock2-socket" target="_blank" rel="noopener">socket 函数 (winsock2.h)</a>,by microsoft.</li>
 </ol>
 ]]></content>
       <tags>

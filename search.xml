@@ -20648,6 +20648,7 @@ console.log(y);</code></pre></li>
 <li><a href="https://learn.microsoft.com/zh-cn/windows/win32/api/winsock2/nf-winsock2-socket" target="_blank" rel="noopener">socket 函数 (winsock2.h)</a>,by microsoft.</li>
 <li><a href="https://www.cnblogs.com/jacklikedogs/p/4276430.html" target="_blank" rel="noopener">ACE_SOCK</a>,by 咚咚锵锵.</li>
 <li><a href="https://stackoverflow.com/questions/16477148/c-winsock-10093-error" target="_blank" rel="noopener">C++ Winsock 10093 error</a>,by stackoverflow.</li>
+<li><a href="https://www.dre.vanderbilt.edu/Doxygen/5.7.7/html/ace/a00617.html" target="_blank" rel="noopener">ACE_SOCK_Dgram_Mcast Class Reference</a>,by vanderbilt.</li>
 </ol>
 ]]></content>
       <tags>
@@ -20931,6 +20932,34 @@ console.log(y);</code></pre></li>
         <tag>笔记本</tag>
         <tag>C/C++</tag>
         <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux网口混杂模式设置方法</title>
+    <url>/2024/05/18/Linux%E7%BD%91%E5%8F%A3%E6%B7%B7%E6%9D%82%E6%A8%A1%E5%BC%8F%E8%AE%BE%E7%BD%AE%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>最近在Kylin 4.0.4社区版上安装了VirtualBox，使用VirtualBox安装了Win7操作系统，虚拟机通过设置网口桥接模式与宿主机进行通信。偶尔出现宿主机无法ping通虚拟机，虚拟机无法ping通宿主机的情况，查看虚拟机网口接收情况，发现虚拟机接收数据包为0，重启虚拟机也无法恢复，因此严重怀疑其原因是虚拟机使用的宿主机网口工作模式并不是混杂模式。下面介绍在Linux上查看网口工作模式和设置网口工作模式的方法。</p>
+<h1 id="查看网口工作模式"><a href="#查看网口工作模式" class="headerlink" title="查看网口工作模式"></a>查看网口工作模式</h1><p>如果存在ifconfig命令，则可使用该命令查看网口的工作模式，命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@localhost jack]# ifconfig</span><br><span class="line">eth0      Link encap:Ethernet  HWaddr 08:00:27:70:1D:79  </span><br><span class="line">          inet6 addr: fe80::a00:27ff:fe70:1d79&#x2F;64 Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:100124 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:8795 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:1000</span><br><span class="line">          RX bytes:12986638 (12.3 MiB)  TX bytes:6452270 (6.1 MiB)</span><br></pre></td></tr></table></figure>
+
+<p>如果存在ip命令，则可使用该命令查看网口的工作模式，命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@localhost jack]# ip addr</span><br></pre></td></tr></table></figure>
+
+<h1 id="设置网口工作模式"><a href="#设置网口工作模式" class="headerlink" title="设置网口工作模式"></a>设置网口工作模式</h1><p>如果存在ifconfig命令，则可使用该命令设置网口的工作模式，命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ifconfig eth0 promisc  设置混杂模式</span><br><span class="line">ifconfig eth0 -promisc 取消混杂模式</span><br></pre></td></tr></table></figure>
+
+<p>如果存在ip命令，则可使用该命令设置网口的工作模式，命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip link set eth0 up</span><br><span class="line">ip link set eth0 promisc on</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://www.splaybow.com/post/linux-wangka-hunza-moshi.html" target="_blank" rel="noopener">Linux中如何将网卡设置为混杂模式</a>,by splaybow.</li>
+<li><a href="https://blog.csdn.net/dkfajsldfsdfsd/article/details/79409799" target="_blank" rel="noopener">VirtualBox网络之桥接网卡</a>,by 五星上炕.</li>
+<li><a href="https://blog.csdn.net/duyiwuer2009/article/details/26757271" target="_blank" rel="noopener">设置网卡混杂模式</a>,by duyiwuer2009.</li>
+<li><a href="https://www.jianshu.com/p/315d1b60501a" target="_blank" rel="noopener">Linux下的ip命令</a>,by wyaoo.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
 </search>

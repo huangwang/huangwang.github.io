@@ -20963,4 +20963,32 @@ console.log(y);</code></pre></li>
         <tag>linux</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Wireshark回环地址抓包问题</title>
+    <url>/2024/05/22/Wireshark%E5%9B%9E%E7%8E%AF%E5%9C%B0%E5%9D%80%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>通过套接字发送本地的数据包不会通过真实的网络接口发送，而是通过回环地址。因此，如果需要分析发往本机的网络数据包，需要Wireshark在回环地址上抓包。</p>
+<h1 id="关键的Npcap程序"><a href="#关键的Npcap程序" class="headerlink" title="关键的Npcap程序"></a>关键的Npcap程序</h1><p>windows系统没有提供本地回环网络的接口，用wireshark监控网络的话只能看到经过网卡的流量，看不到访问localhost的流量，因为wireshark在windows系统上默认使用的是WinPcap来抓包的，现在可以用Npcap来替换掉WinPcap，Npcap是基于WinPcap 4.1.3开发的，api兼容WinPcap。</p>
+<p>Npcap 是 Nmap 项目的 Microsoft Windows 数据包捕获（和发送）库。它使用自定义 Windows 内核驱动程序以及我们的 Windows 版本的优秀 libpcap 库来实现开放Pcap API。这允许 Windows 软件使用简单、可移植的 API 捕获原始网络流量（包括无线网络、有线以太网、本地主机流量和许多 VPN）。 Npcap 现在提供：</p>
+<ul>
+<li>环回数据包捕获和注入</li>
+<li>支持所有当前 Windows 版本</li>
+<li>Libpcap API</li>
+<li>支持所有 Windows 架构（x86、x86-64 和 ARM）</li>
+<li>额外的安全性</li>
+<li>WinPcap 兼容性</li>
+<li>原始（监控模式）802.11 无线捕获</li>
+</ul>
+<h1 id="Wireshark安装注意事项"><a href="#Wireshark安装注意事项" class="headerlink" title="Wireshark安装注意事项"></a>Wireshark安装注意事项</h1><p>安装Wireshark 3.4.4时，其安装包内置了Npcap的安装程序，但是安装时需要注意<strong>需勾选兼容WinPcap选项，否则Wireshark将找不到Adapter for loopback traffic capture网口</strong>。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/zengliguang/article/details/135383323" target="_blank" rel="noopener">Wireshark本地回环网络抓包</a>,by 三希.</li>
+<li><a href="https://blog.csdn.net/finghting321/article/details/105510264" target="_blank" rel="noopener">Wireshark之本地回环抓包</a>,by Word哥.</li>
+<li><a href="https://npcap.com/" target="_blank" rel="noopener">Npcap: Packet capture library for Windows</a>,by npcap.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>常用工具</tag>
+        <tag>计算机安全</tag>
+      </tags>
+  </entry>
 </search>

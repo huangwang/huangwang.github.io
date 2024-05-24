@@ -9336,6 +9336,12 @@
 <h1 id="数组遍历"><a href="#数组遍历" class="headerlink" title="数组遍历"></a>数组遍历</h1><p>注意Array.forEach方法通常情况下不会改变数据元素的值。</p>
 <h1 id="Vue实例方法与全局API"><a href="#Vue实例方法与全局API" class="headerlink" title="Vue实例方法与全局API"></a>Vue实例方法与全局API</h1><p>vue实例方法：vm.$set、vm.$del、vm.$nextTick等，挂在Vue.prototype上的方法。</p>
 <p>全局API： Vue.directive、Vue.filter、Vue.component等，挂在Vue构造函数上的方法。</p>
+<h1 id="ElementUI切换暗黑主题"><a href="#ElementUI切换暗黑主题" class="headerlink" title="ElementUI切换暗黑主题"></a>ElementUI切换暗黑主题</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm i -D element-theme-dark</span><br><span class="line"># Then, in code</span><br><span class="line">import &#39;element-theme-dark&#39;;</span><br></pre></td></tr></table></figure>
+
+<p>具体请参考：</p>
+<ul>
+<li><a href="https://github.com/Arattian/element-theme-dark" target="_blank" rel="noopener">Element UI dark theme</a></li>
+</ul>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://segmentfault.com/a/1190000014107100" target="_blank" rel="noopener">javascript对象的浅拷贝、深拷贝和Object.assign方法浅析</a>,by 侯贝贝.</li>
 <li><a href="https://blog.csdn.net/qq_21358931/article/details/79486133" target="_blank" rel="noopener">js 对象克隆的三种方式</a>,by 加了白糖的老干妈.</li>
@@ -9346,6 +9352,7 @@
 <li><a href="https://segmentfault.com/a/1190000007434923" target="_blank" rel="noopener">理解Object.defineProperty的作用</a>,by 戎马.</li>
 <li><a href="https://www.cnblogs.com/houxianzhou/p/16015947.html" target="_blank" rel="noopener">vue3 区别于 vue2 的“与众不同”</a>,by 喆星高照.</li>
 <li><a href="https://blog.csdn.net/qq_36259513/article/details/104718072" target="_blank" rel="noopener">解析vue2.x源码之vue实例方法与全局API</a>,by 前端小白 - GavinWu.</li>
+<li><a href="https://github.com/Arattian/element-theme-dark" target="_blank" rel="noopener">Element UI dark theme</a>,by Arattian.</li>
 </ol>
 ]]></content>
       <tags>
@@ -19983,10 +19990,10 @@ console.log(y);</code></pre></li>
 <li>six==1.16.0</li>
 <li>tzdata==2023.4</li>
 </ul>
-<h2 id="虚拟环境"><a href="#虚拟环境" class="headerlink" title="虚拟环境"></a>虚拟环境</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir pdf_extract</span><br><span class="line">cd pdf_extract</span><br><span class="line">python -m venv env</span><br><span class="line">env\Scripts\activate.bat</span><br><span class="line">pip install pymupdf</span><br><span class="line">pip install pandas</span><br><span class="line">pip freeze &gt; requirement.txt</span><br><span class="line">pip download -d packages -r requirements.txt</span><br></pre></td></tr></table></figure>
+<h2 id="虚拟环境"><a href="#虚拟环境" class="headerlink" title="虚拟环境"></a>虚拟环境</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir pdf_extract</span><br><span class="line">cd pdf_extract</span><br><span class="line">python -m venv env</span><br><span class="line">env\Scripts\activate.bat</span><br><span class="line">pip install pymupdf</span><br><span class="line">pip install pandas</span><br><span class="line">pip freeze &gt; requirement.txt</span><br><span class="line">pip download -d packages -r requirement.txt</span><br></pre></td></tr></table></figure>
 
 <h2 id="离线迁移"><a href="#离线迁移" class="headerlink" title="离线迁移"></a>离线迁移</h2><p>创建envConfig.bat批处理文件，一键执行离线环境配置。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python -m venv env</span><br><span class="line">call env\Scripts\activate.bat</span><br><span class="line">pip install --no-index --find-links&#x3D;packages -r requirements.txt</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python -m venv env</span><br><span class="line">call env\Scripts\activate.bat</span><br><span class="line">pip install --no-index --find-links&#x3D;packages -r requirement.txt</span><br></pre></td></tr></table></figure>
 
 <h1 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import fitz # imports the pymupdf library</span><br><span class="line">pdfDoc &#x3D; fitz.open(&quot;test.pdf&quot;) # open a document</span><br><span class="line">page &#x3D; pdfDoc[0]</span><br><span class="line">mat &#x3D; fitz.Matrix(1, 1)  # 1.5表示放大1.5倍</span><br><span class="line">rect &#x3D; page.rect</span><br><span class="line">#print(rect)</span><br><span class="line">clip &#x3D; fitz.Rect(0.22*rect.width, 0.19*rect.height,0.35*rect.width, 0.40*rect.height)</span><br><span class="line">pix &#x3D; page.get_pixmap(matrix&#x3D;mat, alpha&#x3D;False, clip&#x3D;clip)</span><br><span class="line">pix.save(&quot;test.png&quot;) </span><br><span class="line">a_text &#x3D; page.get_text(clip&#x3D;clip)</span><br><span class="line">print(a_text)</span><br></pre></td></tr></table></figure>
 
@@ -20995,6 +21002,39 @@ console.log(y);</code></pre></li>
         <tag>笔记本</tag>
         <tag>常用工具</tag>
         <tag>计算机安全</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python提取csv文件中的特定列的方法</title>
+    <url>/2024/05/24/Python%E6%8F%90%E5%8F%96csv%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84%E7%89%B9%E5%AE%9A%E5%88%97%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>最近需要抽取csv文件中的特定列，使用excel老是将hh.mm.ss.SSS格式数据搞坏，于是想通过python直接提取。方法记录如下：</p>
+<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><h2 id="Pandas介绍"><a href="#Pandas介绍" class="headerlink" title="Pandas介绍"></a>Pandas介绍</h2><p>Pandas是用于数据操纵和分析的Python软件库。它建造在NumPy基础上，并为操纵数值表格和时间序列，提供了数据结构和运算操作。</p>
+<h2 id="依赖环境"><a href="#依赖环境" class="headerlink" title="依赖环境"></a>依赖环境</h2><ul>
+<li>python 3.8.5，可在windows7上运行，python 3.9以后版本不支持windows7</li>
+<li>numpy==1.24.4</li>
+<li>pandas==2.0.3</li>
+<li>python-dateutil==2.9.0.post0</li>
+<li>pytz==2024.1</li>
+<li>six==1.16.0</li>
+<li>tzdata==2024.1</li>
+</ul>
+<h2 id="虚拟环境"><a href="#虚拟环境" class="headerlink" title="虚拟环境"></a>虚拟环境</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir csv_extract</span><br><span class="line">cd csv_extract</span><br><span class="line">python -m venv env</span><br><span class="line">env\Scripts\activate.bat</span><br><span class="line">pip install pandas</span><br><span class="line">pip freeze &gt; requirement.txt</span><br><span class="line">pip download -d packages -r requirement.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="离线迁移"><a href="#离线迁移" class="headerlink" title="离线迁移"></a>离线迁移</h2><p>创建envConfig.bat批处理文件，一键执行离线环境配置。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python -m venv env</span><br><span class="line">call env\Scripts\activate.bat</span><br><span class="line">pip install --no-index --find-links&#x3D;packages -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<h1 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">import os</span><br><span class="line"></span><br><span class="line">def walk_files(src_filepath &#x3D; &quot;.&quot;):</span><br><span class="line">    filepath_list &#x3D; []</span><br><span class="line">   </span><br><span class="line">    for root, dirs, files in os.walk(src_filepath):</span><br><span class="line">        for file in files:</span><br><span class="line">            if root &#x3D;&#x3D; &#39;.&#39;:</span><br><span class="line">                root_path &#x3D; os.getcwd() + &quot;&#x2F;&quot;</span><br><span class="line">            else:</span><br><span class="line">                root_path &#x3D; root</span><br><span class="line">            </span><br><span class="line">            if (root_path !&#x3D; src_filepath) and (root !&#x3D; &#39;.&#39;):</span><br><span class="line">                filepath &#x3D; root_path + &quot;&#x2F;&quot; + file</span><br><span class="line">            else:</span><br><span class="line">                filepath &#x3D; root_path + file</span><br><span class="line">            </span><br><span class="line">            if filepath not in filepath_list:</span><br><span class="line">                filepath_list.append(filepath)</span><br><span class="line">                       </span><br><span class="line">    return filepath_list</span><br><span class="line"></span><br><span class="line">def extract_csv(filepath,usecols&#x3D;[0,3,11,42,43],encoding&#x3D;&#39;gbk&#39;):</span><br><span class="line">    df &#x3D; pd.read_csv(filepath,usecols&#x3D;usecols,encoding&#x3D;encoding)</span><br><span class="line">    df.to_csv(filepath+&#39;.csv&#39;,index&#x3D;0)</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D; &#39;__main__&#39;:</span><br><span class="line">    print(os.getcwd())</span><br><span class="line"></span><br><span class="line">    search_dir&#x3D;&#39;.&#x2F;testData&#x2F;&#39;</span><br><span class="line">    file_info_list &#x3D; walk_files(search_dir) </span><br><span class="line">    </span><br><span class="line">    for file in file_info_list:</span><br><span class="line">        print(file)</span><br><span class="line">        extract_csv(file)</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://pandas.pydata.org/" target="_blank" rel="noopener">pandas</a>,by pandas.</li>
+<li><a href="https://medium.com/@sabahat-khan/how-to-recursively-traverse-files-and-directories-in-python-6020155713fa" target="_blank" rel="noopener">How to Recursively Traverse Files and Directories in Python</a>,by Sabahat Khan.</li>
+<li><a href="https://blog.csdn.net/wuzhongqiang/article/details/118332777" target="_blank" rel="noopener">Pandas读取CSV的时候报错文件不存在的经验小记</a>,by 翻滚的小@强.</li>
+<li><a href="https://www.runoob.com/python/os-walk.html" target="_blank" rel="noopener">Python os.walk() 方法</a>,by runoob.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>python</tag>
       </tags>
   </entry>
 </search>

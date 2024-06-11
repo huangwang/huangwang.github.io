@@ -21091,4 +21091,29 @@ console.log(y);</code></pre></li>
         <tag>python</tag>
       </tags>
   </entry>
+  <entry>
+    <title>QT私有类的设计模式学习</title>
+    <url>/2024/06/11/QT%E7%A7%81%E6%9C%89%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<p>查看QT源码，会发现很多类会有一个同样名字、但是以Private结尾的孪生类，这是QT用于封装私有操作的一种设计模式。这种设计模式可以有如下优点：</p>
+<ul>
+<li>信息隐藏</li>
+<li>二进制兼容</li>
+</ul>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>myclass.h</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; myclass.h  </span><br><span class="line">#ifndef MYCLASS_H  </span><br><span class="line">#define MYCLASS_H  </span><br><span class="line">#include &lt;QtCore&#x2F;QObject&gt;  </span><br><span class="line">class MyClassPrivate;  </span><br><span class="line">class MyClass: public QObject  </span><br><span class="line">&#123;  </span><br><span class="line">  Q_OBJECT  </span><br><span class="line">public:  </span><br><span class="line">  MyClass(QObject *parent &#x3D; 0);  </span><br><span class="line">  virtual ~MyClass();  </span><br><span class="line">  void dummyFunc();  </span><br><span class="line">signal:  </span><br><span class="line">  void dummySignal();  </span><br><span class="line">private:  </span><br><span class="line">  MyClassPrivate * const d_ptr;  </span><br><span class="line">  Q_DECLARE_PRIVATE(MyClass);  </span><br><span class="line">  Q_DISABLE_COPY(MyClass);  </span><br><span class="line">&#125;;  </span><br><span class="line">#endif &#x2F;&#x2F; MYCLASS_H</span><br></pre></td></tr></table></figure>
+
+<p>myclass.cpp  </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; myclass.cpp  </span><br><span class="line">#include &quot;myclass.h&quot;  </span><br><span class="line">class MyClassPrivate  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">  MyClassPrivate(MyClass *parent)  </span><br><span class="line">    : q_ptr(parent)  </span><br><span class="line">  &#123;  </span><br><span class="line">  &#125;  </span><br><span class="line">  void foobar()  </span><br><span class="line">  &#123;  </span><br><span class="line">    Q_Q(MyClass);  </span><br><span class="line">    emit q-&gt;dummySignal();  </span><br><span class="line">  &#125;  </span><br><span class="line">private:  </span><br><span class="line">  MyClass * const q_ptr;  </span><br><span class="line">  Q_DECLARE_PUBLIC(MyClass);  </span><br><span class="line">&#125;;  </span><br><span class="line">MyClass::MyClass(QObject *parent)  </span><br><span class="line">  : QObject(parent)  </span><br><span class="line">  , d_ptr(new MyClassPrivate(this))  </span><br><span class="line">&#123;  </span><br><span class="line">&#125;  </span><br><span class="line">MyClass::~MyClass()  </span><br><span class="line">&#123;  </span><br><span class="line">  Q_D(MyClass);  </span><br><span class="line">  delete d;  </span><br><span class="line">&#125;  </span><br><span class="line">void MyClass::dummyFunc()  </span><br><span class="line">&#123;  </span><br><span class="line">  Q_D(MyClass);  </span><br><span class="line">  d-&gt;foobar();  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.cnblogs.com/zzzsj/p/17511693.html" target="_blank" rel="noopener">C++学习—qt的公有类、私有类、Q_Q、Q_D、二进制兼容</a>,by 手磨咖啡.</li>
+<li><a href="https://blog.csdn.net/weixin_33232568/article/details/131342239" target="_blank" rel="noopener">Qt使用技巧–定义Private类</a>,by 大王怕我去巡山.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>C/C++</tag>
+        <tag>QT</tag>
+      </tags>
+  </entry>
 </search>

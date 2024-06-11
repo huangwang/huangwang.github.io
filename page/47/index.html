@@ -314,6 +314,186 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/10/Cesium%E4%B8%AD%E9%A3%9E%E8%A1%8C%E5%99%A8%E5%A7%BF%E6%80%81%E6%8E%A7%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/10/Cesium%E4%B8%AD%E9%A3%9E%E8%A1%8C%E5%99%A8%E5%A7%BF%E6%80%81%E6%8E%A7%E5%88%B6/" itemprop="url">
+                  Cesium中飞行器姿态控制
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-10 21:52:42" itemprop="dateCreated datePublished" datetime="2018-06-10T21:52:42+08:00">2018-06-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-11-29 21:33:38" itemprop="dateModified" datetime="2020-11-29T21:33:38+08:00">2020-11-29</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="问题提出"><a href="#问题提出" class="headerlink" title="问题提出"></a>问题提出</h1><p>最近研究开源虚拟地球Cesium，遇到一个问题：在获取飞行器经度纬度高度偏航俯仰滚转六个参数的前提下，如何在Cesium中用CZML文件表示，从而完美实现飞行器姿态轨迹的复现。在CZML的position属性中使用cartographicDegrees表示飞行器的经度纬度高度，可以很好复现飞行器的轨迹。然而在CZML的orientation属性中使用unitQuaternion表示飞机自身姿态时，飞机姿态总是不对。</p>
+<h1 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h1><h2 id="基本知识"><a href="#基本知识" class="headerlink" title="基本知识"></a>基本知识</h2><p>在Cesium中存在两种常用坐标系：</p>
+<ol>
+<li>世界坐标系<br>世界坐标系统是以椭球中心为原点的笛卡尔空间直角坐标系。</li>
+<li>地理坐标系<br>地理坐标系即人们常用的使用经度、纬度、高度表示位置的坐标系。</li>
+<li>站心坐标系<br>又称为Earth-fixed coordinate system（站点坐标系、东-北-天坐标系ENU）。可分为站心直角坐标系和站心极坐标系。<br>常用的站心直角坐标系定义为：以站心（如GPS接收天线中心）为坐标系原点O，Z轴与椭球法线重合，向上为正（天向），y与椭球短半轴重合（北向），x轴与地球椭球的长半轴重合（东向）所构成的直角坐标系，称为当地东北天坐标系（ENU）。<br>飞行器的偏航、俯仰、滚转即是以站心直角坐标系为参考。</li>
+<li>模型坐标系<br>模型坐标系以物体的中心为坐标原点，物体旋转、平移等操作都是围绕局部坐标系进行的。这时当物体模型进行旋转、平移等操作时，局部坐标系也执行相应的旋转、平移等操作。<br>局部坐标系是一个假想的坐标系，该坐标系与物体的相对位置至始至终是不变的，假想出这个坐标系的目的主要是为了正向理解对三维场景中物体执行的平移和旋转操作。使用局部坐标系理解模型变换时，所有的变换操作直接作用与局部坐标系，由于局部坐标系与物体的相对位置不变，因此对局部坐标系进行平移、旋转和缩放时，物体在场景中位置和形状也会发生相应的变化。</li>
+</ol>
+<p>在Cesium中存在两种世界坐标系和地理坐标系之间坐标转换的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 经纬度转换为世界坐标</span><br><span class="line">Cesium.Cartesian3.fromDegrees(longitude, latitude, height, ellipsoid, result) </span><br><span class="line"># 世界坐标转换为经纬度</span><br><span class="line">var ellipsoid&#x3D;viewer.scene.globe.ellipsoid;</span><br><span class="line">var cartesian3&#x3D;new Cesium.cartesian3(x,y,z);</span><br><span class="line">var cartographic&#x3D;ellipsoid.cartesianToCartographic(cartesian3);</span><br><span class="line">var lat&#x3D;Cesium.Math.toDegrees(cartograhphic.latitude);</span><br><span class="line">var lng&#x3D;Cesium.Math.toDegrees(cartograhpinc.longitude);</span><br><span class="line">var alt&#x3D;cartographic.height;</span><br></pre></td></tr></table></figure>
+
+<h2 id="CZML分析"><a href="#CZML分析" class="headerlink" title="CZML分析"></a>CZML分析</h2><p>CZML是一种用来描述动态场景的JSON架构的语言，主要用于Cesium在浏览器中的展示。它可以用来描述点、线、布告板、模型以及其他的图元，同时定义他们是怎样随时间变化的<sup>[3]</sup>。  </p>
+<p>CZML可使用model属性直接加载3D模型，由position属性决定模型在世界坐标系内的位置，由orientation决定模型在世界坐标系内的姿态，并最终由orientation的unitQuaternion表示。  </p>
+<p>unitQuaternion即单位四元数，可与偏航俯仰滚转相互转换，并避免偏航俯仰滚转的万向节锁定问题，但其本质上都是一个旋转矩阵，可决定模型在世界坐标系内的姿态。</p>
+<h2 id="获取正确的飞行器姿态"><a href="#获取正确的飞行器姿态" class="headerlink" title="获取正确的飞行器姿态"></a>获取正确的飞行器姿态</h2><p>首先计算飞行器模型坐标系对站点直角坐标系的旋转矩阵（在制作飞行器3D模型时，应使其中心在本地坐标系原点，机头机翼与轴平行，方便计算在站点直角坐标系内的旋转角度），再乘以由飞行器偏航俯仰滚转得到的旋转矩阵，再乘以站点直角坐标系对世界坐标系的旋转矩阵。将最终得到旋转矩阵转换为单位四元数，即得到正确的飞行器姿态。</p>
+<p>小技巧：飞机3D模型的中心设置在本地坐标系原点，机头机翼与轴平行后，可能在Cesium中渲染时姿态还是不对。原因是绕Z轴旋转的角度还是不对。可以在HeadingPitchRoll示例中使用自己的飞机3D模型，参照Cesium给的运输机模型，比较它们之间绕Z轴旋转的差异，然后调整飞机3D模型绕Z轴旋转的角度。</p>
+<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>参考代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var lon&#x3D;113,lat&#x3D;34;&#x2F;&#x2F;模型的站心经纬度</span><br><span class="line">var h1&#x3D;0,p1&#x3D;0,r1&#x3D;0;&#x2F;&#x2F;模型坐标系对站点坐标系的旋转角度</span><br><span class="line">var h2&#x3D;0,p2&#x3D;0,r2&#x3D;0;&#x2F;&#x2F;模型在站点坐标系的姿态</span><br><span class="line">var center &#x3D; Cesium.Cartesian3.fromDegrees(lon, lat)</span><br><span class="line">var hpr &#x3D; new Cesium.HeadingPitchRoll(h1+h2, p1+p2, r1+r2)</span><br><span class="line">var q1 &#x3D; Cesium.Transforms.headingPitchRollQuaternion(center, hpr)</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://stackoverflow.com/questions/43389069/cesium-how-to-animate-an-aircraft-from-pitch-roll-heading" target="_blank" rel="noopener">CESIUM : How to animate an aircraft from pitch, roll, heading?</a>, by stackoverflow.</li>
+<li><a href="https://blog.csdn.net/qq_34149805/article/details/78393540" target="_blank" rel="noopener">Cesium中的几种坐标和相互转换</a>, by finalLi.</li>
+<li><a href="http://www.cnblogs.com/laixiangran/p/4997971.html" target="_blank" rel="noopener">Cesium Language (CZML) 入门1 — CZML Structure（CZML的结构）</a>, by laixiangran.</li>
+<li><a href="https://github.com/AnalyticalGraphicsInc/cesium/wiki/CZML-Structure" target="_blank" rel="noopener">CZML Structure</a>, by AnalyticalGraphicsInc.</li>
+<li><a href="https://www.jianshu.com/p/8d483fa1acbd" target="_blank" rel="noopener">3D坐标系</a>, by S_H_C.</li>
+<li><a href="https://blog.csdn.net/trojanpizza/article/details/6652533" target="_blank" rel="noopener">3D空间的坐标系</a>, by trojanpizza.</li>
+<li><a href="https://blog.csdn.net/qq_30100043/article/details/91958750" target="_blank" rel="noopener">cesium获取某个位置垂直于当前地表的垂直坐标系</a>,by 暮志未晚Webgl.</li>
+<li><a href="https://www.jianshu.com/p/244ed413a3bd" target="_blank" rel="noopener">Cesium控制模型旋转2019-11-15</a>,by _____xyz.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/09/%E6%98%A5%E6%B1%9F%E8%8A%B1%E6%9C%88%E5%A4%9C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2047,204 +2227,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/10/%E7%A6%BB%E7%BA%BF%E7%8E%AF%E5%A2%83%E4%B8%8BNode-js%E5%BA%94%E7%94%A8%E9%83%A8%E7%BD%B2%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/10/%E7%A6%BB%E7%BA%BF%E7%8E%AF%E5%A2%83%E4%B8%8BNode-js%E5%BA%94%E7%94%A8%E9%83%A8%E7%BD%B2%E6%96%B9%E6%B3%95/" itemprop="url">
-                  离线环境下Node.js应用部署方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-10 21:31:22" itemprop="dateCreated datePublished" datetime="2018-05-10T21:31:22+08:00">2018-05-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-12-17 22:49:47" itemprop="dateModified" datetime="2019-12-17T22:49:47+08:00">2019-12-17</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>离线环境下Node.js应用部署时需要解决以下三个基本问题：</p>
-<ol>
-<li>Node.js应用的进程管理，如性能监控、自动重启、负载均衡等</li>
-<li>Node.js应用开机如何自启动</li>
-<li>离线环境下如何部署Node.js应用</li>
-</ol>
-<p>下面以在Windows Server 2012上离线部署Node.js应用为例，记录上述问题的解决方案：</p>
-<h1 id="Node-js应用的进程管理"><a href="#Node-js应用的进程管理" class="headerlink" title="Node.js应用的进程管理"></a>Node.js应用的进程管理</h1><p>在生产环境中运行 Express 应用程序时，使用进程管理器对于完成以下任务很有帮助<sup>[1]</sup>：</p>
-<ul>
-<li>在应用程序崩溃后将其重新启动。</li>
-<li>获得对运行时性能和资源消耗的洞察。</li>
-<li>动态修改设置以改善性能。</li>
-<li>控制集群。</li>
-</ul>
-<p>进程管理器有点类似于应用程序服务器：它是应用程序的“容器”，可促进部署，提供高可用性并使您可以在运行时管理应用程序。</p>
-<p>用于 Express 和其他 Node.js 应用程序的最流行的进程管理器包括：</p>
-<ul>
-<li>StrongLoop Process Manager</li>
-<li>PM2</li>
-<li>Forever</li>
-</ul>
-<p>上述三种工具的比较请参阅<a href="http://strong-pm.io/compare/" target="_blank" rel="noopener">http://strong-pm.io/compare/</a>。其中，StrongLoop Process Manager无法在Windows平台工作，再综合比较PM2和Forever，由于Forever没有操作系统自启动的脚本，故选择PM2作为Windows平台Node.js应用的进程管理器。</p>
-<h1 id="Node-js应用开机如何自启动"><a href="#Node-js应用开机如何自启动" class="headerlink" title="Node.js应用开机如何自启动"></a>Node.js应用开机如何自启动</h1><p>选择PM2作为Node.js应用的进程管理器后，Node.js应用开机自启动的问题就变为如何开机自启动PM2。Windows平台存在两个自启动PM2的脚本：</p>
-<ul>
-<li>pm2-windows-service </li>
-<li>pm2-windows-startup</li>
-</ul>
-<p>pm2-windows-service基于 node-windows将PM2注册为Windows服务，从而实现自启动。pm2-windows-startup则基于start-on-windows-boot在注册表中将PM2设为自启动程序，从而实现自启动。两种方案经测试，只有pm2-windows-startup在Windows Server 2012上可行，故选择pm2-windows-startup作为解决Node.js应用开机自启动的方案。</p>
-<h1 id="离线环境下如何部署Node-js应用"><a href="#离线环境下如何部署Node-js应用" class="headerlink" title="离线环境下如何部署Node.js应用"></a>离线环境下如何部署Node.js应用</h1><p>PM2和pm2-windows-startup必须全局安装，如何简单方便地在离线环境下全局安装这两个模块是一个问题。网上搜到的方法有：</p>
-<ul>
-<li>npm link</li>
-<li>npm-bundle</li>
-</ul>
-<p>npm link<sup>[2]</sup>是npm的一个命令，可将本地包链接成全局包，但实际测试过程中，无法解决PM2包的依赖问题，故放弃。而npm-bundle<sup>[3]</sup>则能很好的解决PM2的依赖问题。具体过程为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">\\在线环境下全局安装</span><br><span class="line">npm install -g pm2</span><br><span class="line">npm install -g pm2-windows-startup</span><br><span class="line">npm install -g npm-bundle</span><br><span class="line">npm-bundle pm2</span><br><span class="line">npm-bundle pm2-windows-startup</span><br></pre></td></tr></table></figure>
-
-<h2 id="离线部署Nodejs-Express应用"><a href="#离线部署Nodejs-Express应用" class="headerlink" title="离线部署Nodejs Express应用"></a>离线部署Nodejs Express应用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">SET NODE_ENV&#x3D;production</span><br><span class="line">call npm install .\pm2-2.10.3.tgz -g </span><br><span class="line">call npm install .\pm2-windows-startup-1.0.3.tgz -g</span><br><span class="line">call pm2-startup install </span><br><span class="line">call pm2 start .&#x2F;bin&#x2F;www -i 0</span><br><span class="line">call pm2 save</span><br></pre></td></tr></table></figure>
-
-<h2 id="离线卸载Nodejs-Express应用"><a href="#离线卸载Nodejs-Express应用" class="headerlink" title="离线卸载Nodejs Express应用"></a>离线卸载Nodejs Express应用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">call pm2 stop all</span><br><span class="line">call pm2-startup uninstall</span><br><span class="line">call npm uninstall pm2 -g</span><br><span class="line">call npm uninstall pm2-windows-startup -g</span><br></pre></td></tr></table></figure>
-
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="http://expressjs.com/zh-cn/advanced/pm.html" target="_blank" rel="noopener">Express 应用程序的进程管理器</a>, by Express</li>
-<li><a href="https://blog.csdn.net/fay462298322/article/details/53432691" target="_blank" rel="noopener">npm离线安装全局包,内网安装npm中的包</a>, by 爱死费崇政</li>
-<li><a href="https://stackoverflow.com/questions/41156556/what-exact-command-is-to-install-pm2-on-offline-rhel" target="_blank" rel="noopener">What exact command is to install pm2 on offline RHEL</a>, by stackoverflow.</li>
-<li><a href="https://blog.cloudboost.io/nodejs-pm2-startup-on-windows-db0906328d75" target="_blank" rel="noopener">NodeJS: PM2 Startup on Windows</a>,by Walter Accantelli.</li>
-<li><a href="https://blog.csdn.net/u010889616/article/details/78058006" target="_blank" rel="noopener">bat脚本%cd%和%~dp0获取当前目录区别</a>,by dmfrm</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2292,7 +2274,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">477</span>
+                    <span class="site-state-item-count">478</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

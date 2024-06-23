@@ -21201,4 +21201,66 @@ console.log(y);</code></pre></li>
         <tag>linux</tag>
       </tags>
   </entry>
+  <entry>
+    <title>不同桌面操作系统间文件传输方法</title>
+    <url>/2024/06/23/%E4%B8%8D%E5%90%8C%E6%A1%8C%E9%9D%A2%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%97%B4%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>最近经常在不同操作系统之间传输数据，因此简单记录一下所使用的方法。</p>
+<h1 id="获取远程-Windows-系统中数据"><a href="#获取远程-Windows-系统中数据" class="headerlink" title="获取远程 Windows 系统中数据"></a>获取远程 Windows 系统中数据</h1><p>从本地操作系统获取远程 Windows 系统中的数据，优先可使用 Windows 自带的 FTP 服务，这样不仅可以获取数据，也可以向远程 Windows 系统写入数据。具体方法请参考：</p>
+<ul>
+<li><a href="https://blog.csdn.net/A_awen/article/details/130286870" target="_blank" rel="noopener">windows搭建一个FTP服务器超详细</a></li>
+</ul>
+<p>如果本地和远程都是 Windows 系统，也可以使用自带的远程桌面应用读写数。开启远程桌面访问后，在命令行提示符中输入 mstsc ，远程登陆即可。</p>
+<h1 id="获取远程-Linux-系统中数据"><a href="#获取远程-Linux-系统中数据" class="headerlink" title="获取远程 Linux 系统中数据"></a>获取远程 Linux 系统中数据</h1><h2 id="本地-Linux-系统"><a href="#本地-Linux-系统" class="headerlink" title="本地 Linux 系统"></a>本地 Linux 系统</h2><p>如果本地也是 Linux 系统，可以使用 SCP 命令。具体方法为：</p>
+<ul>
+<li>复制文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$scp local_file remote_username@remote_ip:remote_folder</span><br><span class="line">$scp local_file remote_username@remote_ip:remote_file</span><br><span class="line"></span><br><span class="line">$scp remote_username@remote_ip:remote_file local_folder</span><br><span class="line">$scp remote_username@remote_ip:remote_file local_file</span><br></pre></td></tr></table></figure>
+
+<p>指定了用户名，命令执行后需要输入用户密码；如果不指定用户名，命令执行后需要输入用户名和密码；</p>
+<ul>
+<li>复制目录</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$scp -r local_folder remote_username@remote_ip:remote_folder</span><br><span class="line">$scp -r local_folder remote_ip:remote_folder</span><br><span class="line"></span><br><span class="line">$scp -r remote_username@remote_ip:remote_folder local_folder</span><br></pre></td></tr></table></figure>
+
+<h2 id="本地-Windows-系统"><a href="#本地-Windows-系统" class="headerlink" title="本地 Windows 系统"></a>本地 Windows 系统</h2><p>如果本地是 Windows 系统，可使用 FTP 服务，让远程 Linux 系统将数据直接写入到本地 Windows 系统的 FTP 服务目录。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/A_awen/article/details/130286870" target="_blank" rel="noopener">windows搭建一个FTP服务器超详细</a>, by 程序猿——小白菜.</li>
+<li><a href="https://linuxtools-rst.readthedocs.io/zh-cn/latest/tool/scp.html" target="_blank" rel="noopener">18. scp 跨机远程拷贝</a>,by  Linux Tools Quick Tutorial.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>常用工具</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>虚拟DOM技术学习</title>
+    <url>/2024/06/23/%E8%99%9A%E6%8B%9FDOM%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<p>文档对象模型（DOM）通过将文档的结构（例如表示网页的 HTML）以对象的形式存储在内存中，将网页与脚本或编程语言连接起来。 虚拟 DOM 是声明式 Web 框架（如 React、Vue.js 和 Elm）中使用的文档对象模型 （DOM） 的轻量级 JavaScript 表示形式。 </p>
+<h1 id="为什么需要虚拟-DOM"><a href="#为什么需要虚拟-DOM" class="headerlink" title="为什么需要虚拟 DOM"></a>为什么需要虚拟 DOM</h1><p>虚拟 DOM 本质上是在 DOM 基础上的更高级别的抽象，使用虚拟 DOM 将带来如下好处：</p>
+<ul>
+<li>虚拟 DOM 比 DOM 更新渲染的速度更快。这就是虚拟 DOM 的魅力，正常来说增加一层抽象，可以减少编程复杂度，但会影响运行效率，但是虚拟 DOM 却两者兼备。</li>
+<li>减少编程复杂度，更有利于前端组件式开发。</li>
+</ul>
+<h1 id="关键思想"><a href="#关键思想" class="headerlink" title="关键思想"></a>关键思想</h1><ul>
+<li>如何创建 DOM 的虚拟表示</li>
+<li>如何比较不同虚拟 DOM 节点之间的差异</li>
+<li>应用虚拟 DOM 节点差异到真实的 HTML 元素</li>
+</ul>
+<h1 id="具体原理"><a href="#具体原理" class="headerlink" title="具体原理"></a>具体原理</h1><p>请参考：</p>
+<ul>
+<li><a href="https://lazamar.github.io/virtual-dom/" target="_blank" rel="noopener">A virtual DOM in 200 lines of JavaScript</a></li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://lazamar.github.io/virtual-dom/" target="_blank" rel="noopener">A virtual DOM in 200 lines of JavaScript</a>,by Marcelo Lazaroni.</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document_Object_Model" target="_blank" rel="noopener">文档对象模型（DOM）</a>,by mozilla.</li>
+<li><a href="https://en.wikipedia.org/wiki/Virtual_DOM" target="_blank" rel="noopener">Virtual DOM</a>,by wikipedia.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>前端</tag>
+        <tag>JavaScript</tag>
+      </tags>
+  </entry>
 </search>

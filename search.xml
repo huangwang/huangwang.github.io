@@ -21264,4 +21264,65 @@ console.log(y);</code></pre></li>
         <tag>JavaScript</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Maven的配置文件pom.xml学习</title>
+    <url>/2024/06/25/Maven%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6pom-xml%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<p>项目对象模型 (POM) 是 Maven 中的基本工作单元。它是一个 XML 文件，包含有关项目的信息以及 Maven 用于构建项目的配置详细信息。它包含大多数项目的默认值。例如，构建目录为target；源目录为src/main/java；测试源目录为src/test/java；等等。执行任务或目标时，Maven 在当前目录中查找 POM。它读取 POM，获取所需的配置信息，然后执行目标。</p>
+<h1 id="POM-xml最简示例"><a href="#POM-xml最简示例" class="headerlink" title="POM.xml最简示例"></a>POM.xml最简示例</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">  &lt;modelVersion&gt;4.0.0&lt;&#x2F;modelVersion&gt;</span><br><span class="line"> </span><br><span class="line">  &lt;groupId&gt;com.mycompany.app&lt;&#x2F;groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;my-app&lt;&#x2F;artifactId&gt;</span><br><span class="line">  &lt;version&gt;1&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;project&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="POM-xml结构"><a href="#POM-xml结构" class="headerlink" title="POM.xml结构"></a>POM.xml结构</h1><h2 id="项目基本信息"><a href="#项目基本信息" class="headerlink" title="项目基本信息"></a>项目基本信息</h2><p>必填项标签：</p>
+<ul>
+<li>groupId：项目的组名，通常为反转的域名，例如：com.example</li>
+<li>artifactId: 项目的唯一标识，通常为项目名称</li>
+<li>version：项目版本号</li>
+<li>packaging：项目打包方式，通常是 jar、war 或 pom, 如果没有指定packaging，则默认是 jar</li>
+</ul>
+<p>其他重要标签：</p>
+<ul>
+<li>modules</li>
+</ul>
+<p>modules 标签用于声明当前 Maven 项目包含的模块子项目，每个子项目都是一个独立的 Maven 项目，具有自己的 pom.xml 文件，可以进行独立构建和测试。在父项目的 pom.xml 文件中，使用 标签来列出所有子项目的名称。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;&#x2F;modelVersion&gt;</span><br><span class="line">	</span><br><span class="line">    &lt;groupId&gt;com.ruoyi&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;ruoyi&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;3.8.7&lt;&#x2F;version&gt;</span><br><span class="line"></span><br><span class="line">    &lt;modules&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-admin&lt;&#x2F;module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-framework&lt;&#x2F;module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-system&lt;&#x2F;module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-quartz&lt;&#x2F;module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-generator&lt;&#x2F;module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-common&lt;&#x2F;module&gt;</span><br><span class="line">    &lt;&#x2F;modules&gt;</span><br><span class="line">&lt;&#x2F;project&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>parent</li>
+</ul>
+<p>parent 标签用于声明当前 Maven 项目的父项目，它可以将若干个 Maven 项目组织成一个整体，指定版本号，插件版本号等，便于管理和维护，在一个 Maven 项目中，使用标签来引用父项目。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;parent&gt;</span><br><span class="line">        &lt;artifactId&gt;ruoyi&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;groupId&gt;com.ruoyi&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;version&gt;3.8.7&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;&#x2F;parent&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;&#x2F;modelVersion&gt;</span><br><span class="line"></span><br><span class="line">    &lt;artifactId&gt;ruoyi-framework&lt;&#x2F;artifactId&gt;</span><br><span class="line">&lt;&#x2F;project&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>properties</li>
+</ul>
+<p>properties 严格来说，并不一定是项目本身的信息，而是人为设置的属性或者说宏，这个标签用来定义和管理项目中所需要的属性，其作用有以下几个：</p>
+<p>(1) 统一管理项目中的常用属性，比如版本号、路径、插件版本等，方便统一修改和管理。</p>
+<p>(2) 可以在配置过程中使用 ${…}占位符引用这些属性，使得配置更加灵活和便捷。</p>
+<p>(3) 避免硬编码，提高代码的可维护性和可读性</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;properties&gt;</span><br><span class="line">        &lt;ruoyi.version&gt;3.8.7&lt;&#x2F;ruoyi.version&gt;</span><br><span class="line">        &lt;project.build.sourceEncoding&gt;UTF-8&lt;&#x2F;project.build.sourceEncoding&gt;</span><br><span class="line">        &lt;project.reporting.outputEncoding&gt;UTF-8&lt;&#x2F;project.reporting.outputEncoding&gt;</span><br><span class="line">        &lt;java.version&gt;1.8&lt;&#x2F;java.version&gt;</span><br><span class="line">        &lt;maven-jar-plugin.version&gt;3.1.1&lt;&#x2F;maven-jar-plugin.version&gt;</span><br><span class="line">        &lt;spring-framework.version&gt;5.3.33&lt;&#x2F;spring-framework.version&gt;</span><br><span class="line">        &lt;druid.version&gt;1.2.20&lt;&#x2F;druid.version&gt;</span><br><span class="line">        &lt;bitwalker.version&gt;1.21&lt;&#x2F;bitwalker.version&gt;</span><br><span class="line">        &lt;swagger.version&gt;3.0.0&lt;&#x2F;swagger.version&gt;</span><br><span class="line">        &lt;kaptcha.version&gt;2.3.3&lt;&#x2F;kaptcha.version&gt;</span><br><span class="line">        &lt;pagehelper.boot.version&gt;1.4.7&lt;&#x2F;pagehelper.boot.version&gt;</span><br><span class="line">        &lt;fastjson.version&gt;2.0.43&lt;&#x2F;fastjson.version&gt;</span><br><span class="line">        &lt;oshi.version&gt;6.5.0&lt;&#x2F;oshi.version&gt;</span><br><span class="line">        &lt;commons.io.version&gt;2.13.0&lt;&#x2F;commons.io.version&gt;</span><br><span class="line">        &lt;poi.version&gt;4.1.2&lt;&#x2F;poi.version&gt;</span><br><span class="line">        &lt;velocity.version&gt;2.3&lt;&#x2F;velocity.version&gt;</span><br><span class="line">        &lt;jwt.version&gt;0.9.1&lt;&#x2F;jwt.version&gt;</span><br><span class="line">    &lt;&#x2F;properties&gt;</span><br><span class="line">&lt;&#x2F;project&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="项目的依赖列表"><a href="#项目的依赖列表" class="headerlink" title="项目的依赖列表"></a>项目的依赖列表</h2><h3 id="dependency"><a href="#dependency" class="headerlink" title="dependency"></a>dependency</h3><p>与项目的依赖列表相关的标签最外层由 dependencies 来囊括，内部包含了各种具体的依赖 dependency，该标签用于指定一个依赖项，它包含以下几个子标签：</p>
+<ul>
+<li>groupId：指定依赖项的groupId，项目的组名</li>
+<li>artifactId：指定依赖项的artifactId，项目的唯一标识符</li>
+<li>version：指定依赖项的版本号。</li>
+<li>scope：指定依赖项在项目中的使用范围。</li>
+</ul>
+<p>其中的 <scope>一般包含以下几种范围：常用的有compile、test、provided 和 runtime。</p>
+<h3 id="repository"><a href="#repository" class="headerlink" title="repository"></a>repository</h3><p>我们还能在pom文件中支持指定Maven仓库，即使用 repositories 和 repository 标签，repository 用于指定一个Maven仓库。</p>
+<h2 id="项目的构建配置"><a href="#项目的构建配置" class="headerlink" title="项目的构建配置"></a>项目的构建配置</h2><p>项目的构建配置信息，包括编译器版本、插件列表、源代码目录等。</p>
+<p>具体请参考：</p>
+<ul>
+<li><a href="https://www.cnblogs.com/mountainstudy/p/17953638" target="_blank" rel="noopener">全面详解Maven的配置文件pom.xml（含常用plugin）</a></li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.cnblogs.com/mountainstudy/p/17953638" target="_blank" rel="noopener">全面详解Maven的配置文件pom.xml（含常用plugin）</a>,by Slow菜鸟.</li>
+<li><a href="https://maven.apache.org/guides/introduction/introduction-to-the-pom.html" target="_blank" rel="noopener">Introduction to the POM</a>,by apache.</li>
+<li><a href="https://blog.csdn.net/weixin_43671437/article/details/106753461" target="_blank" rel="noopener">Maven的三种项目打包方式——pom，jar，war的区别</a>,by Mr.史.</li>
+<li><a href="https://www.cnblogs.com/Baker-Street/p/16156144.html" target="_blank" rel="noopener">基于Springboot的maven父子工程pom文件打包配置</a>,by Sherlock先生.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>Java</tag>
+      </tags>
+  </entry>
 </search>

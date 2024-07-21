@@ -314,6 +314,213 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/09/16/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E%E4%B8%8E%E7%89%A9%E7%90%86%E5%BC%95%E6%93%8E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/16/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E%E4%B8%8E%E7%89%A9%E7%90%86%E5%BC%95%E6%93%8E/" itemprop="url">
+                  游戏引擎与物理引擎
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-16 21:44:49" itemprop="dateCreated datePublished" datetime="2019-09-16T21:44:49+08:00">2019-09-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-01-09 21:27:47" itemprop="dateModified" datetime="2021-01-09T21:27:47+08:00">2021-01-09</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>游戏引擎提供一系列可视化开发工具和可重用组件。这些工具通过与开发环境进行集成，方便开发者简单、快速进行数据驱动方式的游戏开发。为了提高游戏开发人员的开发效率，引擎开发者会开发出大量的游戏所需要的软件组件。大多数引擎集成了图形、声音、物理和人工智能等功能部件。游戏引擎会被称为“中间件”，因为它们可以提供灵活和重用平台，向游戏开发者提供所需要的全部核心功能，从而节省大量的游戏开发费用，降低开发的复杂性，缩短游戏的上市时间，所有这些对于高竞争性的游戏产业来说都是关键因素。诸如虚幻系列引擎、Unity3D、Frostbite Engine、zerodin引擎、Doom3引擎、CryENGINE、3DGame Studio、RenderWare、Gamebryo、Virtools以及Source引擎等引擎。</p>
+<p>物理引擎是一个计算机程序模拟牛顿力学模型，使用质量、速度、摩擦力和空气阻力等变量。可以用来预测这种不同情况下的效果。它主要用在计算物理学和电子游戏以及计算机动画当中。物理引擎可作为游戏引擎的一个组件。</p>
+<p>物理引擎有两种类型常见的型类：实时物理引擎和高精度物理引擎。高精度的物理引擎需要更多的处理能力来计算非常精确的物理，通常使用在科学研究（计算物理学）和计算机动画电影制作。实时物理引擎使用通常使用在电子游戏并且简化运算，降低精确度增以减少计算时间，得到在电子游戏当中可以接受的的处理速度。常用的物理引擎有：ODE、Box2D、PhysX、Bullet、Havok引擎。</p>
+<h1 id="游戏主循环"><a href="#游戏主循环" class="headerlink" title="游戏主循环"></a>游戏主循环</h1><p>FPS(Frame Per Second)游戏帧速60帧是指游戏每秒循环更新60次。  </p>
+<p>一个游戏程序的基本结构像是这样:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	updateEverything();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="固定拖时间更新法"><a href="#固定拖时间更新法" class="headerlink" title="固定拖时间更新法"></a>固定拖时间更新法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	updateEverything();</span><br><span class="line">	sleep(1.0&#x2F;60);&#x2F;&#x2F;程序进程等待1&#x2F;60秒</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="累积时间更新法"><a href="#累积时间更新法" class="headerlink" title="累积时间更新法"></a>累积时间更新法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* getCurrentTime()每次调用返回当前的时间 *&#x2F;</span><br><span class="line">float lastUpdateTime &#x3D; getCurrentTime();</span><br><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	float currentTime &#x3D; getCurrentTime();</span><br><span class="line">	float deltaTime &#x3D; currentTime - lastUpdateTime;</span><br><span class="line">    &#x2F;* 每调用updateEverything()后检查时间，</span><br><span class="line">     直到过去的时间达到1&#x2F;60秒就进行下一次更新 *&#x2F;</span><br><span class="line">	if (deltaTime &gt;&#x3D; 1.0&#x2F;60)</span><br><span class="line">	&#123;</span><br><span class="line">		lastUpdateTime &#x3D; currentTime;</span><br><span class="line">		updateEverything();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="图形更新调用法"><a href="#图形更新调用法" class="headerlink" title="图形更新调用法"></a>图形更新调用法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	updateEverything();</span><br><span class="line">	&#x2F;* 等待垂直同步信号间的空白时间，程序执行到这里会进入等待</span><br><span class="line">	 一般会被封装在类似swapBuffer之类的图形API中执行，</span><br><span class="line">	 但是程序要开启了垂直同步的功能才有效。</span><br><span class="line">	 不过貌似现在的智能手机都默认有垂直同步的效果，</span><br><span class="line">	 当然手机和PC的硬件技术不同，可能也不叫这个名字了。*&#x2F;</span><br><span class="line">	waitForVerticalBlank();</span><br><span class="line">	drawEverything();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="死循环并计算时间差用于更新法"><a href="#死循环并计算时间差用于更新法" class="headerlink" title="死循环并计算时间差用于更新法"></a>死循环并计算时间差用于更新法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">float lastUpdateTime &#x3D; getCurrentTime();</span><br><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	float currentTime &#x3D; getCurrentTime();</span><br><span class="line">	float deltaTime &#x3D; currentTime - lastUpdateTime;</span><br><span class="line">	lastUpdateTime &#x3D; currentTime;</span><br><span class="line">	updateEverything(deltaTime);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void updateMove(float deltaTime)</span><br><span class="line">&#123;</span><br><span class="line">	position.x +&#x3D; speedX * deltaTime;</span><br><span class="line">	position.y +&#x3D; speedY * deltaTime;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="累积时间半固定时长等图形更新并将时间差用于更新法"><a href="#累积时间半固定时长等图形更新并将时间差用于更新法" class="headerlink" title="累积时间半固定时长等图形更新并将时间差用于更新法"></a>累积时间半固定时长等图形更新并将时间差用于更新法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;假设目标是60帧&#x2F;秒更新的游戏</span><br><span class="line">float lastUpdateTime &#x3D; getCurrentTime();</span><br><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	float currentTime &#x3D; getCurrentTime();</span><br><span class="line">	float deltaTime &#x3D; currentTime - lastUpdateTime;</span><br><span class="line">	lastUpdateTime &#x3D; currentTime;</span><br><span class="line">    &#x2F;* 如果游戏太卡，过长的时间差可能会导致跳过一些不能跳过的游戏逻辑，所以做一些人为限制 *&#x2F;</span><br><span class="line">    if (deltaTime &gt; 1.0&#x2F;30) deltaTime &#x3D; 1.0&#x2F;30;</span><br><span class="line">	updateEverything(deltaTime);</span><br><span class="line">	waitForVerticalBlank();</span><br><span class="line">	drawEverything();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述方法只针对单机游戏有效，如果是网络游戏，考虑客户端之间的同步问题的话，帧速不稳定地变来变去是不好的，我们可以记录过去的时间里跑过的帧数，如果达不到目标帧数就连续进行更新直到赶上需要的帧数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;假设目标是60帧&#x2F;秒更新的游戏</span><br><span class="line">float startTime &#x3D; getCurrentTime();</span><br><span class="line">long passedFrames &#x3D; 0;</span><br><span class="line">while (isRunning)</span><br><span class="line">&#123;</span><br><span class="line">	float currentTime &#x3D; getCurrentTime();</span><br><span class="line">	float totalTime &#x3D; currentTime - startTime;</span><br><span class="line">	long targetTotalFrames &#x3D; totalTime&#x2F;(1.0&#x2F;60);</span><br><span class="line">	&#x2F;* 如果某一次更新耗时太久，则会导致passedFrames和targetTotalFrames差太多，所以就连续更新好几次逻辑来赶上目标的更新次数，以保证游戏的进度稳定*&#x2F;</span><br><span class="line">	while (passedFrames &lt; targetTotalFrames)</span><br><span class="line">	&#123;</span><br><span class="line">		updateEverything();</span><br><span class="line">		passedFrames++;</span><br><span class="line">	&#125;</span><br><span class="line">	&#x2F;* 图形更新应该在逻辑完全完成更新以后才进行 *&#x2F;</span><br><span class="line">	drawEverything();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="游戏时间"><a href="#游戏时间" class="headerlink" title="游戏时间"></a>游戏时间</h1><p>计算机是通过高分辨率计时器来衡量现实时间的，而游戏时间显然不能和真实事件的时间线一致，每个游戏都会有自身的时间线，该时间线和真实时间是两个平行的世界。开发者可以暂停游戏，冻结时间线，也可以通过某种指令来加速时间线，这些对于游戏的调试非常有帮助。一些游戏也会有一些类似时光倒流或者时间变慢的特殊特效，而这些都是通过操作时间线来完成的。</p>
+<p>现在假设游戏程序以 60 FPS 在运行，则每帧的处理时间大约为16毫秒。如果想要确保帧率稳定运行，每次循环的处理时间都应该小于这个值，剩余的时间，程序进入睡眠状态：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">while(true)</span><br><span class="line">&#123;</span><br><span class="line">    double start &#x3D; getCurrentTime();</span><br><span class="line"></span><br><span class="line">    processInput();</span><br><span class="line">    udpate();</span><br><span class="line">    render();</span><br><span class="line"></span><br><span class="line">    sleep(start + MS_PER_FRAME - getCurrentTime());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果每帧的处理时间小于16毫秒，sleep 可以保证游戏不会运行的太快。但是如果游戏的每帧超过16毫秒则会出现卡顿现象。</p>
+<p>上面的代码中如果正常的情况下，可以确保每帧推进游戏进程16毫秒，但是因为每帧执行的时间无法固定，会导致帧处理时间超出固定的16毫秒而将游戏拖慢。在无法保证帧处理时间的情况下，我们尝试动态的更新策略，让每帧推进的时间不再是固定的16毫秒，而是根据帧处理的时间来动态调整：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">double lastTime &#x3D; getCurrentTime();</span><br><span class="line">while (true)</span><br><span class="line">&#123;</span><br><span class="line">    double current &#x3D; getCurrentTime();</span><br><span class="line">    double elapsed &#x3D; current - lastTime;</span><br><span class="line">    processInput();</span><br><span class="line">    update(elapsed);</span><br><span class="line">    render();</span><br><span class="line">    lastTime &#x3D; current;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每一帧我们都计算花费的真实时间（elapsed），而这条根据真实时间测量的时间线被称为全局时间线，所有的游戏内部 update() 逻辑都是基于这条全局时间线。update() 函数内部的处理逻辑会根据传入的时间间隔来驱动所有物体的动态效果，每个物体都有自己的局部时间线，这个局部时间线和全局时间线之间存在着一定的比例关系。例如游戏中存在一个飞行的子弹，子弹的飞行距离 = 子弹的飞行速度 * 子弹的飞行时间。这里的飞行时间并不一定是上面提到的全局时间线，可能是它的1/2或者2倍都是可以的，具体的快慢比例完全取决于你的游戏配置，这条和全局时间线比例不同的时间线也就是局部时间线。</p>
+<p>游戏中渲染通常并不会被时间所影响，因为渲染引擎只是单纯的渲染某一时刻的数据逻辑，一般和时间没有关系。受影响的主要是游戏的逻辑更新部分，为了保证不会出现不同硬件的游戏效果不一致，我们可以固定游戏逻辑的更新时间间隔，确保更新频率保持一致。这样做虽然可能导致在配置好的机器上相同的逻辑被渲染多次，但是这显然并不会影响游戏逻辑。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">double previous &#x3D; getCurrentTime();</span><br><span class="line">double lag &#x3D; 0.0; </span><br><span class="line">while (true) &#123; </span><br><span class="line">	double current &#x3D; getCurrentTime(); </span><br><span class="line">	double elapsed &#x3D; current - previous; </span><br><span class="line">	previous &#x3D; current; </span><br><span class="line">	lag +&#x3D; elapsed;</span><br><span class="line"></span><br><span class="line">	processInput();</span><br><span class="line">	while (lag &gt;&#x3D; MS_PER_UPDATE)</span><br><span class="line">	&#123;</span><br><span class="line">		update();</span><br><span class="line">		lag -&#x3D; MS_PER_UPDATE;</span><br><span class="line">	&#125;</span><br><span class="line">    render();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在<strong>游戏渲染时间线和游戏的更新时间线</strong>已经分离，代码中保持游戏的更新时间线以固定的时间间隔推进，这个时间间隔越短，update() 更新的频率越快，越慢更新的频率越低，过慢的更新频率会导致游戏产生抖动现象，不过因为时间步长和硬件不相关，这种现象只会出现在低端机器上。</p>
+<p>通过上面的代码基本上已经可以解决游戏循环的大部分问题了，但是还会出现一种现象，就是当一次循环消耗过长的时间，在下一次游戏渲染的时候，渲染的数据仍然是上一个时间点的数据，而不是真实时间点的数据，这听起来不太容易理解，可以看下面的示意图：</p>
+<p align="center">
+    <img src="images/game-loop-timeline.png" width="100%" alt="游戏更新与渲染"/>
+</p>
+<center>图1 游戏更新与渲染不一致</center>
+
+<p>在图中可以看出这是一个游戏的更新渲染序列，这里看第三次渲染（红点的位置）。因为上一帧的时间花费过长，导致在一帧的逻辑中调用了 update() 两次，进行了两次更新，这时渲染和更新的时间线发生偏移，渲染的真实位置在两次更新逻辑的中间，而渲染的结果却是上一次更新的结果（绿点的位置）。这显然是不对的，因为渲染的结果和现在真实的更新结果并不一样，这时候我们需要计算出二者时间线的偏移值，让渲染的结果符合真实的更新逻辑，也就是说需要计算出从绿点到红点位置的数据变化情况，只有这样渲染的结果才符合常理。</p>
+<p>解决这个问题其实很简单，只需要将偏移的大小告诉渲染逻辑即可，渲染逻辑怎样处理这个偏移时间还需要程序自己来决定。</p>
+<p>将渲染的代码改为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">render(lag &#x2F; MS_PER_UPDATE);</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://blog.jmecn.net/chapter-16-physics-engine/" target="_blank" rel="noopener">第十六章：物理引擎</a>,by 冰点.</li>
+<li><a href="https://www.zhihu.com/question/277300055" target="_blank" rel="noopener">为什么单机游戏中的碰撞很不真实？物理引擎真的很难做到和现实一样吗？</a>,by zhihu.</li>
+<li><a href="http://blog.gifplane.com/2018/10/08/1-UnityOpt14.html" target="_blank" rel="noopener">5.1、Faster Physics(一)</a>,by GIFPlane.</li>
+<li><a href="http://www.luvfight.me/game-loop/" target="_blank" rel="noopener">游戏主循环、帧速控制</a>,by luvfight.</li>
+<li><a href="http://www.luvfight.me/update-components/" target="_blank" rel="noopener">一些游戏程序的基础知识（一）</a>,by luvfight.</li>
+<li><a href="http://www.luvfight.me/draw-components/" target="_blank" rel="noopener">一些游戏程序的基础知识（二）</a>,by luvfight.</li>
+<li><a href="https://www.cnblogs.com/murongxiaopifu/p/7683140.html" target="_blank" rel="noopener">FixedUpdate真的是固定的时间间隔执行吗？聊聊游戏定时器</a>,by 嘉栋.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E6%96%B9%E6%B3%95" target="_blank" rel="noopener">欧拉方法</a>,by wikipedia.</li>
+<li><a href="https://wangzhechao.com/2dgames/chapter11/game%20loop.html" target="_blank" rel="noopener">游戏循环</a>,by 没事造轮子.</li>
+<li><a href="https://www.zhihu.com/question/27765214" target="_blank" rel="noopener">大型多人在线游戏的开发中，如何做到每个玩家动作的实时同步的？</a>,by zhihu.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/09/15/CPlusPlus%E8%99%9A%E5%87%BD%E6%95%B0%E4%B8%8E%E7%BA%AF%E8%99%9A%E5%87%BD%E6%95%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1878,243 +2085,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/08/17/%E5%85%B3%E7%B3%BB%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E5%AD%98%E5%82%A8%E6%A0%91%E7%BB%93%E6%9E%84%E5%8F%8A%E5%89%8D%E7%AB%AF%E8%BF%98%E5%8E%9F%E7%9A%84%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/17/%E5%85%B3%E7%B3%BB%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E5%AD%98%E5%82%A8%E6%A0%91%E7%BB%93%E6%9E%84%E5%8F%8A%E5%89%8D%E7%AB%AF%E8%BF%98%E5%8E%9F%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
-                  关系数据库中存储树结构及前端还原的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-08-17 08:04:48 / 修改时间：18:12:58" itemprop="dateCreated datePublished" datetime="2019-08-17T08:04:48+08:00">2019-08-17</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>树形结构很常见，例如组织结构图、线性化讨论等。树形结构中，实例被称为节点（node），每个节点有多个子节点和一个父节点。最上层的节点叫根（root）节点，它没有父节点。最底层的节点叫叶（leaf）节点，它没有子节点。本文主要介绍如何在关系数据库中存储树结构，以及如何从关系数据库中恢复树结构。</p>
-<h1 id="关系数据库中存储树结构的方法"><a href="#关系数据库中存储树结构的方法" class="headerlink" title="关系数据库中存储树结构的方法"></a>关系数据库中存储树结构的方法</h1><h2 id="层级数据设计方案"><a href="#层级数据设计方案" class="headerlink" title="层级数据设计方案"></a>层级数据设计方案</h2><p>在关系数据库中存储树结构主要有以下几种方案：</p>
-<ul>
-<li>邻接表模型</li>
-</ul>
-<p>最常见的解决方案，在数据库表中添加parent_id字段，再引用同一张表中的其他记录的id。可通过一个外键约束维护这种关系。</p>
-<p>优点：增加叶节点、修改节点或子树位置很方便。</p>
-<p>缺点：查询节点的所有后代、删除子树很困难。</p>
-<ul>
-<li>路径枚举</li>
-</ul>
-<p>路径枚举是一个由连续的直接层级关系组成的完整路径。例如/usr/local/lib。</p>
-<p>优点：查询节点所有后代、插入新节点很方便。<br>缺点：依赖应用程序逻辑代码维护路径字符串，验证字符串正确性开销大。受限于字符串长度，树结构无法无限扩展。</p>
-<ul>
-<li>嵌套集</li>
-</ul>
-<p>嵌套集解决方案是存储子孙节点的相关信息，而不是节点的直接祖先。通常使用两个数字nsleft和nsright编码每个节点，以表示子孙节点信息。</p>
-<p>nsleft的数值小于该节点所有后代的ID，同时nsright的值大于该节点所有后代的ID。</p>
-<p>确定这三个值（nsleft，ID，nsright）的简单方法是对树进行一次深度优先遍历，在逐层深入过程中依次递增地分配nsleft的值，并在返回时依次递增地分配nsright的值。</p>
-<p>优点：查询给定节点祖先和后代很容易，删除非叶子节点，其后代会自动代替被删除节点成为其祖先节点的直接后代。</p>
-<p>缺点：不易理解，插入和移动节点复杂。</p>
-<ul>
-<li>闭包表</li>
-</ul>
-<p>闭包表通过额外的数据库表记录树中节点间父子的关系，包括直接的父子关系、间接的父子关系和指向自己的关系。</p>
-<h2 id="层级数据设计比较"><a href="#层级数据设计比较" class="headerlink" title="层级数据设计比较"></a>层级数据设计比较</h2><center>层级数据设计比较</center>
-
-<table>
-<thead>
-<tr>
-<th>设计</th>
-<th>表</th>
-<th>查询子</th>
-<th>查询树</th>
-<th>插入</th>
-<th>删除</th>
-<th>引用完整性</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>邻接表</td>
-<td>1</td>
-<td>简单</td>
-<td>困难</td>
-<td>简单</td>
-<td>简单</td>
-<td>是</td>
-</tr>
-<tr>
-<td>邻接表+递归查询</td>
-<td>1</td>
-<td>简单</td>
-<td>简单</td>
-<td>简单</td>
-<td>简单</td>
-<td>否</td>
-</tr>
-<tr>
-<td>路径枚举</td>
-<td>1</td>
-<td>简单</td>
-<td>简单</td>
-<td>简单</td>
-<td>简单</td>
-<td>否</td>
-</tr>
-<tr>
-<td>嵌套集</td>
-<td>1</td>
-<td>困难</td>
-<td>简单</td>
-<td>困难</td>
-<td>困难</td>
-<td>否</td>
-</tr>
-<tr>
-<td>闭包集</td>
-<td>2</td>
-<td>简单</td>
-<td>简单</td>
-<td>简单</td>
-<td>简单</td>
-<td>是</td>
-</tr>
-</tbody></table>
-<ul>
-<li>邻接表设计最简单，如果使用的数据库支持WITH或CONNECT BY PRIOR的递归查询，将使得邻接表查询更为高效。</li>
-</ul>
-<h1 id="前端从关系数据库中还原树结构"><a href="#前端从关系数据库中还原树结构" class="headerlink" title="前端从关系数据库中还原树结构"></a>前端从关系数据库中还原树结构</h1><p>表结构，使用sequelize的对象表示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&#39;use strict&#39;;</span><br><span class="line">module.exports &#x3D; (sequelize, DataTypes) &#x3D;&gt; &#123;</span><br><span class="line">  const Role &#x3D; sequelize.define(&#39;Role&#39;, &#123;</span><br><span class="line">    id: &#123;</span><br><span class="line">      type: DataTypes.STRING(50),</span><br><span class="line">      primaryKey: true</span><br><span class="line">    &#125;,</span><br><span class="line">    roleName: &#123;</span><br><span class="line">      type: DataTypes.STRING(128),</span><br><span class="line">      allowNull: false</span><br><span class="line">    &#125;,</span><br><span class="line">    path: &#123;</span><br><span class="line">      type: DataTypes.STRING(512),</span><br><span class="line">      allowNull: false,</span><br><span class="line">      unique: true,</span><br><span class="line">      comment: &#39;角色路径唯一！&#39;</span><br><span class="line">    &#125;,</span><br><span class="line">    deleteFlag:&#123;</span><br><span class="line">      type: DataTypes.BOOLEAN,</span><br><span class="line">      defaultValue: false</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, &#123;&#125;);</span><br><span class="line">  Role.associate &#x3D; function(models) &#123;</span><br><span class="line">    &#x2F;&#x2F; associations can be defined here</span><br><span class="line">    Role.hasMany(models.User)</span><br><span class="line">  &#125;;</span><br><span class="line">  return Role;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>递归生成角色树：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 获取第一层节点</span><br><span class="line">function getFirstLevel(recordList)&#123;</span><br><span class="line">    var firstLevelList&#x3D;[];</span><br><span class="line">    for(let i&#x3D;0;i&lt; recordList.length;i++)&#123;</span><br><span class="line">        let record&#x3D;recordList[i]</span><br><span class="line">        if (record.path.length &#x3D;&#x3D;&#x3D; 2 &amp;&amp; record.path.split(&#39;&#39;)[1] &#x3D;&#x3D;&#x3D; &#39;&#x2F;&#39; &amp;&amp; parseInt(record.path.split(&#39;&#39;)[0])&gt;&#x3D;0)&#123;</span><br><span class="line">            record.label&#x3D;record.roleName</span><br><span class="line">            firstLevelList.push(record)</span><br><span class="line">        &#125;        </span><br><span class="line">    &#125;</span><br><span class="line">    return firstLevelList</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 指定根节点，递归生成角色树</span><br><span class="line">function recursiveTree(parentRecord,recordList)&#123;</span><br><span class="line">    for (let i &#x3D; 0; i &lt; recordList.length; i++)&#123;</span><br><span class="line">        let record &#x3D; recordList[i]</span><br><span class="line">        if(parentRecord.path&#x3D;&#x3D;record.path.slice(0,-2))&#123;</span><br><span class="line">            record&#x3D;recursiveTree(record,recordList)</span><br><span class="line">            if (parentRecord.children&#x3D;&#x3D;undefined)&#123;</span><br><span class="line">                parentRecord.children&#x3D;[]</span><br><span class="line">            &#125;</span><br><span class="line">            parentRecord.children.push(record)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    parentRecord.label &#x3D; parentRecord.roleName</span><br><span class="line">    return parentRecord</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 生成角色树</span><br><span class="line">export function parseRoleTree(recordList)&#123;</span><br><span class="line">    var result &#x3D; getFirstLevel(recordList);</span><br><span class="line"></span><br><span class="line">    for (let i&#x3D;0;i&lt;result.length;i++)&#123;</span><br><span class="line">        parent &#x3D; result[i]</span><br><span class="line">        parent &#x3D; recursiveTree(parent, recordList)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/LDY1016/article/details/85784001" target="_blank" rel="noopener">java递归生成树形结构菜单</a>,by 伊宇紫.</li>
-<li>Bill Karwin著,谭振林,Push Chen译. SQL反模式[M].人民邮电出版社.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2162,7 +2132,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">485</span>
+                    <span class="site-state-item-count">486</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -21633,4 +21633,32 @@ console.log(y);</code></pre></li>
         <tag>笔记本</tag>
       </tags>
   </entry>
+  <entry>
+    <title>C语言中的位域使用方法</title>
+    <url>/2024/09/18/C%E8%AF%AD%E8%A8%80%E4%B8%AD%E7%9A%84%E4%BD%8D%E5%9F%9F%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<blockquote>
+<p>C语言中的位域（Bit-fields）可以用于对结构体成员进行位级别的控制和优化。在一些应用中，比如网络协议，经常会涉及对数据的某些比特位进行操作，尽管可以使用位的相关运算，但是C语言提供了位域用以支持对一个字节的某几个位进行访问，操作起来也更加方便。</p>
+</blockquote>
+<h1 id="位域的定义与引用"><a href="#位域的定义与引用" class="headerlink" title="位域的定义与引用"></a>位域的定义与引用</h1><blockquote>
+<p>位域不同于一般的结构体成员，它以位为单位来定义成员的长度，因此在结构体中定义位域时，必须要指明位域成员所需要占用的二进制位数。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct MsgHeader &#123;</span><br><span class="line">    int a: 5;   &#x2F;&#x2F; 数据类型名    变量名：二进制位数</span><br><span class="line">    int b: 3;</span><br><span class="line">    int c: 2;</span><br><span class="line">    int d：6;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>由于位域本质上是一种特殊的结构体成员，因此一般结构体成员的引用方法同样适用于位域成员。不过，需要特别注意的是，位域成员存储是以二进制位作为单位的，而内存的最小寻址单元是字节，所以不能直接引用位域成员的地址。</p>
+<h1 id="位域与大小端"><a href="#位域与大小端" class="headerlink" title="位域与大小端"></a>位域与大小端</h1><blockquote>
+<p>结构体内位域成员在大小端系统上的内存分配规则如下：</p>
+</blockquote>
+<ul>
+<li>无论是大端或小端模式，位域的存储都是由内存低地址向高地址分配，即从低地址字节的低位bit开始向高地址字节的高位bit分配空间；</li>
+<li>位域成员在已分配的内存区域内，按照机器定义的比特序对数据的各个bit位进行排列。即在小端模式中，位域成员的最低有效位存放在内存低bit位，最高有效位存放在内存高bit位；大端模式则相反。</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/636551863" target="_blank" rel="noopener">C语言中位域（Bit-fields）的高级玩法，8个案例代码告诉你怎么玩</a>,by<br>晓亮Albert.</li>
+<li><a href="https://www.cnblogs.com/Aspiresky/p/15780975.html" target="_blank" rel="noopener">C语言结构体位域及其存储</a>,by Aspiresky.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>C/C++</tag>
+      </tags>
+  </entry>
 </search>

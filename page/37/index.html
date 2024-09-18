@@ -314,6 +314,181 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/10/%E8%BD%A8%E8%BF%B9%E7%9B%B8%E4%BC%BC%E5%BA%A6%E5%BA%A6%E9%87%8F%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/10/%E8%BD%A8%E8%BF%B9%E7%9B%B8%E4%BC%BC%E5%BA%A6%E5%BA%A6%E9%87%8F%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/" itemprop="url">
+                  轨迹相似度度量方法总结
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-10 22:39:26" itemprop="dateCreated datePublished" datetime="2019-06-10T22:39:26+08:00">2019-06-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-11 21:53:37" itemprop="dateModified" datetime="2019-06-11T21:53:37+08:00">2019-06-11</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>轨迹相似度度量有广泛的用途，如语音识别分类、模板匹配、信息检索等。下面介绍各种轨迹相似度度量方法。</p>
+<h1 id="轨迹定义"><a href="#轨迹定义" class="headerlink" title="轨迹定义"></a>轨迹定义</h1><p>轨迹可由时间域到空间域的映射函数表示，如：</p>
+<p>$$t\stackrel{F}{\longrightarrow}R^d, d&gt;1$$</p>
+<h1 id="度量方法"><a href="#度量方法" class="headerlink" title="度量方法"></a>度量方法</h1><p>轨迹相似度度量方法主要有：</p>
+<ul>
+<li><p>基于点方法： EDR，LCSS，DTW等</p>
+</li>
+<li><p>基于形状的方法： Frechet， Hausdorff</p>
+</li>
+<li><p>基于分段的方法：One Way Distance, LIP distance</p>
+</li>
+<li><p>基于特定任务的方法：TRACLUS， Road Network，grid等</p>
+</li>
+</ul>
+<h2 id="基于点的方法"><a href="#基于点的方法" class="headerlink" title="基于点的方法"></a>基于点的方法</h2><h3 id="DTW"><a href="#DTW" class="headerlink" title="DTW"></a>DTW</h3><p>DTW（Dynamic Time Warping, 动态时间规整）可以计算两个时间序列的相似度，尤其适用于不同长度、不同节奏的时间序列（比如不同的人读同一个词的音频序列）。DTW将自动warping扭曲 时间序列（即在时间轴上进行局部的缩放），使得两个序列的形态尽可能的一致，得到最大可能的相似度。</p>
+<p>Dynamic Time Warping（DTW）诞生有一定的历史了（日本学者Itakura提出），它出现的目的也比较单纯，是一种衡量两个长度不同的时间序列的相似度的方法。应用也比较广，主要是在模板匹配中，比如说用在孤立词语音识别（识别两段语音是否表示同一个单词），手势识别，数据挖掘和信息检索等中。</p>
+<p>设 $P=&lt;p_1,p_2,…,p_m&gt;$ 和 $Q=&lt;q_1,q_2,…,q_n&gt;$ 是两个时间序列，则 $P$ 和 $Q$的距离 $DTW(P,Q)$ 定义如下：</p>
+<p>$$DTW(P,Q)= \left{<br>\begin{array}{lcl}<br>0     &amp;   &amp;if\ m=n=0\<br>\infty &amp;   &amp;if\ m=0\ or\ n=0\<br>dist(p_1,q_1)+min<br>    \left{<br>    \begin{aligned}<br>            DTW(Rest(P),Rest(Q))\<br>            DTW(Rest(P),Q)\<br>            DTW(P,Rest(Q))\<br>    \end{aligned}<br>    \right} &amp; &amp; otherwise<br>\end{array}<br>\right.<br>$$</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.zhihu.com/question/27213170" target="_blank" rel="noopener">如何判断两条轨迹（或曲线）的相似度？</a>,by zhihu.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/43247215" target="_blank" rel="noopener">动态时间规整（DTW）算法简介</a>,by 文均.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/32849741" target="_blank" rel="noopener">DTW(Dynamic Time Warping)动态时间规整</a>,by X-猪.</li>
+<li><a href="https://www.cnblogs.com/luxiaoxun/archive/2013/05/09/3069036.html" target="_blank" rel="noopener">Dynamic Time Warping 动态时间规整算法</a>,by 阿凡卢.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/09/%E7%BB%8F%E5%85%B8%E6%8E%A7%E5%88%B6%E4%B8%8E%E7%8E%B0%E4%BB%A3%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2115,215 +2290,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/20/SLAM%E4%B8%AD%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A1%E7%9A%84%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/20/SLAM%E4%B8%AD%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A1%E7%9A%84%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80/" itemprop="url">
-                  SLAM中位姿估计的数学基础
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-05-20 19:38:57" itemprop="dateCreated datePublished" datetime="2019-05-20T19:38:57+08:00">2019-05-20</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2021-05-10 23:25:36" itemprop="dateModified" datetime="2021-05-10T23:25:36+08:00">2021-05-10</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>同步定位与地图构建（SLAM或Simultaneous localization and mapping）是一种概念：希望机器人从未知环境的未知地点出发，在运动过程中通过重复观测到的地图特征（比如，墙角，柱子等）定位自身位置和姿态，再根据自身位置增量式的构建地图，从而达到同时定位和地图构建的目的。</p>
-<p>SLAM的核心工作有两个：</p>
-<ul>
-<li>地图构建</li>
-</ul>
-<p>研究如何把从一系列传感器收集到的信息，集成到一个一致性的模型上的问题。它可以被描述为第一核心问题：这个世界长什么样？地图构建的核心部分是环境的表达方式以及传感器数据的解释。</p>
-<ul>
-<li>定位</li>
-</ul>
-<p>研究在地图上估测机器人的坐标和姿势形态的问题；换而言之，机器人需要回答这里的第二核心问题，我在哪？典型的解包含以下两个方面：追踪——通常机器人的初始位置已知；全局定位——通常只给出很少，甚至不给出有关于起始位置环境特征的先验信息。</p>
-<p>下面主要介绍SLAM定位研究中涉及的数学知识。</p>
-<h1 id="向量点积"><a href="#向量点积" class="headerlink" title="向量点积"></a>向量点积</h1><p>有如下两个向量:</p>
-<p>$$a=\begin{pmatrix}<br>a_{1}\<br>a_{2}\<br>a_{3}<br>\end{pmatrix},b=\begin{pmatrix}<br>b_{1}\<br>b_{2}\<br>b_{3}<br>\end{pmatrix}$$</p>
-<p>它们的点乘定义如下：</p>
-<p>$$a\cdot b=a^{T}\cdot b = \sum_{i=1}^{3}a_{i}b_{i}=\left | a \right |\left | b \right |cos&lt;a,b&gt;$$</p>
-<p>即两个向量点乘等于一个向量的转置乘以另一个向量。</p>
-<h1 id="向量叉积"><a href="#向量叉积" class="headerlink" title="向量叉积"></a>向量叉积</h1><p>两个向量做叉积结果还是一个向量，这个向量垂直于这两个做叉积的向量所组成的平面。</p>
-<p>$$<br>a\times b=\begin{vmatrix}<br>i &amp; j &amp; k\<br>a_{1} &amp; a_{2} &amp; a_{3}\<br>b_{1} &amp; b_{2} &amp; b_{3}<br>\end{vmatrix}=(a_{2}b_{3}-a_{3}b_{2})i+(a_{3}b_{1}-a_{1}b_{3})j+(a_{1}b_{2}-a_{2}b_{1})k $$</p>
-<p>为了计算方便，将两个向量写成行列式的形式，然后按对角线法则计算行列式的值。i、j、k分量分别即代表x、y、z轴方向的分量。写成列向量的形式如下:</p>
-<p>$$<br>\begin{pmatrix}<br>a_{2}b_{3}-a_{3}b_{2}\<br>a_{3}b_{1}-a_{1}b_{3}\<br>a_{1}b_{2}-a_{2}b_{1}<br>\end{pmatrix}=\begin{pmatrix}<br>0\cdot b_{1}-a_{3}b_{2}+a_{2}b_{3}\<br>a_{3}b_{1}-0\cdot b_{2}-a_{1}b_{3}\<br>-a{2}b_{1}+a_{1}b_{2}+0\cdot b_{3}<br>\end{pmatrix}=\begin{pmatrix}<br>0 &amp; -a_{3} &amp; a_{2}\<br>a_{3} &amp; 0 &amp; -a_{1}\<br>-a_{2} &amp; a_{1} &amp; 0<br>\end{pmatrix}\begin{pmatrix}<br>b_{1}\<br>b_{2}\<br>b_{3}<br>\end{pmatrix} $$</p>
-<p>再将其写成与b相乘的矩阵形式，提取系数矩阵。这个系数矩阵就称作向量a的反对称矩阵，用a^记。所谓反对称矩阵，是指满足下面这个条件的矩阵。</p>
-<p>$$A^{-1}=-A$$</p>
-<p>因为向量叉积的结果是一个向量，因此可以用来表示旋转，结果向量的方向为旋转轴，大小为旋转角。结果可以看作一个旋转向量。</p>
-<h1 id="对极几何"><a href="#对极几何" class="headerlink" title="对极几何"></a>对极几何</h1><p>两个相机在不同位置拍摄同一物体，两张照片中的景物有重叠部分，那么理论上这两张照片会存在一定的对应关系，而对极几何就是探索描述它们之间对应关系的工具。相机在不同位置拍摄同一物体示意图如图1所示。</p>
-<p align="center">
-    <img src="images/epipolor1.png" width="90%" alt="相机在不同位置拍摄同一物体示意图"/>
-</p>
-<center>图1  相机在不同位置拍摄同一物体示意图</center>
-
-<p>图中的概念有：</p>
-<ul>
-<li><p>极点e：分别是左边相机中心在右图像平面上的像，右相机中心在左像平面上的像。</p>
-</li>
-<li><p>极平面：两个相机中心和空间中某店p形成的平面。</p>
-</li>
-<li><p>极线l：极平面分别和两个像平面的交线。</p>
-</li>
-</ul>
-<p>对极几何则是描述这几个量之间的对应关系。直观讲，从左图的角度看，如果不知道p点的深度信息，射线op是这个点可能出现的空间位置，因为该射线上的点都会投影到同一个像素点，同时，如果不知道p点的具体位置，那么当在右图的位置看时，极线 l’ 就是点p可能出现的位置，即在这条线上的某个地方。如图2所示:</p>
-<p align="center">
-    <img src="images/epipolor2.png" width="90%" alt="物体位置示意图"/>
-</p>
-<center>图2  物体位置示意图</center>
-
-<p>在计算机视觉中，基础矩阵（Fundamental matrix） F 是一个3×3的矩阵，表达了立体像对的像点之间的对应关系。在对极几何中，对于立体像对中的一对同名点，它们的齐次化图像坐标分别为 $p$ 与 $p’$， ${\displaystyle \mathrm {F} p}$ 表示一条必定经过 $p’$的直线（极线）。这意味着立体像对的所有同名点对都满足：</p>
-<p>$${\displaystyle p’^{\top }\mathrm {F} p=0.}$$</p>
-<p>F矩阵中蕴含了立体像对的两幅图像在拍摄时相互之间的空间几何关系（外参数）以及相机检校参数（内参数），包括旋转、位移、像主点坐标和焦距。因为 F 矩阵的秩为2，并且可以自由缩放（尺度化），所以只需7对同名点即可估算出F的值。</p>
-<p>基础矩阵这一概念由Q. T. Luong在他那篇很有影响力的博士毕业论文中提出。Faugeras则是在1992年发表的著作中以上面的关系式给出了 F 矩阵的定义。尽管Longuet-Higgins提出的本质矩阵也满足类似的关系式，但本质矩阵中并不蕴含相机检校参数。本质矩阵与基础矩阵之间的关系可由下式表达：</p>
-<p>$$ {\displaystyle \mathrm {E} =\mathrm {K’^{\top }} \mathrm {FK} .}$$</p>
-<p>其中 $K$和 $K’$分别为两个相机的内参数矩阵。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://zhaoxuhui.top/blog/2018/03/22/MathInSLAM.html" target="_blank" rel="noopener">SLAM数学基础</a>,by zhaoxuhui.</li>
-<li><a href="https://zh.wikipedia.org/wiki/即时定位与地图构建" target="_blank" rel="noopener">即时定位与地图构建</a>,by wikipedia.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/23247395" target="_blank" rel="noopener">大牛讲堂｜SLAM第一篇：基础知识</a>, by 地平线HorizonRobotics.</li>
-<li><a href="https://www.zhihu.com/question/35186064" target="_blank" rel="noopener">学习SLAM需要哪些预备知识？</a>,by wikipedia.</li>
-<li><a href="http://cvrs.whu.edu.cn/downloads/ebooks/计算机视觉中的数学方法.pdf" target="_blank" rel="noopener">计算机视觉中的数学方法</a>,by 吴福朝.</li>
-<li><a href="https://blog.csdn.net/u012936940/article/details/80723609" target="_blank" rel="noopener">对极几何及单应矩阵</a>, by Rap_God.<br>​</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2371,7 +2337,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">487</span>
+                    <span class="site-state-item-count">488</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -3084,9 +3050,9 @@
       
     
       
-        
-      
     
+      
+        
       
     
       

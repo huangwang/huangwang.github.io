@@ -314,6 +314,356 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/06/07/Win10%E5%AE%89%E8%A3%85Linux%E5%AD%90%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/06/07/Win10%E5%AE%89%E8%A3%85Linux%E5%AD%90%E7%B3%BB%E7%BB%9F/" itemprop="url">
+                  Win10安装Linux子系统
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-06-07 23:15:57" itemprop="dateCreated datePublished" datetime="2021-06-07T23:15:57+08:00">2021-06-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-12-10 13:04:43" itemprop="dateModified" datetime="2021-12-10T13:04:43+08:00">2021-12-10</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>OpenAI的Spinning Up项目仅在 Linux 和 OSX 上支持Spinning Up，因此想在Win10系统中安装Linux子系统，以便将Spinning Up项目运行起来，学习一下强化学习。</p>
+<h1 id="安装Linux子系统"><a href="#安装Linux子系统" class="headerlink" title="安装Linux子系统"></a>安装Linux子系统</h1><p>步骤如下：</p>
+<ol>
+<li>打开控制面板，选择应用，点击左上角的程序和功能，在弹出窗口中点击启动或关闭Windows功能，勾选适用Linux的Windows子系统。</li>
+<li>打开Store商店，安装Ubuntu 20.04操作系统。</li>
+</ol>
+<h1 id="配置Spinning-Up项目"><a href="#配置Spinning-Up项目" class="headerlink" title="配置Spinning Up项目"></a>配置Spinning Up项目</h1><p>步骤如下：</p>
+<ul>
+<li>打开cmd，输入wsl命令，进入ubuntu系统。</li>
+<li>下载并安装Xming。</li>
+<li>使用如下命令安装x11-apps。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install x11-apps</span><br><span class="line">export DISPLAY&#x3D;localhost:0.0 </span><br><span class="line">nano ~&#x2F;.bashrc  #(add  export DISPLAY&#x3D;localhost:0.0   at the end. Ctrl+X to exit&#x2F;save)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下载并安装miniconda。</li>
+<li>创建Python虚拟环境。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 创建虚拟环境</span><br><span class="line">conda create -n spinningup python&#x3D;3.7</span><br><span class="line"># 查看虚拟环境</span><br><span class="line">conda info -h</span><br><span class="line"># 删除创建的虚拟环境</span><br><span class="line">conda remove -n spinningup --all</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>激活Python虚拟环境。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda activate spinningup</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>反激活Python虚拟环境。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda deactivate</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装openmpi组件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update &amp;&amp; sudo apt-get install libopenmpi-dev</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装opengl组件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python-opengl</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下载Spinning Up项目</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;openai&#x2F;spinningup.git</span><br><span class="line">cd spinningup</span><br><span class="line">pip install -e . -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试项目</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 运行登陆器</span><br><span class="line">python -m spinup.run ppo --hid &quot;[32,32]&quot; --env LunarLander-v2 --exp_name installtest --gamma 0.999</span><br><span class="line"># 绘图</span><br><span class="line">python -m spinup.run plot &#x2F;mnt&#x2F;i&#x2F;project&#x2F;spinningup&#x2F;data&#x2F;installtest&#x2F;installtest_s0 </span><br><span class="line"># 视频</span><br><span class="line">python -m spinup.run test_policy &#x2F;mnt&#x2F;i&#x2F;project&#x2F;spinningup&#x2F;data&#x2F;installtest&#x2F;installtest_s0</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://segmentfault.com/a/1190000022865557" target="_blank" rel="noopener">WSL Linux 子系统，真香！附完整实操</a>,by 猴哥一一.</li>
+<li><a href="https://www.cnblogs.com/csu-lmw/p/10074746.html" target="_blank" rel="noopener">在 Windows 10 中使用 OpenAI Spinning Up </a>,by csu.</li>
+<li><a href="https://codeantenna.com/a/aB79eRvSye" target="_blank" rel="noopener">Anaconda创建环境、删除环境、环境重命名</a>,by CodeAntenna.</li>
+<li><a href="https://github.com/openai/gym/issues/2443" target="_blank" rel="noopener">[Bug Report] contextlib has no attribute ‘nullcontext’ for Python3.6 when calling register()</a>,by github.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/06/07/%E6%B7%B1%E5%BA%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/06/07/%E6%B7%B1%E5%BA%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/" itemprop="url">
+                  深度强化学习的实验环境汇总
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-06-07 21:20:51 / 修改时间：21:26:33" itemprop="dateCreated datePublished" datetime="2021-06-07T21:20:51+08:00">2021-06-07</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/105293343" target="_blank" rel="noopener">深度强化学习中实验环境-开源平台框架汇总</a>,by 小小何先生.</li>
+<li><a href="https://blog.csdn.net/bigheadyushan/article/details/81019691" target="_blank" rel="noopener">强化学习实验环境 I (MuJoCo, OpenAI Gym, rllab, DeepMind Lab, TORCS, PySC2)</a>,by AITBOOK.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/06/03/FlightGear%E5%A4%9A%E5%B1%8F%E5%A4%9A%E8%A7%86%E5%8F%A3%E8%AE%BE%E7%BD%AE%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1668,339 +2018,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/04/28/GitPatch%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/28/GitPatch%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/" itemprop="url">
-                  Git Patch使用帮助
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2021-04-28 20:17:46 / 修改时间：20:59:59" itemprop="dateCreated datePublished" datetime="2021-04-28T20:17:46+08:00">2021-04-28</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>多人协作开发，需要将别人开发的代码合并。这时使用git patch命令合并是最方便。下面介绍这种方法。</p>
-<h1 id="git-patch作用"><a href="#git-patch作用" class="headerlink" title="git patch作用"></a>git patch作用</h1><blockquote>
-<ul>
-<li>什么是patch? 简单来讲,patch中存储的是你对代码的修改</li>
-<li>什么是生成patch? 生成patch就是记录你对代码的修改并将其保存在patch文件中</li>
-<li>什么是打patch? 打patch就是将patch文件中对代码的修改，应用到源代码，从而把对代码的修改应用到code中。</li>
-</ul>
-</blockquote>
-<h1 id="git-patch用法"><a href="#git-patch用法" class="headerlink" title="git patch用法"></a>git patch用法</h1><h2 id="生成patch"><a href="#生成patch" class="headerlink" title="生成patch"></a>生成patch</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ git format-patch HEAD^ 　　　#生成最近的1次commit的patch</span><br><span class="line">$ git format-patch HEAD^^　　　#生成最近的2次commit的patch</span><br><span class="line">$ git format-patch HEAD^^^ 　  #生成最近的3次commit的patch</span><br><span class="line">$ git format-patch HEAD^^^^ 　 #生成最近的4次commit的patch</span><br><span class="line">$ git format-patch &lt;r1&gt;..&lt;r2&gt;  #生成两个commit间的修改的patch（包含两个commit. &lt;r1&gt;和&lt;r2&gt;都是具体的commit号)</span><br><span class="line">$ git format-patch -1 &lt;r1&gt;     #生成单个commit的patch</span><br><span class="line">$ git format-patch &lt;r1&gt;        #生成某commit以来的修改patch（不包含该commit）</span><br><span class="line">$ git format-patch --root &lt;r1&gt;  #生成从根到r1提交的所有patch</span><br></pre></td></tr></table></figure>
-
-<h2 id="应用patch"><a href="#应用patch" class="headerlink" title="应用patch"></a>应用patch</h2><p>检查patch/diff是否能正常打入:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply --check 【path&#x2F;to&#x2F;xxx.patch】</span><br><span class="line">git apply --check 【path&#x2F;to&#x2F;xxx.diff】</span><br></pre></td></tr></table></figure>
-
-<p>打入patch/diff:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git apply 【path&#x2F;to&#x2F;xxx.patch】</span><br><span class="line">git apply 【path&#x2F;to&#x2F;xxx.diff】</span><br><span class="line">git am 【path&#x2F;to&#x2F;xxx.patch】</span><br></pre></td></tr></table></figure>
-
-<h1 id="TortoiseGit-patch用法"><a href="#TortoiseGit-patch用法" class="headerlink" title="TortoiseGit patch用法"></a>TortoiseGit patch用法</h1><p>TortoiseGit是一个Git版本控制客户端，作为Microsoft Windows的外壳扩展实现。它在GNU通用公共许可协议下作为自由软件发布。使用TortoiseGit 的 Create Patch Serial和 Apply Patch Serial两个菜单可以很方便的产生和应用补丁。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/TortoiseGit" target="_blank" rel="noopener">TortoiseGit</a>,by wikipedia.</li>
-<li><a href="https://www.cnblogs.com/ArsenalfanInECNU/p/8931377.html" target="_blank" rel="noopener">如何用git命令生成Patch和打Patch</a>,by 青山牧云人.</li>
-<li><a href="https://www.jianshu.com/p/ec04de3f95cc" target="_blank" rel="noopener">Git 打补丁– patch 和 diff 的使用（详细）</a>,by alanwangmodify.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/04/13/OSG%E9%BC%A0%E6%A0%87%E6%8B%BE%E5%8F%96%E6%8B%96%E6%8B%BD%E7%89%A9%E4%BD%93%E7%9A%84%E5%8E%9F%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/13/OSG%E9%BC%A0%E6%A0%87%E6%8B%BE%E5%8F%96%E6%8B%96%E6%8B%BD%E7%89%A9%E4%BD%93%E7%9A%84%E5%8E%9F%E7%90%86/" itemprop="url">
-                  OSG鼠标拾取拖拽物体的原理
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2021-04-13 23:36:35" itemprop="dateCreated datePublished" datetime="2021-04-13T23:36:35+08:00">2021-04-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2021-04-14 00:11:46" itemprop="dateModified" datetime="2021-04-14T00:11:46+08:00">2021-04-14</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在3D世界中，通过鼠标拾取拖拽物体是一个神奇事情，它的具体实现方法如下：</p>
-<ol>
-<li>将鼠标点击视口的二维坐标转换成3D世界中的三维坐标。</li>
-<li>视点出发到鼠标点击位置的可形成一条射线，在场景节点树上遍历，查找与射线相交的节点。</li>
-<li>获得拾取节点与视点之间距离，从而计算得到鼠标释放时拾取节点的位置，平移拾取节点到目标位置。</li>
-</ol>
-<h1 id="2D坐标转3D坐标参考"><a href="#2D坐标转3D坐标参考" class="headerlink" title="2D坐标转3D坐标参考"></a>2D坐标转3D坐标参考</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">osg::Vec3 screenToWorld(osgViewer::Viewer* viewer,double dx,double dy)</span><br><span class="line">&#123;</span><br><span class="line">    osg::Camera *camera &#x3D; viewer-&gt;getCamera();</span><br><span class="line">    osg::Matrix viewMat &#x3D; camera-&gt;getViewMatrix(); &#x2F;&#x2F;获取当前视图矩阵</span><br><span class="line">    osg::Matrix projMat &#x3D; camera-&gt;getProjectionMatrix();&#x2F;&#x2F;获取投影矩阵</span><br><span class="line">    osg::Matrix windMat &#x3D; camera-&gt;getViewport()-&gt;computeWindowMatrix();&#x2F;&#x2F;获取窗口矩阵</span><br><span class="line">    osg::Matrix MVPW &#x3D; viewMat * projMat *windMat;  &#x2F;&#x2F;视图-》投影-》窗口变换</span><br><span class="line"></span><br><span class="line">    osg::Matrix inverseMVPW &#x3D; osg::Matrix::inverse(MVPW);  </span><br><span class="line">    osg::Vec3 mouseWorld &#x3D; osg::Vec3(dx, dy, 0) * inverseMVPW;  </span><br><span class="line">    return mouseWorld;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="获取拾取节点代码参考"><a href="#获取拾取节点代码参考" class="headerlink" title="获取拾取节点代码参考"></a>获取拾取节点代码参考</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;参数说明：firstPos:是当前摄像机的位置。endPos:为偏移坐标值，eye + curRayLineDir*100</span><br><span class="line">&#x2F;&#x2F;curRayLineDir &#x3D; mouseWorldPos（屏幕点转三维点使用上面的函数） - eye;</span><br><span class="line">&#x2F;&#x2F;curRayLineDir.normallize();</span><br><span class="line">void CIntersectEventHandler::rayLinePick(const osg::Vec3&amp; firstPos,const osg::Vec3&amp; endPos)</span><br><span class="line">&#123;</span><br><span class="line">    osg::ref_ptr&lt;osgUtil::LineSegmentIntersector&gt; lineSegmentIntesector &#x3D; \</span><br><span class="line">        new osgUtil::LineSegmentIntersector(firstPos,endPos);</span><br><span class="line">    osgUtil::IntersectionVisitor intersectionVisitor(lineSegmentIntesector);</span><br><span class="line"></span><br><span class="line">    m_matNode-&gt;accept(intersectionVisitor);&#x2F;&#x2F;m_matNode为你拾取的物体</span><br><span class="line"></span><br><span class="line">    osgUtil::LineSegmentIntersector::Intersections intersections;</span><br><span class="line">    if (lineSegmentIntesector-&gt;containsIntersections())</span><br><span class="line">    &#123;</span><br><span class="line">        intersections &#x3D; lineSegmentIntesector-&gt;getIntersections();</span><br><span class="line">        for(auto iter &#x3D; intersections.begin(); iter !&#x3D; intersections.end(); ++iter)</span><br><span class="line">        &#123;</span><br><span class="line">            osg::NodePath nodePath &#x3D; iter-&gt;nodePath;</span><br><span class="line">            m_pickPoint &#x3D; iter-&gt;getWorldIntersectPoint();</span><br><span class="line">            for(int i&#x3D;0; i&lt;nodePath.size(); ++i)</span><br><span class="line">            &#123;</span><br><span class="line">                m_pickObj &#x3D; dynamic_cast&lt;osg::MatrixTransform*&gt;(nodePath[i]);&#x2F;&#x2F;拾取到的node</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="拖拽物体参考"><a href="#拖拽物体参考" class="headerlink" title="拖拽物体参考"></a>拖拽物体参考</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;我是在osgGA::GUIEventAdapter::DRAG进行拖拽的功能</span><br><span class="line">if(m_pickObj &amp;&amp; m_bLeftMouseBtn)&#x2F;&#x2F;这个布尔值就是晓得鼠标的左键是否按下了。</span><br><span class="line">&#123;</span><br><span class="line">    &#x2F;&#x2F;获取当前的摄像机的位置</span><br><span class="line">    osg::Vec3 eye &#x3D; viewer-&gt;getCamera()-&gt;getInverseViewMatrix().getTrans();</span><br><span class="line">    &#x2F;&#x2F;计算当前摄像机与pick到的模型之间的距离是多少</span><br><span class="line">    osg::Vec3 offset &#x3D; m_pickPoint - eye;</span><br><span class="line">    int dist &#x3D; offset.length();</span><br><span class="line">    &#x2F;&#x2F;计算当前的鼠标屏幕点映射到三维中的值</span><br><span class="line">    osg::Vec3 mouseWorldPos &#x3D; screenToWorld(viewer,ea.getX(),ea.getY());</span><br><span class="line">    &#x2F;&#x2F;计算当前鼠标三维点与摄像机的方向</span><br><span class="line">    osg::Vec3 rayDir &#x3D; mouseWorldPos - eye;</span><br><span class="line">    rayDir.normalize();</span><br><span class="line">    &#x2F;&#x2F;最后计算物体拖拽时最终的世界位置</span><br><span class="line">    osg::Vec3 curPos &#x3D; eye + rayDir*dist;</span><br><span class="line">    m_pickObj-&gt;setMatrix(osg::Matrix::translate(curPos));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.codenong.com/cs106835871/" target="_blank" rel="noopener">OSG实现鼠标拖拽物体</a>,by 码农家园.</li>
-<li><a href="https://blog.csdn.net/qq_35040828/article/details/51760102" target="_blank" rel="noopener">OSG拾取对应的实体</a>,by 成魔的羔羊.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/19/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/21/">下一页</a>
+    <a class="extend prev" rel="prev" href="/page/19/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/21/">下一页</a>
   </nav>
 
 
@@ -2043,7 +2065,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">489</span>
+                    <span class="site-state-item-count">491</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

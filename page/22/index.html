@@ -314,6 +314,359 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/02/06/QT%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/02/06/QT%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" itemprop="url">
+                  QT核心机制与原理
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-02-06 22:14:05" itemprop="dateCreated datePublished" datetime="2021-02-06T22:14:05+08:00">2021-02-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-08-17 22:15:19" itemprop="dateModified" datetime="2023-08-17T22:15:19+08:00">2023-08-17</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>要想学到QT的精髓，必须对QT的核心机制信号与槽、元对象系统、事件模型有充分的理解。</p>
+<h1 id="信号与槽"><a href="#信号与槽" class="headerlink" title="信号与槽"></a>信号与槽</h1><p>信号和槽是一种高级接口，它们被应用于对象之间的通信，它们是Qt 的核心特性，也是Qt不同于其它同类工具包的重要地方之一。</p>
+<h2 id="信号（signal）"><a href="#信号（signal）" class="headerlink" title="信号（signal）"></a>信号（signal）</h2><p>当对象的状态发生改变时，信号被某一个对象发射（ emit）。只有定义过这个信号的类或者其派生类能够发射这个信号。当一个信号被发射时，与其相关联的槽将被执行，就象一个正常的函数调用一样。信号-槽机制独立于任何GUI 事件循环。只有当所有的槽正确返回以后，发射函数（emit）才返回。</p>
+<h2 id="槽（slot）"><a href="#槽（slot）" class="headerlink" title="槽（slot）"></a>槽（slot）</h2><p>槽是普通的C++成员函数，可以被正常调用，不同之处是它们可以与信号（ signal）相关联。当与其关联的信号被发射时，这个槽就会被调用。槽可以有参数，但槽的参数不能有缺省值。</p>
+<h2 id="信号与槽的关联"><a href="#信号与槽的关联" class="headerlink" title="信号与槽的关联"></a>信号与槽的关联</h2><p>槽和普通的C++成员函数几乎是一样的－可以是虚函数；可以被重载；可以是共有的、 保护的或是私有的，并且也可以被其它C++成员函数直接调用；还有，它们的参数可以是任意类型。唯一不同的是：槽还可以和信号连接在一起，在这种情况下，每当发射这个信号的时候，就会自动调用这个槽。</p>
+<p>connect()语句看起来会是如下的样子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">connect(sender,SIGNAL(signal),receiver,SLOT(slot));</span><br></pre></td></tr></table></figure>
+<p>这里的sender 和receiver 是指向QObject 的指针，signal 和slot 是不带参数的函数名。实际上，SIGNAL()宏和SLOT()会把它们的参数转换成相应的字符串。</p>
+<p>从QObject 或其子类(例如Qwidget)派生的类都能够使用信号和槽机制。这种机制本身是在QObject 中实现的，并不只局限于图形用户界面编程中：当对象的状态得到改变时， 它可以某种方式将信号发射(emit)出去，但它并不了解是谁在接收这个信号。</p>
+<h1 id="元对象系统"><a href="#元对象系统" class="headerlink" title="元对象系统"></a>元对象系统</h1><p>Qt 的元对象系统是一个基于标准C＋＋的扩展，能够使C＋＋更好的适应真正的组件GUI 编程。它为Qt 提供了支持对象间通信的信号与槽机制、实时类型信息和动态属性系统等方面的功能。</p>
+<p>元对象系统在Qt 中主要有以下三部分构成：QObject 类、Q_OBJECT 宏和元对象编译器moc。</p>
+<h2 id="元对象系统机制"><a href="#元对象系统机制" class="headerlink" title="元对象系统机制"></a>元对象系统机制</h2><p>Qt 的主要成就之一是使用了一种机制对C++进行了扩展，并且使用这种机制创建了独立的软件组件。这些组件可以绑定在一起，但任何一个组件对于它所要连接的组件的情况事先都不了解。</p>
+<p>这种机制称为元对象系统（meta-object system），它提供了关键的两项技术：信号－槽以及内省（introspection）。内省功能对于实现信号和槽是必需的，并且允许应用程序的开发人员在运行时获得有关QObject 子类的“元信息”（meta-information），包括一个含有对象的类名以及它所支持的信号和槽的列表。这一机制也支持属性（广泛用于Qt 设计师中）和文本翻译（用于国际化），并且它也为QtScirpt 模块奠定了基础。</p>
+<p>标准C++没有对Qt 的元对象系统所需要的动态元信息提供支持。Qt 通过提供一个独立的moc 工具解决了这个问题，moc 解析Q_OBJECT 类的定义并且通过C++函数提供可供使用的信息。由于moc 使用纯C++来实现它的所有功能，所以Qt 的元对象系统可以在任意C++ 编译器上工作。</p>
+<h2 id="元对象工具（moc）"><a href="#元对象工具（moc）" class="headerlink" title="元对象工具（moc）"></a>元对象工具（moc）</h2><p>Qt 的信号和槽机制是采用标准C++ 来实现的。该实现使用C++ 预处理器和Qt 所包括的moc（元对象编译器）。元对象编译器读取应用程序的头文件，并生成必要的代码，以支持信号和槽机制。</p>
+<h1 id="事件模型"><a href="#事件模型" class="headerlink" title="事件模型"></a>事件模型</h1><p>应用程序对象将系统消息接收为Qt 事件。应用程序可以按照不同的粒度对事件加以监控、过滤并做出响应。</p>
+<p>在Qt 中，事件是指从QEvent 继承的对象。Qt 将事件发送给每个QObject 对象，这样对象便可对事件做出响应。也就是说， Qt 的事件处理机制主要是基于QEvent 类来实现的，QEvent 类是其他事件类的基类。当一个事件产生时， Qt 就会构造一个QEvent 子类的实例来表述该事件，然后将该事件发送到相应的对象上进行处理。</p>
+<p>Qt 的主事件循环能够从事件队列中获取本地窗口系统事件，然后判断事件类型，并将事件分发给特定的接收对象。主事件循环通过调用QCoreApplication::exec() 启动， 随着QCoreApplication::exit()结束，本地的事件循环可用利用QEventLoop 构建。作为事件分发器的QAbstractEventDispatcher 管理着Qt 的事件队列，事件分发器从窗口系统或其他事件源接收事件，然后将他们发送给QCoreApplication 或QApplication 的实例进行处理或继续分发。QAbstractEventDispatcher 为事件分发提供了良好的保护措施。</p>
+<h1 id="事件与信号的区别"><a href="#事件与信号的区别" class="headerlink" title="事件与信号的区别"></a>事件与信号的区别</h1><p>(1) 使用场合和时机不同一般情况下，在“使用”窗口部件时，我们经常需要使用信号，并且会遵循信号与槽的机制；而在“实现”窗口部件时，我们就不得不考虑如何处理事件了。举个例子，当使用QPushButton 时，我们对于它的clicked()信号往往更为关注，而很少关心促成发射该信号的底层的鼠标或者键盘事件。但是，如果要实现一个类似于QPushButton 的类，我们就需要编写一定的处理鼠标和键盘事件的代码，而且在必要的时候，仍然需要发射和接收clicked()信号。</p>
+<p>（2）使用的机制和原理不同</p>
+<p>事件类似于Windows 里的消息，它的发出者一般是窗口系统。相对信号和槽机制，它比较“底层”，它同时支持异步和同步的通信机制，一个事件产生时将被放到事件队列里，然后我们就可以继续执行该事件“后面”的代码。事件的机制是非阻塞的。</p>
+<p>信号和槽机制相对而言比较“高层”，它的发出者一般是对象。从本质上看，它类似于传统的回调机制，是不支持异步调用的。</p>
+<p>(3) 信号与槽在多线程时支持异步调用</p>
+<p>在单线程应用时，你可以把信号与槽看成是一种对象间的同步通信机制，这是因为在这种情况下，信号的释放过程是阻塞的，一定要等到槽函数返回后这个过程才结束，也就是不支持异步调用。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://wizardforcel.gitbooks.io/wudi-qt4/content/101.html" target="_blank" rel="noopener">第13 章Qt 核心机制与原理</a>,by wizardforcel.</li>
+<li><a href="https://www.zhihu.com/question/27040542" target="_blank" rel="noopener">如何才能学到Qt的精髓？</a>,by zhihu.</li>
+<li><a href="https://blog.csdn.net/lovekdy/article/details/101698482" target="_blank" rel="noopener">Qt中资源文件的使用及意义</a>,by Stephan_zry.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/615022779" target="_blank" rel="noopener">Qt：Qt资源系统</a>,by qt技术开发老杰.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/02/02/jsplumb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/02/02/jsplumb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  jsplumb学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-02-02 20:17:56" itemprop="dateCreated datePublished" datetime="2021-02-02T20:17:56+08:00">2021-02-02</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-11-27 11:32:46" itemprop="dateModified" datetime="2021-11-27T11:32:46+08:00">2021-11-27</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>jsPlumb 是一个用于在 html 元素之间生成连接线的 javascript 库。类似的工具还有 jointjs、GoJS、mxGraph 等。下面简单介绍jsplumb的相关内容。</p>
+<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><ul>
+<li>Souce 源节点</li>
+<li>Target 目标节点</li>
+<li>Anchor 锚点</li>
+<li>Endpoint 端点</li>
+<li>Connector 连接</li>
+<li>Overlay 连接装饰</li>
+</ul>
+<h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">jsPlumb.ready(function() &#123;</span><br><span class="line">    ...</span><br><span class="line">    &#x2F;&#x2F; your jsPlumb related init code goes here</span><br><span class="line">    ...</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="创建实例"><a href="#创建实例" class="headerlink" title="创建实例"></a>创建实例</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">var firstInstance &#x3D; jsPlumb.getInstance();</span><br><span class="line"></span><br><span class="line">firstInstance.importDefaults(&#123;</span><br><span class="line">  Connector : [ &quot;Bezier&quot;, &#123; curviness: 150 &#125; ],</span><br><span class="line">  Anchors : [ &quot;TopCenter&quot;, &quot;BottomCenter&quot; ]</span><br><span class="line">&#125;);</span><br><span class="line">  </span><br><span class="line">firstInstance.connect(&#123;</span><br><span class="line">  source:&quot;element1&quot;, </span><br><span class="line">  target:&quot;element2&quot;, </span><br><span class="line">  scope:&quot;someScope&quot; </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">var secondInstance &#x3D; jsPlumb.getInstance(&#123;</span><br><span class="line">  PaintStyle:&#123; </span><br><span class="line">    strokeWidth:6, </span><br><span class="line">    stroke:&quot;#567567&quot;, </span><br><span class="line">    outlineStroke:&quot;black&quot;, </span><br><span class="line">    outlineWidth:1 </span><br><span class="line">  &#125;,</span><br><span class="line">  Connector:[ &quot;Bezier&quot;, &#123; curviness: 30 &#125; ],</span><br><span class="line">  Endpoint:[ &quot;Dot&quot;, &#123; radius:5 &#125; ],</span><br><span class="line">  EndpointStyle : &#123; fill: &quot;#567567&quot;  &#125;,</span><br><span class="line">  Anchor : [ 0.5, 0.5, 1, 1 ]</span><br><span class="line">&#125;);</span><br><span class="line">    </span><br><span class="line">secondInstance.connect(&#123; </span><br><span class="line">  source:&quot;element4&quot;, </span><br><span class="line">  target:&quot;element3&quot;, </span><br><span class="line">  scope:&quot;someScope&quot;   </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://wdd.js.org/jsplumb-chinese-tutorial/#/" target="_blank" rel="noopener">jsplumb 中文基础教程</a>,by wangduanduan.</li>
+<li><a href="https://segmentfault.com/a/1190000018371243" target="_blank" rel="noopener">记一次绘图框架技术选型: jsPlumb VS mxGraph</a>,by yejinzhan.</li>
+<li><a href="https://docs.jsplumbtoolkit.com/community/current/index.html" target="_blank" rel="noopener">jsPlumb Community Edition</a>,by jsplumbtoolkit.</li>
+<li><a href="https://shawchen08.github.io/2019/03/21/jsPlumb-docs/" target="_blank" rel="noopener">jsPlumb 文档翻译</a>,by shawchen08.</li>
+<li><a href="https://ustbhuangyi.github.io/vue-analysis/v2/prepare/" target="_blank" rel="noopener">Vue.js 技术揭秘</a>,by huangyi.</li>
+<li><a href="https://stackoverflow.com/questions/22230983/jsplumb-connection-event-is-triggering-more-than-once" target="_blank" rel="noopener">jsPlumb Connection event is triggering more than once</a>,by stackflow.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/01/27/%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95%E4%B8%8E%E6%A8%A1%E7%B3%8A%E7%BB%BC%E5%90%88%E8%AF%84%E4%BB%B7%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1600,331 +1953,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/12/20/Mongodb%E5%AD%98%E5%82%A8%E6%96%87%E4%BB%B6%E7%9A%84%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/12/20/Mongodb%E5%AD%98%E5%82%A8%E6%96%87%E4%BB%B6%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
-                  Mongodb存储文件的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-12-20 20:35:51" itemprop="dateCreated datePublished" datetime="2020-12-20T20:35:51+08:00">2020-12-20</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2021-01-19 08:31:26" itemprop="dateModified" datetime="2021-01-19T08:31:26+08:00">2021-01-19</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>MongoDB是一种面向文档的数据库管理系统，用C++等语言撰写而成，以解决应用程序开发社区中的大量现实问题。MongoDB由MongoDB Inc.于2007年10月开发，2009年2月首度推出，现以服务器端公共许可分发。 </p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://jacoobwang.github.io/2017/12/30/Mongodb%E7%9A%84%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8GridFs/" target="_blank" rel="noopener">Mongodb的文件存储GridFs</a>,by 勤勤恳恳.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/12/11/VS2017%E9%85%8D%E7%BD%AEGLUT%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/12/11/VS2017%E9%85%8D%E7%BD%AEGLUT%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" itemprop="url">
-                  VS2017配置GLUT开发环境
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-12-11 19:38:06" itemprop="dateCreated datePublished" datetime="2020-12-11T19:38:06+08:00">2020-12-11</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-12-12 15:18:34" itemprop="dateModified" datetime="2020-12-12T15:18:34+08:00">2020-12-12</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近需要做一个红外图像处理软件，在VS2017上使用OpenGL GLUT开发，采用Rapidcsv读取传递的CSV数据。具体代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">int main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">	readCsvData();</span><br><span class="line">	glutInit(&amp;argc, argv);</span><br><span class="line">	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);</span><br><span class="line">	glutInitWindowSize(ImageWidth, ImageHeight);</span><br><span class="line">	glutInitWindowPosition(200, 200);</span><br><span class="line">	glutCreateWindow(&quot;InfraRedImage&quot;);</span><br><span class="line">	initCamera();</span><br><span class="line">	&#x2F;&#x2F; 注册回调函数</span><br><span class="line">	glutDisplayFunc(sceneRender);</span><br><span class="line">	glutReshapeFunc(reshape);</span><br><span class="line">	glutKeyboardFunc(keyboard);</span><br><span class="line">	glutTimerFunc(1, update, 0);</span><br><span class="line">	glutMouseFunc(mouseClick);</span><br><span class="line">	glutMainLoop();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.w3xue.com/exp/article/20193/26135.html" target="_blank" rel="noopener">在Visual Studio 2017上配置Glut</a>,by 凯鲁嘎吉.</li>
-<li><a href="https://blog.csdn.net/bqw18744018044/article/details/81665898" target="_blank" rel="noopener">C++中创建二维数组的四种方法</a>,by BQW_.</li>
-<li><a href="https://github.com/d99kris/rapidcsv" target="_blank" rel="noopener">Rapidcsv</a>,by d99kris.</li>
-<li><a href="https://github.com/ArashPartow/bitmap" target="_blank" rel="noopener">bitmap</a>,by ArashPartow.</li>
-<li><a href="https://blog.csdn.net/PROGRAM_anywhere/article/details/63720261" target="_blank" rel="noopener">C++中4种方式把字符串和数字连接起来</a>,by 帅东.</li>
-<li><a href="https://blog.csdn.net/zxy131072/article/details/94547012?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromBaidu-1.control&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromBaidu-1.control" target="_blank" rel="noopener">string赋值操作</a>,by zxy131072.</li>
-<li><a href="http://www.lighthouse3d.com/tutorials/glut-tutorial/bitmap-fonts-and-orthogonal-projections/" target="_blank" rel="noopener">Bitmap Fonts and Orthogonal Projections</a>,by Lighthouse3d.</li>
-<li><a href="https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros" target="_blank" rel="noopener">C++11 std::to_string(double) - No trailing zeros</a>,by stackoverflow.</li>
-<li><a href="https://www.codeproject.com/Questions/655714/How-to-write-openGl-offscreen-data-in-to-JPG-image" target="_blank" rel="noopener">How to write openGl offscreen data in to JPG image</a>,by codeproject.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/21/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/page/49/">49</a><a class="extend next" rel="next" href="/page/23/">下一页</a>
+    <a class="extend prev" rel="prev" href="/page/21/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/23/">下一页</a>
   </nav>
 
 
@@ -1967,7 +2000,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">489</span>
+                    <span class="site-state-item-count">491</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

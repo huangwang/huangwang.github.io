@@ -6454,7 +6454,11 @@
 <li><a href="https://blog.csdn.net/what951006/article/details/115360430" target="_blank" rel="noopener">vcpkg安装静态库/mtd/mt</a></li>
 <li><a href="https://blog.csdn.net/xmcy001122/article/details/116227032" target="_blank" rel="noopener">Vcpkg使用MD运行时静态库——如何设置？</a></li>
 </ul>
-<h2 id="protobuf-解析错误-ParseFromArray-时返回false"><a href="#protobuf-解析错误-ParseFromArray-时返回false" class="headerlink" title="protobuf 解析错误 ParseFromArray 时返回false"></a>protobuf 解析错误 ParseFromArray 时返回false</h2><p>解决方案请参考：</p>
+<h2 id="protobuf-解析错误-ParseFromArray-时返回false"><a href="#protobuf-解析错误-ParseFromArray-时返回false" class="headerlink" title="protobuf 解析错误 ParseFromArray 时返回false"></a>protobuf 解析错误 ParseFromArray 时返回false</h2><p>可能的原因有：</p>
+<ul>
+<li>消息没有序列化，因此消息反序列化失败</li>
+</ul>
+<p>解决方案请参考：</p>
 <ul>
 <li><a href="https://blog.csdn.net/guangyacyb/article/details/96439413" target="_blank" rel="noopener">protobuf 解析错误 ParseFromArray 时返回false</a></li>
 <li><a href="https://blog.csdn.net/xiexingshishu/article/details/46672789" target="_blank" rel="noopener">protobuf的ParseFromArray 解析失败的问题</a></li>
@@ -21704,6 +21708,42 @@ console.log(y);</code></pre></li>
       <tags>
         <tag>笔记本</tag>
         <tag>前端</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>多传感器多目标跟踪方法研究学习笔记</title>
+    <url>/2024/09/28/%E5%A4%9A%E4%BC%A0%E6%84%9F%E5%99%A8%E5%A4%9A%E7%9B%AE%E6%A0%87%E8%B7%9F%E8%B8%AA%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>最近遇到一个问题，需要将多传感器多目标跟踪获得的航迹进行关联，因此学习研究一下。</p>
+<h1 id="关键技术"><a href="#关键技术" class="headerlink" title="关键技术"></a>关键技术</h1><blockquote>
+<p>分布式多传感器多目标跟踪涉及的目标跟踪、传感器配准、航迹关联、数据融合4项关键技术。</p>
+</blockquote>
+<h2 id="目标跟踪"><a href="#目标跟踪" class="headerlink" title="目标跟踪"></a>目标跟踪</h2><p>目标跟踪是指利用传感器获得的带噪声量测数据，对目标的状态和个数进行估计的过程。</p>
+<p>目标跟踪按目标探测个数可分为单目标跟踪和多目标跟踪，通常它们都基于贝叶斯框架进行递归滤波。</p>
+<h3 id="单目标跟踪"><a href="#单目标跟踪" class="headerlink" title="单目标跟踪"></a>单目标跟踪</h3><h3 id="多目标跟踪"><a href="#多目标跟踪" class="headerlink" title="多目标跟踪"></a>多目标跟踪</h3><h2 id="传感器配准"><a href="#传感器配准" class="headerlink" title="传感器配准"></a>传感器配准</h2><blockquote>
+<p>在分布式多传感器多目标跟踪过程中，需要把来自多个传感器的数据转换到相同的时空参照系中。由于不同传感器传输速率及采样周期不同，而且存在传感器系统偏差和量测误差，直接进行转换会降低数据融合精度，因此在对多传感器数据处理时需要进行传感器时空配准。</p>
+</blockquote>
+<h3 id="时间配准"><a href="#时间配准" class="headerlink" title="时间配准"></a>时间配准</h3><blockquote>
+<p>时间配准就是将各传感器对同一目标的异步量测信息配准到同一时刻。</p>
+</blockquote>
+<h3 id="空间配准"><a href="#空间配准" class="headerlink" title="空间配准"></a>空间配准</h3><blockquote>
+<p>空间配准是利用多传感器对空间公共目标的探测信息对传感器的系统偏差进行估计和补偿的过程，它可以提高信息融合精度。</p>
+</blockquote>
+<h2 id="航迹关联"><a href="#航迹关联" class="headerlink" title="航迹关联"></a>航迹关联</h2><blockquote>
+<p>由于传感器间的探测区域存在重叠，来自不同系统的航迹可能代表同一目标。因此，如何找出同一目标对应的航迹就是分布式数据融合系统中的航迹关联问题。</p>
+</blockquote>
+<blockquote>
+<p>航迹关联算法主要分为两类，一类是基于统计类的方法，一类是基于模糊数学的方法。</p>
+</blockquote>
+<h2 id="数据融合"><a href="#数据融合" class="headerlink" title="数据融合"></a>数据融合</h2><blockquote>
+<p>分布式多传感器多目标跟踪又称分布式多传感器数据融合。在该系统中，各局部传感器首先基于单传感器多目标跟踪算法，形成各自目标航迹，<br>接着各传感器将目标航迹送入融合中心完成时空配准与航迹关联，然后融合中心基于某种融合准则对来自同一目标的航迹进行估计融合，最终形成稳定、<br>高精度的全局航迹。</p>
+</blockquote>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://radars.ac.cn/article/doi/10.12000/JR22111" target="_blank" rel="noopener">分布式多传感器多目标跟踪方法综述</a>,by 曾雅俊, 王俊, 魏少明, 等.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>科研</tag>
       </tags>
   </entry>
 </search>

@@ -314,6 +314,417 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/30/Linux%E9%98%B2SYN-Flood%E6%94%BB%E5%87%BB%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/10/30/Linux%E9%98%B2SYN-Flood%E6%94%BB%E5%87%BB%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Linux防SYN_Flood攻击的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-30 22:41:31" itemprop="dateCreated datePublished" datetime="2019-10-30T22:41:31+08:00">2019-10-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-01-20 19:34:51" itemprop="dateModified" datetime="2023-01-20T19:34:51+08:00">2023-01-20</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近管理的Linux服务器遭遇了SYN Flood攻击，因此研究一下防范该攻击的方法。</p>
+<h1 id="SYN-Flood攻击的表现"><a href="#SYN-Flood攻击的表现" class="headerlink" title="SYN Flood攻击的表现"></a>SYN Flood攻击的表现</h1><p>使用ssh登录Linux服务器，在终端中输入netstat -antp能查看到有大量的链接时SYN_RECV状态，说明Linux服务器遭遇了SYN Flood攻击。</p>
+<h2 id="netstat常用参数"><a href="#netstat常用参数" class="headerlink" title="netstat常用参数"></a>netstat常用参数</h2><p>netstat常用参数如下：</p>
+<ul>
+<li>-a (all)显示所有选项，默认不显示LISTEN相关</li>
+<li>-t (tcp)仅显示tcp相关选项</li>
+<li>-u (udp)仅显示udp相关选项</li>
+<li>-n 拒绝显示别名，能显示数字的全部转化成数字。</li>
+<li>-l 仅列出有在 Listen (监听) 的服務状态</li>
+<li>-p 显示建立相关链接的程序名</li>
+<li>-r 显示路由信息，路由表</li>
+<li>-e 显示扩展信息，例如uid等</li>
+<li>-s 按各个协议进行统计</li>
+<li>-c 每隔一个固定时间，执行该netstat命令。</li>
+</ul>
+<h2 id="TCP连接状态"><a href="#TCP连接状态" class="headerlink" title="TCP连接状态"></a>TCP连接状态</h2><ul>
+<li>ESTABLISHED </li>
+</ul>
+<p>指TCP连接已建立，双方可以进行方向数据传递</p>
+<ul>
+<li>CLOSE_WAIT</li>
+</ul>
+<p>这种状态的含义其实是表示在等待关闭。当对方close一个SOCKET后发送FIN报文给自己，你系统毫无疑问地会回应一个ACK报文给对方，此时则进入到CLOSE_WAIT状态。</p>
+<ul>
+<li>LISTENING</li>
+</ul>
+<p>指TCP正在监听端口，可以接受链接</p>
+<ul>
+<li>TIME_WAIT</li>
+</ul>
+<p>指连接已准备关闭。表示收到了对方的FIN报文，并发送出了ACK报文，就等2MSL后即可回到CLOSED可用状态了。</p>
+<ul>
+<li>FIN_WAIT_1</li>
+</ul>
+<p>FIN_WAIT_1和 FIN_WAIT_2状态的真正含义都是表示等待对方的FIN报 文。而这两种状态的区别是：FIN_WAIT_1状态实际上是当SOCKET在ESTABLISHED状态时，它想主动关闭连接，向对方发送了FIN 报文，此时该SOCKET即进入到FIN_WAIT_1 状态。而当对方回应ACK 报文后，则进入到FIN_WAIT_2状态，当然在实际的正常情况 下，无论对方何种情况下，都应该马上回应ACK报文，所以FIN_WAIT_1状态一般是比较难见到的，而FIN_WAIT_2 状态还有时常常可以用 netstat看到。</p>
+<ul>
+<li>FIN_WAIT_2</li>
+</ul>
+<p>FIN_WAIT_2 状态下的SOCKET，表示半连接，也即有一方要求close 连接，但另外还告诉对方，我暂时还有点数据需要传送给你，稍后再关闭连接。</p>
+<ul>
+<li>LAST_ACK</li>
+</ul>
+<p>是被动关闭一方在发送FIN报文后，最后等待对方的ACK报文。当收到ACK报文后，也即可以进入到CLOSED可用状态了</p>
+<ul>
+<li>SYNC_RECEIVED</li>
+</ul>
+<p>表示接受到了SYN报文，在正常情况下，这个状态是服务器端的SOCKET在建立TCP连接时的三次握手会话过程中的一个中间状态，很短暂，基本上用netstat你是很难看到这种状态的，除非你特意写了一个客户端测试程序，故意将三次TCP握手过程中最后一个ACK报文不予发送。</p>
+<ul>
+<li>SYNC_SEND</li>
+</ul>
+<p>已经主动发出连接建立请求。与SYN_RCVD遥想呼应，当客户端SOCKET执行CONNECT连接时，它首先发送SYN报文，因此也随即它会进入到了SYN_SENT状态，并等待服务端的发送三次握手中的第2个报文。</p>
+<h1 id="防范措施"><a href="#防范措施" class="headerlink" title="防范措施"></a>防范措施</h1><p>首先确保ssh登录密码没有泄露，再修改系统相关配置。</p>
+<h2 id="剔出其他登录用户"><a href="#剔出其他登录用户" class="headerlink" title="剔出其他登录用户"></a>剔出其他登录用户</h2><p>当ssh登录密码泄露，会有其他用户登录，所以需要剔出其他登录用户，再修改密码和系统相关配置。剔出其他登录用户的方法如下：</p>
+<ul>
+<li>查看系统在线用户</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@apache ~]# w </span><br><span class="line">14:15:41 up 42 days, 56 min,  2 users,  load average: 0.07, 0.02, 0.00 </span><br><span class="line">USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT </span><br><span class="line">root     pts&#x2F;0    116.204.64.165   14:15    0.00s  0.06s  0.04s w </span><br><span class="line">root     pts&#x2F;1    116.204.64.165   14:15    2.00s  0.02s  0.02s –bash</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看当前自己占用终端，防止把自己干掉了</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@apache ~]# who am i </span><br><span class="line">root     pts&#x2F;0        2013-01-16 14:15 (116.204.64.165)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>用pkill 命令剔除对方</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 信号代码 -9 ，表示强制终止</span><br><span class="line">[root@apache ~]# pkill -9 -t pts&#x2F;1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>用w命令在看看干掉没。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@apache ~]# w </span><br><span class="line">14:19:47 up 42 days,  1:00,  1 user,  load average: 0.00, 0.00, 0.00 </span><br><span class="line">USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT </span><br><span class="line">root     pts&#x2F;0    116.204.64.165   14:15    0.00s  0.03s  0.00s w</span><br></pre></td></tr></table></figure>
+
+<h2 id="抵御SYN攻击的方法"><a href="#抵御SYN攻击的方法" class="headerlink" title="抵御SYN攻击的方法"></a>抵御SYN攻击的方法</h2><p>SYN攻击是利用TCP/IP协议3次握手的原理，发送大量的建立连接的网络包，但不实际建立连接，最终导致被攻击服务器的网络队列被占满，无法被正常用户访问。</p>
+<h3 id="修改SYN相关系统配置"><a href="#修改SYN相关系统配置" class="headerlink" title="修改SYN相关系统配置"></a>修改SYN相关系统配置</h3><p>Linux内核提供了若干SYN相关的配置，用命令： sysctl -a | grep syn 看到：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.tcp_max_syn_backlog &#x3D; 1024 </span><br><span class="line">net.ipv4.tcp_syncookies &#x3D; 0</span><br><span class="line">net.ipv4.tcp_synack_retries &#x3D; 5 </span><br><span class="line">net.ipv4.tcp_syn_retries &#x3D; 5</span><br></pre></td></tr></table></figure>
+
+<p>tcp_max_syn_backlog是SYN队列的长度，tcp_syncookies是一个开关，是否打开SYN Cookie 功能，该功能可以防止部分SYN攻击tcp_synack_retries和tcp_syn_retries定义SYN 的重试次数。　　</p>
+<p>加大SYN队列长度可以容纳更多等待连接的网络连接数，打开SYN Cookie功能可以阻止部分 SYN攻击，降低重试次数也有一定效果。</p>
+<p>调整上述设置的方法是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 增加SYN队列长度到2048：</span><br><span class="line">sysctl -w net.ipv4.tcp_max_syn_backlog&#x3D;2048</span><br><span class="line"></span><br><span class="line"># 打开SYN COOKIE功能：</span><br><span class="line">sysctl -w net.ipv4.tcp_syncookies&#x3D;1</span><br><span class="line"></span><br><span class="line"># 降低重试次数：</span><br><span class="line">sysctl -w net.ipv4.tcp_synack_retries&#x3D;3 </span><br><span class="line">sysctl -w net.ipv4.tcp_syn_retries&#x3D;3</span><br></pre></td></tr></table></figure>
+
+<p>为了系统重启动时保持上述配置，可将上述命令加入到/etc/rc.d/rc.local文件中。</p>
+<h3 id="iptables阻止syn-flood攻击"><a href="#iptables阻止syn-flood攻击" class="headerlink" title="iptables阻止syn flood攻击"></a>iptables阻止syn flood攻击</h3><p>防止同步包洪水（Sync Flood）:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># –limit 1&#x2F;s 限制syn并发数每秒1次，可以根据自己的需要修改</span><br><span class="line">iptables -A FORWARD -p tcp –syn -m limit –limit 1&#x2F;s -j ACCEPT</span><br></pre></td></tr></table></figure>
+
+<p>防止各种端口扫描:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -A FORWARD -p tcp –tcp-flags SYN,ACK,FIN,RST RST -m limit –limit 1&#x2F;s -j ACCEPT</span><br></pre></td></tr></table></figure>
+
+<p>Ping洪水攻击（Ping of Death）:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -A FORWARD -p icmp –icmp-type echo-request -m limit –limit 1&#x2F;s -j ACCEPT</span><br></pre></td></tr></table></figure>
+
+<p>屏蔽 SYN_RECV 的连接：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -p tcp -m tcp –tcp-flags SYN,RST,ACK SYN -m limit –limit 1&#x2F;sec -j ACCEPT</span><br></pre></td></tr></table></figure>
+
+<p>禁止某IP访问：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -I INPUT -s xxx.xxx.xxx.xx -j DROP</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.cnblogs.com/derekchen/archive/2011/02/26/1965850.html" target="_blank" rel="noopener">LINUX 服务器遭到SYN FLOOD攻击</a>,by 晓风残梦.</li>
+<li><a href="https://www.cnblogs.com/ggjucheng/archive/2012/01/08/2316661.HTML" target="_blank" rel="noopener">Linux netstat命令详解</a>,by ggjucheng.</li>
+<li><a href="https://linux.cn/article-2434-1.html" target="_blank" rel="noopener">netstat 的10个基本用法</a>,by  LCTT bazz2.</li>
+<li><a href="https://www.cnblogs.com/vigarbuaa/archive/2012/03/07/2383064.html" target="_blank" rel="noopener">netstat用法及TCP state解析</a>,by vigarbuaa.</li>
+<li><a href="https://www.cnblogs.com/wjoyxt/p/7905354.html" target="_blank" rel="noopener">Linux踢出其他正在SSH登陆用户</a>,by 艾欧里亚.</li>
+<li><a href="https://www.cnblogs.com/rsky/p/4886043.html" target="_blank" rel="noopener">[Linux] killall 、kill 、pkill 命令详解</a>,by 骑着蜗牛游世界.</li>
+<li><a href="https://blog.csdn.net/simongeek/article/details/46429243" target="_blank" rel="noopener">Linux中kill，pkill，killall和xkill命令汇总讲解</a>,by simonGeek.</li>
+<li><a href="http://www.sphinxsearch.org/archives/10" target="_blank" rel="noopener">Linux防止syn flood攻击，屏蔽 SYN_RECV 的连接</a>,by Sphinx 中文站.</li>
+<li><a href="https://wangchujiang.com/linux-command/c/iptables.html" target="_blank" rel="noopener">iptables</a>,by wangchujiang.</li>
+<li><a href="https://www.jianshu.com/p/3c7a0771b67e" target="_blank" rel="noopener">TCP状态机</a>,by 大蟒传奇.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/27/%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E8%AE%A1%E6%97%B6%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/10/27/%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E8%AE%A1%E6%97%B6%E6%96%B9%E6%B3%95/" itemprop="url">
+                  不同语言的计时方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-27 21:57:46 / 修改时间：22:02:21" itemprop="dateCreated datePublished" datetime="2019-10-27T21:57:46+08:00">2019-10-27</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>剖析代码性能时通常需要计时。下面记录不同语言的各种计时方法。</p>
+<h1 id="C-计时方法"><a href="#C-计时方法" class="headerlink" title="C++计时方法"></a>C++计时方法</h1><p>传统计时方法的代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;ctime&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">clock_t start &#x3D; clock();</span><br><span class="line">&#x2F;&#x2F; do something...</span><br><span class="line">clock_t end   &#x3D; clock();</span><br><span class="line">cout &lt;&lt; &quot;花费了&quot; &lt;&lt; (double)(end - start) &#x2F; CLOCKS_PER_SEC &lt;&lt; &quot;秒&quot; &lt;&lt; endl;</span><br></pre></td></tr></table></figure>
+
+<p>C++11 标准的”最佳计时方法“的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;chrono&gt;   </span><br><span class="line">using namespace std;</span><br><span class="line">using namespace chrono;</span><br><span class="line"></span><br><span class="line">auto start &#x3D; system_clock::now();</span><br><span class="line">&#x2F;&#x2F; do something...</span><br><span class="line">auto end   &#x3D; system_clock::now();</span><br><span class="line">auto duration &#x3D; duration_cast&lt;microseconds&gt;(end - start);</span><br><span class="line">cout &lt;&lt;  &quot;花费了&quot; </span><br><span class="line">     &lt;&lt; double(duration.count())</span><br><span class="line">     &lt;&lt; &quot;微秒&quot; &lt;&lt; endl;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Python计时方法"><a href="#Python计时方法" class="headerlink" title="Python计时方法"></a>Python计时方法</h1><p>在Jupyter Notebook中，计时使用一个magic command：%timeit。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/u013390476/article/details/50209603" target="_blank" rel="noopener">C++11 新的计时方法——std::chrono 大法好</a>,by sicolex.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/26/CPlusPlus%E9%AB%98%E6%80%A7%E8%83%BD%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1962,385 +2373,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/09/Windows%E5%BF%98%E8%AE%B0%E5%AF%86%E7%A0%81%E6%97%A0%E6%B3%95%E7%99%BB%E5%BD%95%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/09/Windows%E5%BF%98%E8%AE%B0%E5%AF%86%E7%A0%81%E6%97%A0%E6%B3%95%E7%99%BB%E5%BD%95%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" itemprop="url">
-                  Windows忘记密码无法登录的解决方案
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-10-09 12:09:44" itemprop="dateCreated datePublished" datetime="2019-10-09T12:09:44+08:00">2019-10-09</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-10-10 08:25:02" itemprop="dateModified" datetime="2019-10-10T08:25:02+08:00">2019-10-10</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>突然需要在一台很久不用的Win7计算机上差一点资料，可忘记了登录密码，只能重置密码。过程记录如下：</p>
-<h1 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h1><p>借助手头的一张linux live cd，从光盘启动，进入linux系统，然后找到windows系统盘分区，在C:\Windows\System32下，将cmd.exe重命名为Magnify.exe，然后系统重启，登录Windows操作系统，在登录界面中，调用辅助工具放大镜，即打开命令提示符，输入如下命令重置Windows账户密码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 查看Windows账户</span><br><span class="line">net user</span><br><span class="line">&#x2F;&#x2F; 修改Windows账户密码</span><br><span class="line">net user Administrator 123456</span><br><span class="line">&#x2F;&#x2F; 重启系统用Administrator账户登录</span><br><span class="line">shutdown -r -t 00</span><br></pre></td></tr></table></figure>
-
-<p>或者采用如下命令新建登录账户：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 创建用户</span><br><span class="line">net user test 123456 &#x2F;add</span><br><span class="line">&#x2F;&#x2F; 用户提权，加入管理员组</span><br><span class="line">net localgroup Administrators test &#x2F;add</span><br><span class="line">&#x2F;&#x2F; 使用完删除用户</span><br><span class="line">net user test &#x2F;delete</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/cx1990820/article/details/72628241" target="_blank" rel="noopener">关闭windows默认共享</a>,by Blue_sky90.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/07/Qt5%E9%85%8D%E7%BD%AE%E5%BC%80%E6%BA%90GSL%E6%95%B0%E5%AD%A6%E5%BA%93/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/07/Qt5%E9%85%8D%E7%BD%AE%E5%BC%80%E6%BA%90GSL%E6%95%B0%E5%AD%A6%E5%BA%93/" itemprop="url">
-                  Qt5配置开源GSL数学库
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-10-07 09:22:55" itemprop="dateCreated datePublished" datetime="2019-10-07T09:22:55+08:00">2019-10-07</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2021-04-28 20:06:00" itemprop="dateModified" datetime="2021-04-28T20:06:00+08:00">2021-04-28</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>GNU科学库（英语：GSL - GNU Scientific Library），是一套为 C语言和 C++开发者提供的数值计算函数库，多用于应用数学和科学。软件属于自由软件，在 GNU 通用公共许可证下发布。</p>
-<p>这套数值计算函数库提供了大量的数学运算功能，比如随机数生成器，特殊函数以及最小二乘拟合。有超过1000个函数包含在该数值计算库和扩展的测试包中。</p>
-<p>下面介绍在Qt5环境中搭载GSL库的方法和步骤。</p>
-<h1 id="下载并安装Qt5"><a href="#下载并安装Qt5" class="headerlink" title="下载并安装Qt5"></a>下载并安装Qt5</h1><p>下载Qt5请参考<a href="http://c.biancheng.net/view/3851.html" target="_blank" rel="noopener">Qt下载（多种下载通道+所有版本）</a>。<strong>将下载并安装Qt5.9.8 LTS。</strong></p>
-<p>安装Qt5请参考<a href="http://c.biancheng.net/view/3858.html" target="_blank" rel="noopener">图解Qt安装（Windows平台）</a>。</p>
-<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><h2 id="MinGW环境配置"><a href="#MinGW环境配置" class="headerlink" title="MinGW环境配置"></a>MinGW环境配置</h2><p>MinGW（Minimalist GNU for Windows），又称mingw32，是将GCC编译器和GNU Binutils移植到Win32平台下的产物，包括一系列头文件（Win32API）、库和可执行文件。</p>
-<p>另有可用于产生32位及64位Windows可执行文件的MinGW-w64项目，是从原本MinGW产生的分支。如今已经独立发展。</p>
-<p>MinGW是从Cygwin（1.3.3版）基础上发展而来。Qt5.9.8使用MinGW 5.3编译器编译程序。</p>
-<p>将mingw的bin目录添加进系统的环境变量，告诉系统已经安装了mingw编译器，并且可以被使用。Qt5自带的mingw的安装路径为C:\Qt\Qt5.9.8\5.9.8\mingw53_32，这里我们需要将C:\Qt\Qt5.9.8\5.9.8\mingw53_32\bin目录添加进入系统环境变量。</p>
-<p>系统环境变量的设置方法为：【计算机】-&gt;【属性】-&gt;【高级系统设置】-&gt;【环境变量】-&gt;【系统变量】-&gt;【Path】。</p>
-<h2 id="MSYS环境配置"><a href="#MSYS环境配置" class="headerlink" title="MSYS环境配置"></a>MSYS环境配置</h2><p>MSYS是bash，make，gawk和grep等GNU实用程序的集合，以允许构建依赖于传统UNIX工具的应用程序和程序。 它旨在补充MinGW和cmd shell的缺陷。</p>
-<p>一个示例是构建一个使用自动工具构建系统的库。 用户通常会先运行“ ./configure”，然后运行“ make”来构建它。 配置外壳程序脚本需要Windows系统上不存在的外壳程序脚本解释器，但由MSYS提供。</p>
-<p>一个常见的误解是MSYS是“ Windows上的UNIX”，MSYS本身不包含编译器或C库，因此不能将UNIX程序神奇地移植到Windows上，也不能提供任何特定于UNIX的功能，例如case- 敏感文件名。 寻找此类功能的用户应改用Cygwin或Microsoft的Interix。</p>
-<p>msys的下载网址为：</p>
-<p><a href="https://sourceforge.net/projects/mingwbuilds/files/external-binary-packages/" target="_blank" rel="noopener">msys+7za+wget+svn+git+mercurial+cvs-rev13.7z</a></p>
-<p>上述网址给出的是一个压缩包，直接解压就可以使用。</p>
-<p>将msys+7za+wget+svn+git+mercurial+cvs-rev13.7z解压到C:\Qt\Qt5.9.8\5.9.8\mingw53_32。</p>
-<p>仅将msys解压后并不能直接使用，因为对于msys而言，它还不知道mingw编译器所处位置，因此需要对msys的环境进行配置。首先需要在msys的路径下创建一个名为mingw的空文件夹，路径为C:\Qt\Qt5.9.8\5.9.8\mingw53_32\msys\mingw。然后修改<br>C:\Qt\Qt5.9.8\5.9.8\mingw53_32\msys\etc\fstab中的内容,如下所示。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:&#x2F;Qt&#x2F;Qt5.9.8&#x2F;Tools&#x2F;mingw530_32 &#x2F;mingw</span><br></pre></td></tr></table></figure>
-
-<p>通过上述环境配置，当启动msys时，将Qt5的mingw编译直接挂载到/mingw目录下。</p>
-<p>双击msys文件夹下msys.bat即可运行msys，使用cd命令进入/mingw目录下，我们就会发现此目录下文件就是C:\Qt\Qt5.9.8\Tools\mingw530_32对应的文件。</p>
-<p>跳转到gsl-2.6文件夹，即可开始编译链接gsl。</p>
-<h1 id="下载并编译安装GSL"><a href="#下载并编译安装GSL" class="headerlink" title="下载并编译安装GSL"></a>下载并编译安装GSL</h1><p>从此处 <a href="http://ftpmirror.gnu.org/gsl/" target="_blank" rel="noopener">http://ftpmirror.gnu.org/gsl/</a> 下载最新的GSL-2.6。然后采用如下步骤编译GSL：</p>
-<ol>
-<li>运行msys，进入GSL源文件所在目录</li>
-<li>./configure</li>
-<li>make -j8</li>
-<li>make install</li>
-</ol>
-<h1 id="Qt调用GSL库"><a href="#Qt调用GSL库" class="headerlink" title="Qt调用GSL库"></a>Qt调用GSL库</h1><h2 id="创建Qt工程"><a href="#创建Qt工程" class="headerlink" title="创建Qt工程"></a>创建Qt工程</h2><p>为了测试GSL数学库能够在Qt环境中运行，新建一个控制台工程进行测试。</p>
-<p>新建控制台应用程序的步骤为：【Welcome】-&gt;【New Project】-&gt;【Application】-&gt;【Qt Console Application】-&gt;【Choose】-&gt;【将工程命名为GslTest】。</p>
-<h2 id="引用GSL库"><a href="#引用GSL库" class="headerlink" title="引用GSL库"></a>引用GSL库</h2><p>在GslTest项目的工程目录内，新建名为gsl的文件夹。该文件夹的内容如图1所示。</p>
-<p align="center">
-    <img src="images/gsl.jpg" width="60%" alt="gsl文件夹结构"/>
-</p>
-<center>图1 gsl文件夹结构</center>
-
-<p>gsl文件夹下lib、include、bin中内容为编译安装GSL过程中生成的头文件、库文件及生成的相关exe文件，主要从C:\Qt\Qt5.9.8\5.9.8\mingw53_32\msys路径下提取。</p>
-<p>此外，在gsl目录下新建gsl.pro文件，其内容如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 宏定义项，指明采用GSL，因为有些函数需要使用dll</span><br><span class="line">DEFINES +&#x3D; GSL_DLL</span><br><span class="line">INCLUDEPATH +&#x3D; $$PWD\include</span><br><span class="line">LIBS +&#x3D; -L$$PWD\lib -llibgsl</span><br><span class="line">LIBS +&#x3D; -L$$PWD\lib -llibgslcblas</span><br></pre></td></tr></table></figure>
-
-<p>然后在GslTest的项目文件GslTest.pro末尾引用gsl.pro文件，如下所示。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">include($$PWD&#x2F;gsl&#x2F;gsl.pro)</span><br></pre></td></tr></table></figure>
-
-<h2 id="修改GslTest的main-cpp"><a href="#修改GslTest的main-cpp" class="headerlink" title="修改GslTest的main.cpp"></a>修改GslTest的main.cpp</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;QCoreApplication&gt;</span><br><span class="line">#include &lt;gsl&#x2F;gsl_sf_bessel.h&gt;</span><br><span class="line">#include &lt;math.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    QCoreApplication a(argc, argv);</span><br><span class="line">    double x&#x3D;10.0;</span><br><span class="line">    double y&#x3D;gsl_sf_bessel_J0(x);</span><br><span class="line">    std::cout&lt;&lt;&quot;J0(&quot;&lt;&lt;x&lt;&lt;&quot;)&#x3D;&quot;&lt;&lt;y&lt;&lt;std::endl;</span><br><span class="line"></span><br><span class="line">    return a.exec();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="运行GslTest"><a href="#运行GslTest" class="headerlink" title="运行GslTest"></a>运行GslTest</h2><p align="center">
-    <img src="images/result.jpg" width="60%" alt="GslTest运行结果"/>
-</p>
-<center>图2 GslTest运行结果</center>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://c.biancheng.net/view/3851.html" target="_blank" rel="noopener">Qt下载（多种下载通道+所有版本）</a>,by C语言中文网.</li>
-<li><a href="http://c.biancheng.net/view/3858.html" target="_blank" rel="noopener">图解Qt安装（Windows平台）</a>,by C语言中文网.</li>
-<li><a href="http://www.gnu.org/software/gsl/" target="_blank" rel="noopener">GSL - GNU Scientific Library</a>,by gnu.</li>
-<li><a href="https://blog.csdn.net/xiaop5140/article/details/76712413" target="_blank" rel="noopener">QT5环境下配置GSL数学库</a>,by 木小猿.</li>
-<li><a href="https://zh.wikipedia.org/wiki/GNU%E7%A7%91%E5%AD%A6%E5%BA%93" target="_blank" rel="noopener">GNU科学库</a>,by wikipedia.</li>
-<li><a href="https://blog.csdn.net/chenguolinblog/article/details/8164632" target="_blank" rel="noopener">【ICPC-455】C++ 常用数学函数库</a>,by 陈国林.</li>
-<li><a href="https://zh.wikipedia.org/wiki/MinGW" target="_blank" rel="noopener">MinGW</a>,by wikipedia.</li>
-<li><a href="https://blog.csdn.net/FreeApe/article/details/50555003" target="_blank" rel="noopener">MinGW和MSYS区别和关系以及MinGW&amp;MSYS在Win7中安装并编译x264</a>,by FreeApe.</li>
-<li><a href="https://blog.csdn.net/czyt1988/article/details/39178975" target="_blank" rel="noopener">最强数学库GSL(GNU Scientific Library) Qt环境下部署</a>,by 尘中远.</li>
-<li><a href="https://blog.csdn.net/KirkSong/article/details/80874766" target="_blank" rel="noopener">Qt5.9.6使用MSVC（VS2017）开发环境搭建</a>,by KirkSong.</li>
-<li><a href="https://dlonng.com/posts/qt-osg" target="_blank" rel="noopener">QT - OSG 开发环境配置</a>,by 程序小哥.</li>
-<li><a href="https://github.com/ampl/gsl" target="_blank" rel="noopener">GSL with CMake build support</a>,by ampl.</li>
-<li><a href="https://th0masxu.gq/index.php/archives/224" target="_blank" rel="noopener">在Visual Studio中使用GNU Scientific Library (GSL)</a>,by NULL_BOT.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2388,7 +2420,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">493</span>
+                    <span class="site-state-item-count">495</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -314,6 +314,362 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/07/14/CPlusPlus%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE%E5%B1%82%E8%AE%BE%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/07/14/CPlusPlus%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE%E5%B1%82%E8%AE%BE%E8%AE%A1/" itemprop="url">
+                  CPlusPlus数据访问层设计
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-07-14 21:35:16" itemprop="dateCreated datePublished" datetime="2024-07-14T21:35:16+08:00">2024-07-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-07-18 09:39:27" itemprop="dateModified" datetime="2024-07-18T09:39:27+08:00">2024-07-18</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>三层架构是软件架构中常用的架构，它从上往下分为表示层、业务逻辑层、数据访问层。下面重点介绍 C++ 程序的数据访问层设计。</p>
+<h1 id="什么是-DAO"><a href="#什么是-DAO" class="headerlink" title="什么是 DAO"></a>什么是 DAO</h1><blockquote>
+<p>在计算机软件中，数据访问对象（data access object，DAO）是为某种类型的数据库或其他持久性机制提供一个抽象接口的对象。通过映射应用程序对持久层的调用，DAO 提供一些特定的数据操作，而无需暴露数据库细节。这种隔离支持单一功能原则。</p>
+</blockquote>
+<blockquote>
+<p>数据访问对象模式（Data Access Object Pattern）或 DAO 模式用于把低级的数据访问 API 或操作从高级的业务服务中分离出来。</p>
+</blockquote>
+<p>数据访问对象模式的参与者主要有:</p>
+<ul>
+<li>数据访问对象接口（Data Access Object Interface） - 该接口定义了在一个模型对象上要执行的标准操作。</li>
+<li>数据访问对象实体类（Data Access Object concrete class） - 该类实现了上述的接口。该类负责从数据源获取数据，数据源可以是数据库，也可以是 xml，或者是其他的存储机制。</li>
+<li>模型对象/数值对象（Model Object/Value Object, VO） - 该对象是简单的 POJO，包含了 get/set 方法来存储通过使用 DAO 类检索到的数据。</li>
+</ul>
+<h1 id="主流的-ORM-框架"><a href="#主流的-ORM-框架" class="headerlink" title="主流的 ORM 框架"></a>主流的 ORM 框架</h1><p>C++ 中主流的 ORM 框架有以下几个：</p>
+<ul>
+<li>LiteSQL：<a href="https://sourceforge.net/projects/litesql/" target="_blank" rel="noopener">https://sourceforge.net/projects/litesql/</a></li>
+<li>ODB：<a href="https://www.codesynthesis.com/products/odb/" target="_blank" rel="noopener">https://www.codesynthesis.com/products/odb/</a></li>
+<li>QxOrm：<a href="https://www.qxorm.com/qxorm_en/home.html" target="_blank" rel="noopener">https://www.qxorm.com/qxorm_en/home.html</a></li>
+<li>Wt::Dbo：<a href="https://www.webtoolkit.eu/wt/doc/tutorial/dbo.html" target="_blank" rel="noopener">https://www.webtoolkit.eu/wt/doc/tutorial/dbo.html</a></li>
+</ul>
+<p>其中，LiteSQL 和 ODB 不依赖于特定的框架，而 QxOrm 依赖于 Qt，Wt::Dbo 依赖于 Wt。由于使用QT进行开发，最终决定使用QxOrm。本想使用QDB，但是在QT上开发太麻烦。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://hjk.life/posts/cpp-dao/" target="_blank" rel="noopener">C++实现的DAO(数据访问对象模式)</a>,by Jinkai.</li>
+<li><a href="https://www.ljjyy.com/archives/2023/05/100647" target="_blank" rel="noopener">QxOrm使用教程(ORM for C++ 对象关系映射)</a>,by ljjyy.</li>
+<li><a href="https://www.cnblogs.com/sun-frederick/p/4762972.html" target="_blank" rel="noopener">浅谈C++三层架构</a>,by eric0803.</li>
+<li><a href="https://qt.video/index.php?m=home&c=View&a=index&aid=296" target="_blank" rel="noopener">C++架构之美：设计卓越应用</a>,by qt.video.</li>
+<li><a href="https://www.cnblogs.com/zhangxiong-tianxiadiyi/p/10896413.html" target="_blank" rel="noopener">Dao层设计</a>,by c++天下第一.</li>
+<li><a href="https://bot-man-jl.github.io/articles/?post=2016/How-to-Design-a-Naive-Cpp-ORM" target="_blank" rel="noopener">如何设计一个简单的 C++ ORM</a>,by bot-man-jl.</li>
+<li><a href="https://developer.aliyun.com/article/243125" target="_blank" rel="noopener">C++ ORM ODB入门</a>,by aliyun.</li>
+<li><a href="https://www.jianshu.com/p/4e955d24facb" target="_blank" rel="noopener">TinyORM：一个简单的C++ ORM框架</a>,by davidpp.</li>
+<li><a href="https://www.cnblogs.com/hul201610101100/p/9482311.html" target="_blank" rel="noopener">C++版本 ORM 访问数据库之ODB 的Window环境编译(一)</a>,by Software_hul.</li>
+<li><a href="https://blog.csdn.net/u011057439/article/details/79414886" target="_blank" rel="noopener">Windows下Qt5.5.1中使用ODB</a>,by 严慈善.</li>
+<li><a href="https://www.cnblogs.com/lidabo/p/7545508.html" target="_blank" rel="noopener">【一】ODB - C++ 访问数据库的利器–Hello World On Windows（Version-24）</a>,by C++程序员Carea.</li>
+<li><a href="https://blog.csdn.net/qq_33221533/article/details/103410282" target="_blank" rel="noopener">error LNK2001: 无法解析的外部符号 “__declspec(dllimport) public 解决办法</a>,by 鸡啄米的时光机.</li>
+<li><a href="https://www.qxorm.com/qxorm_en/tutorial.html" target="_blank" rel="noopener">qxBlog project - blog management in C++</a>,by QxOrm.</li>
+<li><a href="https://blog.csdn.net/weixin_40949133/article/details/105809268" target="_blank" rel="noopener">Qt三层架构应用程序设计及开发</a>,by wyh20171105.</li>
+<li><a href="https://www.cnblogs.com/cps666/p/17341147.html" target="_blank" rel="noopener">Qt项目架构经验总结</a>,by cps666.</li>
+<li><a href="https://www.cnblogs.com/ybqjymy/p/14366629.html" target="_blank" rel="noopener">Qt SQL的使用 MySQL</a>,by 一杯清酒邀明月.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/06/29/Java%E6%B3%A8%E8%A7%A3%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/06/29/Java%E6%B3%A8%E8%A7%A3%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  Java注解学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-06-29 18:03:03 / 修改时间：18:08:17" itemprop="dateCreated datePublished" datetime="2024-06-29T18:03:03+08:00">2024-06-29</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>注解是JDK1.5版本开始引入的一个特性，用于对代码进行说明，可以对包、类、接口、字段、方法参数、局部变量等进行注解。它是框架学习和设计者必须掌握的基础。</p>
+</blockquote>
+<h1 id="注解作用"><a href="#注解作用" class="headerlink" title="注解作用"></a>注解作用</h1><p>主要的作用有以下四方面：</p>
+<ul>
+<li><p>生成文档，通过代码里标识的元数据生成javadoc文档。</p>
+</li>
+<li><p>编译检查，通过代码里标识的元数据让编译器在编译期间进行检查验证。</p>
+</li>
+<li><p>编译时动态处理，编译时通过代码里标识的元数据动态处理，例如动态生成代码。</p>
+</li>
+<li><p>运行时动态处理，运行时通过代码里标识的元数据动态处理，例如使用反射注入实例。</p>
+</li>
+</ul>
+<h1 id="注解分类"><a href="#注解分类" class="headerlink" title="注解分类"></a>注解分类</h1><p>注解的常见分类：</p>
+<ul>
+<li><p>Java自带的标准注解，包括@Override、@Deprecated和@SuppressWarnings，分别用于标明重写某个方法、标明某个类或方法过时、标明要忽略的警告，用这些注解标明后编译器就会进行检查。</p>
+</li>
+<li><p>元注解，元注解是用于定义注解的注解，包括@Retention、@Target、@Inherited、@Documented，@Retention用于标明注解被保留的阶段，@Target用于标明注解使用的范围，@Inherited用于标明注解可继承，@Documented用于标明是否生成javadoc文档。</p>
+</li>
+<li><p>自定义注解，可以根据自己的需求定义注解，并可用元注解对自定义注解进行注解。</p>
+</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://pdai.tech/md/java/basic/java-basic-x-annotation.html" target="_blank" rel="noopener">Java 基础 - 注解机制详解</a>,by pdai.</li>
+<li><a href="https://www.cnblogs.com/ziph/p/13056092.html" target="_blank" rel="noopener">Java注解</a>,by 何学长在奔跑.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/06/28/IDEA%E5%88%9B%E5%BB%BASpringBoot%E9%A1%B9%E7%9B%AE%E5%B9%B6%E5%90%AF%E5%8A%A8%E7%9A%84%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1675,334 +2031,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/05/22/Wireshark%E5%9B%9E%E7%8E%AF%E5%9C%B0%E5%9D%80%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/05/22/Wireshark%E5%9B%9E%E7%8E%AF%E5%9C%B0%E5%9D%80%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" itemprop="url">
-                  Wireshark回环地址抓包问题
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-05-22 22:04:46 / 修改时间：22:16:05" itemprop="dateCreated datePublished" datetime="2024-05-22T22:04:46+08:00">2024-05-22</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>通过套接字发送本地的数据包不会通过真实的网络接口发送，而是通过回环地址。因此，如果需要分析发往本机的网络数据包，需要Wireshark在回环地址上抓包。</p>
-<h1 id="关键的Npcap程序"><a href="#关键的Npcap程序" class="headerlink" title="关键的Npcap程序"></a>关键的Npcap程序</h1><p>windows系统没有提供本地回环网络的接口，用wireshark监控网络的话只能看到经过网卡的流量，看不到访问localhost的流量，因为wireshark在windows系统上默认使用的是WinPcap来抓包的，现在可以用Npcap来替换掉WinPcap，Npcap是基于WinPcap 4.1.3开发的，api兼容WinPcap。</p>
-<p>Npcap 是 Nmap 项目的 Microsoft Windows 数据包捕获（和发送）库。它使用自定义 Windows 内核驱动程序以及我们的 Windows 版本的优秀 libpcap 库来实现开放Pcap API。这允许 Windows 软件使用简单、可移植的 API 捕获原始网络流量（包括无线网络、有线以太网、本地主机流量和许多 VPN）。 Npcap 现在提供：</p>
-<ul>
-<li>环回数据包捕获和注入</li>
-<li>支持所有当前 Windows 版本</li>
-<li>Libpcap API</li>
-<li>支持所有 Windows 架构（x86、x86-64 和 ARM）</li>
-<li>额外的安全性</li>
-<li>WinPcap 兼容性</li>
-<li>原始（监控模式）802.11 无线捕获</li>
-</ul>
-<h1 id="Wireshark安装注意事项"><a href="#Wireshark安装注意事项" class="headerlink" title="Wireshark安装注意事项"></a>Wireshark安装注意事项</h1><p>安装Wireshark 3.4.4时，其安装包内置了Npcap的安装程序，但是安装时需要注意<strong>需勾选兼容WinPcap选项，否则Wireshark将找不到Adapter for loopback traffic capture网口</strong>。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/zengliguang/article/details/135383323" target="_blank" rel="noopener">Wireshark本地回环网络抓包</a>,by 三希.</li>
-<li><a href="https://blog.csdn.net/finghting321/article/details/105510264" target="_blank" rel="noopener">Wireshark之本地回环抓包</a>,by Word哥.</li>
-<li><a href="https://npcap.com/" target="_blank" rel="noopener">Npcap: Packet capture library for Windows</a>,by npcap.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/05/18/Linux%E7%BD%91%E5%8F%A3%E6%B7%B7%E6%9D%82%E6%A8%A1%E5%BC%8F%E8%AE%BE%E7%BD%AE%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/05/18/Linux%E7%BD%91%E5%8F%A3%E6%B7%B7%E6%9D%82%E6%A8%A1%E5%BC%8F%E8%AE%BE%E7%BD%AE%E6%96%B9%E6%B3%95/" itemprop="url">
-                  Linux网口混杂模式设置方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-05-18 14:15:35" itemprop="dateCreated datePublished" datetime="2024-05-18T14:15:35+08:00">2024-05-18</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2024-05-19 09:19:19" itemprop="dateModified" datetime="2024-05-19T09:19:19+08:00">2024-05-19</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近在Kylin 4.0.4社区版上安装了VirtualBox，使用VirtualBox安装了Win7操作系统，虚拟机通过设置网口桥接模式与宿主机进行通信。偶尔出现宿主机无法ping通虚拟机，虚拟机无法ping通宿主机的情况，查看虚拟机网口接收情况，发现虚拟机接收数据包为0，重启虚拟机也无法恢复，因此严重怀疑其原因是虚拟机使用的宿主机网口工作模式并不是混杂模式。下面介绍在Linux上查看网口工作模式和设置网口工作模式的方法。</p>
-<h1 id="查看网口工作模式"><a href="#查看网口工作模式" class="headerlink" title="查看网口工作模式"></a>查看网口工作模式</h1><p>如果存在ifconfig命令，则可使用该命令查看网口的工作模式，命令如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost jack]# ifconfig</span><br><span class="line">eth0      Link encap:Ethernet  HWaddr 08:00:27:70:1D:79  </span><br><span class="line">          inet6 addr: fe80::a00:27ff:fe70:1d79&#x2F;64 Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:100124 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:8795 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:1000</span><br><span class="line">          RX bytes:12986638 (12.3 MiB)  TX bytes:6452270 (6.1 MiB)</span><br></pre></td></tr></table></figure>
-
-<p>如果存在ip命令，则可使用该命令查看网口的工作模式，命令如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost jack]# ip addr</span><br></pre></td></tr></table></figure>
-
-<h1 id="设置网口工作模式"><a href="#设置网口工作模式" class="headerlink" title="设置网口工作模式"></a>设置网口工作模式</h1><p>如果存在ifconfig命令，则可使用该命令设置网口的工作模式，命令如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0 promisc  设置混杂模式</span><br><span class="line">ifconfig eth0 -promisc 取消混杂模式</span><br></pre></td></tr></table></figure>
-
-<p>如果存在ip命令，则可使用该命令设置网口的工作模式，命令如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ip link set eth0 up</span><br><span class="line">ip link set eth0 promisc on</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://www.splaybow.com/post/linux-wangka-hunza-moshi.html" target="_blank" rel="noopener">Linux中如何将网卡设置为混杂模式</a>,by splaybow.</li>
-<li><a href="https://blog.csdn.net/dkfajsldfsdfsd/article/details/79409799" target="_blank" rel="noopener">VirtualBox网络之桥接网卡</a>,by 五星上炕.</li>
-<li><a href="https://blog.csdn.net/duyiwuer2009/article/details/26757271" target="_blank" rel="noopener">设置网卡混杂模式</a>,by duyiwuer2009.</li>
-<li><a href="https://www.jianshu.com/p/315d1b60501a" target="_blank" rel="noopener">Linux下的ip命令</a>,by wyaoo.</li>
-<li><a href="https://blog.csdn.net/bandaoyu/article/details/134523501" target="_blank" rel="noopener">【网络】网口工作模式（混杂模式|监听模式|监视模式|管理模式）</a>,by bandaoyu.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2050,7 +2078,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">493</span>
+                    <span class="site-state-item-count">495</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

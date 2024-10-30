@@ -314,6 +314,423 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/01/10/Oracle%E5%8D%B3%E6%97%B6%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2023/01/10/Oracle%E5%8D%B3%E6%97%B6%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Oracle即时客户端连接方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2023-01-10 20:47:10" itemprop="dateCreated datePublished" datetime="2023-01-10T20:47:10+08:00">2023-01-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-02-26 22:55:42" itemprop="dateModified" datetime="2023-02-26T22:55:42+08:00">2023-02-26</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>记录Oracle即时客户端连接Oracle服务器端的方法。</p>
+<h1 id="下载Oracle即时客户端"><a href="#下载Oracle即时客户端" class="headerlink" title="下载Oracle即时客户端"></a>下载Oracle即时客户端</h1><p>对应Oracle11数据库，下载如下Oracle即时客户端：</p>
+<ul>
+<li>instantclient-basic-windows.x64-12.1.0.2.0.zip</li>
+<li>instantclient-sqlplus-windows.x64-12.1.0.2.0.zip</li>
+</ul>
+<p>将instantclient-basic和instantclient-sqlplus两个安装包放在同一个目录下，解压到同一个文件夹内。</p>
+<h1 id="修改系统变量"><a href="#修改系统变量" class="headerlink" title="修改系统变量"></a>修改系统变量</h1><ul>
+<li>将Oracle即时客户端的路径E:\Oracle\instantclient_12_1添加到系统环境变量PATH中。</li>
+<li>新增系统变量NLS_LANG=AMERICAN_AMERICA.WE8MSWIN1252   –&gt;&gt; 服务器端字符集</li>
+<li>TNS_ADMIN=E:\Oracle\instantclient_12_1       –&gt;&gt; 指定tnsnames.ora所在位置</li>
+</ul>
+<h1 id="新建tnsnames-ora"><a href="#新建tnsnames-ora" class="headerlink" title="新建tnsnames.ora"></a>新建tnsnames.ora</h1><p>在E:\Oracle\instantclient_12_1 下新建tnsnames.ora配置文件，内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">orcl_service_name &#x3D;</span><br><span class="line">  (DESCRIPTION &#x3D;</span><br><span class="line">    (ADDRESS &#x3D; (PROTOCOL &#x3D; tcp)(HOST &#x3D; localhost)(PORT &#x3D; 1521)(QUEUESIZE &#x3D; 100))</span><br><span class="line">    (CONNECT_DATA &#x3D;</span><br><span class="line">      (SERVICE_NAME &#x3D; bookstore.company.com)</span><br><span class="line">    )</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">orcl_sid &#x3D;</span><br><span class="line">  (DESCRIPTION &#x3D;</span><br><span class="line">    (ADDRESS_LIST &#x3D;</span><br><span class="line">      (ADDRESS &#x3D; (PROTOCOL &#x3D; TCP)(HOST &#x3D; 192.168.1.11)(PORT &#x3D; 1521))</span><br><span class="line">    )</span><br><span class="line">    (CONNECT_DATA &#x3D;</span><br><span class="line">      (SERVER &#x3D; DEDICATED)</span><br><span class="line">      (SID &#x3D; orcl)</span><br><span class="line">    )</span><br><span class="line">  )</span><br></pre></td></tr></table></figure>
+<h1 id="用SQL-Plus登陆测试"><a href="#用SQL-Plus登陆测试" class="headerlink" title="用SQL*Plus登陆测试"></a>用SQL*Plus登陆测试</h1><h2 id="Connect-via-SERVICE-NAME"><a href="#Connect-via-SERVICE-NAME" class="headerlink" title="Connect via SERVICE_NAME"></a>Connect via SERVICE_NAME</h2><p>sqlplus username/password@host:port/SERVICE_NAME</p>
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlplus admin&#x2F;123456@192.168.1.11:1521&#x2F;ORCL</span><br></pre></td></tr></table></figure>
+
+<h2 id="Connect-via-SID"><a href="#Connect-via-SID" class="headerlink" title="Connect via SID"></a>Connect via SID</h2><p>sqlplus username/password@host:port:SID，注意该方式在oracle instant client 12.1版本中没有验证通过，具体原因未知。</p>
+<p>sqlplus system/password@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=192.168.0.49)(Port=1521))(CONNECT_DATA=(SID=ORCL)))</p>
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlplus admin&#x2F;123456@(DESCRIPTION&#x3D;(ADDRESS&#x3D;(PROTOCOL&#x3D;TCP)(Host&#x3D;192.168.0.49)(Port&#x3D;1521))(CONNECT_DATA&#x3D;(SID&#x3D;ORCL)))</span><br></pre></td></tr></table></figure>
+
+<h2 id="sqlplus命令"><a href="#sqlplus命令" class="headerlink" title="sqlplus命令"></a>sqlplus命令</h2><p>sqlplus登录后，使用如下sql命令查询相关信息：</p>
+<ul>
+<li>查看数据库名</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SQL&gt; select name from v$database;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询当前数据库实例名</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SQL&gt; select instance_name from v$instance;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>数据库中所有表</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SQL&gt; SELECT TABLE_NAME FROM DBA_TABLES;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>显示数据库对象结构</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SQL&gt; desc emp</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用node-oracledb连接数据库"><a href="#使用node-oracledb连接数据库" class="headerlink" title="使用node-oracledb连接数据库"></a>使用node-oracledb连接数据库</h1><h2 id="连接字符串的网络服务名方法"><a href="#连接字符串的网络服务名方法" class="headerlink" title="连接字符串的网络服务名方法"></a>连接字符串的网络服务名方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const oracledb &#x3D; require(&#39;oracledb&#39;);</span><br><span class="line"></span><br><span class="line">const connection &#x3D; await oracledb.getConnection(</span><br><span class="line">  &#123;</span><br><span class="line">    user          : &quot;admin&quot;,</span><br><span class="line">    password      : &quot;123456&quot;,  </span><br><span class="line">    connectStringForServiceName1 : &quot;Ora11&quot;</span><br><span class="line">    connectStringForServiceName2 : &quot;192.168.0.49&#x2F;ORCL&quot;,</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>对应的tnsnames.ora内容为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Ora11 &#x3D;</span><br><span class="line">  (DESCRIPTION &#x3D;</span><br><span class="line">    (ADDRESS &#x3D; (PROTOCOL &#x3D; TCP)(HOST &#x3D; 192.168.0.49)(PORT &#x3D; 1521))</span><br><span class="line">    (CONNECT_DATA &#x3D;</span><br><span class="line">      (SERVER &#x3D; DEDICATED)</span><br><span class="line">      (SERVICE_NAME &#x3D; ORCL)</span><br><span class="line">    )</span><br><span class="line">  )</span><br></pre></td></tr></table></figure>
+
+<h2 id="连接字符串的网络服务标识方法"><a href="#连接字符串的网络服务标识方法" class="headerlink" title="连接字符串的网络服务标识方法"></a>连接字符串的网络服务标识方法</h2><p><strong>该方式可连接使用sid的oracle实例：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const connection &#x3D; await oracledb.getConnection(</span><br><span class="line">  &#123;</span><br><span class="line">    user          : &quot;admin&quot;,</span><br><span class="line">    password      : &quot;123456&quot;,  </span><br><span class="line">    connectStringForSid1 : &quot;Ora11&quot;,</span><br><span class="line">    connectStringForSid2 : &quot;(DESCRIPTION&#x3D;(ADDRESS&#x3D;(PROTOCOL&#x3D;TCP)(Host&#x3D;192.168.0.49)(Port&#x3D;1521))(CONNECT_DATA&#x3D;(SID&#x3D;ORCL)))&quot;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>对应的tnsnames.ora内容为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Ora11 &#x3D;</span><br><span class="line">  (DESCRIPTION &#x3D;</span><br><span class="line">    (ADDRESS &#x3D; (PROTOCOL &#x3D; TCP)(HOST &#x3D; 192.168.0.49)(PORT &#x3D; 1521))</span><br><span class="line">    (CONNECT_DATA &#x3D;</span><br><span class="line">      (SERVER &#x3D; DEDICATED)</span><br><span class="line">      (SID &#x3D; ORCL)</span><br><span class="line">    )</span><br><span class="line">  )</span><br></pre></td></tr></table></figure>
+
+<h1 id="oracledb读取Blob和Clob字段"><a href="#oracledb读取Blob和Clob字段" class="headerlink" title="oracledb读取Blob和Clob字段"></a>oracledb读取Blob和Clob字段</h1><p>请参考<a href="https://blog.csdn.net/qq_30682027/article/details/82773853" target="_blank" rel="noopener">nodejs使用oracledb时，读取Blob和Clob字段遇到的问题</a>。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/whatday/article/details/84950360" target="_blank" rel="noopener">如何安装Oracle客户端（Oracle Instant Client）</a>,by whatday.</li>
+<li><a href="https://developer.aliyun.com/article/248417" target="_blank" rel="noopener">Oracle Instant Client（即时客户端） 安装与配置</a>,by 长烟慢慢.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/25295860" target="_blank" rel="noopener">使用 SQL *Plus 管理 Oracle 数据库</a>,by Node.</li>
+<li><a href="https://blog.csdn.net/qq_30682027/article/details/82773853" target="_blank" rel="noopener">nodejs使用oracledb时，读取Blob和Clob字段遇到的问题</a>,by 欢欢2776479680.</li>
+<li><a href="https://docs.oracle.com/javadb/10.10.1.2/ref/rrefclob.html" target="_blank" rel="noopener">CLOB data type</a>,by oracle.</li>
+<li><a href="https://www.51cto.com/article/550506.html" target="_blank" rel="noopener">Oracle的CLOB大数据字段类型</a>,by Grand-Jon.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/01/05/%E7%AE%80%E6%98%8E%E6%95%99%E5%AD%A6%E8%AE%BE%E8%AE%A111%E8%AE%B2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2023/01/05/%E7%AE%80%E6%98%8E%E6%95%99%E5%AD%A6%E8%AE%BE%E8%AE%A111%E8%AE%B2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  简明教学设计11讲读书笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2023-01-05 21:55:09" itemprop="dateCreated datePublished" datetime="2023-01-05T21:55:09+08:00">2023-01-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-11-14 21:05:08" itemprop="dateModified" datetime="2023-11-14T21:05:08+08:00">2023-11-14</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="教学法分类"><a href="#教学法分类" class="headerlink" title="教学法分类"></a>教学法分类</h1><ul>
+<li>讲授法</li>
+<li>直导式</li>
+<li>指导发现式</li>
+<li>探究式</li>
+</ul>
+<h2 id="三大学习理论"><a href="#三大学习理论" class="headerlink" title="三大学习理论"></a>三大学习理论</h2><ul>
+<li>吸收理论</li>
+<li>行为理论</li>
+<li>认知理论</li>
+</ul>
+<h1 id="教学目标"><a href="#教学目标" class="headerlink" title="教学目标"></a>教学目标</h1><p>布鲁姆教学目标分类：</p>
+<ul>
+<li>知道</li>
+<li>理解</li>
+<li>应用</li>
+<li>分析</li>
+<li>综合</li>
+<li>评价</li>
+</ul>
+<p>学习内容分类：</p>
+<ul>
+<li>知识</li>
+</ul>
+<p>分为事实性知识和概念性知识。事实性知识分为事实和程序，概念性知识分为概念和原理。</p>
+<ul>
+<li>技能</li>
+</ul>
+<p>分为动作技能、认知技能、交互技能。</p>
+<ul>
+<li>情感</li>
+</ul>
+<p>情感、态度和价值观。</p>
+<h1 id="教学过程设计"><a href="#教学过程设计" class="headerlink" title="教学过程设计"></a>教学过程设计</h1><h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><ul>
+<li>安心学习</li>
+<li>激发学习动机</li>
+</ul>
+<h2 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h2><ul>
+<li>抓住注意力</li>
+<li>激活旧知</li>
+<li>组织教学内容</li>
+<li>轻教学</li>
+</ul>
+<h2 id="加工"><a href="#加工" class="headerlink" title="加工"></a>加工</h2><ul>
+<li>以问题开始</li>
+<li>以对话维持</li>
+<li>以反思检视</li>
+</ul>
+<h2 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h2><h2 id="反思"><a href="#反思" class="headerlink" title="反思"></a>反思</h2><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://books.google.co.kr/books/about/%E7%AE%80%E6%98%8E%E6%95%99%E5%AD%A6%E8%AE%BE%E8%AE%A111%E8%AE%B2.html" target="_blank" rel="noopener">简明教学设计11讲</a>,by 郑杰.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/12/20/%E6%96%B0%E7%89%88Chrome%E5%AF%B9JavaScript%E7%9A%84Array-sort-%E4%B8%8D%E6%94%AF%E6%8C%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1550,332 +1967,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/10/26/Vcpkg%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2022/10/26/Vcpkg%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/" itemprop="url">
-                  Vcpkg使用帮助
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2022-10-26 16:42:51" itemprop="dateCreated datePublished" datetime="2022-10-26T16:42:51+08:00">2022-10-26</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2024-04-07 22:06:37" itemprop="dateModified" datetime="2024-04-07T22:06:37+08:00">2024-04-07</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Vcpkg 可帮助您在 Windows、 Linux 和 MacOS 上管理 C 和 C++ 库。</p>
-<h1 id="安装vcpkg"><a href="#安装vcpkg" class="headerlink" title="安装vcpkg"></a>安装vcpkg</h1><p>首先，请下载vcpkg并执行 bootstrap.bat 脚本。</p>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; git clone https://github.com/microsoft/vcpkg</span><br><span class="line">&gt; .\vcpkg\bootstrap-vcpkg.bat</span><br></pre></td></tr></table></figure>
-
-<h1 id="使用vcpkg"><a href="#使用vcpkg" class="headerlink" title="使用vcpkg"></a>使用vcpkg</h1><p>使用以下命令安装您的项目所需要的库：</p>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; .\vcpkg\vcpkg install [packages to install]</span><br></pre></td></tr></table></figure>
-
-<p>您也可以使用 <code>search</code> 子命令来查找vcpkg中集成的库:</p>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; .\vcpkg\vcpkg search [search term]</span><br></pre></td></tr></table></figure>
-
-<p>若您希望在 Visual Studio 中使用vcpkg，请运行以下命令 (首次启动需要管理员权限)</p>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; .\vcpkg\vcpkg integrate install</span><br></pre></td></tr></table></figure>
-
-<p>若您希望在 Visual Studio 中卸载vcpkg，请运行以下命令 (首次启动需要管理员权限)</p>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; .\vcpkg\vcpkg integrate remove</span><br></pre></td></tr></table></figure>
-
-<p>卸载vcpkg只需删除vcpkg的文件夹即可。</p>
-<p>导出开源库（通常在项目中使用第三方开源库时会把其拷贝到项目文件夹中使用）:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vcpkg export spdlog:x64-windows --zip</span><br></pre></td></tr></table></figure>
-
-<p>然后将导出的开源库，放入另一台机器的vcpkg安装目录，即可使用。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://huangwang.github.io/2021/07/28/Windows%E4%B8%8BOsgEarth%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/">Windows下OsgEarth编译安装过程</a>,by huangwang.</li>
-<li><a href="https://stackoverflow.com/questions/57296864/how-to-remove-vcpkg-and-all-libraries-installed-with-vcpkg" target="_blank" rel="noopener">How to remove vcpkg and all libraries installed with vcpkg</a>,by stackoverflow.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/153199835" target="_blank" rel="noopener">[工具]包管理工具Vcpkg 的使用</a>,by 南象.</li>
-<li><a href="https://blog.51cto.com/fish/5693025" target="_blank" rel="noopener">vs2017 + vcpkg包管理工具</a>,by 爱看书的小沐.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/10/19/%E6%B8%B8%E6%88%8FAI%E5%BC%80%E5%8F%91%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2022/10/19/%E6%B8%B8%E6%88%8FAI%E5%BC%80%E5%8F%91%E6%96%B9%E6%B3%95/" itemprop="url">
-                  游戏AI开发方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2022-10-19 16:49:18 / 修改时间：17:59:54" itemprop="dateCreated datePublished" datetime="2022-10-19T16:49:18+08:00">2022-10-19</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>现有游戏AI基本通过下面两个方式进行实现：行为树（Behavior Tree）与有限状态机（Finite State Machines）。</p>
-<h1 id="有限状态机"><a href="#有限状态机" class="headerlink" title="有限状态机"></a>有限状态机</h1><p>“状态机”是一种表示状态并控制状态切换的设计模式，常常用于设计某种东西的多个状态。而有限状态机是指游戏内的条件逻辑封装到各个状态类里。例如一个人有站立状态，跑动状态，走路状态，蹲下状态，开火状态等，当一个事件发生，将会触发一个动作，或者执行一次状态的迁移。</p>
-<h1 id="行为树"><a href="#行为树" class="headerlink" title="行为树"></a>行为树</h1><p>行为树是一棵用于控制 AI 决策行为的、包含了层级节点的树结构。树的最末端——叶子，就是这些 AI 实际上去做事情的命令；连接树叶的树枝，就是各种类型的节点，这些节点决定了 AI 如何从树的顶端根据不同的情况，来沿着不同的路径来到最终的叶子这一过程。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/82567889" target="_blank" rel="noopener">游戏AI入门及AI优化</a>,by 泪的天堂.</li>
-<li><a href="https://www.gameres.com/846263.html" target="_blank" rel="noopener">AI 行为树的工作原理</a>,by INDIENOVA.</li>
-<li><a href="https://gameinstitute.qq.com/article/10030" target="_blank" rel="noopener">游戏AI：AI的游戏还是游戏的未来</a>,by Jim.</li>
-<li><a href="https://www.cnblogs.com/KillerAery/p/10003678.html" target="_blank" rel="noopener">游戏AI之初步介绍</a>,by KillerAery.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1923,7 +2014,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">493</span>
+                    <span class="site-state-item-count">495</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

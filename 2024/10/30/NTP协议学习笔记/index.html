@@ -102,15 +102,15 @@
 
 
 
-  <meta name="description" content="最近遇到一个问题，需要程序进行严格的时间同步，因此学习一下网络时间协议。 参考链接 六千字详细图解网络时间协议（NTP），带你领略NTP的魅力！,by 网络技术联盟站.">
+  <meta name="description" content="最近遇到一个问题，需要程序进行严格的时间同步，因此学习一下网络时间协议。 NTP同步原理 网络时间协议NTP（Network Time Protocol）是TCP&#x2F;IP协议族里面的一个应用层协议，用来使客户端和服务器之间进行时钟同步，提供高精准度的时间校正。NTP服务器从权威时钟源（例如原子钟、GPS）接收精确的协调世界时UTC，客户端再从服务器请求和接收时间。NTP基于UDP报文进行传输，使用的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="NTP协议学习笔记">
 <meta property="og:url" content="https://huangwang.github.io/2024/10/30/NTP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
-<meta property="og:description" content="最近遇到一个问题，需要程序进行严格的时间同步，因此学习一下网络时间协议。 参考链接 六千字详细图解网络时间协议（NTP），带你领略NTP的魅力！,by 网络技术联盟站.">
+<meta property="og:description" content="最近遇到一个问题，需要程序进行严格的时间同步，因此学习一下网络时间协议。 NTP同步原理 网络时间协议NTP（Network Time Protocol）是TCP&#x2F;IP协议族里面的一个应用层协议，用来使客户端和服务器之间进行时钟同步，提供高精准度的时间校正。NTP服务器从权威时钟源（例如原子钟、GPS）接收精确的协调世界时UTC，客户端再从服务器请求和接收时间。NTP基于UDP报文进行传输，使用的">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-10-30T14:29:11.000Z">
-<meta property="article:modified_time" content="2024-10-30T14:56:14.586Z">
+<meta property="article:modified_time" content="2024-10-31T14:28:58.820Z">
 <meta property="article:author" content="Jack Huang">
 <meta property="article:tag" content="笔记本">
 <meta property="article:tag" content="计算机网络">
@@ -361,12 +361,24 @@
                 
               
 
-              <time title="创建时间：2024-10-30 22:29:11 / 修改时间：22:56:14" itemprop="dateCreated datePublished" datetime="2024-10-30T22:29:11+08:00">2024-10-30</time>
+              <time title="创建时间：2024-10-30 22:29:11" itemprop="dateCreated datePublished" datetime="2024-10-30T22:29:11+08:00">2024-10-30</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-10-31 22:28:58" itemprop="dateModified" datetime="2024-10-31T22:28:58+08:00">2024-10-31</time>
               
             
           </span>
@@ -418,8 +430,33 @@
 
       
         <p>最近遇到一个问题，需要程序进行严格的时间同步，因此学习一下网络时间协议。</p>
+<h1 id="NTP同步原理"><a href="#NTP同步原理" class="headerlink" title="NTP同步原理"></a>NTP同步原理</h1><blockquote>
+<p>网络时间协议NTP（Network Time Protocol）是TCP/IP协议族里面的一个应用层协议，用来使客户端和服务器之间进行时钟同步，提供高精准度的时间校正。NTP服务器从权威时钟源（例如原子钟、GPS）接收精确的协调世界时UTC，客户端再从服务器请求和接收时间。<br>NTP基于UDP报文进行传输，使用的UDP端口号为123。</p>
+</blockquote>
+<p>NTP最典型的授时方式是Client/Server方式:</p>
+<ol>
+<li>客户端首先向服务端发送一个NTP请求报文，其中包含了该报文离开客户端的时间戳t1;</li>
+<li>NTP请求报文到达NTP服务器，此时NTP服务器的时刻为t2。当服务端接收到该报文时，NTP服务器处理之后，于t3时刻发出NTP应答报文。该应答报文中携带报文离开NTP客户端时的时间戳t1、到达NTP服务器时的时间戳t2、离开NTP服务器时的时间戳t3；</li>
+<li>客户端在接收到响应报文时，记录报文返回的时间戳t4。</li>
+</ol>
+<p>客户端用上述4个时间戳参数就能够计算出2个关键参数：</p>
+<ul>
+<li>NTP报文从客户端到服务器的往返延迟delay。</li>
+</ul>
+<p>$delay=(t_4-t_1)-(t_3-t_2)$</p>
+<ul>
+<li>客户端与服务端之间的时间差offset。</li>
+</ul>
+<p>联立方程组：</p>
+<p>$t_2=t_1+offset+delay/2$</p>
+<p>$t_4=t_3+offset+delay/2$</p>
+<p>可得：</p>
+<p>$offset=((t_2-t_1)+(t_3-t_4))/2$</p>
+<p>NTP客户端根据计算得到的offset来调整自己的时钟，实现与NTP服务器的时钟同步。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://cloud.tencent.com/developer/article/2361936" target="_blank" rel="noopener">六千字详细图解网络时间协议（NTP），带你领略NTP的魅力！</a>,by 网络技术联盟站.</li>
+<li><a href="https://info.support.huawei.com/info-finder/encyclopedia/zh/NTP.html" target="_blank" rel="noopener">什么是NTP？</a>,by 高洋洋.</li>
+<li><a href="https://www.syn029.com/h-nd-343.html" target="_blank" rel="noopener">北斗授时原理及应用</a>,by 西安同步.</li>
 </ol>
 
       
@@ -730,7 +767,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NTP同步原理"><span class="nav-number">1.</span> <span class="nav-text">NTP同步原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">2.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

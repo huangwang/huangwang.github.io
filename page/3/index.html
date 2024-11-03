@@ -314,6 +314,169 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/05/24/Python%E6%8F%90%E5%8F%96csv%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84%E7%89%B9%E5%AE%9A%E5%88%97%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/05/24/Python%E6%8F%90%E5%8F%96csv%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84%E7%89%B9%E5%AE%9A%E5%88%97%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Python提取csv文件中的特定列的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-05-24 20:01:07 / 修改时间：21:46:50" itemprop="dateCreated datePublished" datetime="2024-05-24T20:01:07+08:00">2024-05-24</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近需要抽取csv文件中的特定列，使用excel老是将hh.mm.ss.SSS格式数据搞坏，于是想通过python直接提取。方法记录如下：</p>
+<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><h2 id="Pandas介绍"><a href="#Pandas介绍" class="headerlink" title="Pandas介绍"></a>Pandas介绍</h2><p>Pandas是用于数据操纵和分析的Python软件库。它建造在NumPy基础上，并为操纵数值表格和时间序列，提供了数据结构和运算操作。</p>
+<h2 id="依赖环境"><a href="#依赖环境" class="headerlink" title="依赖环境"></a>依赖环境</h2><ul>
+<li>python 3.8.5，可在windows7上运行，python 3.9以后版本不支持windows7</li>
+<li>numpy==1.24.4</li>
+<li>pandas==2.0.3</li>
+<li>python-dateutil==2.9.0.post0</li>
+<li>pytz==2024.1</li>
+<li>six==1.16.0</li>
+<li>tzdata==2024.1</li>
+</ul>
+<h2 id="虚拟环境"><a href="#虚拟环境" class="headerlink" title="虚拟环境"></a>虚拟环境</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mkdir csv_extract</span><br><span class="line">cd csv_extract</span><br><span class="line">python -m venv env</span><br><span class="line">env\Scripts\activate.bat</span><br><span class="line">pip install pandas</span><br><span class="line">pip freeze &gt; requirement.txt</span><br><span class="line">pip download -d packages -r requirement.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="离线迁移"><a href="#离线迁移" class="headerlink" title="离线迁移"></a>离线迁移</h2><p>创建envConfig.bat批处理文件，一键执行离线环境配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python -m venv env</span><br><span class="line">call env\Scripts\activate.bat</span><br><span class="line">pip install --no-index --find-links&#x3D;packages -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<h1 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">import os</span><br><span class="line"></span><br><span class="line">def walk_files(src_filepath &#x3D; &quot;.&quot;):</span><br><span class="line">    filepath_list &#x3D; []</span><br><span class="line">   </span><br><span class="line">    for root, dirs, files in os.walk(src_filepath):</span><br><span class="line">        for file in files:</span><br><span class="line">            if root &#x3D;&#x3D; &#39;.&#39;:</span><br><span class="line">                root_path &#x3D; os.getcwd() + &quot;&#x2F;&quot;</span><br><span class="line">            else:</span><br><span class="line">                root_path &#x3D; root</span><br><span class="line">            </span><br><span class="line">            if (root_path !&#x3D; src_filepath) and (root !&#x3D; &#39;.&#39;):</span><br><span class="line">                filepath &#x3D; root_path + &quot;&#x2F;&quot; + file</span><br><span class="line">            else:</span><br><span class="line">                filepath &#x3D; root_path + file</span><br><span class="line">            </span><br><span class="line">            if filepath not in filepath_list:</span><br><span class="line">                filepath_list.append(filepath)</span><br><span class="line">                       </span><br><span class="line">    return filepath_list</span><br><span class="line"></span><br><span class="line">def extract_csv(filepath,usecols&#x3D;[0,3,11,42,43],encoding&#x3D;&#39;gbk&#39;):</span><br><span class="line">    df &#x3D; pd.read_csv(filepath,usecols&#x3D;usecols,encoding&#x3D;encoding)</span><br><span class="line">    df.to_csv(filepath+&#39;.csv&#39;,index&#x3D;0)</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D; &#39;__main__&#39;:</span><br><span class="line">    print(os.getcwd())</span><br><span class="line"></span><br><span class="line">    search_dir&#x3D;&#39;.&#x2F;testData&#x2F;&#39;</span><br><span class="line">    file_info_list &#x3D; walk_files(search_dir) </span><br><span class="line">    </span><br><span class="line">    for file in file_info_list:</span><br><span class="line">        print(file)</span><br><span class="line">        extract_csv(file)</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://pandas.pydata.org/" target="_blank" rel="noopener">pandas</a>,by pandas.</li>
+<li><a href="https://medium.com/@sabahat-khan/how-to-recursively-traverse-files-and-directories-in-python-6020155713fa" target="_blank" rel="noopener">How to Recursively Traverse Files and Directories in Python</a>,by Sabahat Khan.</li>
+<li><a href="https://blog.csdn.net/wuzhongqiang/article/details/118332777" target="_blank" rel="noopener">Pandas读取CSV的时候报错文件不存在的经验小记</a>,by 翻滚的小@强.</li>
+<li><a href="https://www.runoob.com/python/os-walk.html" target="_blank" rel="noopener">Python os.walk() 方法</a>,by runoob.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/05/22/Wireshark%E5%9B%9E%E7%8E%AF%E5%9C%B0%E5%9D%80%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1824,155 +1987,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/03/25/Windows%E5%92%8CLinux%E6%9F%A5%E7%9C%8B%E7%BB%84%E6%92%AD%E9%80%9A%E4%BF%A1%E7%9A%84%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/03/25/Windows%E5%92%8CLinux%E6%9F%A5%E7%9C%8B%E7%BB%84%E6%92%AD%E9%80%9A%E4%BF%A1%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
-                  Windows和Linux查看组播通信的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-03-25 19:19:04 / 修改时间：19:46:23" itemprop="dateCreated datePublished" datetime="2024-03-25T19:19:04+08:00">2024-03-25</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近研究一个网络程序，很复杂，用到了组播通信，就想知道其内部组播细节，记录一下相关命令。</p>
-<h1 id="Windows查看组播通信命令"><a href="#Windows查看组播通信命令" class="headerlink" title="Windows查看组播通信命令"></a>Windows查看组播通信命令</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ipconfig &#x2F;all</span><br><span class="line">netsh interface ipv4 show joins</span><br></pre></td></tr></table></figure>
-
-<h1 id="Linux查看组播通信命令"><a href="#Linux查看组播通信命令" class="headerlink" title="Linux查看组播通信命令"></a>Linux查看组播通信命令</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">netstat -g</span><br><span class="line">ip maddr show</span><br><span class="line">ip maddr show dev eth0</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/ludepsea/article/details/103208103" target="_blank" rel="noopener">在windows下查看加入的组播组</a>,by ludepsea.</li>
-<li><a href="https://juejin.cn/s/linux%E6%9F%A5%E7%9C%8B%E7%BB%84%E6%92%AD%E4%BF%A1%E6%81%AF" target="_blank" rel="noopener">linux查看组播信息</a>,by juejin.</li>
-<li><a href="https://blog.csdn.net/zenkin/article/details/122825788" target="_blank" rel="noopener">2022-02-03–银河麒麟-银河麒麟v4与.netcore安装</a>,by Zen.Wu.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2020,7 +2034,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">495</span>
+                    <span class="site-state-item-count">496</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -314,6 +314,448 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/09/03/js%E6%8B%96%E6%94%BE%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/09/03/js%E6%8B%96%E6%94%BE%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/" itemprop="url">
+                  js拖放功能的实现
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-09-03 09:45:06" itemprop="dateCreated datePublished" datetime="2020-09-03T09:45:06+08:00">2020-09-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-10-01 21:42:08" itemprop="dateModified" datetime="2020-10-01T21:42:08+08:00">2020-10-01</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>拖放是网页中一种很常见的交互手段。下面简单介绍使用js实现拖放功能的方法。</p>
+<h1 id="拖放流程"><a href="#拖放流程" class="headerlink" title="拖放流程"></a>拖放流程</h1><p>拖放元素的流程如下：</p>
+<p>选中元素—&gt;拖动元素—&gt;释放元素</p>
+<p>下面介绍上述拖放元素流程的具体实现方法。</p>
+<h2 id="选中元素"><a href="#选中元素" class="headerlink" title="选中元素"></a>选中元素</h2><p>在HTML5标准中，为了使元素可拖动，把draggable属性设置为true。文本、图片和链接是默认可以拖放的，它们的draggable属性自动被设置成了true。图片和链接按住鼠标左键选中，就可以拖放。文本只有在被选中的情况下才能拖放。如果显示设置文本的draggable属性为true，按住鼠标左键也可以直接拖放。</p>
+<p>draggable属性：设置元素是否可拖动。语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;element draggable&#x3D;&quot;true | false | auto&quot; &gt;</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li>true: 可以拖动  </li>
+<li>false: 禁止拖动  </li>
+<li>auto: 跟随浏览器定义是否可以拖动</li>
+</ul>
+<h2 id="拖动元素"><a href="#拖动元素" class="headerlink" title="拖动元素"></a>拖动元素</h2><p>每一个可拖动的元素，在拖动过程中，都会经历三个过程，拖动开始–&gt;拖动过程中–&gt; 拖动结束。</p>
+<table>
+<thead>
+<tr>
+<th>针对对象</th>
+<th>事件名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>被拖动的元素</td>
+<td>dragstart</td>
+<td>在元素开始被拖动时候触发</td>
+</tr>
+<tr>
+<td></td>
+<td>drag</td>
+<td>在元素被拖动时反复触发</td>
+</tr>
+<tr>
+<td></td>
+<td>dragend</td>
+<td>在拖动操作完成时触发</td>
+</tr>
+<tr>
+<td>目的地对象</td>
+<td>dragenter</td>
+<td>当被拖动元素进入目的地元素所占据的屏幕空间时触发</td>
+</tr>
+<tr>
+<td></td>
+<td>dragover</td>
+<td>当被拖动元素在目的地元素内时触发</td>
+</tr>
+<tr>
+<td></td>
+<td>dragleave</td>
+<td>当被拖动元素没有放下就离开目的地元素时触发</td>
+</tr>
+</tbody></table>
+<h2 id="释放"><a href="#释放" class="headerlink" title="释放"></a>释放</h2><p>到达目的地之后，释放元素事件</p>
+<table>
+<thead>
+<tr>
+<th>针对对象</th>
+<th>事件名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>目的地对象</td>
+<td>drop</td>
+<td>当被拖动元素在目的地元素里放下时触发，一般需要取消浏览器的默认行为。</td>
+</tr>
+</tbody></table>
+<h1 id="DataTransfer对象"><a href="#DataTransfer对象" class="headerlink" title="DataTransfer对象"></a>DataTransfer对象</h1><p>与拖放操作所触发的事件同时派发的对象是DragEvent，它派生于MouseEvent，具有Event与MouseEvent对象的所有功能，并增加了dataTransfer属性。该属性用于保存拖放的数据和交互信息，返回DataTransfer对象。</p>
+<p>DataTransfer对象常用的属性和方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>types</td>
+<td>只读属性。它返回一个我们在dragstart事件中设置的拖动数据格式的数组。 格式顺序与拖动操作中包含的数据顺序相同。IE10+、Edge、safari3.1、Firefox3.5+ 和Chrome4以上支持该属性</td>
+</tr>
+<tr>
+<td>files</td>
+<td>返回拖动操作中的文件列表。包含一个在数据传输上所有可用的本地文件列表。如果拖动操作不涉及拖动文件，此属性是一个空列表。</td>
+</tr>
+<tr>
+<td>dropEffect</td>
+<td>获取当前选定的拖放操作的类型或将操作设置为新类型。它应该始终设置成effectAllowed的可能值之一【none、move、copy、link】。dragover事件处理程序中针对放置目标来设置dropEffect。</td>
+</tr>
+<tr>
+<td>effectAllowed</td>
+<td>指定拖放操作所允许的效果。必须是其中之一【 none, copy, copyLink, copyMove, link, linkMove, move, all, uninitialized】默认为uninitialized 表示允许所有的效果。ondragstart处理程序中设置effectAllowed属性</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>void setData(format, data)</td>
+<td>将拖动操作的拖动数据设置为指定的数据和类型。format可以是MIME类型</td>
+</tr>
+<tr>
+<td>String getData(format)</td>
+<td>返回指定格式的数据，format与setData()中一致</td>
+</tr>
+<tr>
+<td>void clearData([format])</td>
+<td>删除给定类型的拖动操作的数据。如果给定类型的数据不存在，此方法不执行任何操作。如果不给定参数，则删除所有类型的数据。</td>
+</tr>
+<tr>
+<td>void setDragImage(img, xOffset, yOffset)</td>
+<td>指定一副图像，当拖动发生时，显示在光标下方。大多数情况下不用设置，因为被拖动的节点被创建成默认图片。x,y参数分别指示图像的水平、垂直偏移量</td>
+</tr>
+</tbody></table>
+<h1 id="浏览器文件拖拽示例"><a href="#浏览器文件拖拽示例" class="headerlink" title="浏览器文件拖拽示例"></a>浏览器文件拖拽示例</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">document.addEventListener(&quot;dragenter&quot;,function(e) &#123;</span><br><span class="line">    e.preventDefault();</span><br><span class="line">    e.stopPropagation();</span><br><span class="line">&#125;,false);</span><br><span class="line"></span><br><span class="line">document.addEventListener(&quot;dragover&quot;,function(e) &#123;</span><br><span class="line">    e.preventDefault();</span><br><span class="line">    e.stopPropagation();</span><br><span class="line">&#125;,false);</span><br><span class="line"></span><br><span class="line">document.addEventListener(&quot;dragleave&quot;,function(e) &#123;</span><br><span class="line">    e.preventDefault();</span><br><span class="line">    e.stopPropagation();</span><br><span class="line">&#125;,false);</span><br><span class="line"></span><br><span class="line">document.addEventListener(&quot;drop&quot;,function(e) &#123;</span><br><span class="line">    e.preventDefault();</span><br><span class="line">    e.stopPropagation();</span><br><span class="line"></span><br><span class="line">    var  df &#x3D; e.dataTransfer;</span><br><span class="line">    var dropFiles&#x3D;[];</span><br><span class="line"></span><br><span class="line">    if (df.items !&#x3D;&#x3D;undefined)&#123;</span><br><span class="line">        for(var i&#x3D;0;i&lt;df.items.length;i++)&#123;</span><br><span class="line">            var item&#x3D; df.items[i];</span><br><span class="line">            if(item.kind&#x3D;&#x3D;&#x3D;&quot;file&quot; &amp;&amp; item.getAsEntry().isFile)&#123;</span><br><span class="line">                var file &#x3D;item.getAsFile();</span><br><span class="line">                dropFiles.push(file);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;,false);</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://segmentfault.com/a/1190000013298317" target="_blank" rel="noopener">js控制文件拖拽，获取拖拽内容。</a>,by segmentfault.</li>
+<li><a href="https://juejin.im/post/6844903513491767303" target="_blank" rel="noopener">HTML5原生拖拽/拖放 Drag &amp; Drop 详解</a>,by weiqinl.</li>
+<li><a href="https://segmentfault.com/a/1190000019554950" target="_blank" rel="noopener">原生JS快速实现拖放（drag and drop）效果</a>,by MudOnTire.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/08/14/Simulink%E6%A8%A1%E5%9D%97%E5%8F%82%E6%95%B0%E5%9C%A8%E7%BA%BF%E4%BF%AE%E6%94%B9%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/14/Simulink%E6%A8%A1%E5%9D%97%E5%8F%82%E6%95%B0%E5%9C%A8%E7%BA%BF%E4%BF%AE%E6%94%B9%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Simulink模块参数在线修改方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-08-14 18:36:06" itemprop="dateCreated datePublished" datetime="2020-08-14T18:36:06+08:00">2020-08-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-05-19 21:39:19" itemprop="dateModified" datetime="2021-05-19T21:39:19+08:00">2021-05-19</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Simulink在建立系统模型方面非常的便捷，利用其提供的各种已封装好的组件，可以很快地构建各种模型，如飞机、导弹、诱饵弹等。但是在将导弹、诱饵弹装配到飞机上时就比较复杂了。例如，在飞机发射导弹时，如何将飞机的速度、位姿状态传递给导弹模型就是一个难题。为解决该难题，Simulink必须能够在线修改模型的参数。幸运的是，尽管比较艰难，通过一些特殊的技巧，Simulink还是能够实现在线修改模型参数的。具体的解决方案如下：</p>
+<ul>
+<li><p>模型实例化问题。以飞机携带多枚导弹为例，因为飞机携带导弹数量有限，可以直接生成多个导弹模块。如果数量实在太多，可以考虑for each subsystem。</p>
+</li>
+<li><p>在线修改模型参数问题。利用Simulink的s函数，在Update函数中使用set_param函数修改模型参数。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function Update(block)</span><br><span class="line">    decoyID&#x3D;block.DialogPrm(1).Data; </span><br><span class="line">    decoyName&#x3D;sprintf(&#39;%s%d&#39;,&#39;JetFlighterWithDecoy&#x2F;Decoys&#x2F;Decoy&#39;,decoyID);</span><br><span class="line"></span><br><span class="line">    % 脉冲信号上升沿触发，设置模型参数</span><br><span class="line">    if(block.InputPort(4).Data&#x3D;&#x3D;1 &amp;&amp; block.Dwork(1).Data&#x3D;&#x3D;0)</span><br><span class="line">        fligherSpeed&#x3D;block.InputPort(2).Data;</span><br><span class="line">        decoySpeed&#x3D;[fligherSpeed(1) fligherSpeed(2) fligherSpeed(3)-30];</span><br><span class="line">        dcm&#x3D;block.InputPort(3).Data;</span><br><span class="line">        docoySpeedInFlatEarth&#x3D;inv(dcm)*decoySpeed&#39;;</span><br><span class="line">        v0&#x3D;join([&#39;[&#39; string(docoySpeedInFlatEarth&#39;) &#39;]&#39;]);</span><br><span class="line">        pos0&#x3D;join([&#39;[&#39; string(block.InputPort(1).Data&#39;) &#39;]&#39;]);</span><br><span class="line">        set_param(decoyName,&#39;ParameterArgumentValues&#39;,struct(&#39;decoySpeed&#39;,char(v0),&#39;decoyPos&#39;,char(pos0)));</span><br><span class="line">        block.Dwork(1).Data &#x3D; 1;%使能信号</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://gb.oversea.cnki.net/KCMS/detail/detail.aspx?filename=JSJZ200412066&dbcode=CJFD&dbname=CJFD2004" target="_blank" rel="noopener">Simulink模块参数在线修改方法的研究</a>,by 郑志波.</li>
+<li><a href="https://www.mathworks.com/matlabcentral/answers/420930-why-do-i-get-an-error-when-specifying-a-simscape-component-parameter-with-same-name-as-built-in-simu" target="_blank" rel="noopener">Why do I get an error when specifying a Simscape component parameter with same name as built-in Simulink parameter?</a>,by mathworks.</li>
+<li><a href="https://www.mathworks.com/help/simulink/ug/parameterize-referenced-models.html" target="_blank" rel="noopener">Parameterize Instances of a Reusable Referenced Model</a>,by mathworks.</li>
+<li><a href="https://ww2.mathworks.cn/help/simulink/slref/find_system.html" target="_blank" rel="noopener">find_system</a>,by mathworks.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/07/31/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E4%B9%8B%E4%BA%8C%E7%BB%B4%E5%9B%BE%E5%BD%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1672,434 +2114,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/05/24/Matlab%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/05/24/Matlab%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/" itemprop="url">
-                  Matlab学习笔记之基本知识
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-05-24 23:07:17" itemprop="dateCreated datePublished" datetime="2020-05-24T23:07:17+08:00">2020-05-24</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2023-12-13 20:50:45" itemprop="dateModified" datetime="2023-12-13T20:50:45+08:00">2023-12-13</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>本文梳理记录Matlab的基本知识，为Simulink仿真打下基础。</p>
-<h1 id="矩阵和数组"><a href="#矩阵和数组" class="headerlink" title="矩阵和数组"></a>矩阵和数组</h1><p>矩阵和数组是 MATLAB® 中信息和数据的基本表示形式。</p>
-<h2 id="数组元素选取"><a href="#数组元素选取" class="headerlink" title="数组元素选取"></a>数组元素选取</h2><ul>
-<li>应用单个条件</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">rng default</span><br><span class="line">A &#x3D; randi(15,5)</span><br><span class="line"></span><br><span class="line">A &#x3D; 5×5</span><br><span class="line"></span><br><span class="line">    13     2     3     3    10</span><br><span class="line">    14     5    15     7     1</span><br><span class="line">     2     9    15    14    13</span><br><span class="line">    14    15     8    12    15</span><br><span class="line">    10    15    13    15    11</span><br><span class="line"></span><br><span class="line">B &#x3D; A &lt; 9</span><br><span class="line"></span><br><span class="line">B &#x3D; 5x5 logical array</span><br><span class="line"></span><br><span class="line">   0   1   1   1   0</span><br><span class="line">   0   1   0   1   1</span><br><span class="line">   1   0   0   0   0</span><br><span class="line">   0   0   1   0   0</span><br><span class="line">   0   0   0   0   0</span><br><span class="line"></span><br><span class="line">A(B)</span><br><span class="line"></span><br><span class="line">ans &#x3D; 8×1</span><br><span class="line"></span><br><span class="line">     2</span><br><span class="line">     2</span><br><span class="line">     5</span><br><span class="line">     3</span><br><span class="line">     8</span><br><span class="line">     3</span><br><span class="line">     7</span><br><span class="line">     1</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>应用多个条件</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">A(A&lt;9 &amp; A&gt;2)</span><br><span class="line"></span><br><span class="line">ans &#x3D; 5×1</span><br><span class="line"></span><br><span class="line">     5</span><br><span class="line">     3</span><br><span class="line">     8</span><br><span class="line">     3</span><br><span class="line">     7</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>替换符合条件的值</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">A(A&gt;10) &#x3D; 10</span><br><span class="line"></span><br><span class="line">A &#x3D; 5×5</span><br><span class="line"></span><br><span class="line">    10     2     3     3    10</span><br><span class="line">    10     5    10     7     1</span><br><span class="line">     2     9    10    10    10</span><br><span class="line">    10    10     8    10    10</span><br><span class="line">    10    10    10    10    10</span><br></pre></td></tr></table></figure>
-
-<h2 id="删除数组元素"><a href="#删除数组元素" class="headerlink" title="删除数组元素"></a>删除数组元素</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">A &#x3D; [1 2 3 4 5];</span><br><span class="line">A(3) &#x3D; [];  % 删除第三个元素</span><br></pre></td></tr></table></figure>
-
-<p>这样，数组 A 中的第三个元素就被删除了，它的值从 3 变成了 4。注意，这个操作会改变原始数组 A 的大小和内容，因此需要谨慎使用。</p>
-<h2 id="添加数组元素"><a href="#添加数组元素" class="headerlink" title="添加数组元素"></a>添加数组元素</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 方法一</span><br><span class="line">A&#x3D;[A;2]</span><br><span class="line"></span><br><span class="line"># 方法二</span><br><span class="line">A&#x3D;[];</span><br><span class="line">A(1)&#x3D;2;</span><br><span class="line">A(2)&#x3D;3;</span><br></pre></td></tr></table></figure>
-
-<h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><ul>
-<li>数值类型</li>
-</ul>
-<p>MATLAB® 中的数值类包括有符号和无符号整数、单精度和双精度浮点数。默认情况下，MATLAB 以双精度浮点形式存储所有数值。</p>
-<ul>
-<li>字符和字符串</li>
-</ul>
-<p>字符数组和字符串数组用于存储 MATLAB® 中的文本数据。</p>
-<p>字符串拼接是常用操作，通常有三种方法，请参考：</p>
-<ul>
-<li><p><a href="https://blog.csdn.net/qing101hua/article/details/78425854" target="_blank" rel="noopener">matlab 字符串拼接的3个方式:[]、strcat、sprintf</a></p>
-</li>
-<li><p>日期时间</p>
-</li>
-</ul>
-<p>日期时间数据类型 datetime、duration 和 calendarDuration 支持高效的日期时间计算、比较以及格式化显示方式。</p>
-<p><strong>使用duration时要注意跨 24:00:00 的问题</strong>。 </p>
-<p>日期转字符串主要使用datestr函数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">t &#x3D; [datetime(&#39;now&#39;);datetime(&#39;tomorrow&#39;)]</span><br><span class="line">DateString &#x3D; datestr(t)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>分类数组</li>
-</ul>
-<p>categorical 是用于存储具有以下特征的数据的数据类型：此类数据值来自离散分类有限集合。</p>
-<ul>
-<li>表</li>
-</ul>
-<p>table 是一种适用于以下数据的数据类型：即以列的形式存储在文本文件或电子表格中的列向数据或者表格数据。表由若干行向变量和若干列向变量组成。表格中的每个变量可以具有不同的数据类型和大小，但有一个限制条件是每个变量的行数必须相同。</p>
-<ul>
-<li>时间表</li>
-</ul>
-<p>timetable 是一种特定类型的表，其中每一行关联一个时间。与 table 一样，timetable 数据类型可以存储具有相同行数的列向数据变量。所有表函数都使用时间表。此外，时间表提供了特定于时间的函数，可对一个或多个时间表进行对齐、合并，以及执行计算。</p>
-<ul>
-<li>结构体</li>
-</ul>
-<p>结构体数组是使用名为字段的数据容器将相关数据组合在一起的数据类型。每个字段都可以包含任意类型的数据。使用 structName.fieldName 格式的圆点表示法来访问结构体中的数据。</p>
-<ul>
-<li>元胞数组</li>
-</ul>
-<p>元胞数组是一种包含名为元胞的索引数据容器的数据类型，其中的每个元胞都可以包含任意类型的数据。</p>
-<ul>
-<li>函数句柄</li>
-</ul>
-<p>函数句柄是一种表示函数的 MATLAB® 数据类型。函数句柄的典型用法是将函数传递给另一个函数。例如，您可以将函数句柄用作基于某个值范围计算数学表达式的函数的输入参数。</p>
-<p>函数句柄可以表示命名函数或匿名函数。要创建函数句柄，请使用 @ 运算符。</p>
-<ul>
-<li>字典</li>
-</ul>
-<p>字典是一种将每个键与对应的值相关联的数据结构体。键和值可以采用任何数据类型，为数据访问提供优于数组索引的灵活性，并能提高性能。</p>
-<ul>
-<li>时间序列</li>
-</ul>
-<p>时间序列表示动态规模或过程的时间演化。它们用于识别、建模和预测在离散时间间隔内采样的数据中的模式和行为。</p>
-<p>对于此类型的数据，推荐使用时间表而非 timeseries 对象。时间表可以存储各种类型的时间戳数据，并具有广泛的支持函数来对齐、组合和执行计算。</p>
-<ul>
-<li>数据类型标识</li>
-</ul>
-<p>MATLAB® 有许多函数可识别变量的数据类型或确定变量是否具有特定的数据类型。当调用或编写的代码依赖于具有特定数据类型的变量时，应使用这些函数。</p>
-<ul>
-<li>数据类型转换</li>
-</ul>
-<p>MATLAB® 有许多函数可将值从一种数据类型转换为另一种数据类型，以用于不同的上下文。</p>
-<h1 id="Matlab-App"><a href="#Matlab-App" class="headerlink" title="Matlab App"></a>Matlab App</h1><p>Matlab App的设计开发请参考：</p>
-<ul>
-<li><a href="https://ww2.mathworks.cn/help/matlab/creating_guis/create-a-simple-app-or-gui-using-app-designer.html" target="_blank" rel="noopener">使用 App 设计工具创建并运行简单 App</a></li>
-</ul>
-<p>Matlab App的打包请参考：</p>
-<ul>
-<li><a href="https://zhuanlan.zhihu.com/p/476664237" target="_blank" rel="noopener">MATLAB App Designer如何打包EXE安装程序</a></li>
-</ul>
-<h1 id="Matlab函数设计"><a href="#Matlab函数设计" class="headerlink" title="Matlab函数设计"></a>Matlab函数设计</h1><h2 id="基本设计"><a href="#基本设计" class="headerlink" title="基本设计"></a>基本设计</h2><p>函数的输入输出参数应该有明确的含义，最好通过参数名称即可识别。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function y &#x3D; square(x)</span><br><span class="line">%</span><br><span class="line">%  calculate the square of the given number &#39;x&#39;</span><br><span class="line">%  </span><br><span class="line">%  Arguments:</span><br><span class="line">%  </span><br><span class="line">%       x           (input)   value to be squared</span><br><span class="line">%</span><br><span class="line">%       y           (output)  the result of the square</span><br><span class="line">%       </span><br><span class="line"></span><br><span class="line">  y &#x3D; x*x;</span><br><span class="line"></span><br><span class="line">% end of square function</span><br></pre></td></tr></table></figure>
-
-<h2 id="输入验证"><a href="#输入验证" class="headerlink" title="输入验证"></a>输入验证</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function a &#x3D; findArea(width,varargin)</span><br><span class="line">   defaultHeight &#x3D; 1;</span><br><span class="line">   defaultUnits &#x3D; &#39;inches&#39;;</span><br><span class="line">   defaultShape &#x3D; &#39;rectangle&#39;;</span><br><span class="line">   expectedShapes &#x3D; &#123;&#39;square&#39;,&#39;rectangle&#39;,&#39;parallelogram&#39;&#125;;</span><br><span class="line"></span><br><span class="line">   p &#x3D; inputParser;</span><br><span class="line">   validScalarPosNum &#x3D; @(x) isnumeric(x) &amp;&amp; isscalar(x) &amp;&amp; (x &gt; 0);</span><br><span class="line">   addRequired(p,&#39;width&#39;,validScalarPosNum);</span><br><span class="line">   addOptional(p,&#39;height&#39;,defaultHeight,validScalarPosNum);</span><br><span class="line">   addParameter(p,&#39;units&#39;,defaultUnits,@isstring);</span><br><span class="line">   addParameter(p,&#39;shape&#39;,defaultShape,...</span><br><span class="line">                 @(x) any(validatestring(x,expectedShapes)));</span><br><span class="line">   parse(p,width,varargin&#123;:&#125;);</span><br><span class="line">   </span><br><span class="line">   a &#x3D; p.Results.width*p.Results.height; </span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a &#x3D; findArea(7);</span><br><span class="line">a &#x3D; findArea(7,3);</span><br><span class="line">a &#x3D; findArea(13,&#39;shape&#39;,&#39;square&#39;);</span><br><span class="line">a &#x3D; findArea(13,&#39;units&#39;,&quot;miles&quot;,&#39;shape&#39;,&#39;square&#39;);</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/u013303743/article/details/48134795" target="_blank" rel="noopener">【Matlab学习笔记】（六）基本数据结构（矩阵定义方法）</a>,by 末树之墨.</li>
-<li><a href="https://cloud.tencent.com/developer/ask/81165" target="_blank" rel="noopener">MATLAB中是否有“队列”？</a>,by tencent.</li>
-<li><a href="https://ww2.mathworks.cn/help/matlab/ref/containers.map.html" target="_blank" rel="noopener">containers.Map</a>, by mathworks.</li>
-<li><a href="https://www.ilovematlab.cn/thread-60582-1-1.html" target="_blank" rel="noopener">Matlab的memory模块消除代数环</a>,by ilovematlab.</li>
-<li><a href="https://www.mathworks.com/help/simulink/ug/parameterize-referenced-models-example.html" target="_blank" rel="noopener">Parameterize a Referenced Model Programmatically</a>,by mathwork.</li>
-<li><a href="https://ww2.mathworks.cn/help/matlab/creating_guis/create-a-simple-app-or-gui-using-app-designer.html" target="_blank" rel="noopener">使用 App 设计工具创建并运行简单 App</a>,by mathworks.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/476664237" target="_blank" rel="noopener">MATLAB App Designer如何打包EXE安装程序</a>,by 阿Q在江湖.</li>
-<li><a href="https://ww2.mathworks.cn/help/matlab/data-types.html" target="_blank" rel="noopener">MATLAB 数据类型</a>,by mathwork.</li>
-<li><a href="https://blog.csdn.net/qing101hua/article/details/78425854" target="_blank" rel="noopener">matlab 字符串拼接的3个方式:[]、strcat、sprintf</a>,by qing101hua.</li>
-<li><a href="https://www.mathworks.com/help/matlab/matlab_prog/find-array-elements-that-meet-a-condition_zh_CN.html" target="_blank" rel="noopener">查找符合条件的数组元素</a>,by mathworks.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/05/23/%E5%A6%82%E4%BD%95%E8%87%B4%E5%AF%8C%E4%B8%8D%E9%9D%A0%E8%BF%90%E6%B0%94/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/05/23/%E5%A6%82%E4%BD%95%E8%87%B4%E5%AF%8C%E4%B8%8D%E9%9D%A0%E8%BF%90%E6%B0%94/" itemprop="url">
-                  如何致富不靠运气
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-05-23 18:21:45 / 修改时间：18:57:09" itemprop="dateCreated datePublished" datetime="2020-05-23T18:21:45+08:00">2020-05-23</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>美国风险投资家 Naval Ravikant 有一个很有名的长推特，一共40条，题目叫做《如何致富，不靠运气》，谈了他的商业观。</p>
-</blockquote>
-<p>现摘抄一些令人振聋发聩的观点：</p>
-<ul>
-<li><p>去寻求财富，而非金钱或地位。财富就是你拥有资产，而资产在你睡觉的时候都还在为你赚钱；金钱是我们转换时间和财富的工具；身份是你在社会等级体系里所处的位置。</p>
-</li>
-<li><p>你不会通过出租自己的时间而变得富有。你必须拥有产权，也就是生意的一部分，以此才能赢得个人财务自由。</p>
-</li>
-<li><p>在选择商业合作伙伴的时候，选择那些高智商、精力旺盛的家伙，但在这一切之上，他应该是个<strong>正直诚实</strong>的人。</p>
-</li>
-<li><p>不要和愤世嫉俗者和悲观主义者合作，因为他们会任由坏事发生，以此证明他们的负面看法是正确的。</p>
-</li>
-<li><p>学会如何销售，学会如何创建。如果你同时能做到这两件事，你的成功将无可阻挡。</p>
-</li>
-<li><p>独到知识是那种不可以通过培训而获得的知识。这是因为，如果这种知识可以经由培训而得，那么其他人同样也可以，并且以此取代你。</p>
-</li>
-<li><p>财富增长需要使用杠杆。商业杠杆有三个来源：1、资本；2、人力；3、复制起来边际成本为零的产品（如：代码和媒体）。</p>
-</li>
-<li><p>资本和劳动力是需要征得许可才能使用的杠杆。每个人都在追逐资本，但总得有个什么人给你才行；每个人都想要领导其它人，但总得有什么人愿意跟着你才行。</p>
-</li>
-<li><p>代码和媒体是无需要许可即可使用的杠杆。它们是新贵人群背后的杠杆，你可以通过自己创建的软件和媒体，在睡觉时仍然为你干活。</p>
-</li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://new.qq.com/omn/20200413/20200413A0U72C00.html" target="_blank" rel="noopener">和菜头翻译 如何不靠运气致富</a>,by 和菜头.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2147,7 +2161,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">496</span>
+                    <span class="site-state-item-count">498</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

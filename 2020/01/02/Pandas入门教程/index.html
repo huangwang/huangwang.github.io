@@ -110,7 +110,7 @@
 <meta property="og:description" content="Pandas是一个开源的，BSD许可的库，为Python编程语言提供高性能，易于使用的数据结构和数据分析工具。 Pandas特色Pandas 适用于处理以下类型的数据：  与 SQL 或 Excel 表类似的，含异构列的表格数据; 有序和无序（非固定频率）的时间序列数据; 带行列标签的矩阵数据，包括同构或异构型数据; 任意其它形式的观测、统计数据集, 数据转入 Pandas 数据结构时不必事先标记">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-01-02T11:56:45.000Z">
-<meta property="article:modified_time" content="2024-11-02T03:07:22.291Z">
+<meta property="article:modified_time" content="2024-11-18T14:17:27.386Z">
 <meta property="article:author" content="Jack Huang">
 <meta property="article:tag" content="笔记本">
 <meta property="article:tag" content="python">
@@ -377,7 +377,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2024-11-02 11:07:22" itemprop="dateModified" datetime="2024-11-02T11:07:22+08:00">2024-11-02</time>
+                <time title="修改时间：2024-11-18 22:17:27" itemprop="dateModified" datetime="2024-11-18T22:17:27+08:00">2024-11-18</time>
               
             
           </span>
@@ -463,13 +463,25 @@
 <p>生成DataFrame对象：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">In [7]: df &#x3D; pd.DataFrame(np.random.randn(6, 4), index&#x3D;dates, columns&#x3D;list(&#39;ABCD&#39;))</span><br><span class="line"></span><br><span class="line">In [8]: df</span><br><span class="line">Out[8]: </span><br><span class="line">                   A         B         C         D</span><br><span class="line">2013-01-01  0.469112 -0.282863 -1.509059 -1.135632</span><br><span class="line">2013-01-02  1.212112 -0.173215  0.119209 -1.044236</span><br><span class="line">2013-01-03 -0.861849 -2.104569 -0.494929  1.071804</span><br><span class="line">2013-01-04  0.721555 -0.706771 -1.039575  0.271860</span><br><span class="line">2013-01-05 -0.424972  0.567020  0.276232 -1.087401</span><br><span class="line">2013-01-06 -0.673690  0.113648 -1.478427  0.524988</span><br></pre></td></tr></table></figure>
 
+<h2 id="列切片"><a href="#列切片" class="headerlink" title="列切片"></a>列切片</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df1 &#x3D; df[df.columns[0:6]];</span><br></pre></td></tr></table></figure>
+
+<h2 id="重命名列名"><a href="#重命名列名" class="headerlink" title="重命名列名"></a>重命名列名</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df1.columns[&#39;id&#39;,&#39;name&#39;,&#39;sex&#39;,&#39;age&#39;,&#39;department&#39;,&#39;work&#39;]</span><br></pre></td></tr></table></figure>
+
+<h2 id="过滤行"><a href="#过滤行" class="headerlink" title="过滤行"></a>过滤行</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df1 &#x3D; df1[df1.iloc[:,1]&#x3D;&#x3D;&#39;YES&#39;]</span><br></pre></td></tr></table></figure>
+
 <h2 id="合并表格"><a href="#合并表格" class="headerlink" title="合并表格"></a>合并表格</h2><p>pandas 2.0实现数据的合并与拼接，主要有三种方法：</p>
 <ul>
 <li>join 最简单，主要用于基于索引的横向合并拼接</li>
 <li>merge 最常用，主要用于基于指定列的横向合并拼接</li>
 <li>concat最强大，可用于横向和纵向合并拼接</li>
 </ul>
-<h2 id="毫秒解析"><a href="#毫秒解析" class="headerlink" title="毫秒解析"></a>毫秒解析</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df1[&#39;time2&#39;] &#x3D; pd.to_datetime(df[&#39;time2&#39;], format&#x3D;&#39;%Y-%m-%d %H:%M:%S:%f&#39;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 合并两个表，df1 和 df2 表结构一样</span><br><span class="line">df3 &#x3D; pd.concat([df1,df2])</span><br></pre></td></tr></table></figure>
+
+<h2 id="毫秒解析"><a href="#毫秒解析" class="headerlink" title="毫秒解析"></a>毫秒解析</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">timeDelta &#x3D; datetime.datetime(2024,11,11) - datetime.datetime(1900,1,1)</span><br><span class="line">df3[&#39;datetime&#39;] &#x3D; pd.to_datetime(df[&#39;datetime&#39;], format&#x3D;&#39;%Y-%m-%d %H:%M:%S:%f&#39;) + timeDelta</span><br></pre></td></tr></table></figure>
+
+<h2 id="按时间排序"><a href="#按时间排序" class="headerlink" title="按时间排序"></a>按时间排序</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df3 &#x3D; df3.sort_values(by&#x3D;&quot;datetime&quot;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="输出CSV表格"><a href="#输出CSV表格" class="headerlink" title="输出CSV表格"></a>输出CSV表格</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df3.to_csv(filePath + &#39;test.csv&#39;,index&#x3D;0)</span><br></pre></td></tr></table></figure>
 
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.pypandas.cn/" target="_blank" rel="noopener">Pandas 中文</a>,by pypandas.</li>
@@ -794,7 +806,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pandas特色"><span class="nav-number">1.</span> <span class="nav-text">Pandas特色</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pandas数据结构"><span class="nav-number">2.</span> <span class="nav-text">Pandas数据结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pandas用法"><span class="nav-number">3.</span> <span class="nav-text">Pandas用法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#生成对象"><span class="nav-number">3.1.</span> <span class="nav-text">生成对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#合并表格"><span class="nav-number">3.2.</span> <span class="nav-text">合并表格</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#毫秒解析"><span class="nav-number">3.3.</span> <span class="nav-text">毫秒解析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pandas特色"><span class="nav-number">1.</span> <span class="nav-text">Pandas特色</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pandas数据结构"><span class="nav-number">2.</span> <span class="nav-text">Pandas数据结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pandas用法"><span class="nav-number">3.</span> <span class="nav-text">Pandas用法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#生成对象"><span class="nav-number">3.1.</span> <span class="nav-text">生成对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#列切片"><span class="nav-number">3.2.</span> <span class="nav-text">列切片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重命名列名"><span class="nav-number">3.3.</span> <span class="nav-text">重命名列名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过滤行"><span class="nav-number">3.4.</span> <span class="nav-text">过滤行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#合并表格"><span class="nav-number">3.5.</span> <span class="nav-text">合并表格</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#毫秒解析"><span class="nav-number">3.6.</span> <span class="nav-text">毫秒解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#按时间排序"><span class="nav-number">3.7.</span> <span class="nav-text">按时间排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输出CSV表格"><span class="nav-number">3.8.</span> <span class="nav-text">输出CSV表格</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

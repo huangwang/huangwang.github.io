@@ -314,6 +314,207 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/19/Docker%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/19/Docker%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/" itemprop="url">
+                  Docker使用帮助
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-19 09:57:21" itemprop="dateCreated datePublished" datetime="2018-10-19T09:57:21+08:00">2018-10-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-10-20 21:42:29" itemprop="dateModified" datetime="2018-10-20T21:42:29+08:00">2018-10-20</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Docker是一个开放源代码软件项目，让应用程序布署在软件容器下的工作可以自动化进行，借此在Linux操作系统上，提供一个额外的软件抽象层，以及操作系统层虚拟化的自动管理机制。</p>
+<p>Docker与传统虚拟机如virtualbox、vmware相比，占用资源少，更加轻便，启动快，更适用于解决软件环境配置难题。</p>
+<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><ol>
+<li><p>镜像</p>
+<p>Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。</p>
+</li>
+<li><p>容器</p>
+</li>
+</ol>
+<p>镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的 类 和 实例 一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。</p>
+<ol start="3">
+<li>仓库</li>
+</ol>
+<p>镜像构建完成后，可以很容易的在当前宿主机上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，Docker Registry 就是这样的服务。</p>
+<p>一个 Docker Registry 中可以包含多个仓库（Repository）；每个仓库可以包含多个标签（Tag）；每个标签对应一个镜像。</p>
+<p>通常，一个仓库会包含同一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过 &lt;仓库名&gt;:&lt;标签&gt; 的格式来指定具体是这个软件哪个版本的镜像。如果不给出标签，将以 latest 作为默认标签。</p>
+<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><h2 id="操作镜像"><a href="#操作镜像" class="headerlink" title="操作镜像"></a>操作镜像</h2><h3 id="获取镜像"><a href="#获取镜像" class="headerlink" title="获取镜像"></a>获取镜像</h3><p>Docker Hub 上有大量的高质量的镜像可以用，使用docker pull命令拉取镜像。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 拉取镜像</span><br><span class="line">$ docker pull ubuntu:16.04</span><br><span class="line">&#x2F;&#x2F; 以该镜像启动容器</span><br><span class="line">$ docker run -it --rm ubuntu:16.04 bash</span><br></pre></td></tr></table></figure>
+
+<p>docker run 就是运行容器的命令,其参数含义如下：</p>
+<ul>
+<li>-it：这是两个参数，一个是 -i：交互式操作，一个是 -t 终端。我们这里打算进入 bash 执行一些命令并查看返回结果，因此我们需要交互式终端。</li>
+<li>–rm：这个参数是说容器退出后随之将其删除。默认情况下，为了排障需求，退出的容器并不会立即删除，除非手动 docker rm。</li>
+<li>ubuntu:16.04：这是指用 ubuntu:16.04 镜像为基础来启动容器。</li>
+<li>bash：放在镜像名后的是命令，这里我们希望有个交互式 Shell，因此用的是 bash。</li>
+</ul>
+<h3 id="列出镜像"><a href="#列出镜像" class="headerlink" title="列出镜像"></a>列出镜像</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image ls</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除镜像"><a href="#删除镜像" class="headerlink" title="删除镜像"></a>删除镜像</h3><p>删除本地镜像格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image rm [选项] &lt;镜像1&gt; [&lt;镜像2&gt; ...]</span><br></pre></td></tr></table></figure>
+<p>以删除hello-world镜像为例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image rm hello-world</span><br></pre></td></tr></table></figure>
+
+<h2 id="操作容器"><a href="#操作容器" class="headerlink" title="操作容器"></a>操作容器</h2><h3 id="启动容器"><a href="#启动容器" class="headerlink" title="启动容器"></a>启动容器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 新建并启动容器</span><br><span class="line">docker run ubuntu:14.04 &#x2F;bin&#x2F;echo &#39;Hello world&#39;</span><br><span class="line">&#x2F;&#x2F; 启动已终止容器</span><br><span class="line">docker container start</span><br></pre></td></tr></table></figure>
+
+<h3 id="后台运行"><a href="#后台运行" class="headerlink" title="后台运行"></a>后台运行</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 后台运行容器</span><br><span class="line">$ docker run -d ubuntu:17.10 &#x2F;bin&#x2F;sh -c &quot;while true; do echo hello world; sleep 1; done&quot;</span><br><span class="line">&#x2F;&#x2F; 通过 docker container ls 命令来查看容器信息</span><br><span class="line">$ docker container ls</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 通过 docker container logs 命令获取容器的输出信息</span><br><span class="line">$ docker container logs [container ID or NAMES]</span><br></pre></td></tr></table></figure>
+
+<h3 id="终止容器"><a href="#终止容器" class="headerlink" title="终止容器"></a>终止容器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container stop</span><br></pre></td></tr></table></figure>
+
+<h3 id="进入容器"><a href="#进入容器" class="headerlink" title="进入容器"></a>进入容器</h3><p>在使用 -d 参数时，容器启动后会进入后台。</p>
+<p>某些时候需要进入容器进行操作，包括使用 docker attach 命令或 docker exec 命令，推荐大家使用 docker exec 命令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -dit ubuntu</span><br><span class="line">$ docker container ls</span><br><span class="line">$ docker exec -i 69d1 bash</span><br><span class="line">$ docker exec -it 69d1 bash</span><br></pre></td></tr></table></figure>
+<p>如果从这个 stdin 中 exit，不会导致容器的停止。这就是为什么推荐大家使用 docker exec 的原因。</p>
+<h3 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器"></a>删除容器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 删除一个处于终止状态的容器</span><br><span class="line">$ docker container rm  trusting_newton</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 清理所有处于终止状态的容器</span><br><span class="line">docker container prune</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://yeasy.gitbooks.io/docker_practice/introduction/what.html" target="_blank" rel="noopener">https://yeasy.gitbooks.io/docker_practice/introduction/what.html</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2018/02/docker-tutorial.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2018/02/docker-tutorial.html</a> ，by 阮一峰</li>
+<li><a href="https://zh.wikipedia.org/wiki/Docker" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Docker</a> ,by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/18/Debian-Linux%E4%B8%8B%E5%AE%89%E8%A3%85Docker%E7%9A%84%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1907,219 +2108,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/16/CPP%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%A7%BB%E6%A4%8D%E5%BC%80%E5%8F%91%E6%80%9D%E8%80%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/16/CPP%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%A7%BB%E6%A4%8D%E5%BC%80%E5%8F%91%E6%80%9D%E8%80%83/" itemprop="url">
-                  C++跨平台移植开发思考
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-07-16 11:13:31" itemprop="dateCreated datePublished" datetime="2018-07-16T11:13:31+08:00">2018-07-16</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2022-07-17 10:16:38" itemprop="dateModified" datetime="2022-07-17T10:16:38+08:00">2022-07-17</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近需要将一份C++代码通过Emscripten编译成asm.js，结果失败，因为这份C++代码使用MFC GUI库，导致Emscripten编译失败。这引起了我对C++跨平台移植的思考。</p>
-<p>C++代码理论上能实现源代码级别的跨平台移植，即同一份代码可以不加修改的在不同的平台上编译运行且表现一致。这要求编写的C++代码符合跨平台移植的规范，如链接[1]所指出的那样，它给出了很多实现C++代码跨平台移植的编码细节，在编写跨平台的底层库方面十分有用。但在编写跨平台的C++应用方面，应使用经过长期实践证明能用的跨平台库来帮助编码，建立在巨人的肩膀上，使跨平台C++代码编写工作变得简单容易。下面给出一些常用的跨平台C++库供参考：</p>
-<ol>
-<li>语言及基础库</li>
-</ol>
-<ul>
-<li>标准 C++：标准 c++ 是98年制定的，现在主流的 c++ 编译器都能够比较好的支持了。这里建议使用VC7.1和GCC4.0及以上版本。在Linux中，glibc是标准C的实现，libstdc++则是标准C++的实现。在Windows中，VS2015之前MSVCRT.DLL是标准C/C++的实现，之后UCRTBASE.DLLz则是标准C/C++的实现。</li>
-<li>boost：boost 则是 C++ 标准委员会的一群人弄起来的一个 C++ 库集合，其中不少库以经进入 C++ TR1，可以说是准标准。使用这里的库我们有着充分的理由。象字符串的操作可以用 boost 的 String algorithms 库，格式化操作可以用 boost::format，正则式可用 boost::regex 等等。</li>
-</ul>
-<ol start="2">
-<li>网络</li>
-</ol>
-<ul>
-<li>ACE（Adaptive Communication Environment）：ACE是一个以C++的Template技术所做成的开放源代码的可跨平台的网络应用程序的程式库套件。ACE自适配通信环境（ADAPTIVE Communication Environment）是可以自由使用、开放源码的面向对象（OO）框架（Framework），在其中实现了许多用于并发通信软件的核心模式。ACE提供了一组丰富的可复用C++ Wrapper Facade（包装外观）和框架组件，可跨越多种平台完成通用的通信软件任务，其中包括：事件多路分离和事件处理器分派、信号处理、服务初始化、进程间通信、共享内存管理、消息路由、分布式服务动态（重）配置、并发执行和同步，等等。</li>
-<li>Boost.Asio：用于网络和底层I/O编程的跨平台的C++库</li>
-</ul>
-<ol start="3">
-<li>数据库</li>
-</ol>
-<ul>
-<li>OTL (Oracle, Odbc and DB2-CLI Template Library)：<br>不但支持跨平台，还跨数据库。OTL支持以下面的数据库 : OTL Oracle ,SQL Server, Access, MySQL。还有其它的库如DTL，这个库不但支持ODBC，它还支持数据库的原生接口，可以有更佳的性能。</li>
-</ul>
-<ol start="4">
-<li>GUI</li>
-</ol>
-<ul>
-<li>QT：QT是双认证的，当你的程序免费时它就免费，你的程序打算卖钱时，它也要，而且要价很高。所以，如果有版权，成本上的考虑的话，则可以考虑wxWidgets。</li>
-<li>wxWidgets：wxWidgets（/wɪksˈwɪdʒɪts/，原名wxWindows）是一个开放源代码且跨平台的对象工具集（widget toolkit），其库可用来创建基本的图形用户界面（GUI）。wxWidgets由Julian Smart于1992年首先开发。</li>
-</ul>
-<ol start="5">
-<li>科学计算</li>
-</ol>
-<ul>
-<li>GSL：GNU科学库。</li>
-</ul>
-<ol start="6">
-<li>游戏开发</li>
-</ol>
-<ul>
-<li>Cocos2d-x：一个跨平台框架，用于构建2D游戏，互动图书，演示和其他图形应用程序。</li>
-</ul>
-<ol start="7">
-<li>视频</li>
-</ol>
-<ul>
-<li>FFmpeg：一个完整的，跨平台的解决方案，用于记录，转换视频和音频流</li>
-</ul>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="http://hongbomin.com/2017/03/08/cpp-cross-platform-guide/" target="_blank" rel="noopener">c++跨平台移植指南</a>, by 洪柏敏.</li>
-<li><a href="https://zh.wikipedia.org/wiki/ACE自适配通信环境" target="_blank" rel="noopener">ACE自适配通信环境</a>,by wikipedia.</li>
-<li><a href="https://blog.csdn.net/weiwangchao_/article/details/51130863" target="_blank" rel="noopener">C++库汇总</a>, by 工程师WWW.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/25443704" target="_blank" rel="noopener">值得推荐的C/C++框架和库</a>, by zhihu.</li>
-<li><a href="https://blog.csdn.net/xiexievv/article/details/6831194" target="_blank" rel="noopener">printf 格式化输出符号详细说明</a>,by jackytse_.</li>
-<li><a href="https://www.yanbinghu.com/2018/09/15/43741.html" target="_blank" rel="noopener">理一理字节对齐的那些事</a>,by 守望.</li>
-<li><a href="http://www.veryitman.com/2019/03/07/%E4%B8%8D%E8%A7%81%E5%BE%97%E4%BD%A0%E4%BC%9A%E8%AE%A1%E7%AE%97C%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%95%BF%E5%BA%A6/" target="_blank" rel="noopener">不见得你会计算C字符串长度</a>,by veryitman.</li>
-<li><a href="https://blog.csdn.net/Mary19920410/article/details/71518130" target="_blank" rel="noopener">浅析C语言之uint8_t / uint16_t / uint32_t /uint64_t</a>,by 海阔天空sky1992.</li>
-<li><a href="https://blog.csdn.net/m0_37751179/article/details/78801497" target="_blank" rel="noopener">char，int，float，double所占字节数</a>,by 张小铭.</li>
-<li><a href="https://www.runoob.com/w3cnote/cpp-time_t.html" target="_blank" rel="noopener">c++ 时间类型详解 time_t</a>,by runoob.</li>
-<li><a href="https://www.cnblogs.com/my_life/articles/5787195.html" target="_blank" rel="noopener">网络传输——序列化</a>,by bw_0927.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/59450618" target="_blank" rel="noopener">干货：构建C/C++良好的工程结构</a>,by Froser.</li>
-<li><a href="https://blog.csdn.net/wangnan537/article/details/45222653" target="_blank" rel="noopener">UTF-8与UTF-8 without BOM</a>,by 苏州-微尘.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2167,7 +2155,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">498</span>
+                    <span class="site-state-item-count">499</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

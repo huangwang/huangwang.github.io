@@ -314,6 +314,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/09/18/C%E8%AF%AD%E8%A8%80%E4%B8%AD%E7%9A%84%E4%BD%8D%E5%9F%9F%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/09/18/C%E8%AF%AD%E8%A8%80%E4%B8%AD%E7%9A%84%E4%BD%8D%E5%9F%9F%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/" itemprop="url">
+                  C语言中的位域使用方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-09-18 21:54:52 / 修改时间：22:05:52" itemprop="dateCreated datePublished" datetime="2024-09-18T21:54:52+08:00">2024-09-18</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>C语言中的位域（Bit-fields）可以用于对结构体成员进行位级别的控制和优化。在一些应用中，比如网络协议，经常会涉及对数据的某些比特位进行操作，尽管可以使用位的相关运算，但是C语言提供了位域用以支持对一个字节的某几个位进行访问，操作起来也更加方便。</p>
+</blockquote>
+<h1 id="位域的定义与引用"><a href="#位域的定义与引用" class="headerlink" title="位域的定义与引用"></a>位域的定义与引用</h1><blockquote>
+<p>位域不同于一般的结构体成员，它以位为单位来定义成员的长度，因此在结构体中定义位域时，必须要指明位域成员所需要占用的二进制位数。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct MsgHeader &#123;</span><br><span class="line">    int a: 5;   &#x2F;&#x2F; 数据类型名    变量名：二进制位数</span><br><span class="line">    int b: 3;</span><br><span class="line">    int c: 2;</span><br><span class="line">    int d：6;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>由于位域本质上是一种特殊的结构体成员，因此一般结构体成员的引用方法同样适用于位域成员。不过，需要特别注意的是，位域成员存储是以二进制位作为单位的，而内存的最小寻址单元是字节，所以不能直接引用位域成员的地址。</p>
+<h1 id="位域与大小端"><a href="#位域与大小端" class="headerlink" title="位域与大小端"></a>位域与大小端</h1><blockquote>
+<p>结构体内位域成员在大小端系统上的内存分配规则如下：</p>
+</blockquote>
+<ul>
+<li>无论是大端或小端模式，位域的存储都是由内存低地址向高地址分配，即从低地址字节的低位bit开始向高地址字节的高位bit分配空间；</li>
+<li>位域成员在已分配的内存区域内，按照机器定义的比特序对数据的各个bit位进行排列。即在小端模式中，位域成员的最低有效位存放在内存低bit位，最高有效位存放在内存高bit位；大端模式则相反。</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/636551863" target="_blank" rel="noopener">C语言中位域（Bit-fields）的高级玩法，8个案例代码告诉你怎么玩</a>,by<br>晓亮Albert.</li>
+<li><a href="https://www.cnblogs.com/Aspiresky/p/15780975.html" target="_blank" rel="noopener">C语言结构体位域及其存储</a>,by Aspiresky.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/635530873" target="_blank" rel="noopener">3分钟理解C语言结构体位域（小白扫盲篇）</a>,by 天黑黑.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/08/23/%E5%90%88%E5%90%8C%E7%AE%A1%E7%90%86%E7%9F%A5%E8%AF%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1813,216 +1972,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/06/13/Linux%E6%A1%8C%E9%9D%A2%E7%89%88%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/06/13/Linux%E6%A1%8C%E9%9D%A2%E7%89%88%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/" itemprop="url">
-                  Linux桌面版安装过程笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-06-13 20:04:43" itemprop="dateCreated datePublished" datetime="2024-06-13T20:04:43+08:00">2024-06-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2024-06-14 22:48:05" itemprop="dateModified" datetime="2024-06-14T22:48:05+08:00">2024-06-14</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近需要在一台比较老的机器上安装银河麒麟4.0.2，遇到一些问题，记录一下。</p>
-<h1 id="光盘启动后，显示器黑屏"><a href="#光盘启动后，显示器黑屏" class="headerlink" title="光盘启动后，显示器黑屏"></a>光盘启动后，显示器黑屏</h1><p>解决方案：光盘启动后，选择 install kylin 启动选项，按键盘 e 进入编辑状态，找到 quiet splash ，在后面添加 nomodeset ，然后按 crtl+x 启动。</p>
-<p>具体原理:</p>
-<ul>
-<li>nomodeset</li>
-</ul>
-<p>这是一个新型的显示模式，即内核在启动阶段调用更先进的图形显示技术，以达到更好的显示效果。副作用就是兼容性低。</p>
-<p>可以设置nomodeset 或者modeset=0关闭这项功能，至少保证进入字符界面。</p>
-<p>更进阶一点的写法是：i915.modeset=0,其中i915是intel的显示驱动，该命令可以单独关闭该驱动的KMS。</p>
-<ul>
-<li>quiet</li>
-</ul>
-<p>quiet参数的作用：启动系统的过程中，如果没有quiet，那么内核就会输出很多内核消息，这些内核消息就包括的了系统启动过程中运行了哪些程序，如果系统运行正常，就没必要看到这些消息。</p>
-<ul>
-<li>splash</li>
-</ul>
-<p>splash是一个不可或缺的参数，系统很多核心程序，都需要这个参数，且这个参数与可视化界面有关，没有就可能导致屏幕一片空白。</p>
-<h1 id="网卡不识别，需要安装驱动"><a href="#网卡不识别，需要安装驱动" class="headerlink" title="网卡不识别，需要安装驱动"></a>网卡不识别，需要安装驱动</h1><p>进入Linux系统桌面后，执行如下步骤：</p>
-<ul>
-<li><p>查未安装驱动的网口<br>ifconfig  和 ifconfig -a对比，查看哪些网口没有加载，即为没有驱动的网口 </p>
-</li>
-<li><p>查网卡驱动型号<br>ethtool -i 网口，输出的driver:XXX就是驱动名</p>
-</li>
-<li><p>下载网卡<br>去intel官网下载对应驱动的源码</p>
-</li>
-</ul>
-<ul>
-<li><p>卸载旧驱动<br>rmmod XXX</p>
-</li>
-<li><p>编译<br>进入源码的makefile同级目录，执行make install</p>
-</li>
-<li><p>加载新驱动<br>depmod -a<br>modprobe XXX</p>
-</li>
-<li><p>查看<br>lsmod | grep XXX</p>
-</li>
-<li><p>重启网络服务<br>service networking restart</p>
-</li>
-</ul>
-<h1 id="显示器分辨率不够，需要安装驱动"><a href="#显示器分辨率不够，需要安装驱动" class="headerlink" title="显示器分辨率不够，需要安装驱动"></a>显示器分辨率不够，需要安装驱动</h1><p>进入Linux系统桌面后，执行如下步骤：</p>
-<ul>
-<li><p>禁用原驱动nouveau<br>vim  /etc/modprobe.d/blacklist.conf<br>追加blacklist nouveu</p>
-</li>
-<li><p>备份启动项<br>mv /boot/initram….img /boot/initram…img.bak</p>
-</li>
-<li><p>重新生成启动项<br>dracut -v /boot/initram…img,名称要和原来的一样</p>
-</li>
-<li><p>重启，并ctrl alt f1（或者f2-f6）进去tty界面<br>登录root用户，关闭lightdm<br>service lightdm stop<br>找到nvidia显卡驱动并执行，都选yes或者ok，重新生成initram，并添加带X服务<br>安装好后启动lightdm<br>service lightdm start<br>按ctrl alt f7进入图形界面</p>
-</li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/weixin_55609813/article/details/127005039" target="_blank" rel="noopener">银河麒麟v4.0.2安装</a>,by 阿瓦隆<em>勒</em>菲.</li>
-<li><a href="https://blog.csdn.net/dair6/article/details/121151562" target="_blank" rel="noopener">linux中grub，nomodest，quiet等参数的含义，进入启动项之后黑屏的可能原因</a>,by dair6.</li>
-<li><a href="https://wiki.deepin.org/zh/01_%E8%BD%AF%E4%BB%B6wiki/03_linux%E5%86%85%E6%A0%B8/linux%E5%86%85%E6%A0%B8%E5%90%AF%E5%8A%A8%E5%8F%82%E6%95%B0" target="_blank" rel="noopener">linux内核启动参数</a>,by deepin.</li>
-<li><a href="https://blog.csdn.net/luhuaxiang/article/details/88396882" target="_blank" rel="noopener">Linux系统安装网卡驱动</a>,by luhuaxiang.</li>
-<li><a href="https://blog.csdn.net/zataji/article/details/123104569" target="_blank" rel="noopener">【亲测有效】Linux系统安装NVIDIA显卡驱动</a>,by 自动驾驶simulation.</li>
-<li><a href="https://skyao.io/learning-linux-mint/docs/installation/hardware/amd_graph/" target="_blank" rel="noopener">AMD显卡驱动安装</a>,by skyao.</li>
-<li><a href="https://www.small09.top/posts/210719-gpuinfoinlinux/" target="_blank" rel="noopener">Linux中获得AMD显卡的状态信息</a>,by 香风家的火柴盒.</li>
-<li><a href="https://blog.csdn.net/StruggleRay/article/details/133201391" target="_blank" rel="noopener">ubuntu环境配置AMD显卡驱动</a>,by WocheDonner.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2070,7 +2019,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">498</span>
+                    <span class="site-state-item-count">499</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

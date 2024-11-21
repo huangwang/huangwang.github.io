@@ -314,6 +314,188 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/04/29/PX4%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E7%AE%80%E8%A6%81%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/29/PX4%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E7%AE%80%E8%A6%81%E6%95%99%E7%A8%8B/" itemprop="url">
+                  PX4应用开发简要教程
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-29 20:11:19 / 修改时间：20:47:18" itemprop="dateCreated datePublished" datetime="2019-04-29T20:11:19+08:00">2019-04-29</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本文说明如何创建和运行第一个板载应用程序。 它涵盖了PX4上应用程序开发所需的所有基本概念和API。</p>
+<h1 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h1><p>在开发第一个PX4应用程序之前，需要构建如下开发环境：</p>
+<ul>
+<li>PX4 SITL模拟器或兼容PX4的飞行控制器。</li>
+<li>PX4开发工具链用于所需目标。</li>
+<li>从Github下载PX4源代码</li>
+</ul>
+<h1 id="简单应用"><a href="#简单应用" class="headerlink" title="简单应用"></a>简单应用</h1><h2 id="代码编写"><a href="#代码编写" class="headerlink" title="代码编写"></a>代码编写</h2><p>本节创建一个最小的应用，仅用于打印Hello Sky！。整个应用由一个简单C文件和一个cmake定义文件构成。具体步骤如下：</p>
+<ol>
+<li>创建目录Firmware/src/examples/px4_simple_app</li>
+<li>在上述目录中创建C文件px4_simple_app.c</li>
+<li>在上述目录中创建cmake定义文件CMakeLists.txt</li>
+</ol>
+<p>px4_simple_app.c代码内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * @file px4_simple_app.c</span><br><span class="line"> * Minimal application example for PX4 autopilot</span><br><span class="line"> *</span><br><span class="line"> * @author Example User &lt;mail@example.com&gt;</span><br><span class="line"> *&#x2F;</span><br><span class="line"></span><br><span class="line">#include &lt;px4_log.h&gt;</span><br><span class="line"></span><br><span class="line">__EXPORT int px4_simple_app_main(int argc, char *argv[]);</span><br><span class="line"></span><br><span class="line">int px4_simple_app_main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    PX4_INFO(&quot;Hello Sky!&quot;);</span><br><span class="line">    return OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CMakeLists.txt文件内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">px4_add_module(</span><br><span class="line">    MODULE examples__px4_simple_app</span><br><span class="line">    MAIN px4_simple_app</span><br><span class="line">    STACK_MAIN 2000</span><br><span class="line">    SRCS</span><br><span class="line">        px4_simple_app.c</span><br><span class="line">    DEPENDS</span><br><span class="line">        platforms__common</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<p>px4_add_module()方法从模块描述构建静态库。 MAIN块列出了模块的名称 。这会将该模块与NuttX一起注册，以便可以从PX4 shell或SITL控制台调用它。</p>
+<h2 id="编译链接"><a href="#编译链接" class="headerlink" title="编译链接"></a>编译链接</h2><p>针对不同的目标平台，使用不同的make命令构建：</p>
+<ul>
+<li>jMAVSim Simulator: make posix_sitl_default jmavsim</li>
+<li>Pixhawk v1/2: make px4fmu-v2_default</li>
+<li>Pixhawk v3: make px4fmu-v4_default</li>
+</ul>
+<h2 id="测试应用（硬件）"><a href="#测试应用（硬件）" class="headerlink" title="测试应用（硬件）"></a>测试应用（硬件）</h2><h3 id="上传固件到开发板"><a href="#上传固件到开发板" class="headerlink" title="上传固件到开发板"></a>上传固件到开发板</h3><p>在开发板上测试，使用如下命令上传PX4固件：</p>
+<ul>
+<li>Pixhawk v1/2: make px4fmu-v2_default upload</li>
+<li>Pixhawk v3: make px4fmu-v4_default upload</li>
+</ul>
+<h3 id="连接控制台"><a href="#连接控制台" class="headerlink" title="连接控制台"></a>连接控制台</h3><p>现在通过串口或USB连接到系统控制台。 点击ENTER将弹出shell提示符：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">nsh&gt;</span><br><span class="line">nsh&gt;help</span><br><span class="line">nsh&gt; px4_simple_app</span><br><span class="line">Hello Sky!</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试应用（SITL）"><a href="#测试应用（SITL）" class="headerlink" title="测试应用（SITL）"></a>测试应用（SITL）</h2><p>如果您正在使用SITL，PX4控制台将自动启动。 与nsh控制台一样，您可以键入help以查看内置应用程序列表。</p>
+<p>输入px4_simple_app以运行最小应用程序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pxh&gt; px4_simple_app</span><br><span class="line">INFO  [px4_simple_app] Hello Sky!</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://huangwang.github.io/2019/04/26/PX4编译开发环境配置/">PX4编译开发环境配置</a>,by jackhuang.</li>
+<li><a href="https://huangwang.github.io/2019/04/27/PX4开发基本概念解读/">PX4开发基本概念解读</a>,by jackhuang.</li>
+<li><a href="https://dev.px4.io/en/apps/hello_sky.html" target="_blank" rel="noopener">First Application Tutorial (Hello Sky)</a>,by dronecode.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/04/28/OpenCV4-0%E7%9B%B8%E6%9C%BA%E6%A0%87%E5%AE%9A%E6%95%99%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2063,180 +2245,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/03/20/FlightGear%E5%A4%9A%E4%BA%BA%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/20/FlightGear%E5%A4%9A%E4%BA%BA%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" itemprop="url">
-                  FlightGear多人服务器的本地安装配置
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-03-20 20:28:23 / 修改时间：21:53:22" itemprop="dateCreated datePublished" datetime="2019-03-20T20:28:23+08:00">2019-03-20</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>FGMS或FlightGear多人游戏服务器是FlightGear的独立网络服务器，并根据GPL许可。 它允许通过FGFS内的网络与其他飞行员一起飞行。</p>
-<p>FGMS服务器列表类型主要有：</p>
-<ul>
-<li>中继服务器 - 网络中的其他服务器。 每个都必须有完整的列表（减去自己）以获得适当的网络功能。</li>
-<li>交叉馈送服务器 - 服务器从本地用户和其他服务器接收的所有内容都将转发到交叉馈送服务器。 用于在同一主机上运行多个连接的fgms实例，例如用于提供跟踪和未跟踪服务，而不会产生额外的外部流量。</li>
-<li>跟踪服务器 - 服务器每10秒向跟踪器发送一个每个本地用户的摘要更新。</li>
-<li>HUB服务器  - 通常服务器不会将从服务器接收的数据包发送到其他中继。 HUB服务器将数据从服务器发送到它知道的所有中继。</li>
-</ul>
-<p>特别呼号：</p>
-<ul>
-<li>“obsXXXX”（用您喜欢的任何字符替换X）允许连接的FlightGear客户端查看全球所有其他MP飞行员（位置数据和聊天消息），但对他们和MPmap保持不可见。</li>
-<li>“mpdummy”阻止在FGTracker上跟踪飞行员。 不推荐 - 如果多个用户使用此呼号，服务器将忽略一些用户。 改为连接到未跟踪的服务器。</li>
-</ul>
-<h1 id="安装配置FGMS服务器"><a href="#安装配置FGMS服务器" class="headerlink" title="安装配置FGMS服务器"></a>安装配置FGMS服务器</h1><h2 id="下载FGMS服务器源码"><a href="#下载FGMS服务器源码" class="headerlink" title="下载FGMS服务器源码"></a>下载FGMS服务器源码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git:&#x2F;&#x2F;git.code.sf.net&#x2F;p&#x2F;fgms&#x2F;src fgms-src</span><br></pre></td></tr></table></figure>
-
-<h2 id="安装配置FGMS服务器源码"><a href="#安装配置FGMS服务器源码" class="headerlink" title="安装配置FGMS服务器源码"></a>安装配置FGMS服务器源码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cd fgms-src</span><br><span class="line">mkdir build</span><br><span class="line">cd build </span><br><span class="line">cmake ..</span><br><span class="line">make</span><br><span class="line">cd ..</span><br><span class="line">cp contrib&#x2F;etc&#x2F;fgms_production.skel.conf build&#x2F;fgms.cfg</span><br><span class="line">cd build</span><br><span class="line">.&#x2F;fgms</span><br></pre></td></tr></table></figure>
-
-<h1 id="安装配置FGMS跟踪服务器源码"><a href="#安装配置FGMS跟踪服务器源码" class="headerlink" title="安装配置FGMS跟踪服务器源码"></a>安装配置FGMS跟踪服务器源码</h1><h2 id="下载FGMS跟踪服务器源码"><a href="#下载FGMS跟踪服务器源码" class="headerlink" title="下载FGMS跟踪服务器源码"></a>下载FGMS跟踪服务器源码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git:&#x2F;&#x2F;git.code.sf.net&#x2F;p&#x2F;fgms&#x2F;fgtracker fgms-fgtracker</span><br></pre></td></tr></table></figure>
-
-<h1 id="FlightGear联网飞行配置"><a href="#FlightGear联网飞行配置" class="headerlink" title="FlightGear联网飞行配置"></a>FlightGear联网飞行配置</h1><p>联机前，请选择合适的服务器名（通常是mpserver0?.flightgear.org）和端口号(通常是5000)，然后按照以下方式启动FlightGear。</p>
-<h2 id="使用向导程序"><a href="#使用向导程序" class="headerlink" title="使用向导程序"></a>使用向导程序</h2><p>在向导程序上专门有一个联网飞行选项，只要选中选项，填入服务器名和端口号以及你的昵称就可以了，你的昵称最长可以使7个字符。同时必须确定AI models选项选中，否则无法看到别的联网飞机。</p>
-<h2 id="使用命令行方式"><a href="#使用命令行方式" class="headerlink" title="使用命令行方式"></a>使用命令行方式</h2><p>基本命令如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">--multiplay&#x3D;out,10,&lt;server&gt;,&lt;portnumber&gt;</span><br><span class="line">--multiplay&#x3D;in,10,&lt;client&gt;,&lt;portnumber&gt;</span><br><span class="line">--callsign&#x3D;&lt;anything&gt;</span><br><span class="line">--enable-ai-models</span><br></pre></td></tr></table></figure>
-
-<p>备注:</p>
-<ol>
-<li><portnumber> 为端口号，比如5000.</li>
-<li><server> 为服务器名，比如mpserver01.flightgear.org.</li>
-<li><client> 是你的计算机名，或者是你的联网的IP地址，比如本地IP地址192.168.0.1</li>
-<li><callsign> 是你自己的昵称, 最多7个字符比如NFGFS.<br>当程序开始运行后，你可以在服务器地图上看到自己，如果看不到，检查一下程序是否有报错信息，按照下面将要介绍的内容检查错误。</li>
-</ol>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="http://wiki.flightgear.org/Howto:Multiplayer" target="_blank" rel="noopener">Howto:Multiplayer</a>,by flightgear home.</li>
-<li><a href="http://wiki.flightgear.org/FlightGear_Multiplayer_Server" target="_blank" rel="noopener">FlightGear Multiplayer Server</a>,by flightgear home.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2284,7 +2292,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">499</span>
+                    <span class="site-state-item-count">500</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

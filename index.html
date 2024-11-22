@@ -520,7 +520,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2024-11-21 22:41:38" itemprop="dateModified" datetime="2024-11-21T22:41:38+08:00">2024-11-21</time>
+                <time title="修改时间：2024-11-22 23:24:26" itemprop="dateModified" datetime="2024-11-22T23:24:26+08:00">2024-11-22</time>
               
             
           </span>
@@ -587,7 +587,7 @@
 <ul>
 <li><a href="https://gnu-linux.readthedocs.io/zh/latest/Chapter01/fdisk.html" target="_blank" rel="noopener">fdisk 管理磁盘分区</a></li>
 </ul>
-<h1 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a>具体步骤</h1><p>需要磁盘克隆的服务器，其硬盘有4T大小，但只使用了不到512G，用于克隆的目标磁盘同样有4T大小。因此考虑先生成原磁盘的镜像文件，再向目标磁盘克隆。具体步骤如下：</p>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><h2 id="目标磁盘大于原磁盘"><a href="#目标磁盘大于原磁盘" class="headerlink" title="目标磁盘大于原磁盘"></a>目标磁盘大于原磁盘</h2><p>需要磁盘克隆的服务器，其硬盘有4T大小，但只使用了不到512G，用于克隆的目标磁盘同样有4T大小。因此考虑先生成原磁盘的镜像文件，再向目标磁盘克隆。具体步骤如下：</p>
 <ul>
 <li>挂载目标磁盘，GPT分区，并ext4格式化。</li>
 <li>生成原磁盘的镜像文件</li>
@@ -603,7 +603,12 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gzip -dc &#x2F;root&#x2F;nvme0n1.dd.gz | dd of&#x3D;&#x2F;dev&#x2F;nvme1n1</span><br></pre></td></tr></table></figure>
 
-
+<h2 id="目标磁盘小于原磁盘"><a href="#目标磁盘小于原磁盘" class="headerlink" title="目标磁盘小于原磁盘"></a>目标磁盘小于原磁盘</h2><p>如果目标磁盘小于原磁盘，就不能简单的使用dd命令进行全盘克隆了。好在原磁盘实际使用的空间不大，因此，采用的步骤如下：</p>
+<ul>
+<li>在目标磁盘安装同样的CentOS操作系统</li>
+<li>使用 dd 命令克隆 root 分区</li>
+<li>使用 tar 命令压缩 home 分区的文件，然后解压到目标磁盘的 home 分区，并更改 home 分区文件夹的所有者。使用该方法的原因是 home 分区很大，但是文件系统占用空间相对较小。如果文件系统占用空间很大，那干脆用 dd 命令克隆 home 分区更省事。</li>
+</ul>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.cnblogs.com/renshengdezheli/p/13941563.html" target="_blank" rel="noopener">linux下使用fdisk进行磁盘分区详解</a>,by 人生的哲理.</li>
 <li><a href="https://gnu-linux.readthedocs.io/zh/latest/Chapter01/fdisk.html" target="_blank" rel="noopener">fdisk 管理磁盘分区</a>,by gnu.</li>
@@ -616,6 +621,10 @@
 <li><a href="https://www.cyberciti.biz/faq/how-to-gzip-and-keep-original-file-on-unix-or-linux-command-line/" target="_blank" rel="noopener">How to gzip and keep original file on Unix or Linux command line</a>,by Vivek Gite .</li>
 <li><a href="https://www.cnblogs.com/larry1024/p/17645208.html" target="_blank" rel="noopener">BIOS 与 UEFI 引导流程</a>,by LARRY1024.</li>
 <li><a href="https://www.cnblogs.com/sddai/p/10615745.html" target="_blank" rel="noopener">LVM原理与实现</a>,by 戴思达.</li>
+<li><a href="https://blog.csdn.net/mshxuyi/article/details/106476068" target="_blank" rel="noopener">CentOS 7 调整 XFS 格式的 LVM 分区大小</a>,by Tom Ma.</li>
+<li><a href="https://blog.csdn.net/shengjie87/article/details/107077975" target="_blank" rel="noopener">CentOS 8 逻辑卷管理LVM详解（扩容、快照等）</a>,by 把倒立的世界腾空.</li>
+<li><a href="https://blog.51cto.com/u_16099257/10596015" target="_blank" rel="noopener">resize2fs 缩小根分区 linux缩小根分区大小</a>,by 编程小匠人.</li>
+<li><a href="https://www.cnblogs.com/kevingrace/p/5825963.html" target="_blank" rel="noopener">Linux下对LVM逻辑卷分区大小调整 [针对xfs和ext4文件系统]</a>,by 散尽浮华.</li>
 </ol>
 
           

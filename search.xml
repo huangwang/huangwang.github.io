@@ -22000,7 +22000,13 @@ console.log(y);</code></pre></li>
 <ul>
 <li>在目标磁盘安装同样的CentOS操作系统</li>
 <li>使用 dd 命令克隆 root 分区</li>
-<li>使用 tar 命令压缩 home 分区的文件，然后解压到目标磁盘的 home 分区，并更改 home 分区文件夹的所有者。使用该方法的原因是 home 分区很大，但是文件系统占用空间相对较小。如果文件系统占用空间很大，那干脆用 dd 命令克隆 home 分区更省事。</li>
+</ul>
+<p>对于 home 分区，应根据不同情况不同处理：</p>
+<ul>
+<li>如果 home 分区文件系统占有空间相对较小，可使用 tar 命令压缩 home 分区的文件，然后解压到目标磁盘的 home 分区，并更改 home 分区文件夹的所有者。</li>
+<li>如果 home 分区文件系统占用空间相对很大，那干脆用 dd 命令克隆 home 分区更省事。</li>
+<li>如果 home 分区为 ext 文件系统，可考虑使用 resize2f 缩小文件系统，在缩小文件系统后，在使用 fdsik 或者 parted 缩小 home 分区大小，没有问题后，考虑使用 dd 命令克隆 home 分区。</li>
+<li>如果 home 分区为 xfs 文件系统，由于 xfs 文件系统不支持缩小，可以考虑使用 xfsdump 备份，等缩小 home 分区后，使用 xfsrestore 还原 home 分区。</li>
 </ul>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.cnblogs.com/renshengdezheli/p/13941563.html" target="_blank" rel="noopener">linux下使用fdisk进行磁盘分区详解</a>,by 人生的哲理.</li>
@@ -22018,6 +22024,8 @@ console.log(y);</code></pre></li>
 <li><a href="https://blog.csdn.net/shengjie87/article/details/107077975" target="_blank" rel="noopener">CentOS 8 逻辑卷管理LVM详解（扩容、快照等）</a>,by 把倒立的世界腾空.</li>
 <li><a href="https://blog.51cto.com/u_16099257/10596015" target="_blank" rel="noopener">resize2fs 缩小根分区 linux缩小根分区大小</a>,by 编程小匠人.</li>
 <li><a href="https://www.cnblogs.com/kevingrace/p/5825963.html" target="_blank" rel="noopener">Linux下对LVM逻辑卷分区大小调整 [针对xfs和ext4文件系统]</a>,by 散尽浮华.</li>
+<li><a href="https://anuoua.github.io/2019/03/04/Linux%E6%97%A0%E6%8D%9F%E8%B0%83%E6%95%B4%E5%88%86%E5%8C%BA%E5%A4%A7%E5%B0%8F/" target="_blank" rel="noopener">Linux无损调整分区大小</a>,by anuoua.</li>
+<li><a href="https://blog.orchidflower.cn/2022/12/01/Expand-Linux-Partition-without-Data-Loss/" target="_blank" rel="noopener">无损扩容Linux磁盘分区容量</a>,by orchidflower.</li>
 </ol>
 ]]></content>
       <tags>

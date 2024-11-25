@@ -314,6 +314,172 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/09/28/%E5%A4%9A%E4%BC%A0%E6%84%9F%E5%99%A8%E5%A4%9A%E7%9B%AE%E6%A0%87%E8%B7%9F%E8%B8%AA%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/09/28/%E5%A4%9A%E4%BC%A0%E6%84%9F%E5%99%A8%E5%A4%9A%E7%9B%AE%E6%A0%87%E8%B7%9F%E8%B8%AA%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  多传感器多目标跟踪方法研究学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-09-28 16:07:36 / 修改时间：16:26:38" itemprop="dateCreated datePublished" datetime="2024-09-28T16:07:36+08:00">2024-09-28</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近遇到一个问题，需要将多传感器多目标跟踪获得的航迹进行关联，因此学习研究一下。</p>
+<h1 id="关键技术"><a href="#关键技术" class="headerlink" title="关键技术"></a>关键技术</h1><blockquote>
+<p>分布式多传感器多目标跟踪涉及的目标跟踪、传感器配准、航迹关联、数据融合4项关键技术。</p>
+</blockquote>
+<h2 id="目标跟踪"><a href="#目标跟踪" class="headerlink" title="目标跟踪"></a>目标跟踪</h2><p>目标跟踪是指利用传感器获得的带噪声量测数据，对目标的状态和个数进行估计的过程。</p>
+<p>目标跟踪按目标探测个数可分为单目标跟踪和多目标跟踪，通常它们都基于贝叶斯框架进行递归滤波。</p>
+<h3 id="单目标跟踪"><a href="#单目标跟踪" class="headerlink" title="单目标跟踪"></a>单目标跟踪</h3><h3 id="多目标跟踪"><a href="#多目标跟踪" class="headerlink" title="多目标跟踪"></a>多目标跟踪</h3><h2 id="传感器配准"><a href="#传感器配准" class="headerlink" title="传感器配准"></a>传感器配准</h2><blockquote>
+<p>在分布式多传感器多目标跟踪过程中，需要把来自多个传感器的数据转换到相同的时空参照系中。由于不同传感器传输速率及采样周期不同，而且存在传感器系统偏差和量测误差，直接进行转换会降低数据融合精度，因此在对多传感器数据处理时需要进行传感器时空配准。</p>
+</blockquote>
+<h3 id="时间配准"><a href="#时间配准" class="headerlink" title="时间配准"></a>时间配准</h3><blockquote>
+<p>时间配准就是将各传感器对同一目标的异步量测信息配准到同一时刻。</p>
+</blockquote>
+<h3 id="空间配准"><a href="#空间配准" class="headerlink" title="空间配准"></a>空间配准</h3><blockquote>
+<p>空间配准是利用多传感器对空间公共目标的探测信息对传感器的系统偏差进行估计和补偿的过程，它可以提高信息融合精度。</p>
+</blockquote>
+<h2 id="航迹关联"><a href="#航迹关联" class="headerlink" title="航迹关联"></a>航迹关联</h2><blockquote>
+<p>由于传感器间的探测区域存在重叠，来自不同系统的航迹可能代表同一目标。因此，如何找出同一目标对应的航迹就是分布式数据融合系统中的航迹关联问题。</p>
+</blockquote>
+<blockquote>
+<p>航迹关联算法主要分为两类，一类是基于统计类的方法，一类是基于模糊数学的方法。</p>
+</blockquote>
+<h2 id="数据融合"><a href="#数据融合" class="headerlink" title="数据融合"></a>数据融合</h2><blockquote>
+<p>分布式多传感器多目标跟踪又称分布式多传感器数据融合。在该系统中，各局部传感器首先基于单传感器多目标跟踪算法，形成各自目标航迹，<br>接着各传感器将目标航迹送入融合中心完成时空配准与航迹关联，然后融合中心基于某种融合准则对来自同一目标的航迹进行估计融合，最终形成稳定、<br>高精度的全局航迹。</p>
+</blockquote>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://radars.ac.cn/article/doi/10.12000/JR22111" target="_blank" rel="noopener">分布式多传感器多目标跟踪方法综述</a>,by 曾雅俊, 王俊, 魏少明, 等.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/09/23/HTML%E8%A7%86%E9%A2%91%E7%82%B9%E5%87%BB%E8%87%AA%E5%8A%A8%E6%9C%80%E5%A4%A7%E5%8C%96%E6%92%AD%E6%94%BE%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1773,197 +1939,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/06/25/Maven%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6pom-xml%E5%AD%A6%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/06/25/Maven%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6pom-xml%E5%AD%A6%E4%B9%A0/" itemprop="url">
-                  Maven的配置文件pom.xml学习
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-06-25 21:41:18 / 修改时间：22:27:25" itemprop="dateCreated datePublished" datetime="2024-06-25T21:41:18+08:00">2024-06-25</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>项目对象模型 (POM) 是 Maven 中的基本工作单元。它是一个 XML 文件，包含有关项目的信息以及 Maven 用于构建项目的配置详细信息。它包含大多数项目的默认值。例如，构建目录为target；源目录为src/main/java；测试源目录为src/test/java；等等。执行任务或目标时，Maven 在当前目录中查找 POM。它读取 POM，获取所需的配置信息，然后执行目标。</p>
-<h1 id="POM-xml最简示例"><a href="#POM-xml最简示例" class="headerlink" title="POM.xml最简示例"></a>POM.xml最简示例</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">  &lt;modelVersion&gt;4.0.0&lt;&#x2F;modelVersion&gt;</span><br><span class="line"> </span><br><span class="line">  &lt;groupId&gt;com.mycompany.app&lt;&#x2F;groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;my-app&lt;&#x2F;artifactId&gt;</span><br><span class="line">  &lt;version&gt;1&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;project&gt;</span><br></pre></td></tr></table></figure>
-
-<h1 id="POM-xml结构"><a href="#POM-xml结构" class="headerlink" title="POM.xml结构"></a>POM.xml结构</h1><h2 id="项目基本信息"><a href="#项目基本信息" class="headerlink" title="项目基本信息"></a>项目基本信息</h2><p>必填项标签：</p>
-<ul>
-<li>groupId：项目的组名，通常为反转的域名，例如：com.example</li>
-<li>artifactId: 项目的唯一标识，通常为项目名称</li>
-<li>version：项目版本号</li>
-<li>packaging：项目打包方式，通常是 jar、war 或 pom, 如果没有指定packaging，则默认是 jar</li>
-</ul>
-<p>其他重要标签：</p>
-<ul>
-<li>modules</li>
-</ul>
-<p>modules 标签用于声明当前 Maven 项目包含的模块子项目，每个子项目都是一个独立的 Maven 项目，具有自己的 pom.xml 文件，可以进行独立构建和测试。在父项目的 pom.xml 文件中，使用 标签来列出所有子项目的名称。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;&#x2F;modelVersion&gt;</span><br><span class="line">	</span><br><span class="line">    &lt;groupId&gt;com.ruoyi&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;ruoyi&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;3.8.7&lt;&#x2F;version&gt;</span><br><span class="line"></span><br><span class="line">    &lt;modules&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-admin&lt;&#x2F;module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-framework&lt;&#x2F;module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-system&lt;&#x2F;module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-quartz&lt;&#x2F;module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-generator&lt;&#x2F;module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-common&lt;&#x2F;module&gt;</span><br><span class="line">    &lt;&#x2F;modules&gt;</span><br><span class="line">&lt;&#x2F;project&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>parent</li>
-</ul>
-<p>parent 标签用于声明当前 Maven 项目的父项目，它可以将若干个 Maven 项目组织成一个整体，指定版本号，插件版本号等，便于管理和维护，在一个 Maven 项目中，使用标签来引用父项目。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;parent&gt;</span><br><span class="line">        &lt;artifactId&gt;ruoyi&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;groupId&gt;com.ruoyi&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;version&gt;3.8.7&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;&#x2F;parent&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;&#x2F;modelVersion&gt;</span><br><span class="line"></span><br><span class="line">    &lt;artifactId&gt;ruoyi-framework&lt;&#x2F;artifactId&gt;</span><br><span class="line">&lt;&#x2F;project&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>properties</li>
-</ul>
-<p>properties 严格来说，并不一定是项目本身的信息，而是人为设置的属性或者说宏，这个标签用来定义和管理项目中所需要的属性，其作用有以下几个：</p>
-<p>(1) 统一管理项目中的常用属性，比如版本号、路径、插件版本等，方便统一修改和管理。</p>
-<p>(2) 可以在配置过程中使用 ${…}占位符引用这些属性，使得配置更加灵活和便捷。</p>
-<p>(3) 避免硬编码，提高代码的可维护性和可读性</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;properties&gt;</span><br><span class="line">        &lt;ruoyi.version&gt;3.8.7&lt;&#x2F;ruoyi.version&gt;</span><br><span class="line">        &lt;project.build.sourceEncoding&gt;UTF-8&lt;&#x2F;project.build.sourceEncoding&gt;</span><br><span class="line">        &lt;project.reporting.outputEncoding&gt;UTF-8&lt;&#x2F;project.reporting.outputEncoding&gt;</span><br><span class="line">        &lt;java.version&gt;1.8&lt;&#x2F;java.version&gt;</span><br><span class="line">        &lt;maven-jar-plugin.version&gt;3.1.1&lt;&#x2F;maven-jar-plugin.version&gt;</span><br><span class="line">        &lt;spring-framework.version&gt;5.3.33&lt;&#x2F;spring-framework.version&gt;</span><br><span class="line">        &lt;druid.version&gt;1.2.20&lt;&#x2F;druid.version&gt;</span><br><span class="line">        &lt;bitwalker.version&gt;1.21&lt;&#x2F;bitwalker.version&gt;</span><br><span class="line">        &lt;swagger.version&gt;3.0.0&lt;&#x2F;swagger.version&gt;</span><br><span class="line">        &lt;kaptcha.version&gt;2.3.3&lt;&#x2F;kaptcha.version&gt;</span><br><span class="line">        &lt;pagehelper.boot.version&gt;1.4.7&lt;&#x2F;pagehelper.boot.version&gt;</span><br><span class="line">        &lt;fastjson.version&gt;2.0.43&lt;&#x2F;fastjson.version&gt;</span><br><span class="line">        &lt;oshi.version&gt;6.5.0&lt;&#x2F;oshi.version&gt;</span><br><span class="line">        &lt;commons.io.version&gt;2.13.0&lt;&#x2F;commons.io.version&gt;</span><br><span class="line">        &lt;poi.version&gt;4.1.2&lt;&#x2F;poi.version&gt;</span><br><span class="line">        &lt;velocity.version&gt;2.3&lt;&#x2F;velocity.version&gt;</span><br><span class="line">        &lt;jwt.version&gt;0.9.1&lt;&#x2F;jwt.version&gt;</span><br><span class="line">    &lt;&#x2F;properties&gt;</span><br><span class="line">&lt;&#x2F;project&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="项目的依赖列表"><a href="#项目的依赖列表" class="headerlink" title="项目的依赖列表"></a>项目的依赖列表</h2><h3 id="dependency"><a href="#dependency" class="headerlink" title="dependency"></a>dependency</h3><p>与项目的依赖列表相关的标签最外层由 dependencies 来囊括，内部包含了各种具体的依赖 dependency，该标签用于指定一个依赖项，它包含以下几个子标签：</p>
-<ul>
-<li>groupId：指定依赖项的groupId，项目的组名</li>
-<li>artifactId：指定依赖项的artifactId，项目的唯一标识符</li>
-<li>version：指定依赖项的版本号。</li>
-<li>scope：指定依赖项在项目中的使用范围。</li>
-</ul>
-<p>其中的 <scope>一般包含以下几种范围：常用的有compile、test、provided 和 runtime。</p>
-<h3 id="repository"><a href="#repository" class="headerlink" title="repository"></a>repository</h3><p>我们还能在pom文件中支持指定Maven仓库，即使用 repositories 和 repository 标签，repository 用于指定一个Maven仓库。</p>
-<h2 id="项目的构建配置"><a href="#项目的构建配置" class="headerlink" title="项目的构建配置"></a>项目的构建配置</h2><p>项目的构建配置信息，包括编译器版本、插件列表、源代码目录等。</p>
-<p>具体请参考：</p>
-<ul>
-<li><a href="https://www.cnblogs.com/mountainstudy/p/17953638" target="_blank" rel="noopener">全面详解Maven的配置文件pom.xml（含常用plugin）</a></li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.cnblogs.com/mountainstudy/p/17953638" target="_blank" rel="noopener">全面详解Maven的配置文件pom.xml（含常用plugin）</a>,by Slow菜鸟.</li>
-<li><a href="https://maven.apache.org/guides/introduction/introduction-to-the-pom.html" target="_blank" rel="noopener">Introduction to the POM</a>,by apache.</li>
-<li><a href="https://blog.csdn.net/weixin_43671437/article/details/106753461" target="_blank" rel="noopener">Maven的三种项目打包方式——pom，jar，war的区别</a>,by Mr.史.</li>
-<li><a href="https://www.cnblogs.com/Baker-Street/p/16156144.html" target="_blank" rel="noopener">基于Springboot的maven父子工程pom文件打包配置</a>,by Sherlock先生.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2011,7 +1986,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">501</span>
+                    <span class="site-state-item-count">502</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

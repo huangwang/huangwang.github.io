@@ -102,15 +102,15 @@
 
 
 
-  <meta name="description" content="最近需要在Nodejs平台上使用UDP协议接收JSON数据，于是研究一下。 UDP服务器端代码UDP客户端代码参考链接 Node js 开发入门 —UDP 编程，小白也能轻松学会,by crmeb.">
+  <meta name="description" content="最近需要在Nodejs平台上使用UDP协议接收JSON数据，于是研究一下。 UDP服务器端代码1234567891011121314151617181920212223242526&#x2F;** * UDP服务端 *&#x2F;&#x2F;&#x2F;载入udp模块const dgram &#x3D; require(&quot;dgram&quot;);&#x2F;&#x2F;创建服务器con">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nodejs使用UDP通信传输JSON数据的方法">
 <meta property="og:url" content="https://huangwang.github.io/2024/12/02/Nodejs%E4%BD%BF%E7%94%A8UDP%E9%80%9A%E4%BF%A1%E4%BC%A0%E8%BE%93JSON%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E6%B3%95/index.html">
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
-<meta property="og:description" content="最近需要在Nodejs平台上使用UDP协议接收JSON数据，于是研究一下。 UDP服务器端代码UDP客户端代码参考链接 Node js 开发入门 —UDP 编程，小白也能轻松学会,by crmeb.">
+<meta property="og:description" content="最近需要在Nodejs平台上使用UDP协议接收JSON数据，于是研究一下。 UDP服务器端代码1234567891011121314151617181920212223242526&#x2F;** * UDP服务端 *&#x2F;&#x2F;&#x2F;载入udp模块const dgram &#x3D; require(&quot;dgram&quot;);&#x2F;&#x2F;创建服务器con">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-12-02T03:06:14.000Z">
-<meta property="article:modified_time" content="2024-12-02T03:09:42.095Z">
+<meta property="article:modified_time" content="2024-12-02T03:52:01.129Z">
 <meta property="article:author" content="Jack Huang">
 <meta property="article:tag" content="Blog">
 <meta name="twitter:card" content="summary">
@@ -359,7 +359,7 @@
                 
               
 
-              <time title="创建时间：2024-12-02 11:06:14 / 修改时间：11:09:42" itemprop="dateCreated datePublished" datetime="2024-12-02T11:06:14+08:00">2024-12-02</time>
+              <time title="创建时间：2024-12-02 11:06:14 / 修改时间：11:52:01" itemprop="dateCreated datePublished" datetime="2024-12-02T11:06:14+08:00">2024-12-02</time>
             
 
             
@@ -416,8 +416,14 @@
 
       
         <p>最近需要在Nodejs平台上使用UDP协议接收JSON数据，于是研究一下。</p>
-<h1 id="UDP服务器端代码"><a href="#UDP服务器端代码" class="headerlink" title="UDP服务器端代码"></a>UDP服务器端代码</h1><h1 id="UDP客户端代码"><a href="#UDP客户端代码" class="headerlink" title="UDP客户端代码"></a>UDP客户端代码</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<h1 id="UDP服务器端代码"><a href="#UDP服务器端代码" class="headerlink" title="UDP服务器端代码"></a>UDP服务器端代码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * UDP服务端</span><br><span class="line"> *&#x2F;</span><br><span class="line">&#x2F;&#x2F;载入udp模块</span><br><span class="line">const dgram &#x3D; require(&quot;dgram&quot;);</span><br><span class="line">&#x2F;&#x2F;创建服务器</span><br><span class="line">const server &#x3D; dgram.createSocket(&quot;udp4&quot;);</span><br><span class="line"> </span><br><span class="line">server.on(&quot;message&quot;,(msg,rinfo)&#x3D;&gt;&#123;</span><br><span class="line">    &#x2F;&#x2F;将接收到的消息返回客户端</span><br><span class="line">    var strmsg &#x3D; &quot;你好，UDP客户端，消息已经收到！&quot;;</span><br><span class="line">    server.send(strmsg,rinfo.port,rinfo.address);</span><br><span class="line">    let jsonData&#x3D;JSON.parse(msg)</span><br><span class="line">    console.log(&quot;服务器接收到来自&quot;+rinfo.address+&quot;:&quot;+rinfo.port+&quot; 的消息：&quot;+jsonData.hello);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">server.on(&quot;listening&quot;,()&#x3D;&gt;&#123;</span><br><span class="line">    let adress &#x3D; server.address();</span><br><span class="line">    console.log(&quot;服务器监听：&quot;,adress.adress+&quot;:&quot;+adress.port);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">server.on(&quot;error&quot;,(err)&#x3D;&gt;&#123;</span><br><span class="line">    console.err(&quot;服务器异常错误：&quot;+err.message);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">server.bind(8234,&quot;127.0.0.1&quot;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="UDP客户端代码"><a href="#UDP客户端代码" class="headerlink" title="UDP客户端代码"></a>UDP客户端代码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * UDP客户端</span><br><span class="line"> *&#x2F;</span><br><span class="line">const dgram &#x3D; require(&quot;dgram&quot;);</span><br><span class="line"> </span><br><span class="line">const client &#x3D; dgram.createSocket(&quot;udp4&quot;);</span><br><span class="line"> </span><br><span class="line">client.on(&quot;message&quot;,(msg,rinfo)&#x3D;&gt;&#123;</span><br><span class="line">    console.log(&quot;接收来自：&quot;+rinfo.address+&quot;:&quot;+rinfo.port+&quot;的消息：&quot;+msg.toString());</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">client.on(&quot;error&quot;,(err)&#x3D;&gt;&#123;</span><br><span class="line">  console.error(&quot;客户端错误：&quot;+err.message);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">client.on(&quot;close&quot;,()&#x3D;&gt;&#123;</span><br><span class="line">    console.log(&quot;socket已关闭&quot;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">let jsonData&#x3D;&#123;</span><br><span class="line">    hello: &quot;我是UDP客户端！&quot;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">client.send(JSON.stringify(jsonData),8234,&quot;127.0.0.1&quot;,(err)&#x3D;&gt;&#123;</span><br><span class="line">    if(err) client.close();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://cloud.tencent.com/developer/article/2079197" target="_blank" rel="noopener">Node js 开发入门 —UDP 编程，小白也能轻松学会</a>,by crmeb.</li>
+<li><a href="https://blog.csdn.net/caofengtao1314/article/details/117063590" target="_blank" rel="noopener">UDP 报文最大可以是多大呢</a>,by cft56200_ln.</li>
+<li><a href="https://blog.csdn.net/u011555996/article/details/126960232" target="_blank" rel="noopener">UDP传输报文大小详解</a>,by luckyone906.</li>
 </ol>
 
       

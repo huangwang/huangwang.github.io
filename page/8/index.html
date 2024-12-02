@@ -314,6 +314,174 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/08/16/Python%E4%BB%8EPE%E6%96%87%E4%BB%B6%E4%B8%AD%E5%AF%BC%E5%87%BA%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2023/08/16/Python%E4%BB%8EPE%E6%96%87%E4%BB%B6%E4%B8%AD%E5%AF%BC%E5%87%BA%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6/" itemprop="url">
+                  Python从PE文件中导出资源文件
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2023-08-16 12:39:03" itemprop="dateCreated datePublished" datetime="2023-08-16T12:39:03+08:00">2023-08-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-06-18 21:44:36" itemprop="dateModified" datetime="2024-06-18T21:44:36+08:00">2024-06-18</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近需要修改一个QT编写的应用，就是将资源图片修改一下，但是资源图片被打包到DLL的.rdata段中，无法直接导出，于是想通过Python直接读取导出，然后定位需要修改图片的位置。具体代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding:utf-8 -*-</span><br><span class="line"> </span><br><span class="line">import os,sys,re</span><br><span class="line"> </span><br><span class="line">def find_all_pos(filename,feature):</span><br><span class="line">    &quot;&quot;&quot;打开二进制文件，搜索指定特征的位置，并返回所有位置的列表</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    with open(filename, &#39;rb&#39;) as binFile:</span><br><span class="line">        binFileStr &#x3D; binFile.read()</span><br><span class="line">        posArray &#x3D; [m.start() for m in re.finditer(feature, binFileStr)]</span><br><span class="line">        return posArray</span><br><span class="line"></span><br><span class="line">def export_all_png(filename,posArray):</span><br><span class="line">    &quot;&quot;&quot;打开二进制文件，根据特征位置数组，导出所有的PNG文件</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    with open(filename, &#39;rb&#39;) as binFile:    </span><br><span class="line">        for i in range(len(posArray)-1):</span><br><span class="line">            pngLen &#x3D; posArray[i+1] - posArray[i]</span><br><span class="line">            # print(pngLen)</span><br><span class="line">            binFile.seek(posArray[i])</span><br><span class="line">            pngFileBin &#x3D; binFile.read(pngLen)</span><br><span class="line">            pngFile &#x3D; open(&quot;res\\&quot;+str(i)+&quot;.png&quot;, &quot;wb&quot;)</span><br><span class="line">            pngFile.write(pngFileBin)</span><br><span class="line"></span><br><span class="line">def find_feature_pos(filename,feature):</span><br><span class="line">    &quot;&quot;&quot;打开二进制文件，搜索指定特征最早出现的位置，并返回结果</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    with open(filename, &#39;rb&#39;) as binFile:</span><br><span class="line">        binFileStr &#x3D; binFile.read()</span><br><span class="line">        result &#x3D; re.search(feature,binFileStr)</span><br><span class="line">        try:</span><br><span class="line">            return result.span(0)[0]</span><br><span class="line">        except:</span><br><span class="line">            return -1</span><br><span class="line">        </span><br><span class="line">def merge_new_file(filename,feature_pos):</span><br><span class="line">    &quot;&quot;&quot;打开二进制文件，提取特征之后的数据，与新的文件头合并</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    file_header&#x3D;b&quot;\x44\x55\x66&quot;</span><br><span class="line">    with open(filename, &#39;rb&#39;) as binFile:    </span><br><span class="line">            binFile.seek(feature_pos)</span><br><span class="line">            datFileBin &#x3D; binFile.read()</span><br><span class="line">            datFile &#x3D; open(filename[:-4]+&quot;_new&quot;+filename[-4:], &quot;wb&quot;)</span><br><span class="line">            datFile.write(file_header)</span><br><span class="line">            datFile.write(datFileBin)</span><br><span class="line"> </span><br><span class="line">def walk_files(src_filepath &#x3D; &quot;.&quot;, file_name_feature&#x3D;&quot;.exe&quot;):</span><br><span class="line">    &quot;&quot;&quot;遍历目录中的文件，提取指定特征的文件</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    filepath_list &#x3D; []</span><br><span class="line">   </span><br><span class="line">    for root, dirs, files in os.walk(src_filepath):</span><br><span class="line">        for file in files:</span><br><span class="line">            if file.endswith(file_name_feature)&#x3D;&#x3D;False:</span><br><span class="line">                continue</span><br><span class="line">            if root &#x3D;&#x3D; &#39;.&#39;:</span><br><span class="line">                root_path &#x3D; os.getcwd() + &quot;&#x2F;&quot;</span><br><span class="line">            else:</span><br><span class="line">                root_path &#x3D; root</span><br><span class="line">            </span><br><span class="line">            if (root_path !&#x3D; src_filepath) and (root !&#x3D; &#39;.&#39;):</span><br><span class="line">                filepath &#x3D; root_path + &quot;&#x2F;&quot; + file</span><br><span class="line">            else:</span><br><span class="line">                filepath &#x3D; root_path + file</span><br><span class="line">            </span><br><span class="line">            if filepath not in filepath_list:</span><br><span class="line">                filepath_list.append(filepath)</span><br><span class="line">                       </span><br><span class="line">    return filepath_list</span><br><span class="line"> </span><br><span class="line">if __name__ &#x3D;&#x3D; &quot;__main__&quot;:</span><br><span class="line">    for path in sys.argv[1:]:</span><br><span class="line">        if os.path.isfile(path):</span><br><span class="line">            posArray &#x3D; find_all_pos(path,b&quot;\x89\x50\x4E\x47\x0D\x0A\x1A\x0A&quot;)</span><br><span class="line">            # 位置数组应该大于1</span><br><span class="line">            if(len(posArray)&gt;1):</span><br><span class="line">                # print(posArray)</span><br><span class="line">                if(os.path.exists(&quot;res&quot;)&#x3D;&#x3D;False):</span><br><span class="line">                    os.makedirs(&quot;res&quot;) </span><br><span class="line">                pngList&#x3D;&quot;&quot;</span><br><span class="line">                for i in range(len(posArray)):</span><br><span class="line">                    pngList &#x3D; pngList + str(i) + &quot;,0x%x&quot;%posArray[i] +&quot;\n&quot;</span><br><span class="line">                # 保存图片位置信息</span><br><span class="line">                pngFileMeta &#x3D; open(&quot;res\\pnglistpos.csv&quot;, &quot;w&quot;)</span><br><span class="line">                pngFileMeta.write(pngList)</span><br><span class="line"></span><br><span class="line">                export_all_png(path,posArray)</span><br></pre></td></tr></table></figure>
+
+<p>运行时采用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python -m venv env</span><br><span class="line">.\env\Scripts\activate</span><br><span class="line">python utf8_to_gbk.py filepath</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.freebuf.com/articles/others-articles/265879.html" target="_blank" rel="noopener">PNG文件格式详解</a>,by oriole.</li>
+<li><a href="https://blog.csdn.net/xjp_xujiping/article/details/88936960" target="_blank" rel="noopener">Python输出列表list</a>,by huang_0430.</li>
+<li><a href="https://blog.csdn.net/MuWinter/article/details/77215768" target="_blank" rel="noopener">python创建目录（文件夹)</a>,by FanWinter.</li>
+<li><a href="https://blog.csdn.net/wowocpp/article/details/79379342" target="_blank" rel="noopener">python 数字 十六进制 打印</a>,by wowocpp.</li>
+<li><a href="https://developer.aliyun.com/article/889827" target="_blank" rel="noopener">python文件的打开、读取、关闭、写入与二进制文件的读写操作</a>,by aliyun.</li>
+<li><a href="https://stackoverflow.com/questions/4664850/how-to-find-all-occurrences-of-a-substring" target="_blank" rel="noopener">How to find all occurrences of a substring?</a>,by stackoverflow.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/54581546" target="_blank" rel="noopener">如何逆向解决QT程序汉化中的乱码问题-干货</a>,by 葫芦娃很厉害.</li>
+<li><a href="https://bbs.kanxue.com/thread-28321.htm" target="_blank" rel="noopener">如何汉化一个软件</a>,by CCDebuger.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/60457016" target="_blank" rel="noopener">Qt 资源系统（Qt Resource System）</a>,by 南理汉子.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/08/03/Web%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95%E8%AE%B0%E5%BD%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1767,221 +1935,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/04/03/Java%E4%B9%8BSSH%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2023/04/03/Java%E4%B9%8BSSH%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
-                  Java之SSH框架学习笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2023-04-03 23:27:40" itemprop="dateCreated datePublished" datetime="2023-04-03T23:27:40+08:00">2023-04-03</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2023-04-04 18:21:07" itemprop="dateModified" datetime="2023-04-04T18:21:07+08:00">2023-04-04</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近处理的几个项目都是用Java语言编写的，学习一下。</p>
-<h1 id="Web-xml配置文件"><a href="#Web-xml配置文件" class="headerlink" title="Web.xml配置文件"></a>Web.xml配置文件</h1><h2 id="Listener"><a href="#Listener" class="headerlink" title="Listener"></a>Listener</h2><p><listener>为web应用程序定义监听器，监听器用来监听各种事件，比如：application和session事件，所有的监听器按照相同的方式定义，功能取决去它们各自实现的接口，常用的Web事件接口有如下几个：</p>
-<ul>
-<li>ServletContextListener：用于监听Web应用的启动和关闭；</li>
-<li>ServletContextAttributeListener：用于监听ServletContext范围（application）内属性的改变；</li>
-<li>ServletRequestListener：用于监听用户的请求；</li>
-<li>ServletRequestAttributeListener：用于监听ServletRequest范围（request）内属性的改变；</li>
-<li>HttpSessionListener：用于监听用户session的开始和结束；</li>
-<li>HttpSessionAttributeListener：用于监听HttpSession范围（session）内属性的改变。</li>
-</ul>
-<p><listener>主要用于监听Web应用事件，其中有两个比较重要的WEB应用事件：应用的启动和停止（starting up or shutting down）和Session的创建和失效（created or destroyed）。</p>
-<h2 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h2><p>Filter可认为是Servle的一种“加强版”，主要用于对用户请求request进行预处理，也可以对Response进行后处理，是个典型的处理链。使用Filter的完整流程是：Filter对用户请求进行预处理，接着将请求HttpServletRequest交给Servlet进行处理并生成响应，最后Filter再对服务器响应HttpServletResponse进行后处理。Filter与Servlet具有完全相同的生命周期，且Filter也可以通过<init-param>来配置初始化参数，获取Filter的初始化参数则使用FilterConfig的getInitParameter()。</p>
-<p>换种说法，Servlet里有request和response两个对象，Filter能够在一个request到达Servlet之前预处理request，也可以在离开Servlet时处理response，Filter其实是一个Servlet链。</p>
-<p>以下是Filter的一些常见应用场合：</p>
-<ul>
-<li>认证Filter</li>
-<li>日志和审核Filter</li>
-<li>图片转换Filter</li>
-<li>数据压缩Filter</li>
-<li>密码Filter</li>
-<li>令牌Filter</li>
-<li>触发资源访问事件的Filter</li>
-<li>XSLT Filter</li>
-<li>媒体类型链Filter</li>
-</ul>
-<h2 id="Servlet"><a href="#Servlet" class="headerlink" title="Servlet"></a>Servlet</h2><p>Servlet通常称为服务器端小程序，是运行在服务器端的程序，用于处理及响应客户的请求。Servlet是个特殊的java类，继承于HttpServlet。客户端通常只有GET和POST两种请求方式，Servlet为了响应则两种请求，必须重写doGet()和doPost()方法。</p>
-<h2 id="Bean"><a href="#Bean" class="headerlink" title="Bean"></a>Bean</h2><p>JavaBeans是Java中一种特殊的类，可以将多个对象封装到一个对象（bean）中。特点是可序列化，提供无参构造器，提供getter方法和setter方法访问对象的属性。名称中的“Bean”是用于Java的可重用软件组件的惯用叫法。</p>
-<h2 id="Web-xml加载顺序"><a href="#Web-xml加载顺序" class="headerlink" title="Web.xml加载顺序"></a>Web.xml加载顺序</h2><blockquote>
-<p>总的来说，web.xml的加载顺序是:<context-param>-&gt;<listener>-&gt;<filter>-&gt;<servlet>。其中，如果web.xml中出现了相同的元素，则按照在配置文件中出现的先后顺序来加载。</p>
-</blockquote>
-<blockquote>
-<p>对于某类元素而言，与它们出现的顺序是有关的。以<filter>为例，web.xml中当然可以定义多个<filter>，与<filter>相关的一个元素是<filter-mapping>，注意，对于拥有相同<filter-name>的<filter>和<filter-mapping>元素而言，<filter-mapping>必须出现在<filter>之后，否则当解析到<filter-mapping>时，它所对应的<filter-name>还未定义。web容器启动初始化每个<filter>时，按照<filter>出现的顺序来初始化的，当请求资源匹配多个<filter-mapping>时，<filter>拦截资源是按照<filter-mapping>元素出现的顺序来依次调用doFilter()方法的。<servlet>同<filter>类似，此处不再赘述。</p>
-<p>Servlet里有request和response两个对象，Filter能够在一个request到达Servlet之前预处理request，也可以在离开Servlet时处理response，Filter其实是一个Servlet链。</p>
-</blockquote>
-<h1 id="Struct2"><a href="#Struct2" class="headerlink" title="Struct2"></a>Struct2</h1><p>请参考<a href="https://www.cnblogs.com/beilou310/p/10436856.html" target="_blank" rel="noopener">Struct2 基础介绍 </a>。</p>
-<p align="center">
-    <img src="images/sruct2.webp" width="90%" alt="Struct2工作流程"/>
-</p>
-<center>图1  Struct2工作流程</center>
-
-<h1 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h1><p>请参考<a href="https://juejin.cn/post/6844903577077415950" target="_blank" rel="noopener">Spring MVC 解析之 DispatcherServlet</a>。</p>
-<p align="center">
-    <img src="images/spring.webp" width="90%" alt="Spring工作流程"/>
-</p>
-<center>图2  Spring工作流程</center>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.cnblogs.com/linhuaming/p/9464356.html" target="_blank" rel="noopener">web.xml 配置文件 超详细说明！！！ </a>,by 吴川华仔.</li>
-<li><a href="https://blog.51cto.com/u_3664660/3217638" target="_blank" rel="noopener">web.xml文件中加载顺序的优先级 </a>,by laolu0837.</li>
-<li><a href="https://www.cnblogs.com/wl0000-03/p/7803276.html" target="_blank" rel="noopener">Spring 、SpringMVC 、Struts2之间的区别</a>,by 刘二雄.</li>
-<li><a href="https://www.cnblogs.com/beilou310/p/10436856.html" target="_blank" rel="noopener">Struct2 基础介绍 </a>,by shiyuan310.</li>
-<li><a href="https://www.cnblogs.com/javabg/p/7290496.html" target="_blank" rel="noopener">深入Struts2的过滤器FilterDispatcher–中文乱码及字符编码过滤器</a>,by  关键步就几步.</li>
-<li><a href="https://blog.csdn.net/zhoucheng05_13/article/details/54142632" target="_blank" rel="noopener">Spring整合Struts2步骤及完整实例</a>,by Star_Ship.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/26787293" target="_blank" rel="noopener">Spring和struts2整合详解</a>,by Damon.</li>
-<li><a href="https://www.jb51.net/article/178242.htm" target="_blank" rel="noopener">spring整合struts2过程详解</a>,by 西西嘛呦.</li>
-<li><a href="https://juejin.cn/post/6844903577077415950" target="_blank" rel="noopener">Spring MVC 解析之 DispatcherServlet</a>,by 摆码王子.</li>
-<li><a href="https://www.jianshu.com/p/4851dbedb63d" target="_blank" rel="noopener">一文读懂SpringMVC工作流程</a>,by Wizey.</li>
-<li><a href="https://www.cnblogs.com/51kata/p/5152400.html" target="_blank" rel="noopener">servlet的url-pattern匹配规则详细描述</a>,by 51kata.</li>
-<li><a href="https://blog.51cto.com/u_3664660/3216490" target="_blank" rel="noopener">Listener,Filter,Servlet执行顺序和生命周期</a>,by laolu0837.</li>
-<li><a href="https://blog.csdn.net/u012373815/article/details/47174163" target="_blank" rel="noopener">springmvc 的参数绑定，springmvc和 struts2的区别</a>,by 双斜杠少年.</li>
-<li><a href="https://www.51cto.com/article/130441.html" target="_blank" rel="noopener">如何集成Struts和Spring</a>,by gxhsnowflower.</li>
-<li><a href="https://www.yiibai.com/struts_2/struts_spring.html" target="_blank" rel="noopener">Struts2和Spring集成</a>,by yiibai.</li>
-<li><a href="https://blog.csdn.net/wrs120/article/details/79603735" target="_blank" rel="noopener">Spring 和 Struts 集成</a>,by 王如霜.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2029,7 +1982,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">503</span>
+                    <span class="site-state-item-count">504</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

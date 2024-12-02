@@ -314,6 +314,177 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/05/18/Linux%E7%BD%91%E5%8F%A3%E6%B7%B7%E6%9D%82%E6%A8%A1%E5%BC%8F%E8%AE%BE%E7%BD%AE%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/05/18/Linux%E7%BD%91%E5%8F%A3%E6%B7%B7%E6%9D%82%E6%A8%A1%E5%BC%8F%E8%AE%BE%E7%BD%AE%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Linux网口混杂模式设置方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-05-18 14:15:35" itemprop="dateCreated datePublished" datetime="2024-05-18T14:15:35+08:00">2024-05-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-05-19 09:19:19" itemprop="dateModified" datetime="2024-05-19T09:19:19+08:00">2024-05-19</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近在Kylin 4.0.4社区版上安装了VirtualBox，使用VirtualBox安装了Win7操作系统，虚拟机通过设置网口桥接模式与宿主机进行通信。偶尔出现宿主机无法ping通虚拟机，虚拟机无法ping通宿主机的情况，查看虚拟机网口接收情况，发现虚拟机接收数据包为0，重启虚拟机也无法恢复，因此严重怀疑其原因是虚拟机使用的宿主机网口工作模式并不是混杂模式。下面介绍在Linux上查看网口工作模式和设置网口工作模式的方法。</p>
+<h1 id="查看网口工作模式"><a href="#查看网口工作模式" class="headerlink" title="查看网口工作模式"></a>查看网口工作模式</h1><p>如果存在ifconfig命令，则可使用该命令查看网口的工作模式，命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost jack]# ifconfig</span><br><span class="line">eth0      Link encap:Ethernet  HWaddr 08:00:27:70:1D:79  </span><br><span class="line">          inet6 addr: fe80::a00:27ff:fe70:1d79&#x2F;64 Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:100124 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:8795 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:1000</span><br><span class="line">          RX bytes:12986638 (12.3 MiB)  TX bytes:6452270 (6.1 MiB)</span><br></pre></td></tr></table></figure>
+
+<p>如果存在ip命令，则可使用该命令查看网口的工作模式，命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost jack]# ip addr</span><br></pre></td></tr></table></figure>
+
+<h1 id="设置网口工作模式"><a href="#设置网口工作模式" class="headerlink" title="设置网口工作模式"></a>设置网口工作模式</h1><p>如果存在ifconfig命令，则可使用该命令设置网口的工作模式，命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0 promisc  设置混杂模式</span><br><span class="line">ifconfig eth0 -promisc 取消混杂模式</span><br></pre></td></tr></table></figure>
+
+<p>如果存在ip命令，则可使用该命令设置网口的工作模式，命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ip link set eth0 up</span><br><span class="line">ip link set eth0 promisc on</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="http://www.splaybow.com/post/linux-wangka-hunza-moshi.html" target="_blank" rel="noopener">Linux中如何将网卡设置为混杂模式</a>,by splaybow.</li>
+<li><a href="https://blog.csdn.net/dkfajsldfsdfsd/article/details/79409799" target="_blank" rel="noopener">VirtualBox网络之桥接网卡</a>,by 五星上炕.</li>
+<li><a href="https://blog.csdn.net/duyiwuer2009/article/details/26757271" target="_blank" rel="noopener">设置网卡混杂模式</a>,by duyiwuer2009.</li>
+<li><a href="https://www.jianshu.com/p/315d1b60501a" target="_blank" rel="noopener">Linux下的ip命令</a>,by wyaoo.</li>
+<li><a href="https://blog.csdn.net/bandaoyu/article/details/134523501" target="_blank" rel="noopener">【网络】网口工作模式（混杂模式|监听模式|监视模式|管理模式）</a>,by bandaoyu.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/05/11/%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E8%A7%92%E5%BA%A6%E7%90%86%E8%A7%A3%E5%A4%A7%E5%B0%8F%E7%AB%AF%E5%AD%97%E8%8A%82%E5%BA%8F%E9%97%AE%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1845,288 +2016,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/03/16/SpringBoot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/03/16/SpringBoot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
-                  SpringBoot学习笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-03-16 16:44:03" itemprop="dateCreated datePublished" datetime="2024-03-16T16:44:03+08:00">2024-03-16</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2024-07-10 13:46:13" itemprop="dateModified" datetime="2024-07-10T13:46:13+08:00">2024-07-10</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Spring Boot 是一个基于 Java 的开源框架，用于以最小的工作量编写独立的、生产级的基于 Spring 的应用程序。Spring Boot 是 Spring Java 平台的约定优先于配置的扩展，旨在帮助在创建基于 Spring 的应用程序时最大程度地减少配置问题。</p>
-<p>由于其易用性和健壮性，它被广泛用于构建微服务、Web 应用程序和其他基于 Java 的项目。</p>
-<h1 id="常用工具介绍"><a href="#常用工具介绍" class="headerlink" title="常用工具介绍"></a>常用工具介绍</h1><h2 id="mvn-repository"><a href="#mvn-repository" class="headerlink" title="mvn repository"></a>mvn repository</h2><p>访问地址如下，用于查找Jar包</p>
-<ul>
-<li><a href="https://mvnrepository.com/" target="_blank" rel="noopener">mvnrepository</a></li>
-</ul>
-<p>当前很多项目使用mvn打包多模块，请参考：</p>
-<ul>
-<li><a href="https://www.cnblogs.com/swordfall/p/15044415.html" target="_blank" rel="noopener">Maven打包方式（多模块）</a></li>
-</ul>
-<h2 id="MyBatis"><a href="#MyBatis" class="headerlink" title="MyBatis"></a>MyBatis</h2><h2 id="MyBatis-Plus"><a href="#MyBatis-Plus" class="headerlink" title="MyBatis-Plus"></a>MyBatis-Plus</h2><p>请参考：</p>
-<ul>
-<li><a href="https://blog.csdn.net/qq_38974638/article/details/119896632" target="_blank" rel="noopener">MyBatis org.apache.ibatis.binding.BindingException: Invalid bound statement (not found)问题解决</a></li>
-</ul>
-<p>代码生成器新，请参考：</p>
-<ul>
-<li><a href="https://www.modb.pro/db/619309" target="_blank" rel="noopener">Mybatis Plus最新代码生成器AutoGenerator，更简单更高效！</a></li>
-</ul>
-<h2 id="SWagger"><a href="#SWagger" class="headerlink" title="SWagger"></a>SWagger</h2><p>Swagger是一个可以根据你的代码，自动生成接口文档的一个工具，并且可以用作接口测试工具。</p>
-<p>请参考：</p>
-<ul>
-<li><a href="https://blog.csdn.net/ldy1016/article/details/136502829" target="_blank" rel="noopener">springboot3.x集成SpringDoc Swagger3</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/529772728" target="_blank" rel="noopener">从 SpringFox 迁移到 SpringDoc</a></li>
-</ul>
-<h1 id="跨域问题"><a href="#跨域问题" class="headerlink" title="跨域问题"></a>跨域问题</h1><blockquote>
-<p>在用SpringBoot开发后端服务时，我们一般是提供接口给前端使用，但前端通过浏览器调我们接口时，浏览器会有个同源策略的限制，即协议，域名，端口任一不一样时都会导致跨域，这篇文章主要介绍跨域的几种常用解决方案。</p>
-</blockquote>
-<p>具体方案请参考：</p>
-<ul>
-<li><a href="https://juejin.cn/post/7229139006080253989" target="_blank" rel="noopener">SpringBoot 项目解决跨域的几种方案</a></li>
-</ul>
-<h2 id="测试跨域问题"><a href="#测试跨域问题" class="headerlink" title="测试跨域问题"></a>测试跨域问题</h2><p>注意，当前以下代码无法在最新的Chrome浏览器控制台运行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var xhr &#x3D; new XMLHttpRequest()</span><br><span class="line">xhr.open(&#39;GET&#39;, &#39;http:&#x2F;&#x2F;localhost:9090&#x2F;user&#39;) &#x2F;&#x2F; 替换请求的方法和地址</span><br><span class="line">xhr.send()</span><br><span class="line">xhr.onreadystatechange &#x3D; function() &#123;</span><br><span class="line">    if (xhr.readyState &#x3D;&#x3D; 4 &amp;&amp; xhr.status &#x3D;&#x3D; 200) &#123;</span><br><span class="line">        console.log(xhr.responseText)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可使用Postman进行跨域测试，请参考：</p>
-<ul>
-<li><a href="https://apifox.com/apiskills/how-to-test-cors-with-postman/" target="_blank" rel="noopener">Postman 中如何进行跨域（CORS）测试？图文教程</a></li>
-</ul>
-<p>具体原理是：跨域问题源于浏览器同源策略，Postman 提供了模拟 CORS 请求的便捷方法，通过设置 Origin 字段和测试跨域请求，可检查响应头中的Access-Control-Allow-Origin等信息。</p>
-<h1 id="maven父子工程中的依赖引用"><a href="#maven父子工程中的依赖引用" class="headerlink" title="maven父子工程中的依赖引用"></a>maven父子工程中的依赖引用</h1><p>请参考：</p>
-<ul>
-<li><a href="https://blog.csdn.net/kh6417/article/details/107574545" target="_blank" rel="noopener">一文搞懂maven父子工程中的依赖引用</a></li>
-</ul>
-<h1 id="注解"><a href="#注解" class="headerlink" title="注解"></a>注解</h1><h2 id="AliasFor注解"><a href="#AliasFor注解" class="headerlink" title="@AliasFor注解"></a>@AliasFor注解</h2><p>请参考：</p>
-<ul>
-<li><a href="https://juejin.cn/post/6844904153966182407" target="_blank" rel="noopener">SpringBoot深入理解 – @AliasFor注解的作用</a></li>
-<li><a href="https://www.cnblogs.com/54chensongxia/p/14385621.html" target="_blank" rel="noopener">@AliasFor 注解</a></li>
-<li><a href="https://blog.csdn.net/lipinganq/article/details/79155072" target="_blank" rel="noopener">Spring Boot常用注解（一） - 声明Bean的注解</a></li>
-</ul>
-<h2 id="Component注解"><a href="#Component注解" class="headerlink" title="@Component注解"></a>@Component注解</h2><p>请参考：</p>
-<ul>
-<li><a href="https://blog.csdn.net/goodjava2007/article/details/123011212" target="_blank" rel="noopener">SpringBoot - @Component注解使用详解</a></li>
-</ul>
-<h2 id="Service注解"><a href="#Service注解" class="headerlink" title="@Service注解"></a>@Service注解</h2><p>请参考：</p>
-<ul>
-<li><a href="https://www.cnblogs.com/xrq730/p/5313412.html" target="_blank" rel="noopener">Spring5：@Autowired注解、@Resource注解和@Service注解</a></li>
-<li><a href="https://blog.csdn.net/juggle_gap_horse/article/details/128972813" target="_blank" rel="noopener">Spring注解之Service详解</a></li>
-</ul>
-<h2 id="Configuration注解"><a href="#Configuration注解" class="headerlink" title="@Configuration注解"></a>@Configuration注解</h2><p>请参考：</p>
-<ul>
-<li><a href="https://blog.csdn.net/albert_xjf/article/details/131411052" target="_blank" rel="noopener">Spring Boot 中的 @Configuration 注解</a></li>
-</ul>
-<h2 id="Aspect-注解"><a href="#Aspect-注解" class="headerlink" title="@Aspect 注解"></a>@Aspect 注解</h2><p>请参考：</p>
-<ul>
-<li><a href="https://blog.csdn.net/yujun2023/article/details/133804713" target="_blank" rel="noopener">Spring Boot中的 @Aspect 注解是什么，如何使用</a></li>
-<li><a href="https://developer.aliyun.com/article/1150649" target="_blank" rel="noopener">@Aspect结合案例详解（一）</a></li>
-<li><a href="https://www.cnblogs.com/sunpeiyu/articles/17378907.html" target="_blank" rel="noopener">基于@Aspect注解实现的SpringBoot AOP源码</a></li>
-<li><a href="https://blog.csdn.net/HuffmanTree_J/article/details/119300221" target="_blank" rel="noopener">Spring Boot 自定义注解实现AOP切面织入</a></li>
-<li><a href="https://juejin.cn/post/7058468469926264846" target="_blank" rel="noopener">Spring Boot 使用自定义注解实现操作日志的记录</a></li>
-<li><a href="https://www.cnblogs.com/zhaojinhui/p/16734291.html" target="_blank" rel="noopener">AOP面向切面编程@Aspect 注解用法</a></li>
-<li><a href="https://www.v2ex.com/t/971848" target="_blank" rel="noopener">关于切点表达式中 @annotation 用法的疑问</a></li>
-<li><a href="https://www.cnblogs.com/kenx/p/15093310.html" target="_blank" rel="noopener">SpringBoot AOP中JoinPoint的用法和通知切点表达式</a></li>
-<li><a href="https://www.cnblogs.com/kenx/p/15088701.html" target="_blank" rel="noopener">SpringBoot Aop 详解和多种使用场景</a></li>
-</ul>
-<h2 id="RestControllerAdvice注解"><a href="#RestControllerAdvice注解" class="headerlink" title="@RestControllerAdvice注解"></a>@RestControllerAdvice注解</h2><p>请参考：</p>
-<ul>
-<li><a href="https://juejin.cn/post/7025484367539470344" target="_blank" rel="noopener">RestControllerAdvice注解与全局异常处理</a></li>
-</ul>
-<h1 id="Actuator"><a href="#Actuator" class="headerlink" title="Actuator"></a>Actuator</h1><blockquote>
-<p>在Spring Boot应用中，只需要依赖组件spring-boot-starter-actuator。它提供了很多监控和管理你的Spring Boot应用的HTTP或者JMX端点，并且你可以有选择地开启和关闭部分功能。当你的Spring Boot应用中引入依赖之后，将自动拥有审计、健康检查、Metrics监控等功能。</p>
-</blockquote>
-<p>请参考：</p>
-<ul>
-<li><a href="https://www.cnblogs.com/badaoliumangqizhi/p/16164999.html" target="_blank" rel="noopener">SpringBoot中集成Actuator实现监控系统运行状态</a></li>
-</ul>
-<h1 id="实体类划分"><a href="#实体类划分" class="headerlink" title="实体类划分"></a>实体类划分</h1><blockquote>
-<p>在项目应用中，VO对应于页面上需要显示的数据（表单），DO对应于数据库中存储的数据（数据表），DTO对应于除二者之外需要进行传递的数据。</p>
-</blockquote>
-<ul>
-<li><p>VO（View Object）：视图对象，用于展示层，它的作用是把某个指定页面（或组件）的所有数据封装起来。</p>
-</li>
-<li><p>DTO（Data Transfer Object）：数据传输对象，这个概念来源于J2EE的设计模式，原来的目的是为了EJB的分布式应用提供粗粒度的数据实体，以减少分布式调用的次数，从而提高分布式调用的性能和降低网络负载，但在这里，我泛指用于展示层与服务层之间的数据传输对象。</p>
-</li>
-<li><p>DO（Domain Object）：领域对象，就是从现实世界中抽象出来的有形或无形的业务实体。</p>
-</li>
-<li><p>PO（Persistent Object）：持久化对象，它跟持久层（通常是关系型数据库）的数据结构形成一一对应的映射关系，如果持久层是关系型数据库，那么，数据表中的每个字段（或若干个）就对应PO的一个（或若干个）属性。</p>
-</li>
-</ul>
-<p>请参考：</p>
-<ul>
-<li><a href="https://ruoyi.csdn.net/65714688b8e5f01e1e4424e5.html" target="_blank" rel="noopener">实体类（VO，DO，DTO）的划分</a></li>
-</ul>
-<h1 id="Spring-Security"><a href="#Spring-Security" class="headerlink" title="Spring Security"></a>Spring Security</h1><p>请参考：</p>
-<ul>
-<li><a href="https://shusheng007.top/2023/02/15/springsecurity/" target="_blank" rel="noopener">秒懂SpringBoot之全网最易懂的Spring Security教程</a></li>
-</ul>
-<h1 id="PageHelper分页插件"><a href="#PageHelper分页插件" class="headerlink" title="PageHelper分页插件"></a>PageHelper分页插件</h1><p>请参考：</p>
-<ul>
-<li><a href="https://blog.csdn.net/qq_31086797/article/details/106628523" target="_blank" rel="noopener">mybatis分页插件PageHelper使用及原理分析</a></li>
-<li><a href="https://www.cnblogs.com/JCcccit/p/16868378.html" target="_blank" rel="noopener">Springboot Mybatis使用pageHelper实现分页查询</a></li>
-</ul>
-<h1 id="代码自动生成"><a href="#代码自动生成" class="headerlink" title="代码自动生成"></a>代码自动生成</h1><p>请参考：</p>
-<ul>
-<li><a href="https://jishusuishouji.github.io/2017/01/22/java/velocity/%E4%BD%BF%E7%94%A8_Velocity_%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E%E5%BF%AB%E9%80%9F%E7%94%9F%E6%88%90%E4%BB%A3%E7%A0%81/" target="_blank" rel="noopener">使用 Velocity 模板引擎快速生成代码</a></li>
-</ul>
-<h1 id="定时任务"><a href="#定时任务" class="headerlink" title="定时任务"></a>定时任务</h1><p>请参考：</p>
-<ul>
-<li><a href="https://www.cnblogs.com/wk-missQ1/p/16658710.html" target="_blank" rel="noopener">深入Quartz，更优雅地管理你的定时任务</a></li>
-</ul>
-<h1 id="部署方式"><a href="#部署方式" class="headerlink" title="部署方式"></a>部署方式</h1><p>请参考：</p>
-<ul>
-<li><a href="https://blog.csdn.net/weixin_44259720/article/details/105381045" target="_blank" rel="noopener">花5分钟过一遍jar包和war包的区别</a></li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://spring.io/projects/spring-boot" target="_blank" rel="noopener">Spring Boot</a>,by spring.</li>
-<li><a href="https://www.bilibili.com/video/BV1U44y1W77D/" target="_blank" rel="noopener">从0开始带你手撸一套SpringBoot+Vue后台管理系统，让小白能跟着学会的项目实战</a>,by 程序员青戈.</li>
-<li><a href="https://juejin.cn/post/7229139006080253989" target="_blank" rel="noopener">SpringBoot 项目解决跨域的几种方案</a>,by JK凯.</li>
-<li><a href="https://blog.csdn.net/ldy1016/article/details/136502829" target="_blank" rel="noopener">springboot3.x集成SpringDoc Swagger3</a>,by 咚咚阳.</li>
-<li><a href="https://mvnrepository.com/" target="_blank" rel="noopener">mvnrepository</a>,by mvn.</li>
-<li><a href="https://blog.csdn.net/qq_43006591/article/details/103901573" target="_blank" rel="noopener">Spring中 Service和ServiceImpl的选择</a>,by leeindex.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2174,7 +2063,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">503</span>
+                    <span class="site-state-item-count">504</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

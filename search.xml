@@ -22039,6 +22039,76 @@ console.log(y);</code></pre></li>
     <title>系统设计面试：内幕指南读书笔记</title>
     <url>/2024/11/20/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E9%9D%A2%E8%AF%95%EF%BC%9A%E5%86%85%E5%B9%95%E6%8C%87%E5%8D%97%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>一本好书，值得学习。</p>
+<h1 id="第01章：从0到百万用户"><a href="#第01章：从0到百万用户" class="headerlink" title="第01章：从0到百万用户"></a>第01章：从0到百万用户</h1><blockquote>
+<p>垂直扩展，又称为“纵向扩展”，指的是通过增加单个服务器的计算能力（CPU、RAM等）来提升其性能。<br>水平扩展，又称为“横向扩展”，允许通过向资源池中添加更多服务器来进行扩展。</p>
+</blockquote>
+<blockquote>
+<p>引用自维基百科：“数据库复制可适用于许多数据库管理系统，通常在原始数据库(master)与副本数据库(slaves)之间建立主/从关系”。</p>
+</blockquote>
+<blockquote>
+<p>主数据库通常仅支持写的操作。从数据库从主数据库中复制数据并且仅支持读操作。所有修改数据的命令，如：insert，delete，update 都必须发送到主数据库。</p>
+</blockquote>
+<blockquote>
+<p>缓存是一个临时存储区域，用于将昂贵的响应结果或频繁的访问数据存储在内存中，以便之后的请求能被更快的处理。</p>
+</blockquote>
+<blockquote>
+<p>CDN（内容分发网络）是一个由地理上分散的服务器组成的网络，用于提供静态内容。CDN服务器缓存静态内容，如：图片、视频、CSS、JavaScript文件等。</p>
+</blockquote>
+<blockquote>
+<p>无状态的Web层</p>
+</blockquote>
+<blockquote>
+<p>消息队列是一个持久性组件，存储在内存中，支持异步通信，它充当缓冲区并分发异步请求。消息队列的基础架构非常简单，输入服务，被称为生产者/发布者，创建消息，并将它们发送到消息队列中。其他服务或服务器，称为消费者/订阅者，连接到队列，并执行消息定义的动作。</p>
+</blockquote>
+<h1 id="第02章：粗略估算"><a href="#第02章：粗略估算" class="headerlink" title="第02章：粗略估算"></a>第02章：粗略估算</h1><blockquote>
+<p>高可用性是系统持续运行的能力，期望能够长时间保持操作。 高可用性通常以百分比表示，100%意味着服务没有任何停机时间。大多数服务的可用性介于99%到100%之间。</p>
+</blockquote>
+<blockquote>
+<p>服务水平协议（SLA）是服务提供商常用的术语。这是你（服务提供商）与你的客户之间的协议，该协议正式定义了你的服务将提供的运行时间水平。</p>
+</blockquote>
+<h1 id="第03章：系统设计面试框架"><a href="#第03章：系统设计面试框架" class="headerlink" title="第03章：系统设计面试框架"></a>第03章：系统设计面试框架</h1><h2 id="有效系统设计面试的-4-步流程"><a href="#有效系统设计面试的-4-步流程" class="headerlink" title="有效系统设计面试的 4 步流程"></a>有效系统设计面试的 4 步流程</h2><ul>
+<li>第1步 ：了解问题并确定设计范围</li>
+<li>第2步：提出高层次的设计方案并获得认同</li>
+<li>第3步：深入设计</li>
+<li>第4步：总结</li>
+</ul>
+<h1 id="第04章：设计一个限流器"><a href="#第04章：设计一个限流器" class="headerlink" title="第04章：设计一个限流器"></a>第04章：设计一个限流器</h1><blockquote>
+<p>在网络系统中，限流器被用于控制客户端或服务端发送流量的速率。在HTTP世界中，限流器限制在指定时间内允许发送客户端请求数。 如果API请求次数超过了限流器设置的阈值，则所有超出的调用都会被阻止。</p>
+</blockquote>
+<h2 id="限流算法"><a href="#限流算法" class="headerlink" title="限流算法"></a>限流算法</h2><p>流行算法的列表：</p>
+<ul>
+<li><p>令牌桶（Token bucket）</p>
+</li>
+<li><p>漏桶算法（Leaking bucket）</p>
+</li>
+<li><p>固定窗口计数器（Fixed window counter）</p>
+</li>
+<li><p>滑动窗口日志（Sliding window log）</p>
+</li>
+<li><p>滑动窗口计数器（Sliding window counter）</p>
+</li>
+</ul>
+<h1 id="第05章：一致性hash设计"><a href="#第05章：一致性hash设计" class="headerlink" title="第05章：一致性hash设计"></a>第05章：一致性hash设计</h1><blockquote>
+<p>为了实现水平扩展，在服务器之间高效、均匀地分配请求/数据非常重要。一致哈希是实现这一目标的常用技术。</p>
+<p>引用自维基百科：“一致性哈希是一种特殊的哈希，当重新调整哈希表的大小并使用一致性哈希时，平均只需要重新映射 k/n 个键，其中<br>k 是键的数量，n 是槽的数量。 相比之下，在大多数传统的哈希表中，数组槽数量的变化导致几乎所有键都被重新映射 [1]”</p>
+</blockquote>
+<h1 id="第06章：key-value-存储设计"><a href="#第06章：key-value-存储设计" class="headerlink" title="第06章：key-value 存储设计"></a>第06章：key-value 存储设计</h1><blockquote>
+<p>分布式键值存储也称为分布式哈希表，它将键值对分布在许多服务器上。在设计分布式系统时，了解 CAP（C一致性、A可用性、P分区容错性）定理很重要。</p>
+</blockquote>
+<blockquote>
+<p>CAP 定理指出，分布式系统不可能同时提供以下三种保证中的两种以上：一致性、可用性和分区容错性。让我们熟悉一些定义。</p>
+</blockquote>
+<ul>
+<li><p>一致性：一致性意味着所有客户端无论连接到哪个节点，都在同一时间看到相同的数据。</p>
+</li>
+<li><p>可用性：可用性意味着即使某些节点已关闭，任何请求数据的客户端都会得到响应。</p>
+</li>
+<li><p>分区容忍度：分区表示两个节点之间的通信中断，分区容错意味着系统在网络分区的情况下继续运行。</p>
+</li>
+</ul>
+<blockquote>
+<p>CAP 定理指出，必须牺牲三个属性之一来支持 3 个属性中的 2 个。</p>
+</blockquote>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://learning-guide.gitbook.io/system-design-interview" target="_blank" rel="noopener">系统设计面试：内幕指南</a>,by Alex Xu.</li>
 </ol>
@@ -22191,6 +22261,26 @@ console.log(y);</code></pre></li>
       <tags>
         <tag>笔记本</tag>
         <tag>nodejs</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>好用的AI工具记录</title>
+    <url>/2024/12/03/%E5%A5%BD%E7%94%A8%E7%9A%84AI%E5%B7%A5%E5%85%B7%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<p>AI工具可以工作效率，快速交付成果，值得使用。下面记录一下常用的AI工具。</p>
+<h1 id="文本到文本"><a href="#文本到文本" class="headerlink" title="文本到文本"></a>文本到文本</h1><h2 id="ChatGPT"><a href="#ChatGPT" class="headerlink" title="ChatGPT"></a>ChatGPT</h2><p>ChatGPT，全称聊天生成预训练转换器（英语：Chat Generative Pre-trained Transformer），是OpenAI开发的人工智能聊天机器人程序，于2022年12月推出。该程序使用基于GPT-3.5、GPT-4、GPT-4o架构的大型语言模型并以强化学习训练。ChatGPT目前仍以文字方式交互，而除了可以用人类自然对话方式来交互，还可以用于甚为复杂的语言工作，包括自动生成文本、自动问答、自动摘要等多种任务。如：在自动文本生成方面，ChatGPT可以根据输入的文本自动生成类似的文本（剧本、歌曲、企划等），在自动问答方面，ChatGPT可以根据输入的问题自动生成答案。还有编写和调试计算机程序的能力。</p>
+<h1 id="文本到图像"><a href="#文本到图像" class="headerlink" title="文本到图像"></a>文本到图像</h1><h2 id="DALL-E"><a href="#DALL-E" class="headerlink" title="DALL-E"></a>DALL-E</h2><p>DALL-E是一个可以通过文本描述生成图像的人工智能程序，于2021年1月5日由OpenAI发布。</p>
+<p>DALL-E通过120亿参数版本的GPT-3 Transformer模型来理解自然语言输入（例如“五边形形状的绿色皮革钱包”或“一只悲伤水豚的等距视图”）并生成相应的图片。它既可以生成现实的对象（例如“带有蓝色草莓图像的彩色玻璃窗”），也能够生成现实中不存在的对象（例如“具有豪猪纹理的立方体”）。</p>
+<h2 id="Stable-Diffusion"><a href="#Stable-Diffusion" class="headerlink" title="Stable Diffusion"></a>Stable Diffusion</h2><p>Stable Diffusion是2022年发布的深度学习文本到图像生成模型。它主要用于根据文本的描述产生详细图像，尽管它也可以应用于其他任务，如内补绘制、外补绘制，以及在提示词指导下产生图生图的转变。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.snowbeasts.com/blog/details/592" target="_blank" rel="noopener">2024年20个最好的AI工具和应用</a>,by snowbeasts.</li>
+<li><a href="https://zh.wikipedia.org/zh-cn/ChatGPT" target="_blank" rel="noopener">ChatGPT</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/zh-cn/Stable_Diffusion" target="_blank" rel="noopener">Stable Diffusion</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/DALL-E" target="_blank" rel="noopener">DALL-E</a>,by wikipedia.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>机器学习</tag>
       </tags>
   </entry>
 </search>

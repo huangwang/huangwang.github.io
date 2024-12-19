@@ -314,6 +314,182 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/26/CPlusPlus%E6%A0%87%E5%87%86%E6%BC%94%E5%8C%96%E7%AE%80%E4%BB%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/26/CPlusPlus%E6%A0%87%E5%87%86%E6%BC%94%E5%8C%96%E7%AE%80%E4%BB%8B/" itemprop="url">
+                  C++标准演化简介
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-26 19:45:12 / 修改时间：20:36:16" itemprop="dateCreated datePublished" datetime="2019-06-26T19:45:12+08:00">2019-06-26</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近阅读采用C++编写的MAVROS源码，遇到很多C++语言的新特性，理解起来很费劲，因此，特地分析一下C++标准演变过程，学习其进化过程中引入的新特性，提高C++源码阅读效率。</p>
+<h1 id="C-标准演变"><a href="#C-标准演变" class="headerlink" title="C++标准演变"></a>C++标准演变</h1><p>2017年12月05日，ISO C++ 委员会正式发布了 C++ 17 标准，官方名称为 ISO/IEC 14882:2017。之前发布的C++标准有C++14、C++11、C++03、C++98。</p>
+<h2 id="C-98"><a href="#C-98" class="headerlink" title="C++98"></a>C++98</h2><p>C++98是第一个C++标准。它分为两个部分：核心语言和C++标准程序库；后者包含了大部分标准模板库和C标准程序库的稍加修改版本。存在许多不属于标准部分的C++程序库，且使用外部链接，程序库甚至可以用C撰写。</p>
+<p>C++标准程序库充分吸收了C标准程序库，并佐以少许的修改，使其与C++良好的运作。另一个大型的程序库部分，是以标准模板库（STL）为基础，STL于1994年2月正式成为ANSI/ISO C++。它提供了实用的工具，如容器类（如：Array和Vector），迭代器（广义指针）提供容器以类似数组的访问方式，以及泛型算法进行搜索和排序的运算。此外还提供了(multi)map和(multi)set，它们都共享相似的成员函数。因此，以下成为可能，使用模板撰写泛型算法，它可以和任何容器或在任何以迭代器定义的序列上运作。如同C，使用#include指令包含标准表头，即可访问程序库里的功能。C++提供69个标准表头，其中19个不再赞成使用。</p>
+<p>使用标准模板库（例如：使用std::vector或std::string来取代C风格的数组或字符数组）有助于导向更安全和更灵活的软件。</p>
+<p>在STL在纳入C++标准以前，是来自HP和后来的SGI的第三方程式库，标准中并未称之为“STL”，它只是标准库中的一部分，但仍有许多人使用这个名称，以别于其它的标准库（输入／输出流、国际化、诊断、C程序库子集，等等）。 另外，如std::basic_string此类标准委员会添加的接口，有时也被误认为STL；实际上它们并不存在于原始的SGI STL中，在标准化后SGI STL才从标准库吸收加入其中。</p>
+<h2 id="C-03"><a href="#C-03" class="headerlink" title="C++03"></a>C++03</h2><p>C++03 是 C++ 语言国际标准的一个版本，正式名称是 ISO/IEC 14882:2003。该标准由国际标准化组织（ISO）和国际电工委员会（IEC）共同制定。</p>
+<p>C++03 取代了 C++ 标准的前一个版本 C++98，后被 C++11 所取代。C++03 主要是在前一个版本的基础上针对实现方的一些问题进行了修复，从而在各个实现间达到一致、保持了可移植性。该版本共涉及 92 项核心语言缺陷报告、125 项库缺陷报告，所提供的新特性只有一项：值初始化（英语：value initialization）。</p>
+<p>C++03 的第 69 号库缺陷报告非常值得一提，为了解决该问题，标准中加入了“std::vector 中的元素必须连续存储”的要求。</p>
+<h2 id="C-11"><a href="#C-11" class="headerlink" title="C++11"></a>C++11</h2><p>C++11，先前被称作C++0x，即ISO/IEC 14882:2011，是C++编程语言的一个标准。它取代第二版标准ISO/IEC 14882:2003（第一版ISO/IEC 14882:1998公开于1998年，第二版于2003年更新，分别通称C++98以及C++03，两者差异很小），且已被C++14取代。相比于C++03，C++11标准包含核心语言的新机能，而且扩展C++标准程序库，并入了大部分的C++ Technical Report 1程序库（数学的特殊函数除外）。 ISO／IEC JTC1/SC22/WG21 C++标准委员会计划在2010年8月之前完成对最终委员会草案的投票，以及于2011年3月召开的标准会议完成国际标准的最终草案。然而，WG21预期ISO将要花费六个月到一年的时间才能正式发布新的C++标准。为了能够如期完成，委员会决定致力于直至2006年为止的提案，忽略新的提案。最终于2011年8月12日公布，并于2011年9月出版。</p>
+<p>2012年2月28日的国际标准草案是最接近于C++11标准的草案，差异仅有编辑上的修正。</p>
+<p>像C++这样的编程语言，透过一种演化的的过程来发展其定义。这个过程不可避免地将引发与现有代码的兼容问题，在C++的发展过程中偶尔会发生。不过根据比雅尼·斯特劳斯特鲁普（C++的创始人并且是委员会的一员）表示，新的标准将几乎100%兼容于现有标准。</p>
+<h2 id="C-14"><a href="#C-14" class="headerlink" title="C++14"></a>C++14</h2><p>C++14是C++的现行标准的非正式名称，正式名称为”International Standard ISO/IEC 14882:2014(E) Programming Language C++”。C++14旨在作为C++11的一个小扩展，主要提供漏洞修复和小的改进。C++14标准的委员会草案（Committee Draft）N3690于2013年5月15日发表。工作草案（Working Draft）N3936已于2014年3月2日完成。最终的投票期结束于2014年8月15日，结果（一致通过）已于8月18日公布。</p>
+<h2 id="C-17"><a href="#C-17" class="headerlink" title="C++17"></a>C++17</h2><p>C++17又称C++1z，是C++的现行标准的非正式名称，正式名称为”International Standard ISO/IEC Programming Language C++”。C++17旨在作为大型扩展，最终的投票期将于2017年结束。</p>
+<p>当前不少著名C++编译器已支持C++17仍未定案的草案（draft），例如最新的GCC6已支持C++ concept的C++事务型内存（Transactional Memory），Visual Studio与Clang当前都提供了modules。</p>
+<h1 id="C-新语言特性"><a href="#C-新语言特性" class="headerlink" title="C++新语言特性"></a>C++新语言特性</h1><h2 id="Lambda函数与表示式"><a href="#Lambda函数与表示式" class="headerlink" title="Lambda函数与表示式"></a>Lambda函数与表示式</h2><p>在标准C++，特别是当使用C++标准程序库算法函数诸如sort和find，用户经常希望能够在算法函数调用的附近定义一个临时的述部函数（又称谓词函数，predicate function）。由于语言本身允许在函数内部定义类别，可以考虑使用函数对象，然而这通常既麻烦又冗赘，也阻碍了代码的流程。此外，标准C++不允许定义于函数内部的类别被用于模板，所以前述的作法是不可行的。</p>
+<p><strong>C++11对lambda（即匿名函数）的支持可以解决上述问题</strong>。</p>
+<p>一个lambda函数可以用如下的方式定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[](int x, int y) &#123; return x + y; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个不具名函数的回返类型是decltype(x+y)。只有在lambda函数匹配”return expression”的形式下，它的回返类型才能被忽略。在前述的情况下，lambda函数仅能为一个述句。</p>
+<p>在一个更为复杂的例子中，回返类型可以被明确的指定如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[](int x, int y) -&gt; int &#123; int z &#x3D; x + y; return z + x; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>本例中，一个临时的参数z被创建用来存储中间结果。如同一般的函数，z的值不会保留到下一次该不具名函数再次被调用时。</p>
+<p>如果lambda函数没有传回值（例如void），其回返类型可被完全忽略。</p>
+<p>定义在与lambda函数相同作用域的参数引用也可以被使用。这种的参数集合一般被称作closure（闭包）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[]      &#x2F;&#x2F; 沒有定义任何变量。使用未定义变量会引发错误。</span><br><span class="line">[x, &amp;y] &#x2F;&#x2F; x以传值方式传入（默认），y以引用方式传入。</span><br><span class="line">[&amp;]     &#x2F;&#x2F; 任何被使用到的外部变量都隐式地以引用方式加以引用。</span><br><span class="line">[&#x3D;]     &#x2F;&#x2F; 任何被使用到的外部变量都隐式地以传值方式加以引用。</span><br><span class="line">[&amp;, x]  &#x2F;&#x2F; x显式地以传值方式加以引用。其余变量以引用方式加以引用。</span><br><span class="line">[&#x3D;, &amp;z] &#x2F;&#x2F; z显式地以引用方式加以引用。其余变量以传值方式加以引用。</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B" target="_blank" rel="noopener">C++</a>,by wikipedia.</li>
+<li><a href="https://zh.cppreference.com/w/cpp/language/history" target="_blank" rel="noopener">C++ 的历史</a>,by cppreference.</li>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B03" target="_blank" rel="noopener">C++03</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B11" target="_blank" rel="noopener">C++11</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B14" target="_blank" rel="noopener">C++14</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/wiki/C%2B%2B17" target="_blank" rel="noopener">C++17</a>,by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/23/%E6%9C%89%E8%B6%A3%E7%9A%84%E6%95%B0%E5%AD%A6%E6%B8%B8%E6%88%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2062,159 +2238,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/08/ROS%E4%B8%ADPackage%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/08/ROS%E4%B8%ADPackage%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/" itemprop="url">
-                  ROS中Package安装方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-08 21:41:08 / 修改时间：21:50:37" itemprop="dateCreated datePublished" datetime="2019-06-08T21:41:08+08:00">2019-06-08</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>ROS（机器人操作系统，Robot Operating System），是专为机器人软件开发所设计出来的一套电脑操作系统架构。它是一个开源的元级操作系统（后操作系统），提供类似于操作系统的服务，包括硬件抽象描述、底层驱动程序管理、共用功能的执行、程序间消息传递、程序发行包管理，它也提供一些工具和库用于获取、建立、编写和执行多机融合的程序。</p>
-<p>ROS的Package资源非常丰富，官方库中就有两千多Package，这对扩充ROS的功能十分重要。下面即介绍ROS中Package的安装方法，主要分成两种方法：</p>
-<h1 id="Deb安装方式"><a href="#Deb安装方式" class="headerlink" title="Deb安装方式"></a>Deb安装方式</h1><p>deb方式安装方法十分简单，根据ROS版本，直接运行apt-get命令，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install ros-kinetic-camera-calibration</span><br></pre></td></tr></table></figure>
-
-<h1 id="源码安装方式"><a href="#源码安装方式" class="headerlink" title="源码安装方式"></a>源码安装方式</h1><p>源码安装方式稍微复杂，安装方法如下：</p>
-<ol>
-<li>创建catkin工作空间</li>
-<li>在catkin工作空间的src文件夹下，下载ROS的Package源代码</li>
-<li>使用catkin build命令编译安装</li>
-</ol>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.zybuluo.com/ferstar/note/214495" target="_blank" rel="noopener">安装ROS软件包</a>,by ferstar.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2262,7 +2285,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">505</span>
+                    <span class="site-state-item-count">506</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

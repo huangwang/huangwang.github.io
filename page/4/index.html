@@ -314,6 +314,370 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/06/13/Linux%E6%A1%8C%E9%9D%A2%E7%89%88%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/06/13/Linux%E6%A1%8C%E9%9D%A2%E7%89%88%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  Linux桌面版安装过程笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-06-13 20:04:43" itemprop="dateCreated datePublished" datetime="2024-06-13T20:04:43+08:00">2024-06-13</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-06-14 22:48:05" itemprop="dateModified" datetime="2024-06-14T22:48:05+08:00">2024-06-14</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近需要在一台比较老的机器上安装银河麒麟4.0.2，遇到一些问题，记录一下。</p>
+<h1 id="光盘启动后，显示器黑屏"><a href="#光盘启动后，显示器黑屏" class="headerlink" title="光盘启动后，显示器黑屏"></a>光盘启动后，显示器黑屏</h1><p>解决方案：光盘启动后，选择 install kylin 启动选项，按键盘 e 进入编辑状态，找到 quiet splash ，在后面添加 nomodeset ，然后按 crtl+x 启动。</p>
+<p>具体原理:</p>
+<ul>
+<li>nomodeset</li>
+</ul>
+<p>这是一个新型的显示模式，即内核在启动阶段调用更先进的图形显示技术，以达到更好的显示效果。副作用就是兼容性低。</p>
+<p>可以设置nomodeset 或者modeset=0关闭这项功能，至少保证进入字符界面。</p>
+<p>更进阶一点的写法是：i915.modeset=0,其中i915是intel的显示驱动，该命令可以单独关闭该驱动的KMS。</p>
+<ul>
+<li>quiet</li>
+</ul>
+<p>quiet参数的作用：启动系统的过程中，如果没有quiet，那么内核就会输出很多内核消息，这些内核消息就包括的了系统启动过程中运行了哪些程序，如果系统运行正常，就没必要看到这些消息。</p>
+<ul>
+<li>splash</li>
+</ul>
+<p>splash是一个不可或缺的参数，系统很多核心程序，都需要这个参数，且这个参数与可视化界面有关，没有就可能导致屏幕一片空白。</p>
+<h1 id="网卡不识别，需要安装驱动"><a href="#网卡不识别，需要安装驱动" class="headerlink" title="网卡不识别，需要安装驱动"></a>网卡不识别，需要安装驱动</h1><p>进入Linux系统桌面后，执行如下步骤：</p>
+<ul>
+<li><p>查未安装驱动的网口<br>ifconfig  和 ifconfig -a对比，查看哪些网口没有加载，即为没有驱动的网口 </p>
+</li>
+<li><p>查网卡驱动型号<br>ethtool -i 网口，输出的driver:XXX就是驱动名</p>
+</li>
+<li><p>下载网卡<br>去intel官网下载对应驱动的源码</p>
+</li>
+</ul>
+<ul>
+<li><p>卸载旧驱动<br>rmmod XXX</p>
+</li>
+<li><p>编译<br>进入源码的makefile同级目录，执行make install</p>
+</li>
+<li><p>加载新驱动<br>depmod -a<br>modprobe XXX</p>
+</li>
+<li><p>查看<br>lsmod | grep XXX</p>
+</li>
+<li><p>重启网络服务<br>service networking restart</p>
+</li>
+</ul>
+<h1 id="显示器分辨率不够，需要安装驱动"><a href="#显示器分辨率不够，需要安装驱动" class="headerlink" title="显示器分辨率不够，需要安装驱动"></a>显示器分辨率不够，需要安装驱动</h1><p>进入Linux系统桌面后，执行如下步骤：</p>
+<ul>
+<li><p>禁用原驱动nouveau<br>vim  /etc/modprobe.d/blacklist.conf<br>追加blacklist nouveu</p>
+</li>
+<li><p>备份启动项<br>mv /boot/initram….img /boot/initram…img.bak</p>
+</li>
+<li><p>重新生成启动项<br>dracut -v /boot/initram…img,名称要和原来的一样</p>
+</li>
+<li><p>重启，并ctrl alt f1（或者f2-f6）进去tty界面<br>登录root用户，关闭lightdm<br>service lightdm stop<br>找到nvidia显卡驱动并执行，都选yes或者ok，重新生成initram，并添加带X服务<br>安装好后启动lightdm<br>service lightdm start<br>按ctrl alt f7进入图形界面</p>
+</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/weixin_55609813/article/details/127005039" target="_blank" rel="noopener">银河麒麟v4.0.2安装</a>,by 阿瓦隆<em>勒</em>菲.</li>
+<li><a href="https://blog.csdn.net/dair6/article/details/121151562" target="_blank" rel="noopener">linux中grub，nomodest，quiet等参数的含义，进入启动项之后黑屏的可能原因</a>,by dair6.</li>
+<li><a href="https://wiki.deepin.org/zh/01_%E8%BD%AF%E4%BB%B6wiki/03_linux%E5%86%85%E6%A0%B8/linux%E5%86%85%E6%A0%B8%E5%90%AF%E5%8A%A8%E5%8F%82%E6%95%B0" target="_blank" rel="noopener">linux内核启动参数</a>,by deepin.</li>
+<li><a href="https://blog.csdn.net/luhuaxiang/article/details/88396882" target="_blank" rel="noopener">Linux系统安装网卡驱动</a>,by luhuaxiang.</li>
+<li><a href="https://blog.csdn.net/zataji/article/details/123104569" target="_blank" rel="noopener">【亲测有效】Linux系统安装NVIDIA显卡驱动</a>,by 自动驾驶simulation.</li>
+<li><a href="https://skyao.io/learning-linux-mint/docs/installation/hardware/amd_graph/" target="_blank" rel="noopener">AMD显卡驱动安装</a>,by skyao.</li>
+<li><a href="https://www.small09.top/posts/210719-gpuinfoinlinux/" target="_blank" rel="noopener">Linux中获得AMD显卡的状态信息</a>,by 香风家的火柴盒.</li>
+<li><a href="https://blog.csdn.net/StruggleRay/article/details/133201391" target="_blank" rel="noopener">ubuntu环境配置AMD显卡驱动</a>,by WocheDonner.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/06/11/QT%E7%A7%81%E6%9C%89%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/06/11/QT%E7%A7%81%E6%9C%89%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0/" itemprop="url">
+                  QT私有类的设计模式学习
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-06-11 22:30:32 / 修改时间：22:36:25" itemprop="dateCreated datePublished" datetime="2024-06-11T22:30:32+08:00">2024-06-11</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>查看QT源码，会发现很多类会有一个同样名字、但是以Private结尾的孪生类，这是QT用于封装私有操作的一种设计模式。这种设计模式可以有如下优点：</p>
+<ul>
+<li>信息隐藏</li>
+<li>二进制兼容</li>
+</ul>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>myclass.h</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; myclass.h  </span><br><span class="line">#ifndef MYCLASS_H  </span><br><span class="line">#define MYCLASS_H  </span><br><span class="line">#include &lt;QtCore&#x2F;QObject&gt;  </span><br><span class="line">class MyClassPrivate;  </span><br><span class="line">class MyClass: public QObject  </span><br><span class="line">&#123;  </span><br><span class="line">  Q_OBJECT  </span><br><span class="line">public:  </span><br><span class="line">  MyClass(QObject *parent &#x3D; 0);  </span><br><span class="line">  virtual ~MyClass();  </span><br><span class="line">  void dummyFunc();  </span><br><span class="line">signal:  </span><br><span class="line">  void dummySignal();  </span><br><span class="line">private:  </span><br><span class="line">  MyClassPrivate * const d_ptr;  </span><br><span class="line">  Q_DECLARE_PRIVATE(MyClass);  </span><br><span class="line">  Q_DISABLE_COPY(MyClass);  </span><br><span class="line">&#125;;  </span><br><span class="line">#endif &#x2F;&#x2F; MYCLASS_H</span><br></pre></td></tr></table></figure>
+
+<p>myclass.cpp  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; myclass.cpp  </span><br><span class="line">#include &quot;myclass.h&quot;  </span><br><span class="line">class MyClassPrivate  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">  MyClassPrivate(MyClass *parent)  </span><br><span class="line">    : q_ptr(parent)  </span><br><span class="line">  &#123;  </span><br><span class="line">  &#125;  </span><br><span class="line">  void foobar()  </span><br><span class="line">  &#123;  </span><br><span class="line">    Q_Q(MyClass);  </span><br><span class="line">    emit q-&gt;dummySignal();  </span><br><span class="line">  &#125;  </span><br><span class="line">private:  </span><br><span class="line">  MyClass * const q_ptr;  </span><br><span class="line">  Q_DECLARE_PUBLIC(MyClass);  </span><br><span class="line">&#125;;  </span><br><span class="line">MyClass::MyClass(QObject *parent)  </span><br><span class="line">  : QObject(parent)  </span><br><span class="line">  , d_ptr(new MyClassPrivate(this))  </span><br><span class="line">&#123;  </span><br><span class="line">&#125;  </span><br><span class="line">MyClass::~MyClass()  </span><br><span class="line">&#123;  </span><br><span class="line">  Q_D(MyClass);  </span><br><span class="line">  delete d;  </span><br><span class="line">&#125;  </span><br><span class="line">void MyClass::dummyFunc()  </span><br><span class="line">&#123;  </span><br><span class="line">  Q_D(MyClass);  </span><br><span class="line">  d-&gt;foobar();  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.cnblogs.com/zzzsj/p/17511693.html" target="_blank" rel="noopener">C++学习—qt的公有类、私有类、Q_Q、Q_D、二进制兼容</a>,by 手磨咖啡.</li>
+<li><a href="https://blog.csdn.net/weixin_33232568/article/details/131342239" target="_blank" rel="noopener">Qt使用技巧–定义Private类</a>,by 大王怕我去巡山.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/06/08/Python%E6%8F%90%E5%8F%96%E6%95%B0%E6%8D%AE%E5%BA%93%E5%86%85%E5%AE%B9%E5%B9%B6%E6%A0%B9%E6%8D%AE%E6%96%87%E6%A1%A3%E6%A8%A1%E6%9D%BF%E7%94%9F%E6%88%90%E6%96%87%E6%A1%A3%E7%9A%84%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1673,313 +2037,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/04/20/nodejs%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8Anywhere%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/04/20/nodejs%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8Anywhere%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/" itemprop="url">
-                  nodejs静态文件服务器Anywhere使用帮助
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-04-20 12:05:07 / 修改时间：12:07:49" itemprop="dateCreated datePublished" datetime="2024-04-20T12:05:07+08:00">2024-04-20</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Anywhere 是随启随用的静态文件服务器，它能随时随地将你的当前目录变成一个静态文件服务器的根目录。</p>
-<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install anywhere -g</span><br></pre></td></tr></table></figure>
-
-<h1 id="执行"><a href="#执行" class="headerlink" title="执行"></a>执行</h1><p>切换到静态文件目录，输入以下命令测试：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ anywhere</span><br><span class="line">&#x2F;&#x2F; or with port</span><br><span class="line">$ anywhere -p 8000</span><br><span class="line">&#x2F;&#x2F; or start it but silent(don&#39;t open browser)</span><br><span class="line">$ anywhere -s</span><br><span class="line">&#x2F;&#x2F; or with hostname</span><br><span class="line">$ anywhere -h localhost -p 8888</span><br><span class="line">&#x2F;&#x2F; or with folder</span><br><span class="line">$ anywhere -d ~&#x2F;git&#x2F;anywhere</span><br><span class="line">&#x2F;&#x2F; or enable html5 history</span><br><span class="line">$ anywhere -f &#x2F;index.html</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.npmjs.com/package/anywhere" target="_blank" rel="noopener">anywhere</a>,by npmjs</li>
-<li><a href="https://www.jianshu.com/p/3f0b7ea9df53" target="_blank" rel="noopener">nodejs服务器Anywhere使用</a>,by 一包.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/04/11/DTO%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/04/11/DTO%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0/" itemprop="url">
-                  DTO模式学习
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-04-11 21:05:39" itemprop="dateCreated datePublished" datetime="2024-04-11T21:05:39+08:00">2024-04-11</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2024-04-12 20:29:21" itemprop="dateModified" datetime="2024-04-12T20:29:21+08:00">2024-04-12</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>DTO模式首次被提出来是在 Martin Fowler 的 EAA 一书中，DTOs 或 Data Transfer Objects 是一种在进程中传递数据的对象，用来减少方法的调用。</p>
-<p>根据 Martin Fowler 的解释，该模式的主要目的是通过在一次调用中批量处理多个命令参数，从而减少请求服务器的次数，进而减少远程操作的网络开销。</p>
-<p>该模式的另一个好处是对序列化的逻辑（序列化是指将对象的结构和数据转换为特定模式用来存储或者传输的机制）进行了封装，提供了单一的变化点去修改序列化的逻辑。它还可以将领域模型与表现层解耦，允许两者独立变化而不互相影响。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.baeldung.com/java-dto-pattern" target="_blank" rel="noopener">The DTO Pattern (Data Transfer Object)</a>,by baeldung.</li>
-<li><a href="https://iyichen.xyz/2022/04/the-dto-pattern/" target="_blank" rel="noopener">[译] DTO模式</a>,by iyichen.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2027,7 +2084,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">507</span>
+                    <span class="site-state-item-count">509</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

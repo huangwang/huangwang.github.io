@@ -314,6 +314,400 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/11/19/Linux%E7%A3%81%E7%9B%98%E5%85%8B%E9%9A%86%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/11/19/Linux%E7%A3%81%E7%9B%98%E5%85%8B%E9%9A%86%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Linux磁盘克隆方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-11-19 21:02:46" itemprop="dateCreated datePublished" datetime="2024-11-19T21:02:46+08:00">2024-11-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-12-05 08:04:20" itemprop="dateModified" datetime="2024-12-05T08:04:20+08:00">2024-12-05</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近公司的一台 CentOS 服务器需要克隆一下，以便在另一台服务器或者虚拟机上运行，因此，研究了一下Linux的磁盘克隆方法。</p>
+<h1 id="基本常识"><a href="#基本常识" class="headerlink" title="基本常识"></a>基本常识</h1><h2 id="UEFI-与-BIOS-区别"><a href="#UEFI-与-BIOS-区别" class="headerlink" title="UEFI 与 BIOS 区别"></a>UEFI 与 BIOS 区别</h2><p>UEFI引导与BIOS引导在结构上的区别：</p>
+<ul>
+<li><p>BIOS引导的结构相对简单，由3个部分组成：BIOS程序、MBR（主引导记录）和操作系统引导程序。其中BIOS程序是由计算机制造商预装在ROM芯片中的，MBR是位于磁盘的名列前茅个扇区，用于存储操作系统引导程序的位置信息，操作系统引导程序则是由用户安装的操作系统自带的。</p>
+</li>
+<li><p>UEFI引导的结构相对复杂，由多个部分组成：UEFI固件、GPT（GUID分区表）、EFI系统分区、操作系统引导程序。其中UEFI固件是由计算机制造商预装在主板上的，GPT是磁盘分区表，EFI系统分区是用于存储操作系统引导程序和其他UEFI应用程序的特殊分区，操作系统引导程序则是由用户安装的操作系统自带的。</p>
+</li>
+</ul>
+<h2 id="MBR-Master-Boot-Record-主引导记录"><a href="#MBR-Master-Boot-Record-主引导记录" class="headerlink" title="MBR (Master Boot Record,主引导记录)"></a>MBR (Master Boot Record,主引导记录)</h2><p>主引导扇区是硬盘的第一扇区。它由三个部分组成，主引导记录MBR、硬盘分区表DPT和硬盘有效标志。在总共512字节的主引导扇区里MBR占446个字节，偏移地址0000H–0088H），它负责从活动分区中装载，并运行系统引导程序；第二部分是Partition table区（DPT分区表），占64个字节；第三部分是Magic number，占2个字节。</p>
+<h2 id="GPT-分区格式"><a href="#GPT-分区格式" class="headerlink" title="GPT 分区格式"></a>GPT 分区格式</h2><p>GPT分区格式包含传统MBR（主引导记录）、分区表头、分区表、备份分区表头、备份分区表以及数据区。</p>
+<h1 id="使用工具"><a href="#使用工具" class="headerlink" title="使用工具"></a>使用工具</h1><ul>
+<li><p>fdisk, 查看磁盘分区情况，或者用于磁盘分区，注意 fdisk 只支持 MBR 分区格式，只支持 2T 以下的磁盘</p>
+</li>
+<li><p>lsblk, 查看磁盘分区情况</p>
+</li>
+<li><p>blkid, 获取分区 UUID ，用于编辑 /etc/fstab 永久挂在分区</p>
+</li>
+<li><p>parted, 查看磁盘分区情况，或者用于磁盘分区，支持 MBR 或者 GPT 分区格式，支持 2T 以上的磁盘</p>
+</li>
+<li><p>mkfs.ext4, 用于分区后的磁盘文件系统格式化</p>
+</li>
+<li><p>mount, 挂载磁盘分区</p>
+</li>
+<li><p>dd, 磁盘克隆的工具</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 读取硬盘的mbr扇区</span><br><span class="line">dd if&#x3D;&#x2F;dev&#x2F;sdb of&#x3D;mbr.bin bs&#x3D;512 count&#x3D;1 | hexdump</span><br><span class="line">dd if&#x3D;&#x2F;dev&#x2F;sdb of&#x3D;mbr.bin bs&#x3D;1 count&#x3D;512 | hexdump</span><br></pre></td></tr></table></figure>
+
+<p>以上命令的使用方法请参考：</p>
+<ul>
+<li><a href="https://gnu-linux.readthedocs.io/zh/latest/Chapter01/fdisk.html" target="_blank" rel="noopener">fdisk 管理磁盘分区</a></li>
+</ul>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><h2 id="目标磁盘大于原磁盘"><a href="#目标磁盘大于原磁盘" class="headerlink" title="目标磁盘大于原磁盘"></a>目标磁盘大于原磁盘</h2><p>需要磁盘克隆的服务器，其硬盘有4T大小，但只使用了不到512G，用于克隆的目标磁盘同样有4T大小。因此考虑先生成原磁盘的镜像文件，再向目标磁盘克隆。具体步骤如下：</p>
+<ul>
+<li>挂载目标磁盘，GPT分区，并ext4格式化。</li>
+<li>生成原磁盘的镜像文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># &#x2F;media&#x2F;nvme1n1 为目标磁盘挂载目录</span><br><span class="line">dd if&#x3D;&#x2F;dev&#x2F;nvme0n1 status&#x3D;progress bs&#x3D;32M | gzip -c -9 &gt; &#x2F;media&#x2F;nvme1n1&#x2F;nvme0n1.dd.gz</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将生成的原磁盘镜像文件复制到原磁盘的 root 目录</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv &#x2F;media&#x2F;nvme1n1&#x2F;nvme0n1.dd.gz &#x2F;root</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用原磁盘的镜像文件克隆磁盘</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gzip -dc &#x2F;root&#x2F;nvme0n1.dd.gz | dd of&#x3D;&#x2F;dev&#x2F;nvme1n1</span><br></pre></td></tr></table></figure>
+
+<h2 id="目标磁盘小于原磁盘"><a href="#目标磁盘小于原磁盘" class="headerlink" title="目标磁盘小于原磁盘"></a>目标磁盘小于原磁盘</h2><p>如果目标磁盘小于原磁盘，就不能简单的使用dd命令进行全盘克隆了。好在原磁盘实际使用的空间不大，因此，采用的步骤如下：</p>
+<ul>
+<li>在目标磁盘安装同样的CentOS操作系统</li>
+<li>使用 dd 命令克隆 root 分区</li>
+</ul>
+<p>对于 home 分区，应根据不同情况不同处理：</p>
+<ul>
+<li>如果 home 分区文件系统占有空间相对较小，可使用 tar 命令压缩 home 分区的文件，然后解压到目标磁盘的 home 分区，并更改 home 分区文件夹的所有者。</li>
+<li>如果 home 分区文件系统占用空间相对很大，那干脆用 dd 命令克隆 home 分区更省事。</li>
+<li>如果 home 分区为 ext 文件系统，可考虑使用 resize2f 缩小文件系统，在缩小文件系统后，在使用 fdsik 或者 parted 缩小 home 分区大小，没有问题后，考虑使用 dd 命令克隆 home 分区。</li>
+<li>如果 home 分区为 xfs 文件系统，由于 xfs 文件系统不支持缩小，可以考虑使用 xfsdump 备份，等缩小 home 分区后，使用 xfsrestore 还原 home 分区。</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.cnblogs.com/renshengdezheli/p/13941563.html" target="_blank" rel="noopener">linux下使用fdisk进行磁盘分区详解</a>,by 人生的哲理.</li>
+<li><a href="https://gnu-linux.readthedocs.io/zh/latest/Chapter01/fdisk.html" target="_blank" rel="noopener">fdisk 管理磁盘分区</a>,by gnu.</li>
+<li><a href="https://www.cnblogs.com/xiaocheng7/p/9462329.html" target="_blank" rel="noopener">UEFI是什么意思？UEFI和BIOS的区别是什么？</a>,by  小橙7.</li>
+<li><a href="UEFI是什么？与BIOS的区别在哪？">UEFI是什么？与BIOS的区别在哪？</a>,by 平凡而伟大(心之所向).</li>
+<li><a href="https://news.mydrivers.com/1/503/503560.htm" target="_blank" rel="noopener">装机、做系统必备：秒懂MBR和GPT分区表</a>,by 张伟.</li>
+<li><a href="https://blog.csdn.net/caodinke/article/details/105347503" target="_blank" rel="noopener">GPT 磁盘分区格式简介及解析示例</a>,by 一柯.</li>
+<li><a href="https://uefi.org/specs/UEFI/2.10/05_GUID_Partition_Table_Format.html" target="_blank" rel="noopener">GUID Partition Table (GPT) Disk Layout</a>,by uefi.</li>
+<li><a href="https://zuyunfei.com/2015/06/04/linux-dd/" target="_blank" rel="noopener">Linux下使用dd命令备份硬盘</a>,by zuyunfei.</li>
+<li><a href="https://www.cyberciti.biz/faq/how-to-gzip-and-keep-original-file-on-unix-or-linux-command-line/" target="_blank" rel="noopener">How to gzip and keep original file on Unix or Linux command line</a>,by Vivek Gite .</li>
+<li><a href="https://www.cnblogs.com/larry1024/p/17645208.html" target="_blank" rel="noopener">BIOS 与 UEFI 引导流程</a>,by LARRY1024.</li>
+<li><a href="https://www.cnblogs.com/sddai/p/10615745.html" target="_blank" rel="noopener">LVM原理与实现</a>,by 戴思达.</li>
+<li><a href="https://blog.csdn.net/mshxuyi/article/details/106476068" target="_blank" rel="noopener">CentOS 7 调整 XFS 格式的 LVM 分区大小</a>,by Tom Ma.</li>
+<li><a href="https://blog.csdn.net/shengjie87/article/details/107077975" target="_blank" rel="noopener">CentOS 8 逻辑卷管理LVM详解（扩容、快照等）</a>,by 把倒立的世界腾空.</li>
+<li><a href="https://blog.51cto.com/u_16099257/10596015" target="_blank" rel="noopener">resize2fs 缩小根分区 linux缩小根分区大小</a>,by 编程小匠人.</li>
+<li><a href="https://www.cnblogs.com/kevingrace/p/5825963.html" target="_blank" rel="noopener">Linux下对LVM逻辑卷分区大小调整 [针对xfs和ext4文件系统]</a>,by 散尽浮华.</li>
+<li><a href="https://anuoua.github.io/2019/03/04/Linux%E6%97%A0%E6%8D%9F%E8%B0%83%E6%95%B4%E5%88%86%E5%8C%BA%E5%A4%A7%E5%B0%8F/" target="_blank" rel="noopener">Linux无损调整分区大小</a>,by anuoua.</li>
+<li><a href="https://blog.orchidflower.cn/2022/12/01/Expand-Linux-Partition-without-Data-Loss/" target="_blank" rel="noopener">无损扩容Linux磁盘分区容量</a>,by orchidflower.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/11/14/Linux%E9%87%8D%E5%90%AF%E5%90%8E%E8%BF%9B%E5%85%A5initramfs%E5%AF%BC%E8%87%B4%E6%97%A0%E6%B3%95%E5%BC%80%E6%9C%BA%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/11/14/Linux%E9%87%8D%E5%90%AF%E5%90%8E%E8%BF%9B%E5%85%A5initramfs%E5%AF%BC%E8%87%B4%E6%97%A0%E6%B3%95%E5%BC%80%E6%9C%BA%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" itemprop="url">
+                  Linux重启后进入initramfs导致无法开机的解决方案
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-11-14 23:14:48" itemprop="dateCreated datePublished" datetime="2024-11-14T23:14:48+08:00">2024-11-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-11-15 12:02:54" itemprop="dateModified" datetime="2024-11-15T12:02:54+08:00">2024-11-15</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近遇到 Linux 重启后进入 initramfs 导致无法开机的问题，虽然问题没有解决，但是记录一下过程。</p>
+<h1 id="通用解决方法"><a href="#通用解决方法" class="headerlink" title="通用解决方法"></a>通用解决方法</h1><p>在initramfs命令行接口下，输入如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 使用如下命令查看和识别磁盘、分区或文件系统的信息</span><br><span class="line">blkid</span><br><span class="line"></span><br><span class="line"># fsck命令是用于检查和修复Linux文件系统中的错误</span><br><span class="line">fsck -y -t ext4 &#x2F;dev&#x2F;sda1</span><br></pre></td></tr></table></figure>
+
+<p>由于无法修复文件系统中错误，linux 还是无法开机。</p>
+<h1 id="SuperBlock修复"><a href="#SuperBlock修复" class="headerlink" title="SuperBlock修复"></a>SuperBlock修复</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo fdisk -l</span><br><span class="line">sudo fsck.ext4 -v &#x2F;dev&#x2F;xxx</span><br><span class="line">sudo mke2fs -n &#x2F;dev&#x2F;xxx	</span><br><span class="line">sudo e2fsck -b block_number &#x2F;dev&#x2F;xxx</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/weixin_44002151/article/details/134212707" target="_blank" rel="noopener">Ubuntu重启后进入initramfs导致无法开机解决方案</a>,by 修己xj.</li>
+<li><a href="https://blog.csdn.net/z1026544682/article/details/100539669" target="_blank" rel="noopener">linux操作系统故障处理-ext4文件系统超级块损坏修复</a>,by zhangatong.</li>
+<li><a href="https://linuxexpresso.wordpress.com/2010/03/31/repair-a-broken-ext4-superblock-in-ubuntu/" target="_blank" rel="noopener">HOWTO: Repair a broken Ext4 Superblock in Ubuntu</a>,by linuxexpresso.</li>
+<li><a href="https://blog.csdn.net/u014651560/article/details/119145302" target="_blank" rel="noopener">linux 检测SSD寿命</a>,by 高压锅_1220.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/11/14/Qt-Quick-3D%E5%8A%A0%E8%BD%BD3d%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1615,341 +2009,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/09/18/C%E8%AF%AD%E8%A8%80%E4%B8%AD%E7%9A%84%E4%BD%8D%E5%9F%9F%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/09/18/C%E8%AF%AD%E8%A8%80%E4%B8%AD%E7%9A%84%E4%BD%8D%E5%9F%9F%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/" itemprop="url">
-                  C语言中的位域使用方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-09-18 21:54:52 / 修改时间：22:05:52" itemprop="dateCreated datePublished" datetime="2024-09-18T21:54:52+08:00">2024-09-18</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>C语言中的位域（Bit-fields）可以用于对结构体成员进行位级别的控制和优化。在一些应用中，比如网络协议，经常会涉及对数据的某些比特位进行操作，尽管可以使用位的相关运算，但是C语言提供了位域用以支持对一个字节的某几个位进行访问，操作起来也更加方便。</p>
-</blockquote>
-<h1 id="位域的定义与引用"><a href="#位域的定义与引用" class="headerlink" title="位域的定义与引用"></a>位域的定义与引用</h1><blockquote>
-<p>位域不同于一般的结构体成员，它以位为单位来定义成员的长度，因此在结构体中定义位域时，必须要指明位域成员所需要占用的二进制位数。</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct MsgHeader &#123;</span><br><span class="line">    int a: 5;   &#x2F;&#x2F; 数据类型名    变量名：二进制位数</span><br><span class="line">    int b: 3;</span><br><span class="line">    int c: 2;</span><br><span class="line">    int d：6;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>由于位域本质上是一种特殊的结构体成员，因此一般结构体成员的引用方法同样适用于位域成员。不过，需要特别注意的是，位域成员存储是以二进制位作为单位的，而内存的最小寻址单元是字节，所以不能直接引用位域成员的地址。</p>
-<h1 id="位域与大小端"><a href="#位域与大小端" class="headerlink" title="位域与大小端"></a>位域与大小端</h1><blockquote>
-<p>结构体内位域成员在大小端系统上的内存分配规则如下：</p>
-</blockquote>
-<ul>
-<li>无论是大端或小端模式，位域的存储都是由内存低地址向高地址分配，即从低地址字节的低位bit开始向高地址字节的高位bit分配空间；</li>
-<li>位域成员在已分配的内存区域内，按照机器定义的比特序对数据的各个bit位进行排列。即在小端模式中，位域成员的最低有效位存放在内存低bit位，最高有效位存放在内存高bit位；大端模式则相反。</li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/636551863" target="_blank" rel="noopener">C语言中位域（Bit-fields）的高级玩法，8个案例代码告诉你怎么玩</a>,by<br>晓亮Albert.</li>
-<li><a href="https://www.cnblogs.com/Aspiresky/p/15780975.html" target="_blank" rel="noopener">C语言结构体位域及其存储</a>,by Aspiresky.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/635530873" target="_blank" rel="noopener">3分钟理解C语言结构体位域（小白扫盲篇）</a>,by 天黑黑.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/08/23/%E5%90%88%E5%90%8C%E7%AE%A1%E7%90%86%E7%9F%A5%E8%AF%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/08/23/%E5%90%88%E5%90%8C%E7%AE%A1%E7%90%86%E7%9F%A5%E8%AF%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
-                  合同管理知识学习笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-08-23 19:12:08" itemprop="dateCreated datePublished" datetime="2024-08-23T19:12:08+08:00">2024-08-23</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2024-09-18 20:07:33" itemprop="dateModified" datetime="2024-09-18T20:07:33+08:00">2024-09-18</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>项目采购管理过程围绕合同进行，采购管理过程所涉及的各种活动过程了合同生命周期。</p>
-<h1 id="合同类型"><a href="#合同类型" class="headerlink" title="合同类型"></a>合同类型</h1><p>按项目范围分：</p>
-<ul>
-<li>项目总承包合同</li>
-<li>项目单项承包合同</li>
-<li>项目分包合同</li>
-</ul>
-<p>按项目付款方式划分：</p>
-<ul>
-<li>总价合同</li>
-<li>成本补偿合同</li>
-<li>工料合同</li>
-</ul>
-<h1 id="合同管理过程"><a href="#合同管理过程" class="headerlink" title="合同管理过程"></a>合同管理过程</h1><h2 id="合同的签订管理"><a href="#合同的签订管理" class="headerlink" title="合同的签订管理"></a>合同的签订管理</h2><h2 id="合同的履行管理"><a href="#合同的履行管理" class="headerlink" title="合同的履行管理"></a>合同的履行管理</h2><p>工程验收的基本流程通常包括<strong>预验收、初步验收和最终验收</strong>三个阶段。在预验收阶段，施工单位需要自查自纠，确保工程各项指标符合设计要求和施工规范。初步验收则是在预验收的基础上，由建设单位组织设计、监理等相关部门共同参与，对工程质量进行全面检查。最终验收是在初步验收合格后，经过一段时间的试运行，确认工程无重大问题后进行的正式验收。</p>
-<p>有幸作为专家参加一个合同的最终验收，记录一下最终验收的具体流程：</p>
-<ul>
-<li>建设方项目介绍</li>
-<li>承建方和监理方介绍预验收或初步验收之后存在的问题和整改情况</li>
-<li>专家组现场查看项目建设成果</li>
-<li>专家组评审项目材料，查漏补缺（因评审时间有限，重点对评审材料的完备性和科学性进行审查）</li>
-<li>专家组出具评审意见</li>
-</ul>
-<h2 id="合同的变更管理"><a href="#合同的变更管理" class="headerlink" title="合同的变更管理"></a>合同的变更管理</h2><h2 id="合同的档案管理"><a href="#合同的档案管理" class="headerlink" title="合同的档案管理"></a>合同的档案管理</h2><h2 id="合同违约索赔管理"><a href="#合同违约索赔管理" class="headerlink" title="合同违约索赔管理"></a>合同违约索赔管理</h2><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://book.douban.com/subject/36318985/" target="_blank" rel="noopener">信息系统项目管理师教程（第4版）</a>,by douban.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1997,7 +2056,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">507</span>
+                    <span class="site-state-item-count">509</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

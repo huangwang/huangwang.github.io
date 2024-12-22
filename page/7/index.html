@@ -314,6 +314,376 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/01/09/Python%E6%8F%90%E5%8F%96PDF%E9%83%A8%E5%88%86%E5%8C%BA%E5%9F%9F%E6%96%87%E5%AD%97%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/01/09/Python%E6%8F%90%E5%8F%96PDF%E9%83%A8%E5%88%86%E5%8C%BA%E5%9F%9F%E6%96%87%E5%AD%97%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Python提取PDF部分区域文字的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-01-09 20:34:47" itemprop="dateCreated datePublished" datetime="2024-01-09T20:34:47+08:00">2024-01-09</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-05-24 21:25:26" itemprop="dateModified" datetime="2024-05-24T21:25:26+08:00">2024-05-24</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近遇到一个需求，需要提取PDF部分区域的文字，具体方法如下：</p>
+<ol>
+<li>提取PDF中目标内容所在区域</li>
+<li>提取或识别目标区域内容</li>
+</ol>
+<p>为了快速验证方法的可行性，使用Python结合PyMuPDF库进行开发。</p>
+<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><h2 id="PyMuPDF介绍"><a href="#PyMuPDF介绍" class="headerlink" title="PyMuPDF介绍"></a>PyMuPDF介绍</h2><p>PyMuPDF是一个高性能的Python库，用于PDF（和其他）文档的数据提取、分析、转换和操作。</p>
+<h2 id="依赖环境"><a href="#依赖环境" class="headerlink" title="依赖环境"></a>依赖环境</h2><ul>
+<li>python 3.8.5，可在windows7上运行，python 3.9以后版本不支持windows7</li>
+<li>numpy==1.24.4</li>
+<li>pandas==2.0.3</li>
+<li>PyMuPDF==1.23.8</li>
+<li>PyMuPDFb==1.23.7</li>
+<li>python-dateutil==2.8.2</li>
+<li>pytz==2023.3.post1</li>
+<li>six==1.16.0</li>
+<li>tzdata==2023.4</li>
+</ul>
+<h2 id="虚拟环境"><a href="#虚拟环境" class="headerlink" title="虚拟环境"></a>虚拟环境</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mkdir pdf_extract</span><br><span class="line">cd pdf_extract</span><br><span class="line">python -m venv env</span><br><span class="line">env\Scripts\activate.bat</span><br><span class="line">pip install pymupdf</span><br><span class="line">pip install pandas</span><br><span class="line">pip freeze &gt; requirement.txt</span><br><span class="line">pip download -d packages -r requirement.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="离线迁移"><a href="#离线迁移" class="headerlink" title="离线迁移"></a>离线迁移</h2><p>创建envConfig.bat批处理文件，一键执行离线环境配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python -m venv env</span><br><span class="line">call env\Scripts\activate.bat</span><br><span class="line">pip install --no-index --find-links&#x3D;packages -r requirement.txt</span><br></pre></td></tr></table></figure>
+
+<h1 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import fitz # imports the pymupdf library</span><br><span class="line">pdfDoc &#x3D; fitz.open(&quot;test.pdf&quot;) # open a document</span><br><span class="line">page &#x3D; pdfDoc[0]</span><br><span class="line">mat &#x3D; fitz.Matrix(1, 1)  # 1.5表示放大1.5倍</span><br><span class="line">rect &#x3D; page.rect</span><br><span class="line">#print(rect)</span><br><span class="line">clip &#x3D; fitz.Rect(0.22*rect.width, 0.19*rect.height,0.35*rect.width, 0.40*rect.height)</span><br><span class="line">pix &#x3D; page.get_pixmap(matrix&#x3D;mat, alpha&#x3D;False, clip&#x3D;clip)</span><br><span class="line">pix.save(&quot;test.png&quot;) </span><br><span class="line">a_text &#x3D; page.get_text(clip&#x3D;clip)</span><br><span class="line">print(a_text)</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://cloud.tencent.com/developer/article/1857888" target="_blank" rel="noopener">Python截图PDF，在指定区域并提取文本</a>,by 快学Python.</li>
+<li><a href="https://pymupdf.readthedocs.io/en/latest/index.html" target="_blank" rel="noopener">pymupdf doc</a>,by pymupdf.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/01/07/IP%E7%9B%91%E6%8E%A7%E5%88%86%E6%9E%90%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/01/07/IP%E7%9B%91%E6%8E%A7%E5%88%86%E6%9E%90%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
+                  IP监控分析的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-01-07 20:37:23" itemprop="dateCreated datePublished" datetime="2024-01-07T20:37:23+08:00">2024-01-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-01-11 22:14:05" itemprop="dateModified" datetime="2024-01-11T22:14:05+08:00">2024-01-11</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>公司内网IP地址资源有限，同时又存在很多分配后的IP长期不使用的情况。为提高IP地址资源的利用效率，需要监控IP的使用情况，统计IP的活动情况，收回长期不上线的IP地址资源，以便重新利用。需要解决的技术难点主要有三个方面:</p>
+<ul>
+<li>扫描网络存活主机的方法。</li>
+<li>每日定时扫描网络存活主机的方法。</li>
+<li>统计IP活动情况的方法。</li>
+</ul>
+<h1 id="扫描网络存活主机"><a href="#扫描网络存活主机" class="headerlink" title="扫描网络存活主机"></a>扫描网络存活主机</h1><p>扫描网络存活主机可使用以下nmap命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -P0 192.168.1.1&#x2F;24</span><br></pre></td></tr></table></figure>
+<p>-P0 (无ping) 该选项可解决主机防火墙开启了禁Ping选项而无法被发现的问题，缺点是主机发现的速度将很慢。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nmap -sn -PS135 172.16.1.128 -vvv -n --disable-arp-ping</span><br><span class="line">#-n 禁用dns解析</span><br></pre></td></tr></table></figure>
+
+<p>注意nmap扫局域网存活主机都会预先进行arp扫描，在这里禁用了端口扫描，意味着nmap只会进行存活扫描，当nmap进行arp扫描后发现主机存活就不会进行后续操作，wireshark也就抓不到包，所以使用–disable-arp-ping禁用arp扫描。</p>
+<p>被扫描主机可能开启防火墙，如何绕过防火墙判断主机是否存活，请参考：</p>
+<ul>
+<li><a href="https://www.secpulse.com/archives/189038.html" target="_blank" rel="noopener">Nmap抓包分析与绕过Windows防火墙扫内网存活主机</a></li>
+<li><a href="https://www.secpulse.com/archives/69585.html" target="_blank" rel="noopener">Nmap Ping 扫描(防火墙 Bypass)</a></li>
+</ul>
+<h1 id="定时扫描网络存活主机"><a href="#定时扫描网络存活主机" class="headerlink" title="定时扫描网络存活主机"></a>定时扫描网络存活主机</h1><p>目前倾向于使用Python在代码中定时调用nmap命令扫描存活主机。一日之内可扫描三次：上午、下午、晚上各一次。</p>
+<p>可参考以下链接：</p>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/411506332" target="_blank" rel="noopener">让 Python 程序定时执行的 8 种姿势～</a></li>
+</ul>
+<p>目前倾向于利用调度模块schedule实现定时任务。</p>
+<h1 id="统计IP活动情况"><a href="#统计IP活动情况" class="headerlink" title="统计IP活动情况"></a>统计IP活动情况</h1><p>主要统计IP地址的未上线的天数。</p>
+<h1 id="设置Python脚本开机自启动"><a href="#设置Python脚本开机自启动" class="headerlink" title="设置Python脚本开机自启动"></a>设置Python脚本开机自启动</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">d:  #如果需要开机自启动的python程序在c盘，不需要这一行程序；如果需要自启动的python程序在d盘（或其他盘），需要先切换到d盘（或其他盘）</span><br><span class="line">cd path  #path为你所要开机自启动的python程序所在的文件夹</span><br><span class="line">python xxx.py  #xxx.py为path文件夹内需要自启动的python程序</span><br></pre></td></tr></table></figure>
+
+<h1 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/qq_44159028/article/details/120291865" target="_blank" rel="noopener">Nmap扫描结果保存到本地并提取ip</a>,by ~Echo.</li>
+<li><a href="https://blog.51cto.com/lifulin/4350789" target="_blank" rel="noopener">nmap命令扫描存活主机</a>,by qingfenghaha.</li>
+<li><a href="https://zh.wikipedia.org/wiki/Nmap" target="_blank" rel="noopener">Nmap</a>,by wikipedia.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/43820903" target="_blank" rel="noopener">nmap用法解析</a>,by wikipeida.</li>
+<li><a href="https://www.cnblogs.com/brogong/p/7929298.html" target="_blank" rel="noopener">Python中匹配IP的正则表达式</a>,by bro.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/411506332" target="_blank" rel="noopener">让 Python 程序定时执行的 8 种姿势～</a>,by 随风.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/92152648" target="_blank" rel="noopener">Python 定时任务最佳实践</a>,by guoweikuang​.</li>
+<li><a href="https://cloud.tencent.com/developer/article/2087119" target="_blank" rel="noopener">Windows 设置 Python 脚本开机自启的一些心得</a>,by Hsinyan.</li>
+<li><a href="https://blog.csdn.net/ego782140379/article/details/94589623" target="_blank" rel="noopener">设置python程序开机自启动</a>,by ego782140379.</li>
+<li><a href="https://www.secpulse.com/archives/189038.html" target="_blank" rel="noopener">Nmap抓包分析与绕过Windows防火墙扫内网存活主机</a>,by 合天网安实验室.</li>
+<li><a href="https://www.secpulse.com/archives/69585.html" target="_blank" rel="noopener">Nmap Ping 扫描(防火墙 Bypass)</a>,by 一叶知安.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/12/27/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E5%8D%93%E8%B6%8A%E7%9A%84%E5%A4%A7%E5%AD%A6%E6%95%99%E5%B8%88%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1786,326 +2156,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/10/11/%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E7%9A%84%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2023/10/11/%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
-                  网络拓扑自动发现的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2023-10-11 21:27:28 / 修改时间：21:58:54" itemprop="dateCreated datePublished" datetime="2023-10-11T21:27:28+08:00">2023-10-11</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>作为网络管理员，了解整个单位的网络拓扑结构，是保障和维护网络的基础。通常可以通过手动绘制的方式获得网络拓扑结构，但这种方法效率低，不精确，无法实时更新，因此需要一种网络拓扑自动发现的方法。下面记录一些与网络拓扑自动发现相关的方法与技术。</p>
-<h1 id="SNMP"><a href="#SNMP" class="headerlink" title="SNMP"></a>SNMP</h1><p>SNMP是广泛应用于TCP/IP网络的网络管理标准协议，该协议能够支持网络管理系统，用以监测连接到网络上的设备是否有任何引起管理上关注的情况。</p>
-<p>SNMP基本组件包括网络管理系统NMS（Network Management System）、代理进程（Agent）、被管对象（Managed Object）和管理信息库MIB（Management Information Base）。</p>
-<p align="center" style="display: flex;">
-    <img src="images/snmp_model.png" width="40%" alt="snmp管理模型"/>
-</p>
-<center>图1 snmp管理模型</center>
-
-<h1 id="Nmap"><a href="#Nmap" class="headerlink" title="Nmap"></a>Nmap</h1><p>Nmap（网络映射器）是一款用于网络发现和安全审计的网络安全工具。Nmap可以检测目标主机是否在线、端口开放情况、侦测运行的服务类型及版本信息、侦测操作系统与设备类型等信息。 它是网络管理员必用的软件之一，用以评估网络系统安全。</p>
-<h1 id="Traceroute"><a href="#Traceroute" class="headerlink" title="Traceroute"></a>Traceroute</h1><p>Traceroute命令是TCP/IP家族内另一个比较早的工具，它可用来发现测试点 和目标主机之间的路由器。路由器在转发包之前总是将其TTL值减1，如果TTL降为0，则路由器向源地址发送TTL-Expired ICMP消息。</p>
-<h1 id="Ping"><a href="#Ping" class="headerlink" title="Ping"></a>Ping</h1><p>Ping命令是IP网上最古老的一种工具，用来监测网络节点是否活着，或用于监测到网络节点间的往返时延（RTT）。通常Ping只涉及网络上的源和目的两节点，而忽略网络细节。另外我们可以使用广播 Ping，其Ping的地址不是一个单一的地址，而是子网的广播地址，所有位于该子网的主机均对此Ping包进行响应，从而一次就可得到子网内的全部活动主机。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://patents.google.com/patent/CN103490926A/zh" target="_blank" rel="noopener">一种网络拓扑自动获取的方法</a>,by 马黎黎,梁鹏飞.</li>
-<li><a href="https://info.support.huawei.com/info-finder/encyclopedia/zh/SNMP.html" target="_blank" rel="noopener">什么是SNMP？</a>,by huawei.</li>
-<li><a href="https://zh.wikipedia.org/zh-cn/Nmap" target="_blank" rel="noopener">Nmap</a>,by wikipedia.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/09/28/x3py%E6%8F%92%E4%BB%B6%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2023/09/28/x3py%E6%8F%92%E4%BB%B6%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
-                  x3py插件框架学习笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2023-09-28 22:21:48" itemprop="dateCreated datePublished" datetime="2023-09-28T22:21:48+08:00">2023-09-28</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2023-10-11 21:48:01" itemprop="dateModified" datetime="2023-10-11T21:48:01+08:00">2023-10-11</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>x3py是一个可与Python等集成的轻量级C++插件框架。该框架使用了少部分STL，没有使用MFC、ATL、COM。x3py 通过使用 SWIG，可与 Python 等语言进行集成（当然可以单独使用C++）。使用此框架可以快速开发出更多的插件和应用软件，此框架已在 Windows/Linux/MacOSX 上测试过。</p>
-</blockquote>
-<h1 id="插件原理"><a href="#插件原理" class="headerlink" title="插件原理"></a>插件原理</h1><p>请参考：</p>
-<ul>
-<li><a href="https://github.com/rhcad/x3py/wiki/AboutPlugin" target="_blank" rel="noopener">插件原理</a></li>
-<li><a href="https://github.com/rhcad/x3py/wiki/Observer" target="_blank" rel="noopener">事件驱动机制（Observer）</a></li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://github.com/rhcad/x3py" target="_blank" rel="noopener">x3py wiki</a>,by rhcad.</li>
-<li><a href="https://github.com/rhcad/x3py/wiki/AboutPlugin" target="_blank" rel="noopener">插件原理</a>,by rhcad.</li>
-<li><a href="https://blog.51cto.com/u_10125763/5250826" target="_blank" rel="noopener">c++插件机制的实现原理、过程、及使用 </a>,by 特立独行的猫a.</li>
-<li><a href="https://github.com/rhcad/x3py/wiki/Observer" target="_blank" rel="noopener">事件驱动机制（Observer）</a>,by rhcad.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2153,7 +2203,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">507</span>
+                    <span class="site-state-item-count">509</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

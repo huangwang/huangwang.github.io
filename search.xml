@@ -22522,4 +22522,35 @@ console.log(y);</code></pre></li>
         <tag>教学</tag>
       </tags>
   </entry>
+  <entry>
+    <title>VC6之MFC遗留程序升级方法</title>
+    <url>/2024/12/24/VC6%E4%B9%8BMFC%E9%81%97%E7%95%99%E7%A8%8B%E5%BA%8F%E5%8D%87%E7%BA%A7%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>最近拿到一个VC6 MFC编写的遗留程序源代码，需要将其升级到最新的Windows系统，记录一下升级过程。</p>
+<h1 id="MFC程序执行流程"><a href="#MFC程序执行流程" class="headerlink" title="MFC程序执行流程"></a>MFC程序执行流程</h1><blockquote>
+<p>程序是从Main（WinMain）开始和结束。 但是在Main（WinMain）开始之前会对全局的变量或者对象进行初始化。</p>
+</blockquote>
+<blockquote>
+<p>故在MFC中，通过全局类（theApp） 的初始化， 进入theApp的构造函数，根据类的规则，初始子类的构造函数，必须先要运行父类的构造函数。 在这过程把包含WinMain的文件连接了进来。 这样就隐藏了WinMain函数。 </p>
+</blockquote>
+<blockquote>
+<p>在WinMain函数中调用了AfxWinMain函数，在AfxWinMain函数中通过调用InitInstance函数完成了窗口的设计 窗口的注册 窗口的创建 窗口的显示和更新。然后在AfxWinMain中调用了Run方法，完成消息循环。</p>
+</blockquote>
+<h1 id="MFC扩展库BCGControlBar"><a href="#MFC扩展库BCGControlBar" class="headerlink" title="MFC扩展库BCGControlBar"></a>MFC扩展库BCGControlBar</h1><p>遗留程序依赖 MFC 扩展库BCGControlBar，因此需要安装和配置 BCGControlBar，否则编译链接出错。例如：</p>
+<p>BCGCBProInc.h : No such s file or dictionary. 解决方案：安装BGB界面库</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>BCGControlBar是一个基于MFC的扩展库，您可以通过完全的用户化操作构成一些类似于Microsoft Office 2000/XP/2003和Microsoft Visual Studio.NET的应用程序（用户工具栏、菜单、键盘等等）。BCGControlBar库包含了大约150多个经过精心设计，测试和具有完备文档的MFC扩展类。这些都可以很容易的应用于您的应用程序，节省大量的开发和调试时间。</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>在编译之前，要先设置其附加包含目录和附加库目录。</p>
+<p>vc6.0在其tools&gt;&gt;options&gt;&gt;directoris下进行设置。在show directories for选择include files，添加BCGControlBar安装目录下的BCGCBPro目录。</p>
+<p>然后再选择show directories for下的Library files并添加BCGControlBar安装目录下的bin目录。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.cnblogs.com/wenluderen/p/4952544.html" target="_blank" rel="noopener">深入跟踪MFC程序的执行流程</a>,by wenluderen</li>
+<li><a href="https://www.cnblogs.com/Mars-0603/p/14922947.html" target="_blank" rel="noopener">【C++】MFC 程序入口和执行流程</a>,by 不溯流光.</li>
+<li><a href="https://blog.csdn.net/qq_42444778/article/details/119109843" target="_blank" rel="noopener">MFC专业扩展库BCGControlBar：使用方法入门</a>,by 不如温暖过生活.</li>
+<li><a href="https://www.cnblogs.com/vipwtl/p/6146333.html" target="_blank" rel="noopener">MFC BCGControlBar 安装及使用</a>,by VIPWTL.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>C/C++</tag>
+      </tags>
+  </entry>
 </search>

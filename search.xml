@@ -4470,33 +4470,37 @@
     <title>Linux常用命令用法总结</title>
     <url>/2018/11/01/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E7%94%A8%E6%B3%95%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<p>记录一些常用的linux命令用法，以备查询。</p>
-<h1 id="校验文件"><a href="#校验文件" class="headerlink" title="校验文件"></a>校验文件</h1><p>下载的文件最好校验完整性，防止被人篡改。以sha256sum为例：</p>
+<h1 id="文件管理"><a href="#文件管理" class="headerlink" title="文件管理"></a>文件管理</h1><h2 id="校验文件"><a href="#校验文件" class="headerlink" title="校验文件"></a>校验文件</h2><p>下载的文件最好校验完整性，防止被人篡改。以sha256sum为例：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 以下命令将生成树莓派映像的sha256哈希码，从树莓派官网复制该映像sha256哈希码，以便校验。</span><br><span class="line"># 当然通常应该会提供映像的哈希码校验文件。</span><br><span class="line"></span><br><span class="line">sha256sum 2018-10-09-raspbian-stretch.zip &gt;2018-10-09-raspbian-stretch.zip.sha256sum</span><br><span class="line"></span><br><span class="line"># 使用下面校验文件的完整性，如果成功则映像与官方一致，未被篡改。</span><br><span class="line"># 注意被校验文件与校验文件应放在同一个目录。</span><br><span class="line"></span><br><span class="line">sha256sum -c 2018-10-09-raspbian-stretch.zip.sha256sum</span><br></pre></td></tr></table></figure>
 
-<h1 id="转换和复制文件命令"><a href="#转换和复制文件命令" class="headerlink" title="转换和复制文件命令"></a>转换和复制文件命令</h1><p>Linux的dd命令用于复制文件并对原文件的内容进行转换和格式化处理。</p>
+<h2 id="转换和复制文件命令"><a href="#转换和复制文件命令" class="headerlink" title="转换和复制文件命令"></a>转换和复制文件命令</h2><p>Linux的dd命令用于复制文件并对原文件的内容进行转换和格式化处理。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">读指定物理扇区：</span><br><span class="line">dd  if&#x3D;&lt;源设备&gt;  of&#x3D;&lt;输出设备或文件&gt;   skip&#x3D;&lt;指定扇区值&gt;  bs&#x3D;512 count&#x3D;1</span><br><span class="line"></span><br><span class="line">写指定物理扇区：</span><br><span class="line">dd   if&#x3D;&lt;输入设备或文件&gt;   of&#x3D;&lt;输出设备&gt;   seek&#x3D;&lt;指定扇区值&gt;  bs&#x3D;512 count&#x3D;1</span><br><span class="line"></span><br><span class="line">读取sd启动扇区示例：</span><br><span class="line">dd if&#x3D;&#x2F;dev&#x2F;mmcblk0 of&#x3D;mbrsd.data bs&#x3D;512 count&#x3D;1</span><br><span class="line"></span><br><span class="line">制作光盘iso镜像</span><br><span class="line">dd if&#x3D;&#x2F;dev&#x2F;cdrom of&#x3D;&#x2F;home&#x2F;hch&#x2F;drone.iso status&#x3D;progress conv&#x3D;fsync</span><br></pre></td></tr></table></figure>
 
-<h1 id="查找文件"><a href="#查找文件" class="headerlink" title="查找文件"></a>查找文件</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># find基本语法：find [PATH] [option] [action]</span><br><span class="line"></span><br><span class="line">find &#x2F;usr&#x2F;lib -name libQt5Xml.so</span><br><span class="line"># 使用通配符</span><br><span class="line">find &#x2F;usr&#x2F;lib -name &quot;*ssl*&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="查找文件"><a href="#查找文件" class="headerlink" title="查找文件"></a>查找文件</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># find基本语法：find [PATH] [option] [action]</span><br><span class="line"></span><br><span class="line">find &#x2F;usr&#x2F;lib -name libQt5Xml.so</span><br><span class="line"># 使用通配符</span><br><span class="line">find &#x2F;usr&#x2F;lib -name &quot;*ssl*&quot;</span><br></pre></td></tr></table></figure>
 
-<h1 id="批量转换文件格式"><a href="#批量转换文件格式" class="headerlink" title="批量转换文件格式"></a>批量转换文件格式</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 将png格式图像转换为jpg</span><br><span class="line"># -1 – 告诉 ls 每行列出一个图像名称的选项标识</span><br><span class="line"># -n – 指定最多参数个数，例子中为 1</span><br><span class="line"># -c – 指示 bash 运行给定的命令</span><br><span class="line"># $&#123;0%.png&#125;.jpg – 设置新转换的图像文件的名字，% 符号用来删除源文件的扩展名</span><br><span class="line"></span><br><span class="line">ls -1 *.png | xargs -n 1 bash -c &#39;convert &quot;$0&quot; &quot;$&#123;0%.png&#125;.jpg&quot;&#39;</span><br></pre></td></tr></table></figure>
+<h2 id="查找文件内容"><a href="#查找文件内容" class="headerlink" title="查找文件内容"></a>查找文件内容</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># grep基本用法：</span><br><span class="line">grep &quot;let&#39;s find something&quot; file.[txt,json,js,md,etc]</span><br><span class="line"></span><br><span class="line"># 大小写不敏感搜索</span><br><span class="line">grep -i &quot;REact&quot; compiler&#x2F;apps&#x2F;playground&#x2F;app&#x2F;index.tsx</span><br><span class="line">grep -i &quot;Operation not supported on socket&quot; system.log</span><br><span class="line"></span><br><span class="line"># 多模式搜索</span><br><span class="line">grep -e &quot;error&quot; -e &quot;404&quot; system.log</span><br><span class="line"></span><br><span class="line"># 统计字符串匹配次数</span><br><span class="line">grep -c &quot;React&quot; compiler&#x2F;apps&#x2F;playground&#x2F;app&#x2F;index.tsx</span><br><span class="line"></span><br><span class="line"># 文件夹递归搜索，-o 仅输出匹配行，-r 递归搜索目录及其子目录</span><br><span class="line">grep -o -r &quot;fs&quot; node_modules | wc -l</span><br></pre></td></tr></table></figure>
 
-<h1 id="修改用户"><a href="#修改用户" class="headerlink" title="修改用户"></a>修改用户</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 将用户$USER添加到dialout用户组，以获取串口访问权限</span><br><span class="line">sudo usermod -a -G dialout $USER</span><br></pre></td></tr></table></figure>
+<h2 id="批量处理指定文件"><a href="#批量处理指定文件" class="headerlink" title="批量处理指定文件"></a>批量处理指定文件</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Find all .txt files and delete them</span><br><span class="line">find . -name &quot;*.txt&quot; | xargs rm</span><br><span class="line"></span><br><span class="line"># Creates each directory listed in the file.</span><br><span class="line">cat dirs.txt | xargs mkdir</span><br><span class="line"></span><br><span class="line"># Compresses all .log files in the current directory</span><br><span class="line">ls *.log | xargs gzip</span><br></pre></td></tr></table></figure>
 
-<h1 id="特殊符号用法"><a href="#特殊符号用法" class="headerlink" title="特殊符号用法"></a>特殊符号用法</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#| 管道 (pipeline)，是 UNIX 系统，基础且重要的观念。连结上个指令的标准输出，做为下个指令的标准输入。</span><br><span class="line">who | wc -l</span><br><span class="line"></span><br><span class="line">#! 惊叹号(negate or reverse)，通常它代表反逻辑的作用，譬如条件侦测中，用 !&#x3D; 来代表&quot;不等于&quot;</span><br><span class="line">#下例代表显示除了a0, a1 .... a9 这几个文件的其他文件。</span><br><span class="line">ls a[!0-9]</span><br><span class="line"></span><br><span class="line">#&amp; 后台工作，单一个&amp; 符号，且放在完整指令列的最后端，即表示将该指令列放入后台中工作。</span><br><span class="line">tar cvfz data.tar.gz data &gt; &#x2F;dev&#x2F;null &amp;</span><br></pre></td></tr></table></figure>
+<h2 id="批量转换文件格式"><a href="#批量转换文件格式" class="headerlink" title="批量转换文件格式"></a>批量转换文件格式</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 将png格式图像转换为jpg</span><br><span class="line"># -1 – 告诉 ls 每行列出一个图像名称的选项标识</span><br><span class="line"># -n – 指定最多参数个数，例子中为 1</span><br><span class="line"># -c – 指示 bash 运行给定的命令</span><br><span class="line"># $&#123;0%.png&#125;.jpg – 设置新转换的图像文件的名字，% 符号用来删除源文件的扩展名</span><br><span class="line"></span><br><span class="line">ls -1 *.png | xargs -n 1 bash -c &#39;convert &quot;$0&quot; &quot;$&#123;0%.png&#125;.jpg&quot;&#39;</span><br></pre></td></tr></table></figure>
 
-<h1 id="终端下载"><a href="#终端下载" class="headerlink" title="终端下载"></a>终端下载</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 逐条下载uri.txt文件中每一行uri</span><br><span class="line">wget -i uri.txt</span><br><span class="line"></span><br><span class="line"># 跳过前1000条再下载</span><br><span class="line">awk &#39;NR&gt;&#x3D;1000&#39; url.txt | wget -i -</span><br><span class="line"></span><br><span class="line"># install proxy</span><br><span class="line">wget --no-check-certificate https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;jwchenzju&#x2F;teddysunss&#x2F;master&#x2F;shadowsocks.sh</span><br><span class="line"></span><br><span class="line">chmod +x shadowsocks.sh</span><br><span class="line"></span><br><span class="line">.&#x2F;shadowsocks.sh 2&gt;&amp;1 | tee shadowsocks.log</span><br></pre></td></tr></table></figure>
+<h2 id="终端下载"><a href="#终端下载" class="headerlink" title="终端下载"></a>终端下载</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 逐条下载uri.txt文件中每一行uri</span><br><span class="line">wget -i uri.txt</span><br><span class="line"></span><br><span class="line"># 跳过前1000条再下载</span><br><span class="line">awk &#39;NR&gt;&#x3D;1000&#39; url.txt | wget -i -</span><br><span class="line"></span><br><span class="line"># install proxy</span><br><span class="line">wget --no-check-certificate https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;jwchenzju&#x2F;teddysunss&#x2F;master&#x2F;shadowsocks.sh</span><br><span class="line"></span><br><span class="line">chmod +x shadowsocks.sh</span><br><span class="line"></span><br><span class="line">.&#x2F;shadowsocks.sh 2&gt;&amp;1 | tee shadowsocks.log</span><br></pre></td></tr></table></figure>
 
-<h1 id="终端中打开文件管理器"><a href="#终端中打开文件管理器" class="headerlink" title="终端中打开文件管理器"></a>终端中打开文件管理器</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">使用gnome文件管理器打开当前文件夹</span><br><span class="line">nautilus .&#x2F;</span><br></pre></td></tr></table></figure>
+<h2 id="终端中打开文件管理器"><a href="#终端中打开文件管理器" class="headerlink" title="终端中打开文件管理器"></a>终端中打开文件管理器</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">使用gnome文件管理器打开当前文件夹</span><br><span class="line">nautilus .&#x2F;</span><br></pre></td></tr></table></figure>
 
-<h1 id="统计"><a href="#统计" class="headerlink" title="统计"></a>统计</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 统计文件行数</span><br><span class="line">wc -l file</span><br><span class="line"></span><br><span class="line">统计某文件夹下文件的个数</span><br><span class="line">ls -l |grep &quot;^-&quot;|wc -l</span><br><span class="line"></span><br><span class="line">统计某文件夹下目录的个数</span><br><span class="line">ls -l |grep &quot;^ｄ&quot;|wc -l</span><br><span class="line"></span><br><span class="line">统计文件夹下文件的个数，包括子文件夹里的</span><br><span class="line">ls -lR|grep &quot;^-&quot;|wc -l</span><br><span class="line"></span><br><span class="line"># 统计文件或文件夹大小</span><br><span class="line">du -a -h -d 1 .&#x2F;</span><br><span class="line"></span><br><span class="line"># 统计文件状态信息</span><br><span class="line">stat file.txt</span><br></pre></td></tr></table></figure>
+<h2 id="统计"><a href="#统计" class="headerlink" title="统计"></a>统计</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 统计文件行数</span><br><span class="line">wc -l file</span><br><span class="line"></span><br><span class="line">统计某文件夹下文件的个数</span><br><span class="line">ls -l |grep &quot;^-&quot;|wc -l</span><br><span class="line"></span><br><span class="line">统计某文件夹下目录的个数</span><br><span class="line">ls -l |grep &quot;^ｄ&quot;|wc -l</span><br><span class="line"></span><br><span class="line">统计文件夹下文件的个数，包括子文件夹里的</span><br><span class="line">ls -lR|grep &quot;^-&quot;|wc -l</span><br><span class="line"></span><br><span class="line"># 统计文件或文件夹大小</span><br><span class="line">du -a -h -d 1 .&#x2F;</span><br><span class="line"></span><br><span class="line"># 统计文件状态信息</span><br><span class="line">stat file.txt</span><br></pre></td></tr></table></figure>
 
-<h1 id="系统服务管理"><a href="#系统服务管理" class="headerlink" title="系统服务管理"></a>系统服务管理</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># service命令用于对系统服务进行管理，比如启动（start）、停止（stop）、重启（restart）、查看状态（status）等。</span><br><span class="line"># service命令本身是一个shell脚本，它在&#x2F;etc&#x2F;init.d&#x2F;目录查找指定的服务脚本，然后调用该服务脚本来完成任务。</span><br><span class="line"></span><br><span class="line"># 查看系统所有服务状态</span><br><span class="line">service --status-all</span><br></pre></td></tr></table></figure>
+<h2 id="压缩和解压文件"><a href="#压缩和解压文件" class="headerlink" title="压缩和解压文件"></a>压缩和解压文件</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># tar命令</span><br><span class="line">tar zxvf FileName.tar #解压</span><br><span class="line">tar czvf FileName.tar DirName #压缩</span><br><span class="line"></span><br><span class="line"># zip命令</span><br><span class="line">unzip FileName.zip #解压</span><br><span class="line">zip -r FileName.zip DirName #压缩</span><br></pre></td></tr></table></figure>
 
-<h1 id="查询本机公网IP"><a href="#查询本机公网IP" class="headerlink" title="查询本机公网IP"></a>查询本机公网IP</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl ifconfig.me</span><br><span class="line">curl ipinfo.io</span><br></pre></td></tr></table></figure>
+<h2 id="SSH-连接、远程上传下载文件"><a href="#SSH-连接、远程上传下载文件" class="headerlink" title="SSH 连接、远程上传下载文件"></a>SSH 连接、远程上传下载文件</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># SSH 远程登入 Ubuntu 机 </span><br><span class="line">ssh username@192.168.0.1</span><br><span class="line"></span><br><span class="line"># 将 文件&#x2F;文件夹 从远程 Ubuntu 机拷至本地(scp) </span><br><span class="line">scp -r username@192.168.0.1:&#x2F;home&#x2F;username&#x2F;remotefile.txt remotefile.txt</span><br><span class="line"></span><br><span class="line"># 将 文件&#x2F;文件夹 从本地拷至远程 Ubuntu 机(scp) </span><br><span class="line">scp -r localfile.txt username@192.168.0.1:&#x2F;home&#x2F;username&#x2F;</span><br><span class="line"></span><br><span class="line"># rsync大文件断电续传，远程服务器需安装rsync</span><br><span class="line">rsync -P --rsh&#x3D;ssh  root@192.168.0.1:&#x2F;root&#x2F;fgdata.tar fgdata.tar</span><br></pre></td></tr></table></figure>
 
-<h1 id="压缩和解压文件"><a href="#压缩和解压文件" class="headerlink" title="压缩和解压文件"></a>压缩和解压文件</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># tar命令</span><br><span class="line">tar zxvf FileName.tar #解压</span><br><span class="line">tar czvf FileName.tar DirName #压缩</span><br><span class="line"></span><br><span class="line"># zip命令</span><br><span class="line">unzip FileName.zip #解压</span><br><span class="line">zip -r FileName.zip DirName #压缩</span><br></pre></td></tr></table></figure>
+<h1 id="系统管理"><a href="#系统管理" class="headerlink" title="系统管理"></a>系统管理</h1><h2 id="修改用户"><a href="#修改用户" class="headerlink" title="修改用户"></a>修改用户</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 将用户$USER添加到dialout用户组，以获取串口访问权限</span><br><span class="line">sudo usermod -a -G dialout $USER</span><br></pre></td></tr></table></figure>
 
-<h1 id="SSH-连接、远程上传下载文件"><a href="#SSH-连接、远程上传下载文件" class="headerlink" title="SSH 连接、远程上传下载文件"></a>SSH 连接、远程上传下载文件</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># SSH 远程登入 Ubuntu 机 </span><br><span class="line">ssh username@192.168.0.1</span><br><span class="line"></span><br><span class="line"># 将 文件&#x2F;文件夹 从远程 Ubuntu 机拷至本地(scp) </span><br><span class="line">scp -r username@192.168.0.1:&#x2F;home&#x2F;username&#x2F;remotefile.txt remotefile.txt</span><br><span class="line"></span><br><span class="line"># 将 文件&#x2F;文件夹 从本地拷至远程 Ubuntu 机(scp) </span><br><span class="line">scp -r localfile.txt username@192.168.0.1:&#x2F;home&#x2F;username&#x2F;</span><br><span class="line"></span><br><span class="line"># rsync大文件断电续传，远程服务器需安装rsync</span><br><span class="line">rsync -P --rsh&#x3D;ssh  root@192.168.0.1:&#x2F;root&#x2F;fgdata.tar fgdata.tar</span><br></pre></td></tr></table></figure>
+<h2 id="特殊符号用法"><a href="#特殊符号用法" class="headerlink" title="特殊符号用法"></a>特殊符号用法</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#| 管道 (pipeline)，是 UNIX 系统，基础且重要的观念。连结上个指令的标准输出，做为下个指令的标准输入。</span><br><span class="line">who | wc -l</span><br><span class="line"></span><br><span class="line">#! 惊叹号(negate or reverse)，通常它代表反逻辑的作用，譬如条件侦测中，用 !&#x3D; 来代表&quot;不等于&quot;</span><br><span class="line">#下例代表显示除了a0, a1 .... a9 这几个文件的其他文件。</span><br><span class="line">ls a[!0-9]</span><br><span class="line"></span><br><span class="line">#&amp; 后台工作，单一个&amp; 符号，且放在完整指令列的最后端，即表示将该指令列放入后台中工作。</span><br><span class="line">tar cvfz data.tar.gz data &gt; &#x2F;dev&#x2F;null &amp;</span><br></pre></td></tr></table></figure>
+
+<h2 id="系统服务管理"><a href="#系统服务管理" class="headerlink" title="系统服务管理"></a>系统服务管理</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># service命令用于对系统服务进行管理，比如启动（start）、停止（stop）、重启（restart）、查看状态（status）等。</span><br><span class="line"># service命令本身是一个shell脚本，它在&#x2F;etc&#x2F;init.d&#x2F;目录查找指定的服务脚本，然后调用该服务脚本来完成任务。</span><br><span class="line"></span><br><span class="line"># 查看系统所有服务状态</span><br><span class="line">service --status-all</span><br></pre></td></tr></table></figure>
+
+<h2 id="查询本机公网IP"><a href="#查询本机公网IP" class="headerlink" title="查询本机公网IP"></a>查询本机公网IP</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl ifconfig.me</span><br><span class="line">curl ipinfo.io</span><br></pre></td></tr></table></figure>
 
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://blog.csdn.net/ljianhui/article/details/11100625" target="_blank" rel="noopener">初窥Linux 之 我最常用的20条命令</a>,by ljianhui.</li>
@@ -4504,6 +4508,7 @@
 <li><a href="https://www.cnblogs.com/xuxm2007/archive/2011/10/20/2218846.html" target="_blank" rel="noopener">shell脚本中一些特殊符号</a>, by 阿笨猫.</li>
 <li><a href="https://medium.com/@zoomyale/%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91%E7%9A%84%E7%BB%88%E6%9E%81%E5%A7%BF%E5%8A%BF-%E5%9C%A8-vultr-vps-%E4%B8%8A%E6%90%AD%E5%BB%BA-shadowsocks-fd57c807d97e" target="_blank" rel="noopener">vultr proxy</a></li>
 <li><a href="https://einverne.github.io/post/2017/02/terminal-sock5-proxy.html" target="_blank" rel="noopener">proxychains配置</a>,by Verne.</li>
+<li><a href="https://www.trevorlasn.com/blog/10-essential-terminal-commands-every-developer-should-know" target="_blank" rel="noopener">10 Essential Terminal Commands Every Developer Should Know</a>,by Trevor I. Lasn.</li>
 </ol>
 ]]></content>
       <tags>
@@ -8581,6 +8586,8 @@
 <li><a href="https://stackoverflow.com/questions/57296864/how-to-remove-vcpkg-and-all-libraries-installed-with-vcpkg" target="_blank" rel="noopener">How to remove vcpkg and all libraries installed with vcpkg</a>,by stackoverflow.</li>
 <li><a href="https://zhuanlan.zhihu.com/p/153199835" target="_blank" rel="noopener">[工具]包管理工具Vcpkg 的使用</a>,by 南象.</li>
 <li><a href="https://blog.51cto.com/fish/5693025" target="_blank" rel="noopener">vs2017 + vcpkg包管理工具</a>,by 爱看书的小沐.</li>
+<li><a href="https://blog.songjiahao.com/archives/1067" target="_blank" rel="noopener">vcpkg安装库的导出和使用</a>,by songjiahao.</li>
+<li><a href="https://blog.csdn.net/Chiyunyinlong/article/details/121732735" target="_blank" rel="noopener">C++包管理工具vcpkg</a>,by qqblack.</li>
 </ol>
 ]]></content>
       <tags>
@@ -17707,6 +17714,7 @@ console.log(y);</code></pre></li>
 <li><a href="https://blog.csdn.net/mao0514/article/details/48245143" target="_blank" rel="noopener">Windows PE入门基础知识：Windows PE的作用、命名规则、启动方式、启动原理</a>,by 毛毛虫的爹.</li>
 <li><a href="https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/wpeinit-and-startnetcmd-using-winpe-startup-scripts" target="_blank" rel="noopener">Wpeinit and Startnet.cmd: Using WinPE Startup Scripts</a>,by microsoft.</li>
 <li><a href="https://post.smzdm.com/p/alpz8xvo/" target="_blank" rel="noopener">WIN7进阶篇，如何制作封装USB3.0，NVME驱动的WIN7镜像</a>,by Dior.</li>
+<li><a href="https://blog.csdn.net/tech34/article/details/127394725" target="_blank" rel="noopener">Win7安装驱动提示“无法验驱动程序数字签名”怎么办？</a>,by 左边右转第二排的张大爷.</li>
 </ol>
 ]]></content>
       <tags>
@@ -22541,6 +22549,8 @@ console.log(y);</code></pre></li>
 <h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>在编译之前，要先设置其附加包含目录和附加库目录。</p>
 <p>vc6.0在其tools&gt;&gt;options&gt;&gt;directoris下进行设置。在show directories for选择include files，添加BCGControlBar安装目录下的BCGCBPro目录。</p>
 <p>然后再选择show directories for下的Library files并添加BCGControlBar安装目录下的bin目录。</p>
+<h1 id="MFC扩展库MapX"><a href="#MFC扩展库MapX" class="headerlink" title="MFC扩展库MapX"></a>MFC扩展库MapX</h1><p>遗留程序依赖 MFC 扩展库 MapX，因此需要安装和配置 MapX，否则编运行出错。</p>
+<h2 id="MapX简介"><a href="#MapX简介" class="headerlink" title="MapX简介"></a>MapX简介</h2><p>MapX控件是Map Info公司向用户提供的具有强大地图分析功能的ActiveX控件，适用于大多数面向对象语言，可以无缝嵌入到各个领域的应用系统当中去。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.cnblogs.com/wenluderen/p/4952544.html" target="_blank" rel="noopener">深入跟踪MFC程序的执行流程</a>,by wenluderen</li>
 <li><a href="https://www.cnblogs.com/Mars-0603/p/14922947.html" target="_blank" rel="noopener">【C++】MFC 程序入口和执行流程</a>,by 不溯流光.</li>
@@ -22549,6 +22559,8 @@ console.log(y);</code></pre></li>
 <li><a href="https://www.cnblogs.com/hao-hong-sheng/p/8513280.html" target="_blank" rel="noopener">MFC框架——单文档/多文档/对话框/多顶级文档的区别</a>,by 郝红升.</li>
 <li><a href="https://blog.csdn.net/daizhiyan1/article/details/82769878" target="_blank" rel="noopener">MFC建立空文档失败分析</a>,by 咖啡熊猫.</li>
 <li><a href="https://blog.csdn.net/elcarim/article/details/6773812" target="_blank" rel="noopener">关于VC++6.0重新安装falsed时出现的DCOM user account解决方案</a>,by miracle_dan.</li>
+<li><a href="https://www.cnblogs.com/junlei/p/3635756.html" target="_blank" rel="noopener">VC下MapX开发环境建立</a>,by 风一兮.</li>
+<li><a href="https://www.cnblogs.com/junlei/p/3635807.html" target="_blank" rel="noopener">用VC++对MapX进行二次开发总结</a>,by 风一兮.</li>
 </ol>
 ]]></content>
       <tags>
@@ -22559,12 +22571,166 @@ console.log(y);</code></pre></li>
   <entry>
     <title>深入高可用系统原理与设计读书笔记</title>
     <url>/2024/12/25/%E6%B7%B1%E5%85%A5%E9%AB%98%E5%8F%AF%E7%94%A8%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86%E4%B8%8E%E8%AE%BE%E8%AE%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<p>对于 XaaS 的一路演进，可以简单归纳为：</p>
+    <content><![CDATA[<h1 id="第一章：云原生技术概论"><a href="#第一章：云原生技术概论" class="headerlink" title="第一章：云原生技术概论"></a>第一章：云原生技术概论</h1><h2 id="云计算的演进变革"><a href="#云计算的演进变革" class="headerlink" title="云计算的演进变革"></a>云计算的演进变革</h2><h2 id="物理机时代"><a href="#物理机时代" class="headerlink" title="物理机时代"></a>物理机时代</h2><h3 id="虚拟化技术成熟"><a href="#虚拟化技术成熟" class="headerlink" title="虚拟化技术成熟"></a>虚拟化技术成熟</h3><blockquote>
+<p>从虚拟化技术的发展中，我们看到业务的工作负载由物理机转向虚拟机，资源有了初级的隔离，并且分配/利用更加合理。</p>
+</blockquote>
+<h3 id="云计算技术成熟"><a href="#云计算技术成熟" class="headerlink" title="云计算技术成熟"></a>云计算技术成熟</h3><blockquote>
+<p>对于 XaaS 的一路演进，可以简单归纳为：</p>
+</blockquote>
 <ul>
-<li>有了 IaaS，客户不用关注物理机器，只需关注基础架构及应用程序。</li>
-<li>有了 PaaS，客户不用关注基础架构，只需关注应用程序。</li>
-<li>有了 FaaS，客户只需关注功能和数据。</li>
+<li>有了 IaaS（Infrastructure as a Service，基础设施即服务），客户不用关注物理机器，只需关注基础架构及应用程序。</li>
+<li>有了 PaaS（Platform as a Service，平台即服务），客户不用关注基础架构，只需关注应用程序。</li>
+<li>有了 FaaS（Function as a Service，功能即服务），客户只需关注功能和数据。</li>
 </ul>
+<h3 id="容器技术的兴起"><a href="#容器技术的兴起" class="headerlink" title="容器技术的兴起"></a>容器技术的兴起</h3><blockquote>
+<p>Docker 创新性地提出了“镜像”（image）的概念，实现了一种新型的应用打包、分发和运行机制，开发人员能够在几秒钟内完成应用程序的部署、运行，无需再担心环境不一致的问题。</p>
+</blockquote>
+<h2 id="云原生出现的背景"><a href="#云原生出现的背景" class="headerlink" title="云原生出现的背景"></a>云原生出现的背景</h2><blockquote>
+<p>部分软件已经变成水电煤一样的社会经济中的基础设施。</p>
+</blockquote>
+<blockquote>
+<p>过去二十年间，云的底层基础设施和平台越来越强大，软件架构的发展也逐渐和云匹配：</p>
+</blockquote>
+<ul>
+<li>通过不可变基础设施（镜像）解决本地和远程一致性问题；</li>
+<li>通过服务网格（ServiceMesh）将非业务逻辑从应用程序中剥离；</li>
+<li>通过声明式 API 描述应用程序的状态，而不用管中间的处理过程；</li>
+<li>通过 DevOps 方法论以及一系列工具来提升研发/运维效率…</li>
+</ul>
+<blockquote>
+<p>应用程序中的非业务逻辑不断被剥离，并下沉到云/基础设施层，代码越来越轻量。由此，工程师的开发工作回归本质（软件开发的本质是解决业务需求，各类“高深”、“复杂”的技术难题是业务需求的副产物，并不是软件开发的主题）。</p>
+</blockquote>
+<h2 id="云原生的定义"><a href="#云原生的定义" class="headerlink" title="云原生的定义"></a>云原生的定义</h2><blockquote>
+<p>CNCF 云原生的定义 v1.0 版本</p>
+</blockquote>
+<blockquote>
+<p>云原生技术有利于各组织在公有云、私有云和混合云等新型动态环境中，构建和运行可弹性扩展的应用。云原生的代表技术包括容器、服务网格、微服务、不可变基础设施和声明式 API。</p>
+</blockquote>
+<blockquote>
+<p>这些技术能够构建容错性好、易于管理和便于观察的松耦合系统。结合可靠的自动化手段，云原生技术使工程师能够轻松地对系统作出频繁和可预测的重大变更。</p>
+</blockquote>
+<h2 id="云原生的目标"><a href="#云原生的目标" class="headerlink" title="云原生的目标"></a>云原生的目标</h2><blockquote>
+<p>云原生的几个关键目标:</p>
+</blockquote>
+<ul>
+<li>可用（Available）：通过各种机制来实现应用的高可用，以保证服务提供的连续性。</li>
+<li>规模（Scale）：要求云原生服务能够适应不同的规模（包括但不限于用户规模/部署规模/请求量），并能够在部署时动态分配资源，以便在不同的规模之间快速和平滑的伸缩。</li>
+<li>敏捷（Agility）：快速响应市场需求。</li>
+<li>成本（Cost）：充分有效的利用资源。</li>
+</ul>
+<h2 id="云原生代表技术"><a href="#云原生代表技术" class="headerlink" title="云原生代表技术"></a>云原生代表技术</h2><blockquote>
+<p>云原生的代表技术：容器技术、微服务、服务网格、不可变基础设施、声明式设计以及 DevOps。</p>
+</blockquote>
+<h3 id="容器技术"><a href="#容器技术" class="headerlink" title="容器技术"></a>容器技术</h3><blockquote>
+<p>Google Cloud 对容器的定义: 容器是轻量级应用代码包，它还包含依赖项，例如编程语言运行时的特定版本和运行软件服务所需的库。</p>
+</blockquote>
+<p>容器技术发展历程：</p>
+<h4 id="chroot-阶段：隔离文件系统"><a href="#chroot-阶段：隔离文件系统" class="headerlink" title="chroot 阶段：隔离文件系统"></a>chroot 阶段：隔离文件系统</h4><p>chroot 被认为是最早的容器技术之一，它能将进程的根目录重定向到某个新目录，复现某些特定环境，同时也将进程的文件读写权限限制在该目录内。</p>
+<h4 id="LXC-阶段：封装系统"><a href="#LXC-阶段：封装系统" class="headerlink" title="LXC 阶段：封装系统"></a>LXC 阶段：封装系统</h4><p>至 2013 年，Linux 虚拟化技术已基本成型，通过 cgroups、namespace 以及安全防护机制，大体上解决了容器核心技术“运行环境隔离”，但此时仍需等待另一项关键技术的出现，才能迎来容器技术的全面繁荣。</p>
+<h4 id="Docker-阶段：封装应用"><a href="#Docker-阶段：封装应用" class="headerlink" title="Docker 阶段：封装应用"></a>Docker 阶段：封装应用</h4><p>Docker 的核心创新“容器镜像（container image）”：</p>
+<ul>
+<li>容器镜像打包了整个容器运行依赖的环境，以避免依赖运行容器的服务器的操作系统，从而实现“build once，run anywhere”。</li>
+<li>容器镜像一但构建完成，就变成只读状态，成为不可变基础设施的一份子。</li>
+<li>与操作系统发行版无关，核心解决的是容器进程对操作系统包含的库、工具、配置的依赖（注意，容器镜像无法解决容器进程对内核特性的特殊依赖）。</li>
+</ul>
+<h4 id="OCI-阶段：容器标准化"><a href="#OCI-阶段：容器标准化" class="headerlink" title="OCI 阶段：容器标准化"></a>OCI 阶段：容器标准化</h4><blockquote>
+<p>OCI 组织着力解决容器的构建、分发和运行标准问题，其宗旨是制定并维护 OCI Specifications（容器镜像格式和容器运行时的标准规范）。</p>
+</blockquote>
+<blockquote>
+<p>OCI 有了三个主要的标准：</p>
+</blockquote>
+<ul>
+<li>OCI Runtime Spec（容器运行时标准）：定义了运行一个容器，如何管理容器的状态和生命周期，如何使用操作系统的底层特性（namespace、cgroups、pivot_root 等）。</li>
+<li>OCI Image Spec（容器镜像标准）：定义了镜像的格式，配置（包括应用程序的参数、依赖的元数据格式、环境信息等），简单来说就是对镜像文件格式的描述。</li>
+<li>OCI Distribution Spec（镜像分发标准）：定义了镜像上传和下载的网络交互过程的规范。</li>
+</ul>
+<h4 id="容器编排阶段：封装集群"><a href="#容器编排阶段：封装集群" class="headerlink" title="容器编排阶段：封装集群"></a>容器编排阶段：封装集群</h4><blockquote>
+<p>以 Kubernetes 为代表的容器编排框架，就是把大型软件系统运行所依赖的集群环境也进行了虚拟化，让集群得以实现跨数据中心的绿色部署，并能够根据实际情况自动扩缩。</p>
+</blockquote>
+<blockquote>
+<p>就像用 docker run 可以启动单个程序一样，现在用 kubectl apply -f 就能部署和运行一个分布式集群应用，而无需关心是在私有云还是公有云或者具体哪家云厂商上。</p>
+</blockquote>
+<h4 id="云原生阶段：百花齐放"><a href="#云原生阶段：百花齐放" class="headerlink" title="云原生阶段：百花齐放"></a>云原生阶段：百花齐放</h4><h3 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h3><blockquote>
+<p> Netflix 云架构师 Adrian Cockcroft定义：微服务架构是一种面向服务的架构，由松耦合的具有有限上下文的元素组成。</p>
+</blockquote>
+<blockquote>
+<p>Adrian Cockcroft 的观点中有两个核心概念：</p>
+</blockquote>
+<ul>
+<li>松耦合（Loosely Coupled）：意味着每个服务可以独立的更新，更新一个服务无需要求改变其他服务。</li>
+<li>限界上下文（Bounded Contexts）：意味着每个服务要有明确的边界性，你可以只关注自身软件的发布，而无需考虑谁在依赖你的发布版本。微服务和它的消费者严格通过 API 进行交互，不共享数据结构、数据库等。基于契约的微服务规范要求服务接口是稳定的，而且向下兼容。</li>
+</ul>
+<blockquote>
+<p>微服务架构中，有一些必须解决的问题，如负载均衡、伸缩扩容、传输通讯等等，这些问题可以说只要是分布式架构的系统就无法完全避免。</p>
+</blockquote>
+<blockquote>
+<p>Kubernetes 在基础设施层面，解决分布式系统问题的方案：</p>
+</blockquote>
+<ul>
+<li>Kubernetes 用 CoreDNS 替代 Spring Cloud 服务发现组件 Eureka。</li>
+<li>Kubernetes 用 Service/Load Balancer 替代 Spring Cloud 中的负载均衡组件 Ribbon。</li>
+<li>Kubernetes 用 ConfigMap 替代 Spring Cloud 的配置中心 Config。</li>
+<li>Kubernetes 用 Ingress 代替 Spring Cloud 的网关组件 Zuul。</li>
+</ul>
+<blockquote>
+<p>当虚拟化的基础设施从单个服务的容器扩展至由多个容器构成的服务集群，并开始解决分布式的问题。</p>
+</blockquote>
+<h3 id="服务网格"><a href="#服务网格" class="headerlink" title="服务网格"></a>服务网格</h3><blockquote>
+<p>服务网格（Service Mesh）的概念最早由 Buoyant 公司的创始人 William Morgan 于 2016 年提出。</p>
+</blockquote>
+<blockquote>
+<p>服务网格的定义</p>
+<p>服务网格（ServiceMesh）是一个基础设施层，用于处理服务间通信。云原生应用有着复杂的服务拓扑，服务网格保证请求在这些拓扑中可靠地穿梭。在实际应用当中，服务网格通常是由一系列轻量级的网络代理组成的，它们与应用程序部署在一起，但对应用程序透明。</p>
+<p>—— by William Morgan</p>
+</blockquote>
+<blockquote>
+<p>业内绝大部分服务网格产品通常由“数据平面”和“控制平面”两部分组成:</p>
+</blockquote>
+<ul>
+<li>数据平面（Data plane）：通常采用轻量级的网络代理（如 Envoy）作为 Sidecar，网络代理负责协调和控制服务之间的通信和流量处理，解决微服务之间服务熔断、负载均衡、安全通讯等问题。</li>
+<li>控制平面（Control plane）：包含多个控制组件，它们负责配置和管理 Sidecar ，并提供服务发现（Discovery）、配置管理（Configuration）、安全控制（Certificates）等功能。</li>
+</ul>
+<h3 id="不可变基础设施"><a href="#不可变基础设施" class="headerlink" title="不可变基础设施"></a>不可变基础设施</h3><blockquote>
+<p>可变的基础设施会导致以下问题：</p>
+</blockquote>
+<ul>
+<li>重大故障时，难以快速重新构建服务：持续过多的手动操作并且缺乏记录，会导致很难由标准初始化的服务器来重新构建起等效的服务；</li>
+<li>不一致风险：类似于程序变量因并发修改而带来的状态不一致风险。服务运行过程中，频繁的修改基础设施配置，同样会引入中间状态，导致出现无法预知的问题。</li>
+</ul>
+<blockquote>
+<p>不可变基础设施思想的核心是，任何基础设施的运行实例一旦创建之后就变成只读状态。如需修改或升级，应该先修改基础设施的配置模版（例如 yaml、Dockerfile 配置），之后再使用新的运行实例替换。</p>
+</blockquote>
+<h3 id="声明式设计"><a href="#声明式设计" class="headerlink" title="声明式设计"></a>声明式设计</h3><blockquote>
+<p>声明式设计是指一种软件设计理念：“我们描述一个事物的目标状态，而非达成目标状态的流程”。至于目标状态如何达成，则由相应的工具在其内部实现。</p>
+</blockquote>
+<blockquote>
+<p>和声明式设计相对的是命令式设计（又叫过程式设计），两者的区别是：</p>
+</blockquote>
+<ul>
+<li>命令式设计：命令“机器”如何去做事情（how），这样不管你想要的是什么（what），它都会按照你的命令实现；</li>
+<li>声明式设计：告诉“机器”你想要的是什么（what），让机器想出如何去做（how）。</li>
+</ul>
+<h3 id="DevOps"><a href="#DevOps" class="headerlink" title="DevOps"></a>DevOps</h3><blockquote>
+<p>DevOps 是个很复杂的概念，几句话很难解释清楚。我们延用之前的惯例，如果要理解一个复杂的概念，就先去了解它出现的背景，以及发展的历史。</p>
+</blockquote>
+<blockquote>
+<p>DevOps 核心本质是解决软件开发生命周期中的管理问题，我们先从一种名为“瀑布模型”的项目管理方法说起。</p>
+</blockquote>
+<blockquote>
+<p>虽然敏捷开发提升了开发效率，但它的范围仅限于开发和测试环节，并没有覆盖到部署环节。显然，运维部门并没有收益。相反的，甚至可以说“敏捷”加重了运维的负担。运维追求的目标是稳定，频繁变更是破坏稳定的根源。</p>
+</blockquote>
+<blockquote>
+<p>DevOps 运动始于 2007 年左右，当时技术社区对开发与运维之间分开工作的方式以及由此引发的冲突感到担忧。</p>
+</blockquote>
+<blockquote>
+<p>DevOps 的定义</p>
+<p>DevOps（Development 和 Operations 的合成词）是一种重视“软件开发人员（Dev）”和“IT 运维技术人员（Ops）”之间沟通合作的文化、运动或惯例。</p>
+<p>通过自动化“软件交付”和“架构变更”的流程，来使得构建、测试、发布软件能够更加地快捷、频繁和可靠。</p>
+<p>—— from 维基百科</p>
+</blockquote>
+<blockquote>
+<p>DevOps 的成功实践离不开工具上的支持，这其中包括最重要的自动化 CI/CD 流水线，通过自动化的方式打通软件从构建、测试到部署发布的整个流程。还有实时监控、事件管理、配置管理、协作平台等一系列工具/系统的配合。</p>
+</blockquote>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.thebyte.com.cn/intro.html" target="_blank" rel="noopener">深入高可用系统原理与设计</a>,by thebyte.</li>
 </ol>

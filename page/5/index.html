@@ -314,6 +314,155 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/05/07/CPlusPlus%E4%B9%8B%E8%AE%A9%E7%A8%8B%E5%BA%8F%E5%8F%AA%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AA%E5%AE%9E%E4%BE%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/05/07/CPlusPlus%E4%B9%8B%E8%AE%A9%E7%A8%8B%E5%BA%8F%E5%8F%AA%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AA%E5%AE%9E%E4%BE%8B/" itemprop="url">
+                  CPlusPlus之让程序只启动一个实例
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-05-07 20:14:06 / 修改时间：20:18:03" itemprop="dateCreated datePublished" datetime="2024-05-07T20:14:06+08:00">2024-05-07</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>C++中让程序只启动一个实例的方法主要有以下几种：</p>
+<h1 id="互斥体实现方式"><a href="#互斥体实现方式" class="headerlink" title="互斥体实现方式"></a>互斥体实现方式</h1><p>主要利用如下函数实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">函数原型：</span><br><span class="line">HANDLE CreateMutex(   </span><br><span class="line">  LPSECURITY_ATTRIBUTES lpMutexAttributes,&#x2F;&#x2F;必须为NULL</span><br><span class="line">  BOOL bInitialOwner, &#x2F;&#x2F;表示mutex的范围是本线程还是全系统</span><br><span class="line">  LPCTSTR lpName  &#x2F;&#x2F;互斥量的名字</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">bool    checkMyselfExist()&#x2F;&#x2F;如果程序已经有一个在运行，则返回true</span><br><span class="line">&#123;</span><br><span class="line">    HANDLE  hMutex &#x3D; CreateMutex(NULL, FALSE, L&quot;DevState&quot;);</span><br><span class="line">    if (hMutex &amp;&amp; (GetLastError() &#x3D;&#x3D; ERROR_ALREADY_EXISTS))</span><br><span class="line">    &#123;</span><br><span class="line">        CloseHandle(hMutex);</span><br><span class="line">        hMutex &#x3D; NULL;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    if (checkMyselfExist())&#123;</span><br><span class="line">        cout &lt;&lt; &quot;program has been runnin&quot; &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        cout &lt;&lt; &quot;start running&quot; &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    system(&quot;pause&quot;);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.cnblogs.com/PeterZ1997/p/10452688.html" target="_blank" rel="noopener">C++实现程序单实例运行的两种方式</a>,by 倚剑问天.</li>
+<li><a href="https://blog.csdn.net/cgb0210/article/details/5800949" target="_blank" rel="noopener">C / C++ 如何让程序只启动一个实例</a>,by C你.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/04/28/%E6%AF%9B%E6%B3%BD%E4%B8%9C%E9%80%89%E9%9B%86%E5%85%A8%E5%9B%9B%E5%8D%B7%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1957,152 +2106,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/03/10/phpstudy%E7%AE%80%E4%BB%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/03/10/phpstudy%E7%AE%80%E4%BB%8B/" itemprop="url">
-                  phpstudy简介
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-03-10 22:18:44 / 修改时间：22:24:34" itemprop="dateCreated datePublished" datetime="2024-03-10T22:18:44+08:00">2024-03-10</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近接触一地方科技公司，他们使用phpstudy在Windows操作系统上部署应用，可以绿色化，无需安装，挺好用的。</p>
-<blockquote>
-<p>phpstudy 为服务器环境提供最优配置的解决方案, 支持Web端管理，一键创建网站、FTP、数据库、SSL；安全管理，计划任务，文件管理，PHP多版本共存及切换；自带LNMP与LAMP 。</p>
-</blockquote>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.xp.cn/" target="_blank" rel="noopener">phpstudy</a>,by xp.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2150,7 +2153,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">511</span>
+                    <span class="site-state-item-count">512</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

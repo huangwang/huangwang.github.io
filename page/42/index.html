@@ -314,6 +314,196 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/03/27/JSBSim%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/27/JSBSim%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%85%A5%E9%97%A8/" itemprop="url">
+                  JSBSim编程实践之入门
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-27 15:32:05" itemprop="dateCreated datePublished" datetime="2019-03-27T15:32:05+08:00">2019-03-27</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-01-07 22:15:05" itemprop="dateModified" datetime="2020-01-07T22:15:05+08:00">2020-01-07</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>JSBSim是一个开源跨平台的飞行动力学模型（FDM）软件库，用于模拟航空航天飞行器的飞行动力学。 该库已被纳入飞行模拟软件包FlightGear和OpenEaagles。JSBSim可以独立运行，通过命令行参数指定飞行器和初始状态，进行简单情境下的飞行动力学仿真，也可以将JSBSim作为代码库，编程实现飞行器模型加载，设置输入，获得输出。下面即介绍在Linux平台编程调用JSBSim库的方法和步骤。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="gcc与g"><a href="#gcc与g" class="headerlink" title="gcc与g++"></a>gcc与g++</h2><p>GNU编译器套装（英语：GNU Compiler Collection，缩写为GCC），指一套编程语言编译器，以GPL及LGPL许可证所发行的自由软件，也是GNU项目的关键部分，也是GNU工具链的主要组成部分之一。GCC（特别是其中的C语言编译器）也常被认为是跨平台编译器的事实标准。</p>
+<p>通常gcc用于编译链接c代码文件，而g++用于编译链接c++代码文件，但它们的使用方法很类似。下面介绍gcc和g++的常用选项。</p>
+<ul>
+<li>添加头文件搜索路径</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc foo.c -I &#x2F;home&#x2F;xiaowp&#x2F;include -o foo</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>添加动态库搜索路径</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc foo.c -L &#x2F;home&#x2F;xiaowp&#x2F;lib -lfoo -o foo</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>添加静态库搜索路径</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc foo.c -L &#x2F;home&#x2F;xiaowp&#x2F;lib -static -lfoo -o foo</span><br></pre></td></tr></table></figure>
+
+<h1 id="编程实践"><a href="#编程实践" class="headerlink" title="编程实践"></a>编程实践</h1><h2 id="最简仿真"><a href="#最简仿真" class="headerlink" title="最简仿真"></a>最简仿真</h2><p>下面是JSBSim参考手册中的最简单实例，因JSBSim的不断开发，JSBSim参考手册中该编程实例有点过时，因此进行了少量修改。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;FGFDMExec.h&gt;</span><br><span class="line">#include &lt;sg_path.hxx&gt;</span><br><span class="line"> </span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main(int argc, char **argv)</span><br><span class="line">&#123;</span><br><span class="line">  JSBSim::FGFDMExec FDMExec;</span><br><span class="line">  bool result &#x3D; true;</span><br><span class="line"> </span><br><span class="line">  FDMExec.LoadScript(SGPath::fromUtf8(argv[1]));</span><br><span class="line"> </span><br><span class="line">  while (result) result &#x3D; FDMExec.Run();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上述代码可知，调用JSBSim的主要方法是利用FGFDMExec类，通过实例化一个FGFDMExec类，就相当于获得了一个运行JSBSim仿真的工具箱，通过这个工具箱就可以调用JSBSim的大部分功能，实现我们要的仿真目标。</p>
+<p>接下来对该实例进行编译链接，使用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># jsbsim_script.cpp是上述实例的代码文件</span><br><span class="line">g++ jsbsim_script.cpp -I ..&#x2F;jsbsim&#x2F;src&#x2F; -I..&#x2F;jsbsim&#x2F;src&#x2F;simgear&#x2F;misc  -L ..&#x2F;jsbsim&#x2F;build&#x2F;src&#x2F; -static -l JSBSim -o jsbsim_script</span><br></pre></td></tr></table></figure>
+
+<p>测试该实例，使用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># jsbsim是JSBSim项目文件夹</span><br><span class="line"># JSBSimTest是JSBSim测试实例所在文件夹</span><br><span class="line">cd jsbsim</span><br><span class="line">..&#x2F;JSBSimTest&#x2F;jsbsim_script .&#x2F;scripts&#x2F;c1723.xml</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/yu_lei_/article/details/81916143" target="_blank" rel="noopener">JSBSim编程实践</a>,by 32768.</li>
+<li><a href="https://www.jianshu.com/p/b372cdfcea25" target="_blank" rel="noopener">战斗机与引擎速查</a>,by 么的聊.</li>
+<li><a href="https://www.jianshu.com/p/a0b4598f928a" target="_blank" rel="noopener">JSBSim学习笔记(3)—— 基本概念</a>,by 么的聊.</li>
+<li><a href="https://www.jianshu.com/p/b5e9f1f5df95" target="_blank" rel="noopener">JSBSim学习笔记(6)——飞行控制系统</a>,by 么的聊.</li>
+<li><a href="https://huangwang.github.io/2019/03/20/Linux平台编译安装测试JSBSim/">Linux平台编译安装测试JSBSim</a>,by jack huang.</li>
+<li><a href="http://jsbsim.sourceforge.net/documentation.html" target="_blank" rel="noopener">JSBSim Reference Manual </a>,by jsbsim.</li>
+<li><a href="https://www.cnblogs.com/zxouxuewei/p/7263568.html" target="_blank" rel="noopener">gcc和g++头文件和库路径的寻找和添加</a>,by 周学伟.</li>
+<li><a href="https://zh.wikipedia.org/wiki/GCC" target="_blank" rel="noopener">GCC</a>,by wikipedia.</li>
+<li><a href="https://www.freelancinggig.com/blog/2017/11/10/difference-gcc-g/" target="_blank" rel="noopener">WHAT IS THE DIFFERENCE BETWEEN GCC AND G++</a>,by KITTY GUPTA.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/03/25/%E5%9B%9B%E6%97%8B%E7%BF%BC%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%88%B6%E4%BD%9C%E7%AE%80%E6%98%93%E6%95%99%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1914,171 +2104,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/02/23/Linux%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E7%AE%80%E4%BB%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/23/Linux%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E7%AE%80%E4%BB%8B/" itemprop="url">
-                  Linux代理工具简介
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-02-23 16:32:06" itemprop="dateCreated datePublished" datetime="2019-02-23T16:32:06+08:00">2019-02-23</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2022-05-20 12:40:07" itemprop="dateModified" datetime="2022-05-20T12:40:07+08:00">2022-05-20</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>下面介绍两个Linux代理工具shadowsock和proxychains。</p>
-<h1 id="shadowsock"><a href="#shadowsock" class="headerlink" title="shadowsock"></a>shadowsock</h1><p>Shadowsocks可以指一种基于Socks5代理方式的加密传输协议，也可以指实现这个协议的各种开发包。当前包使用Python、C、C++、C#、Go语言等编程语言开发，大部分主要实现（iOS平台的除外）采用Apache许可证、GPL、MIT许可证等多种自由软件许可协议开放源代码。<strong>Shadowsocks分为服务器端和客户端，在使用之前，需要先将服务器端部署到服务器上面，然后通过客户端连接并创建本地代理。</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 安装方法</span><br><span class="line">sudo apt-get install shadowsocks</span><br><span class="line"># 使用方法</span><br><span class="line">nohup &#x2F;usr&#x2F;bin&#x2F;sslocal -c &#x2F;etc&#x2F;shadowsocks&#x2F;server.json</span><br></pre></td></tr></table></figure>
-
-<h1 id="proxychains"><a href="#proxychains" class="headerlink" title="proxychains"></a>proxychains</h1><p>ProxyChains是一个开源代理工具，能够强制使任何应用的TCP连接使用SOCKS4,SOCKS或者HTTP(S)代理进行连接。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 安装配置</span><br><span class="line">sudo apt install proxychains</span><br><span class="line">sudo gedit &#x2F;etc&#x2F;proxychains.conf</span><br><span class="line">socks5 127.0.0.1 1080</span><br><span class="line"># 使用方法</span><br><span class="line">proxychains firefoxt</span><br><span class="line">proxychains aria2c</span><br><span class="line">proxychains wget</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Shadowsocks" target="_blank" rel="noopener">Shadowsocks</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/SOCKS" target="_blank" rel="noopener">SOCKS</a>,by wikipedia.</li>
-<li><a href="https://linux.cn/article-6836-1.html" target="_blank" rel="noopener">将 Tor socks 转换成 http 代理</a>,by linux 中国.</li>
-<li><a href="https://fanzhongwei.com/linux/shadowsocks" target="_blank" rel="noopener">Linux 科学上网</a>,by fanzhongwei.</li>
-<li><a href="https://github.com/qingshuisiyuan/electron-ssr-backup/blob/master/Ubuntu.md" target="_blank" rel="noopener">Debian系列——Ubuntu18.04为例</a>,by github.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2126,7 +2151,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">511</span>
+                    <span class="site-state-item-count">512</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

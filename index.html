@@ -314,6 +314,176 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2025/01/17/%E9%BA%92%E9%BA%9FV10%E8%AE%BE%E7%BD%AEVNC%E8%BF%9E%E6%8E%A5%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2025/01/17/%E9%BA%92%E9%BA%9FV10%E8%AE%BE%E7%BD%AEVNC%E8%BF%9E%E6%8E%A5%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
+                  麒麟V10设置VNC连接的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2025-01-17 18:13:28 / 修改时间：20:06:55" itemprop="dateCreated datePublished" datetime="2025-01-17T18:13:28+08:00">2025-01-17</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近研究了一下麒麟V10 Linux设置VNC连接的方法，记录一下。</p>
+<h1 id="VNC-Server配置"><a href="#VNC-Server配置" class="headerlink" title="VNC Server配置"></a>VNC Server配置</h1><p>VNC Server应该能够以服务的形式开机自启动，对外以 80 端口提供VNC远程连接服务。</p>
+<h2 id="创建-VNC-Systemd-服务"><a href="#创建-VNC-Systemd-服务" class="headerlink" title="创建 VNC Systemd 服务"></a>创建 VNC Systemd 服务</h2><p>创建VNC Systemd 服务，实现麒麟 V10 开机后 VNC 服务器自启动。暂未成功。</p>
+<h2 id="修改-vncserver-配置"><a href="#修改-vncserver-配置" class="headerlink" title="修改 vncserver 配置"></a>修改 vncserver 配置</h2><p>修改 vncserver 配置，使 :1 对应 80 端口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 查看 vncserver 的位置</span><br><span class="line">which vncserver</span><br><span class="line"></span><br><span class="line"># 查看 vncserver 软连接到哪个文件</span><br><span class="line">file &#x2F;usr&#x2F;bin&#x2F;vncserver</span><br></pre></td></tr></table></figure>
+
+<p>最终找到麒麟 V10 使用的 vncserver 为 TigerVNC，使用 Vim 修改 TigerVNC配置文件，将 5900 替换为 79。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;usr&#x2F;bin&#x2F;tigervncserver</span><br><span class="line"></span><br><span class="line"># 逐个替换并确认</span><br><span class="line">:%s&#x2F;5900&#x2F;79&#x2F;gc</span><br></pre></td></tr></table></figure>
+
+<h2 id="修改-sysctl-conf-配置"><a href="#修改-sysctl-conf-配置" class="headerlink" title="修改 sysctl.conf 配置"></a>修改 sysctl.conf 配置</h2><p>Linux 对于非 root 用户禁止使用 1024 以下端口，但为了避免 VNC 服务被防火墙阻挡，应将 VNC 服务端口调整到 80 。修改 sysctl.conf 文件配置达到此目的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#临时生效</span><br><span class="line">sysctl net.ipv4.ip_unprivileged_port_start&#x3D;0</span><br><span class="line"></span><br><span class="line">#永久生效</span><br><span class="line">echo &quot;net.ipv4.ip_unprivileged_port_start&#x3D;0&quot; &gt;&gt; &#x2F;etc&#x2F;sysctl.conf</span><br><span class="line">sysctl -p</span><br></pre></td></tr></table></figure>
+
+<h1 id="启动-VNC-服务"><a href="#启动-VNC-服务" class="headerlink" title="启动 VNC 服务"></a>启动 VNC 服务</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 设置 VNC 客户端连接密码</span><br><span class="line">vncpasswd</span><br><span class="line"></span><br><span class="line"># 启动 VNC 服务</span><br><span class="line">vncserver -kill :1</span><br><span class="line">vncserver :1</span><br><span class="line">vncserver -list</span><br></pre></td></tr></table></figure>
+
+<h1 id="连接-VNC-服务"><a href="#连接-VNC-服务" class="headerlink" title="连接 VNC 服务"></a>连接 VNC 服务</h1><p>使用各种 VNC 客户端，填入相关配置连接即可。连接 VNC 服务器遇到一些问题，记录如下。</p>
+<h2 id="中文输入法问题"><a href="#中文输入法问题" class="headerlink" title="中文输入法问题"></a>中文输入法问题</h2><p>打开终端，输入如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fcitx-autostart</span><br><span class="line">fcitx restart</span><br></pre></td></tr></table></figure>
+
+<h2 id="输入正确用户名和密码仍旧跳回登录界面"><a href="#输入正确用户名和密码仍旧跳回登录界面" class="headerlink" title="输入正确用户名和密码仍旧跳回登录界面"></a>输入正确用户名和密码仍旧跳回登录界面</h2><p>原因是主目录下的 .Xauthority 文件拥有者变成了 root ，导致用户登录时无法获取该文件，解决方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown user:user .Xauthority</span><br></pre></td></tr></table></figure>
+
+<h2 id="麒麟-V10-自带的-Remmina-无法连接-VNC-服务器的问题"><a href="#麒麟-V10-自带的-Remmina-无法连接-VNC-服务器的问题" class="headerlink" title="麒麟 V10 自带的 Remmina 无法连接 VNC 服务器的问题"></a>麒麟 V10 自带的 Remmina 无法连接 VNC 服务器的问题</h2><p>麒麟 V10 自带的 Remmina 能够连接 VNC 服务器的默认的 5801 端口，但是无法连接 VNC 服务器的 80 端口。该问题暂未解决。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.runoob.com/w3cnote/linux-check-port-usage.html" target="_blank" rel="noopener">Linux 查看端口占用情况</a>,by runoob.</li>
+<li><a href="https://blog.51cto.com/lenglingx/6393402" target="_blank" rel="noopener">普通用户无法监听 80，443等低于1024端口解决办法</a>,lenglingx.</li>
+<li><a href="https://blog.csdn.net/yanghonker/article/details/41928841" target="_blank" rel="noopener">Ubuntu Kylin 输入正确的账号密码，登陆后又跳回到登录界面 解决方案</a>,by YoungHonker.</li>
+<li><a href="https://ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html" target="_blank" rel="noopener">Systemd 入门教程：命令篇</a>,by 阮一峰.</li>
+<li><a href="https://www.ruanyifeng.com/blog/2018/03/systemd-timer.html" target="_blank" rel="noopener">Systemd 定时器教程</a>,by 阮一峰.</li>
+<li><a href="https://ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html" target="_blank" rel="noopener">Systemd 入门教程：实战篇</a>,by 阮一峰.</li>
+<li><a href="https://www.ruanyifeng.com/blog/2016/03/node-systemd-tutorial.html" target="_blank" rel="noopener">Node 应用的 Systemd 启动</a>,by 阮一峰.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2025/01/14/SQL%E5%88%A4%E6%96%AD%E5%AD%97%E6%AE%B5%E5%80%BC%E6%98%AF%E5%90%A6%E8%BF%9E%E7%BB%AD%E4%B8%8E%E6%98%AF%E5%90%A6%E4%BB%8E1%E5%BC%80%E5%A7%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -360,12 +530,24 @@
                 
               
 
-              <time title="创建时间：2025-01-14 22:53:29 / 修改时间：22:58:40" itemprop="dateCreated datePublished" datetime="2025-01-14T22:53:29+08:00">2025-01-14</time>
+              <time title="创建时间：2025-01-14 22:53:29" itemprop="dateCreated datePublished" datetime="2025-01-14T22:53:29+08:00">2025-01-14</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2025-01-17 08:26:39" itemprop="dateModified" datetime="2025-01-17T08:26:39+08:00">2025-01-17</time>
               
             
           </span>
@@ -401,7 +583,7 @@
         
           
             <p>最近遇到一个运维问题，编写SQL语句判断某个字段是否从1开始，是否是连续的，记录一下问题解决过程。</p>
-<h1 id="目标数据表结构"><a href="#目标数据表结构" class="headerlink" title="目标数据表结构"></a>目标数据表结构</h1><p>目标数据表结构如下：</p>
+<h1 id="目标数据表结构"><a href="#目标数据表结构" class="headerlink" title="目标数据表结构"></a>目标数据表结构</h1><p>目标数据表 Department 结构如下：</p>
 <table>
 <thead>
 <tr>
@@ -434,8 +616,10 @@
 <td>7524003</td>
 </tr>
 </tbody></table>
-<h1 id="判断字段是否从1开始"><a href="#判断字段是否从1开始" class="headerlink" title="判断字段是否从1开始"></a>判断字段是否从1开始</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#96;&#96;&#96;</span><br><span class="line"></span><br><span class="line"># 判断字段是否连续</span><br></pre></td></tr></table></figure>
-<p>```</p>
+<h1 id="判断字段是否从1开始"><a href="#判断字段是否从1开始" class="headerlink" title="判断字段是否从1开始"></a>判断字段是否从1开始</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select * from Department a </span><br><span class="line">where a.personId in ( select * from ( select min(personId) as personId from Department b group by b.departId )) and mod(personId, 1000) !&#x3D;1</span><br></pre></td></tr></table></figure>
+
+<h1 id="判断字段是否连续"><a href="#判断字段是否连续" class="headerlink" title="判断字段是否连续"></a>判断字段是否连续</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">select * from </span><br><span class="line">( select b.personId,</span><br><span class="line">( select max(personId) </span><br><span class="line">from Department a </span><br><span class="line">where a.personId &lt; b.personId and a.departId &#x3D; b.departId ) as prePersonId </span><br><span class="line">from Department b )</span><br><span class="line">where personId - 1 &gt; prePersonId</span><br></pre></td></tr></table></figure>
+
 <h1 id="参考连接"><a href="#参考连接" class="headerlink" title="参考连接"></a>参考连接</h1><ol>
 <li><a href="https://blog.csdn.net/sqlserverdiscovery/article/details/12950259" target="_blank" rel="noopener">在论坛中出现的比较难的sql问题：7(子查询 判断某个字段的值是否连续)</a>,by LongRui888.</li>
 </ol>
@@ -1911,155 +2095,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/12/02/Nodejs%E4%BD%BF%E7%94%A8UDP%E9%80%9A%E4%BF%A1%E4%BC%A0%E8%BE%93JSON%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/12/02/Nodejs%E4%BD%BF%E7%94%A8UDP%E9%80%9A%E4%BF%A1%E4%BC%A0%E8%BE%93JSON%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
-                  Nodejs使用UDP通信传输JSON数据的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-12-02 11:06:14 / 修改时间：16:17:29" itemprop="dateCreated datePublished" datetime="2024-12-02T11:06:14+08:00">2024-12-02</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近需要在Nodejs平台上使用UDP协议接收JSON数据，于是研究一下。</p>
-<h1 id="UDP服务器端代码"><a href="#UDP服务器端代码" class="headerlink" title="UDP服务器端代码"></a>UDP服务器端代码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * UDP服务端</span><br><span class="line"> *&#x2F;</span><br><span class="line">&#x2F;&#x2F;载入udp模块</span><br><span class="line">const dgram &#x3D; require(&quot;dgram&quot;);</span><br><span class="line">&#x2F;&#x2F;创建服务器</span><br><span class="line">const server &#x3D; dgram.createSocket(&quot;udp4&quot;);</span><br><span class="line"> </span><br><span class="line">server.on(&quot;message&quot;,(msg,rinfo)&#x3D;&gt;&#123;</span><br><span class="line">    &#x2F;&#x2F;将接收到的消息返回客户端</span><br><span class="line">    var strmsg &#x3D; &quot;你好，UDP客户端，消息已经收到！&quot;;</span><br><span class="line">    server.send(strmsg,rinfo.port,rinfo.address);</span><br><span class="line">    let jsonData&#x3D;JSON.parse(msg)</span><br><span class="line">    console.log(&quot;服务器接收到来自&quot;+rinfo.address+&quot;:&quot;+rinfo.port+&quot; 的消息：&quot;+jsonData.hello);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">server.on(&quot;listening&quot;,()&#x3D;&gt;&#123;</span><br><span class="line">    let adress &#x3D; server.address();</span><br><span class="line">    console.log(&quot;服务器监听：&quot;,adress.adress+&quot;:&quot;+adress.port);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">server.on(&quot;error&quot;,(err)&#x3D;&gt;&#123;</span><br><span class="line">    console.err(&quot;服务器异常错误：&quot;+err.message);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">server.bind(8234,&quot;127.0.0.1&quot;);</span><br></pre></td></tr></table></figure>
-
-<h1 id="UDP客户端代码"><a href="#UDP客户端代码" class="headerlink" title="UDP客户端代码"></a>UDP客户端代码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * UDP客户端</span><br><span class="line"> *&#x2F;</span><br><span class="line">const dgram &#x3D; require(&quot;dgram&quot;);</span><br><span class="line"> </span><br><span class="line">const client &#x3D; dgram.createSocket(&quot;udp4&quot;);</span><br><span class="line"> </span><br><span class="line">client.on(&quot;message&quot;,(msg,rinfo)&#x3D;&gt;&#123;</span><br><span class="line">    console.log(&quot;接收来自：&quot;+rinfo.address+&quot;:&quot;+rinfo.port+&quot;的消息：&quot;+msg.toString());</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">client.on(&quot;error&quot;,(err)&#x3D;&gt;&#123;</span><br><span class="line">  console.error(&quot;客户端错误：&quot;+err.message);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">client.on(&quot;close&quot;,()&#x3D;&gt;&#123;</span><br><span class="line">    console.log(&quot;socket已关闭&quot;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">let jsonData&#x3D;&#123;</span><br><span class="line">    hello: &quot;我是UDP客户端！&quot;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">client.send(JSON.stringify(jsonData),8234,&quot;127.0.0.1&quot;,(err)&#x3D;&gt;&#123;</span><br><span class="line">    if(err) client.close();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://cloud.tencent.com/developer/article/2079197" target="_blank" rel="noopener">Node js 开发入门 —UDP 编程，小白也能轻松学会</a>,by crmeb.</li>
-<li><a href="https://blog.csdn.net/caofengtao1314/article/details/117063590" target="_blank" rel="noopener">UDP 报文最大可以是多大呢</a>,by cft56200_ln.</li>
-<li><a href="https://blog.csdn.net/u011555996/article/details/126960232" target="_blank" rel="noopener">UDP传输报文大小详解</a>,by luckyone906.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2107,7 +2142,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">512</span>
+                    <span class="site-state-item-count">513</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

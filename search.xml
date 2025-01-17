@@ -4502,6 +4502,28 @@
 
 <h2 id="查询本机公网IP"><a href="#查询本机公网IP" class="headerlink" title="查询本机公网IP"></a>查询本机公网IP</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl ifconfig.me</span><br><span class="line">curl ipinfo.io</span><br></pre></td></tr></table></figure>
 
+<h2 id="查看环境变量"><a href="#查看环境变量" class="headerlink" title="查看环境变量"></a>查看环境变量</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看端口占用情况"><a href="#查看端口占用情况" class="headerlink" title="查看端口占用情况"></a>查看端口占用情况</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">lsof -i:8080：查看8080端口占用</span><br><span class="line"></span><br><span class="line">netstat -tunlp | grep 端口号</span><br><span class="line">-t (tcp) 仅显示tcp相关选项</span><br><span class="line">-u (udp)仅显示udp相关选项</span><br><span class="line">-n 拒绝显示别名，能显示数字的全部转化为数字</span><br><span class="line">-l 仅列出在Listen(监听)的服务状态</span><br><span class="line">-p 显示建立相关链接的程序名</span><br></pre></td></tr></table></figure>
+
+<h2 id="Vim使用方法"><a href="#Vim使用方法" class="headerlink" title="Vim使用方法"></a>Vim使用方法</h2><ul>
+<li>正向搜索字符串</li>
+</ul>
+<p>在普通模式下，按下 / 键，然后输入你要查找的字符串，最后按下 Enter 键。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;function</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>反向搜索字符串</li>
+</ul>
+<p>与正向查找相似，使用 ? 键进行反向查找。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">?error</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>替换字符串</li>
+</ul>
+<p>在命令模式下，替换字符串。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:%s&#x2F;apple&#x2F;orange&#x2F;gc</span><br></pre></td></tr></table></figure>
+
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://blog.csdn.net/ljianhui/article/details/11100625" target="_blank" rel="noopener">初窥Linux 之 我最常用的20条命令</a>,by ljianhui.</li>
 <li><a href="http://www.ruanyifeng.com/blog/2009/10/5_ways_to_search_for_files_using_the_terminal.html" target="_blank" rel="noopener">Linux的五个查找命令</a>,by 阮一峰.</li>
@@ -4509,6 +4531,7 @@
 <li><a href="https://medium.com/@zoomyale/%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91%E7%9A%84%E7%BB%88%E6%9E%81%E5%A7%BF%E5%8A%BF-%E5%9C%A8-vultr-vps-%E4%B8%8A%E6%90%AD%E5%BB%BA-shadowsocks-fd57c807d97e" target="_blank" rel="noopener">vultr proxy</a></li>
 <li><a href="https://einverne.github.io/post/2017/02/terminal-sock5-proxy.html" target="_blank" rel="noopener">proxychains配置</a>,by Verne.</li>
 <li><a href="https://www.trevorlasn.com/blog/10-essential-terminal-commands-every-developer-should-know" target="_blank" rel="noopener">10 Essential Terminal Commands Every Developer Should Know</a>,by Trevor I. Lasn.</li>
+<li><a href="https://www.quanxiaoha.com/vim-command/vim-find-string.html" target="_blank" rel="noopener">Vim 查找字符串（超详细）</a>,by quanxiaoha.</li>
 </ol>
 ]]></content>
       <tags>
@@ -22748,7 +22771,7 @@ console.log(y);</code></pre></li>
     <title>SQL判断字段值是否连续与是否从1开始</title>
     <url>/2025/01/14/SQL%E5%88%A4%E6%96%AD%E5%AD%97%E6%AE%B5%E5%80%BC%E6%98%AF%E5%90%A6%E8%BF%9E%E7%BB%AD%E4%B8%8E%E6%98%AF%E5%90%A6%E4%BB%8E1%E5%BC%80%E5%A7%8B/</url>
     <content><![CDATA[<p>最近遇到一个运维问题，编写SQL语句判断某个字段是否从1开始，是否是连续的，记录一下问题解决过程。</p>
-<h1 id="目标数据表结构"><a href="#目标数据表结构" class="headerlink" title="目标数据表结构"></a>目标数据表结构</h1><p>目标数据表结构如下：</p>
+<h1 id="目标数据表结构"><a href="#目标数据表结构" class="headerlink" title="目标数据表结构"></a>目标数据表结构</h1><p>目标数据表 Department 结构如下：</p>
 <table>
 <thead>
 <tr>
@@ -22781,8 +22804,10 @@ console.log(y);</code></pre></li>
 <td>7524003</td>
 </tr>
 </tbody></table>
-<h1 id="判断字段是否从1开始"><a href="#判断字段是否从1开始" class="headerlink" title="判断字段是否从1开始"></a>判断字段是否从1开始</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;&#96;&#96;</span><br><span class="line"></span><br><span class="line"># 判断字段是否连续</span><br></pre></td></tr></table></figure>
-<p>```</p>
+<h1 id="判断字段是否从1开始"><a href="#判断字段是否从1开始" class="headerlink" title="判断字段是否从1开始"></a>判断字段是否从1开始</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from Department a </span><br><span class="line">where a.personId in ( select * from ( select min(personId) as personId from Department b group by b.departId )) and mod(personId, 1000) !&#x3D;1</span><br></pre></td></tr></table></figure>
+
+<h1 id="判断字段是否连续"><a href="#判断字段是否连续" class="headerlink" title="判断字段是否连续"></a>判断字段是否连续</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from </span><br><span class="line">( select b.personId,</span><br><span class="line">( select max(personId) </span><br><span class="line">from Department a </span><br><span class="line">where a.personId &lt; b.personId and a.departId &#x3D; b.departId ) as prePersonId </span><br><span class="line">from Department b )</span><br><span class="line">where personId - 1 &gt; prePersonId</span><br></pre></td></tr></table></figure>
+
 <h1 id="参考连接"><a href="#参考连接" class="headerlink" title="参考连接"></a>参考连接</h1><ol>
 <li><a href="https://blog.csdn.net/sqlserverdiscovery/article/details/12950259" target="_blank" rel="noopener">在论坛中出现的比较难的sql问题：7(子查询 判断某个字段的值是否连续)</a>,by LongRui888.</li>
 </ol>
@@ -22790,6 +22815,46 @@ console.log(y);</code></pre></li>
       <tags>
         <tag>笔记本</tag>
         <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>麒麟V10设置VNC连接的方法</title>
+    <url>/2025/01/17/%E9%BA%92%E9%BA%9FV10%E8%AE%BE%E7%BD%AEVNC%E8%BF%9E%E6%8E%A5%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>最近研究了一下麒麟V10 Linux设置VNC连接的方法，记录一下。</p>
+<h1 id="VNC-Server配置"><a href="#VNC-Server配置" class="headerlink" title="VNC Server配置"></a>VNC Server配置</h1><p>VNC Server应该能够以服务的形式开机自启动，对外以 80 端口提供VNC远程连接服务。</p>
+<h2 id="创建-VNC-Systemd-服务"><a href="#创建-VNC-Systemd-服务" class="headerlink" title="创建 VNC Systemd 服务"></a>创建 VNC Systemd 服务</h2><p>创建VNC Systemd 服务，实现麒麟 V10 开机后 VNC 服务器自启动。暂未成功。</p>
+<h2 id="修改-vncserver-配置"><a href="#修改-vncserver-配置" class="headerlink" title="修改 vncserver 配置"></a>修改 vncserver 配置</h2><p>修改 vncserver 配置，使 :1 对应 80 端口。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 查看 vncserver 的位置</span><br><span class="line">which vncserver</span><br><span class="line"></span><br><span class="line"># 查看 vncserver 软连接到哪个文件</span><br><span class="line">file &#x2F;usr&#x2F;bin&#x2F;vncserver</span><br></pre></td></tr></table></figure>
+
+<p>最终找到麒麟 V10 使用的 vncserver 为 TigerVNC，使用 Vim 修改 TigerVNC配置文件，将 5900 替换为 79。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vim &#x2F;usr&#x2F;bin&#x2F;tigervncserver</span><br><span class="line"></span><br><span class="line"># 逐个替换并确认</span><br><span class="line">:%s&#x2F;5900&#x2F;79&#x2F;gc</span><br></pre></td></tr></table></figure>
+
+<h2 id="修改-sysctl-conf-配置"><a href="#修改-sysctl-conf-配置" class="headerlink" title="修改 sysctl.conf 配置"></a>修改 sysctl.conf 配置</h2><p>Linux 对于非 root 用户禁止使用 1024 以下端口，但为了避免 VNC 服务被防火墙阻挡，应将 VNC 服务端口调整到 80 。修改 sysctl.conf 文件配置达到此目的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#临时生效</span><br><span class="line">sysctl net.ipv4.ip_unprivileged_port_start&#x3D;0</span><br><span class="line"></span><br><span class="line">#永久生效</span><br><span class="line">echo &quot;net.ipv4.ip_unprivileged_port_start&#x3D;0&quot; &gt;&gt; &#x2F;etc&#x2F;sysctl.conf</span><br><span class="line">sysctl -p</span><br></pre></td></tr></table></figure>
+
+<h1 id="启动-VNC-服务"><a href="#启动-VNC-服务" class="headerlink" title="启动 VNC 服务"></a>启动 VNC 服务</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 设置 VNC 客户端连接密码</span><br><span class="line">vncpasswd</span><br><span class="line"></span><br><span class="line"># 启动 VNC 服务</span><br><span class="line">vncserver -kill :1</span><br><span class="line">vncserver :1</span><br><span class="line">vncserver -list</span><br></pre></td></tr></table></figure>
+
+<h1 id="连接-VNC-服务"><a href="#连接-VNC-服务" class="headerlink" title="连接 VNC 服务"></a>连接 VNC 服务</h1><p>使用各种 VNC 客户端，填入相关配置连接即可。连接 VNC 服务器遇到一些问题，记录如下。</p>
+<h2 id="中文输入法问题"><a href="#中文输入法问题" class="headerlink" title="中文输入法问题"></a>中文输入法问题</h2><p>打开终端，输入如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">fcitx-autostart</span><br><span class="line">fcitx restart</span><br></pre></td></tr></table></figure>
+
+<h2 id="输入正确用户名和密码仍旧跳回登录界面"><a href="#输入正确用户名和密码仍旧跳回登录界面" class="headerlink" title="输入正确用户名和密码仍旧跳回登录界面"></a>输入正确用户名和密码仍旧跳回登录界面</h2><p>原因是主目录下的 .Xauthority 文件拥有者变成了 root ，导致用户登录时无法获取该文件，解决方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo chown user:user .Xauthority</span><br></pre></td></tr></table></figure>
+
+<h2 id="麒麟-V10-自带的-Remmina-无法连接-VNC-服务器的问题"><a href="#麒麟-V10-自带的-Remmina-无法连接-VNC-服务器的问题" class="headerlink" title="麒麟 V10 自带的 Remmina 无法连接 VNC 服务器的问题"></a>麒麟 V10 自带的 Remmina 无法连接 VNC 服务器的问题</h2><p>麒麟 V10 自带的 Remmina 能够连接 VNC 服务器的默认的 5801 端口，但是无法连接 VNC 服务器的 80 端口。该问题暂未解决。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.runoob.com/w3cnote/linux-check-port-usage.html" target="_blank" rel="noopener">Linux 查看端口占用情况</a>,by runoob.</li>
+<li><a href="https://blog.51cto.com/lenglingx/6393402" target="_blank" rel="noopener">普通用户无法监听 80，443等低于1024端口解决办法</a>,lenglingx.</li>
+<li><a href="https://blog.csdn.net/yanghonker/article/details/41928841" target="_blank" rel="noopener">Ubuntu Kylin 输入正确的账号密码，登陆后又跳回到登录界面 解决方案</a>,by YoungHonker.</li>
+<li><a href="https://ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html" target="_blank" rel="noopener">Systemd 入门教程：命令篇</a>,by 阮一峰.</li>
+<li><a href="https://www.ruanyifeng.com/blog/2018/03/systemd-timer.html" target="_blank" rel="noopener">Systemd 定时器教程</a>,by 阮一峰.</li>
+<li><a href="https://ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html" target="_blank" rel="noopener">Systemd 入门教程：实战篇</a>,by 阮一峰.</li>
+<li><a href="https://www.ruanyifeng.com/blog/2016/03/node-systemd-tutorial.html" target="_blank" rel="noopener">Node 应用的 Systemd 启动</a>,by 阮一峰.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>linux</tag>
+        <tag>shell</tag>
       </tags>
   </entry>
 </search>

@@ -894,7 +894,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2025-02-09 21:59:25" itemprop="dateModified" datetime="2025-02-09T21:59:25+08:00">2025-02-09</time>
+                <time title="修改时间：2025-02-09 22:50:58" itemprop="dateModified" datetime="2025-02-09T22:50:58+08:00">2025-02-09</time>
               
             
           </span>
@@ -1232,7 +1232,149 @@
 <h2 id="容器编排系统的演进"><a href="#容器编排系统的演进" class="headerlink" title="容器编排系统的演进"></a>容器编排系统的演进</h2><blockquote>
 <p>Google 先后设计了三套不同的容器管理系统，Borg、Omega 和 Kubernetes，并向外界分享了大量的设计思想、论文和源码，直接促进了容器技术的普及和发展，对整个行业的技术演进产生了深远的影响。</p>
 </blockquote>
-<h1 id="第八章：服务网格技术"><a href="#第八章：服务网格技术" class="headerlink" title="第八章：服务网格技术"></a>第八章：服务网格技术</h1><h1 id="第九章：系统可观测性"><a href="#第九章：系统可观测性" class="headerlink" title="第九章：系统可观测性"></a>第九章：系统可观测性</h1><h1 id="第十章-应用封装与交付"><a href="#第十章-应用封装与交付" class="headerlink" title="第十章 应用封装与交付"></a>第十章 应用封装与交付</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<blockquote>
+<p>从 Borg 到 Kubernetes，容器技术的价值早已超越了单纯提升资源利用率。更深远的影响在于，系统开发和运维的理念从“以机器为中心”转变为“以应用为中心”：</p>
+</blockquote>
+<ul>
+<li>容器封装了应用程序的运行环境，屏蔽了操作系统和硬件的细节，使得业务开发者不再需要关注底层实现；</li>
+<li>基础设施团队可以更灵活地引入新硬件或升级操作系统，最大限度减少对线上应用和开发者的影响；</li>
+<li>每个设计良好的容器通常代表一个应用，因此管理容器就等于管理应用，而非管理机器；</li>
+<li>将收集的性能指标（如 CPU 使用率、内存用量、QPS 等）与应用程序而非物理机器关联，显著提高了应用监控的精确度和可观测性。</li>
+</ul>
+<h2 id="容器技术的原理与演进"><a href="#容器技术的原理与演进" class="headerlink" title="容器技术的原理与演进"></a>容器技术的原理与演进</h2><h3 id="文件系统隔离"><a href="#文件系统隔离" class="headerlink" title="文件系统隔离"></a>文件系统隔离</h3><blockquote>
+<p>chroot 是“change root”的缩写，它允许管理员将进程的根目录锁定在特定位置，从而限制进程对文件系统的访问范围。chroot 的隔离功能对安全性至关重要。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir -p new-root&#x2F;&#123;bin,lib64,root&#125;</span><br><span class="line">$ cp &#x2F;bin&#x2F;bash new-root&#x2F;bin</span><br><span class="line">$ cp &#x2F;lib64&#x2F;&#123;ld-linux-x86-64.so*,libc.so*,libdl.so.2,libreadline.so*,libtinfo.so*&#125; new-root&#x2F;lib64</span><br><span class="line">$ sudo chroot new-root</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>除了 /bin 之外，如果我们将程序依赖的 /etc、/proc 等目录一同打包进去，实际上就得到了一个 rootfs 文件。因为 rootfs 包含的不仅是应用，还有整个操作系统的文件和目录，这意味着应用及其所有依赖都被封装在一起，这正是容器被广泛宣传为一致性解决方案的由来。</p>
+</blockquote>
+<h3 id="资源全方位隔离"><a href="#资源全方位隔离" class="headerlink" title="资源全方位隔离"></a>资源全方位隔离</h3><blockquote>
+<p>从 Linux 内核 2.6.19 起，逐步引入了 UTS、IPC、PID、Network 和 User 等命名空间功能。到了 3.8 版本，Linux 实现了容器所需的六项最基本的资源隔离机制。Linux 4.6 版本起，新增了 Cgroup 和 Time 命名空间。</p>
+</blockquote>
+<h3 id="资源全方位限制"><a href="#资源全方位限制" class="headerlink" title="资源全方位限制"></a>资源全方位限制</h3><blockquote>
+<p>进程的资源隔离已经完成，如果再对使用资源进行额度限制，就能对进程的运行环境实现“进乎完美”的隔离。这就要用 Linux 内核的第二项技术 —— Linux Control Cgroup（Linux 控制组群，简称 cgroups）。</p>
+</blockquote>
+<blockquote>
+<p>cgroups 是 Linux 内核用于隔离、分配并限制进程组使用资源配额的机制。例如，它可以控制进程的 CPU 占用时间、内存大小、磁盘 I/O 速度等。</p>
+</blockquote>
+<h3 id="设计容器协作的方式"><a href="#设计容器协作的方式" class="headerlink" title="设计容器协作的方式"></a>设计容器协作的方式</h3><blockquote>
+<p>登录到 Linux 机器后，执行 pstree -g 命令可以查看当前系统中的进程树状结构。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ pstree -g</span><br><span class="line">    |-rsyslogd(1089)-+-&#123;in:imklog&#125;(1089)</span><br><span class="line">    |  |-&#123;in:imuxsock) S 1(1089)</span><br><span class="line">    | &#96;-&#123;rs:main Q:Reg&#125;(1089)</span><br></pre></td></tr></table></figure>
+
+<h3 id="超亲密容器组-Pod"><a href="#超亲密容器组-Pod" class="headerlink" title="超亲密容器组 Pod"></a>超亲密容器组 Pod</h3><blockquote>
+<p>在 Kubernetes 中，与“进程组”对应的设计概念是 Pod。Pod 是一组紧密关联的容器集合，它们共享 IPC、Network 和 UTS 等命名空间，是 Kubernetes 管理的最基本单位。</p>
+</blockquote>
+<h2 id="容器镜像的原理与应用"><a href="#容器镜像的原理与应用" class="headerlink" title="容器镜像的原理与应用"></a>容器镜像的原理与应用</h2><blockquote>
+<p>所谓的“容器镜像”，其实就是一个“特殊的压缩包”，它将应用及其依赖（包括操作系统中的库和配置）打包在一起，形成一个自包含的环境。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker build 镜像名称</span><br><span class="line"></span><br><span class="line">$ docker run 镜像名称</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Docker 镜像利用联合文件系统的分层设计。整个镜像从下往上由 6 个层组成：</p>
+</blockquote>
+<ul>
+<li>最底层是基础镜像 Debian Stretch，相当于“base rootfs”，所有容器可以共享这一层；</li>
+<li>接下来的 3 层是通过 Dockerfile 中的 ADD、ENV、CMD 等指令生成的只读层；</li>
+<li>Init Layer 位于只读层和可写层之间，存放可能会被修改的文件，如 /etc/hosts、/etc/resolv.conf 等。这些文件原本属于 Debian 镜像，但容器启动时，用户往往会写入一些指定的配置，因此 Docker 为其单独创建了这一层；</li>
+<li>最上层是通过 CoW（写时复制）技术创建的可写层（Read/Write Layer）。</li>
+</ul>
+<blockquote>
+<p>通过镜像分层设计，以 Docker 镜像为核心，不同公司和团队的开发人员可以紧密协作。每个人不仅可以发布基础镜像，还可以基于他人的基础镜像构建和发布自己的软件。镜像的增量操作使得拉取和推送内容也是增量的，这远比操作虚拟机动辄数 GB 的 ISO 镜像要更敏捷。</p>
+</blockquote>
+<h2 id="容器持久化存储设计"><a href="#容器持久化存储设计" class="headerlink" title="容器持久化存储设计"></a>容器持久化存储设计</h2><blockquote>
+<p>Docker 通过将宿主机目录挂载到容器内部的方式，实现数据持久化存储。如图 7-21 所示，目前它支持三种挂载方式：bind mount、volume 和 tmpfs mount。</p>
+</blockquote>
+<h2 id="容器间通信的原理"><a href="#容器间通信的原理" class="headerlink" title="容器间通信的原理"></a>容器间通信的原理</h2><h2 id="资源弹性伸缩"><a href="#资源弹性伸缩" class="headerlink" title="资源弹性伸缩"></a>资源弹性伸缩</h2><h1 id="第八章：服务网格技术"><a href="#第八章：服务网格技术" class="headerlink" title="第八章：服务网格技术"></a>第八章：服务网格技术</h1><h2 id="什么是服务网格"><a href="#什么是服务网格" class="headerlink" title="什么是服务网格"></a>什么是服务网格</h2><blockquote>
+<p>服务网格是一个处理服务通讯的专门的基础设施层。它的职责是在由云原生应用组成服务的复杂拓扑结构下进行可靠的请求传送。在实践中，它是一组和应用服务部署在一起的轻量级的网络代理，对应用服务透明。 </p>
+<p>—— What’s a service mesh？And why do I need one?，William Morgan</p>
+</blockquote>
+<blockquote>
+<p>服务网格是一个基础设施层，用于处理服务间通信。云原生应用有着复杂的服务拓扑，服务网格保证请求在这些拓扑中可靠地穿梭。在实际应用当中，服务网格通常是由一系列轻量级的网络代理组成的，它们与应用程序部署在一起，但对应用程序透明。</p>
+</blockquote>
+<h2 id="服务间通信的演化"><a href="#服务间通信的演化" class="headerlink" title="服务间通信的演化"></a>服务间通信的演化</h2><blockquote>
+<p>实施微服务架构时，需要解决问题（服务注册、服务发现、负载均衡、熔断、限流等）的本质是保证服务间请求的可靠传递。站在业务的角度来看，无论上述逻辑设计的多么复杂，都不会影响业务请求本身的业务语义与业务内容发生任何变化，实施微服务架构的技术挑战和业务逻辑没有任何关系。</p>
+</blockquote>
+<blockquote>
+<p>回顾前面提到的 TCP/IP 协议案例，我们思考是否服务间的通信是否也能像 TCP 协议栈那样：“人们基于 HTTP 协议开发复杂的应用，无需关心底层 TCP 协议如何控制数据包”。如果能把服务间通信剥离、并下沉到微服务基础层，工程师将不再浪费时间编写基础设施层的代码，而是将充沛的精力聚焦在业务逻辑上。</p>
+</blockquote>
+<blockquote>
+<p>第一代服务网格由一系列独立运行的代理型服务（Sidecar）构成，但并没有思考如何系统化管理这些代理服务。为了提供统一的运维入口，服务网格继续演化出了集中式的控制面板（Control Plane）。</p>
+</blockquote>
+<blockquote>
+<p>典型的第二代服务网格以 Google、IBM 和 Lyft 联合开发的 Istio 为代表。根据 Istio 的总体架构（见图 8-8），第二代服务网格由两大核心组成部分：一系列与微服务共同部署的边车代理（称为数据平面），以及用于管理这些代理的控制器（称为控制平面）。控制器向代理下发路由、熔断策略、服务发现等策略信息，代理根据这些策略处理服务间的请求。</p>
+</blockquote>
+<h2 id="数据平面的设计"><a href="#数据平面的设计" class="headerlink" title="数据平面的设计"></a>数据平面的设计</h2><h2 id="控制平面的设计"><a href="#控制平面的设计" class="headerlink" title="控制平面的设计"></a>控制平面的设计</h2><h1 id="第九章：系统可观测性"><a href="#第九章：系统可观测性" class="headerlink" title="第九章：系统可观测性"></a>第九章：系统可观测性</h1><h2 id="什么是可观测性"><a href="#什么是可观测性" class="headerlink" title="什么是可观测性"></a>什么是可观测性</h2><blockquote>
+<p>遥测数据（telemetry data）是指采样和汇总有关软件系统性能和行为的数据，这些数据（接口的响应时间、请求错误率、服务资源消耗等）用于监控和了解系统的当前状态。</p>
+</blockquote>
+<blockquote>
+<p>实际上，软件领域的观测与上述火箭发射系统相似，都是通过全面收集系统运行数据（遥测数据），以了解内部状态。因此，观测本质上是一种数据收集与分析的科学，旨在帮助解决复杂系统中的故障检测、性能优化和风险预警等问题。</p>
+</blockquote>
+<h2 id="可观测性与传统监控"><a href="#可观测性与传统监控" class="headerlink" title="可观测性与传统监控"></a>可观测性与传统监控</h2><blockquote>
+<p>可观测性与监控的关系</p>
+</blockquote>
+<blockquote>
+<p>监控告诉我们系统哪些部分是正常的，可观测性告诉我们系统为什么不正常了。</p>
+</blockquote>
+<blockquote>
+<p>——by《高性能 MySQL》作者 Baron Schwartz</p>
+</blockquote>
+<h2 id="遥测数据的分类与处理"><a href="#遥测数据的分类与处理" class="headerlink" title="遥测数据的分类与处理"></a>遥测数据的分类与处理</h2><blockquote>
+<p>业界将系统输出的数据总结为三种独立的类型，它们的含义与区别如下：</p>
+</blockquote>
+<ul>
+<li><p>指标（metric）：量化系统性能和状态的“数据点”，每个数据点包含度量对象（如接口请求数）、度量值（如 100 次/秒）和发生的时间，多个时间上连续的数据点便可以分析系统性能的趋势和变化规律。指标是发现问题的起点，例如你半夜收到一条告警：“12 点 22 分，接口请求成功率下降到 10%”，这表明系统出现了问题。接着，你挣扎起床，分析链路追踪和日志数据，找到问题的根本原因并进行修复。</p>
+</li>
+<li><p>日志（log）：系统运行过程中，记录离散事件的文本数据。每条日志详细描述了事件操作对象、操作结果、操作时间等信息。例如下面的日志示例，包含了时间、日志级别（ERROR）以及事件描述。日志为问题诊断提供了精准的上下文信息，与指标形成互补。当系统故障时，“指标”告诉你应用程序出现了问题，“日志”则解释了问题出现的原因。</p>
+</li>
+<li><p>链路追踪（trace）：记录请求在多个服务之间的“调用链路”（Trace），以“追踪树”（Trace Tree）的形式呈现请求的“调用”（span）、耗时分布等信息。</p>
+</li>
+</ul>
+<h3 id="指标的处理"><a href="#指标的处理" class="headerlink" title="指标的处理"></a>指标的处理</h3><blockquote>
+<p>为便于理解和使用不同类型的指标，Prometheus 定义了四种指标类型：</p>
+</blockquote>
+<ul>
+<li>计数器（Counter）：一种只增不减的指标类型，用于记录特定事件的发生次数。常用于统计请求次数、任务完成数量、错误发生次数等。在监控 Web 服务器时，可以使用 Counter 来记录 HTTP 请求的总数，通过观察这个指标的增长趋势，能了解系统的负载情况；</li>
+<li>仪表盘（Gauge）：一种可以任意变化的指标，用于表示某个时刻的瞬时值。常用于监控系统的当前状态，如内存使用量、CPU 利用率、当前在线用户数等；</li>
+<li>直方图（Histogram）：用于统计数据在不同区间的分布情况。它会将数据划分到多个预定义的桶（bucket）中，记录每个桶内数据的数量。常用于分析请求延迟、响应时间、数据大小等分布情况。比如监控服务响应时间时，Histogram 可以将响应时间划分到不同的桶中，如 0-100ms、100-200ms 等，通过观察各个桶中的数据分布，能快速定位响应时间的集中区间和异常情况；</li>
+<li>摘要（Summary）：和直方图类似，摘要也是用于统计数据的分布情况，但与直方图不同的是，Summary 不能提供数据在各个具体区间的详细分布情况，更侧重于单一实例（例如单个服务实例）的数据进行计算。</li>
+</ul>
+<h3 id="日志的索引与存储"><a href="#日志的索引与存储" class="headerlink" title="日志的索引与存储"></a>日志的索引与存储</h3><blockquote>
+<p>处理日志本来是件稀松平常的事情，但随着数据规模的增长，量变引发质变，高吞吐写入（GB/s）、低成本海量存储（PB 级别）以及亿级数据的实时检索（1 秒内），已成为软件工程领域最具挑战性的难题之一。</p>
+</blockquote>
+<h3 id="分布式链路追踪"><a href="#分布式链路追踪" class="headerlink" title="分布式链路追踪"></a>分布式链路追踪</h3><blockquote>
+<p>2010 年 4 月，Google 工程师发表了论文《Dapper, a Large-Scale Distributed Systems Tracing Infrastructure》[1]，论文总结了他们治理分布式系统的经验，并详细介绍了 Google 内部分布式链路追踪系统 Dapper 的架构设计和实现方法。</p>
+</blockquote>
+<p>如今的链路追踪系统大多以 Dapper 为原型设计，因为它们也统一继承了 Dapper 的核心概念：</p>
+<ul>
+<li>追踪（trace）：Trace 表示一次完整的分布式请求生命周期，它是一个全局上下文，包含了整个调用链所有经过的服务节点和调用路径。例如，用户发起一个请求，从前端服务到后端数据库的多次跨服务调用构成一个 Trace。</li>
+<li>跨度（Span）：Span 是 Trace 中的一个基本单元，表示一次具体的操作或调用。一个 Trace 由多个 Span 组成，按时间和因果关系连接在一起。Span 内有描述操作的名称 span name、记录操作的开始时间和持续时间、Trace ID、当前 Span ID、父 Span ID（构建调用层级关系）等信息。</li>
+</ul>
+<h3 id="性能剖析"><a href="#性能剖析" class="headerlink" title="性能剖析"></a>性能剖析</h3><blockquote>
+<p>可观测性领域的性能剖析（Profiling）的目标是分析运行中的应用，生成详细的性能数据（Profiles），帮助工程师全面了解应用的运行行为和资源使用情况，从而识别代码中的性能瓶颈。</p>
+</blockquote>
+<blockquote>
+<p>性能数据通常以火焰图或堆栈图的形式呈现，分析这些数据是从“是什么”到“为什么”过程中的关键环节。</p>
+</blockquote>
+<blockquote>
+<p>火焰图分析说明</p>
+</blockquote>
+<ul>
+<li>纵轴：表示函数调用的堆栈深度（或层级）。纵向越高表示调用链越深，底部通常是程序的入口函数（如 main 函数），上层是被下层函数调用的函数。</li>
+<li>横轴：表示函数在特定时间段内所占用的 CPU 时间或内存空间，条形的宽度越大，表示该函数消耗的时间或资源越多。</li>
+</ul>
+<p>分析火焰图的关键是观察横向条形的宽度，宽度越大，函数占用的时间越多。如果某个函数的条形图出现“平顶”现象，表示该函数的执行时间过长，可能成为性能瓶颈。</p>
+<h3 id="核心转储"><a href="#核心转储" class="headerlink" title="核心转储"></a>核心转储</h3><blockquote>
+<p>核心转储（Core dump）中的 “core” 代表程序的关键运行状态，“dump” 的意思是导出。</p>
+</blockquote>
+<h1 id="第十章-应用封装与交付"><a href="#第十章-应用封装与交付" class="headerlink" title="第十章 应用封装与交付"></a>第十章 应用封装与交付</h1><h2 id="“以应用为中心”的设计思想"><a href="#“以应用为中心”的设计思想" class="headerlink" title="“以应用为中心”的设计思想"></a>“以应用为中心”的设计思想</h2><blockquote>
+<p>正是因为以应用为中心，整个云原生技术体系无限强调基础设施更好地服务于应用，以更高效的方式为应用提供基础设施能力，而不是反其道行之。而相应的，Kubernetes 也好、Docker 也好、Istio 也好，这些在云原生生态中起到了关键作用的开源项目，就是让这种思想落地的技术手段。</p>
+</blockquote>
+<h2 id="声明式管理的本质"><a href="#声明式管理的本质" class="headerlink" title="声明式管理的本质"></a>声明式管理的本质</h2><blockquote>
+<p>分析 Kubernetes 的工作原理可以发现，无论是 kube-scheduler 调度 Pod，还是 Deployment 管理 Pod 部署，亦或是 HPA 执行弹性伸缩，它们的整体设计都遵循“控制器模式”。</p>
+</blockquote>
+<h2 id="从“封装配置”到“应用模型”"><a href="#从“封装配置”到“应用模型”" class="headerlink" title="从“封装配置”到“应用模型”"></a>从“封装配置”到“应用模型”</h2><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.thebyte.com.cn/intro.html" target="_blank" rel="noopener">深入高可用系统原理与设计</a>,by thebyte.</li>
 </ol>
 

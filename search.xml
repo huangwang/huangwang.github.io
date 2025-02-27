@@ -23168,4 +23168,53 @@ console.log(y);</code></pre></li>
         <tag>QT</tag>
       </tags>
   </entry>
+  <entry>
+    <title>DeepSeek大模型本地部署方法</title>
+    <url>/2025/02/26/DeepSeek%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>DeepSeek如此火热，不禁也研究一下本地部署DeepSeek的方法。</p>
+<h1 id="Ollama-安装和使用"><a href="#Ollama-安装和使用" class="headerlink" title="Ollama 安装和使用"></a>Ollama 安装和使用</h1><blockquote>
+<p>Ollama是一款启动并运行大型语言模型的工具。</p>
+</blockquote>
+<blockquote>
+<p>安装完成后，我们直接打开命令行执行 ollama –version 判断是否安装成功。</p>
+</blockquote>
+<blockquote>
+<p>ollama 会在我们本地服务监听 11434 端口。</p>
+</blockquote>
+<h2 id="在线部署大模型"><a href="#在线部署大模型" class="headerlink" title="在线部署大模型"></a>在线部署大模型</h2><blockquote>
+<p>我们可以直接使用 ollama run 模型名称 来下载和运行我们想要的模型。例如：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 查看ollama版本</span><br><span class="line">ollama --version</span><br><span class="line"># 下载大模型</span><br><span class="line">ollama pull deepseek--r1:1.5b</span><br><span class="line"># 运行大模型</span><br><span class="line">ollama run deepseek-r1:1.5b</span><br></pre></td></tr></table></figure>
+
+<h2 id="离线部署大模型"><a href="#离线部署大模型" class="headerlink" title="离线部署大模型"></a>离线部署大模型</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 在联网生成大模型描述文件</span><br><span class="line">ollama show deepseek-r1:1.5b --modelfile &gt; modelfile.txt</span><br><span class="line"></span><br><span class="line"># 复制大模型和大模型描述文件到离线电脑某个文件夹，然后使用如下命令离线部署</span><br><span class="line">ollama create deepseek-r1:1.5b -f modelfile.txt</span><br><span class="line"></span><br><span class="line"># 验证是否离线部署成功</span><br><span class="line">ollama list</span><br></pre></td></tr></table></figure>
+
+<h1 id="与AI交互的客户端"><a href="#与AI交互的客户端" class="headerlink" title="与AI交互的客户端"></a>与AI交互的客户端</h1><h2 id="ChatBox"><a href="#ChatBox" class="headerlink" title="ChatBox"></a>ChatBox</h2><blockquote>
+<p>Chatbox 是一款开源的 AI 客户端，专为与各种大型语言模型进行交互而设计。它支持包括 Ollama 在内的多种主流模型的 API 接入，无论是本地部署的模型，还是其他服务提供商的模型，都能轻松连接。</p>
+</blockquote>
+<h2 id="Page-Assist-Ollama-实现本地模型联网"><a href="#Page-Assist-Ollama-实现本地模型联网" class="headerlink" title="Page Assist + Ollama - 实现本地模型联网"></a>Page Assist + Ollama - 实现本地模型联网</h2><blockquote>
+<p>Chatbox 提供了联网功能，但是 DeepSeek R1 模型是没办法联网。</p>
+</blockquote>
+<blockquote>
+<p>想要让本地模型联网我们还得靠一个浏览器插件 Page Assist。</p>
+</blockquote>
+<blockquote>
+<p>Page Assist 是一款开源的浏览器扩展程序，旨在为本地 AI 模型（如 Ollama）提供便捷的交互界面。</p>
+</blockquote>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/22699135850" target="_blank" rel="noopener">如何拥有一个无限制、可联网、带本地知识库的私人 DeepSeek？</a>,by ConardLi​.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/25054526736" target="_blank" rel="noopener">如何把你的 DeePseek-R1 微调为某个领域的专家？</a>,by ConardLi​.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/25911959907" target="_blank" rel="noopener">DeepSeek + Cherry Studio：简捷搭建个人知识库</a>,by 苏点点.</li>
+<li><a href="https://deepseek.csdn.net/67c02dcf6670175f992c57dd.html" target="_blank" rel="noopener">打造DeepSeek最强外挂！一篇文章教会你搭建「个人知识库」（喂饭版）</a>,by m0_63171455.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/678196390" target="_blank" rel="noopener">LLM context 长度分析与提升方法总结</a>,by phynlp.</li>
+<li><a href="https://www.reddit.com/r/ollama/comments/1fm67bw/what_do_you_mean_exactly_with_embedding_length/" target="_blank" rel="noopener">What do you mean exactly with “embedding length” ?</a>,by reddit.</li>
+<li><a href="https://medium.com/@techresearchspace/what-is-quantization-in-llm-01ba61968a51" target="_blank" rel="noopener">What is Quantization in LLM</a>,by Nithin Devanand.</li>
+<li><a href="https://github.com/karminski/one-small-step/blob/main/20250129-what-is-quantization-in-LLM/what-is-quantization-in-LLM.md" target="_blank" rel="noopener">什么是大语言模型量化? 每个量化精度都代表什么?</a>,by karminski.</li>
+<li><a href="https://www.53ai.com/news/LargeLanguageModel/2024073165281.html" target="_blank" rel="noopener">大模型｜“上下文长度”和“上下文窗口”不再傻傻分不清楚！</a>,by 智识可乐.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>机器学习</tag>
+      </tags>
+  </entry>
 </search>

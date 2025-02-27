@@ -314,6 +314,197 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2025/02/26/DeepSeek%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2025/02/26/DeepSeek%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2%E6%96%B9%E6%B3%95/" itemprop="url">
+                  DeepSeek大模型本地部署方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2025-02-26 22:22:54" itemprop="dateCreated datePublished" datetime="2025-02-26T22:22:54+08:00">2025-02-26</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2025-02-27 22:21:49" itemprop="dateModified" datetime="2025-02-27T22:21:49+08:00">2025-02-27</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>DeepSeek如此火热，不禁也研究一下本地部署DeepSeek的方法。</p>
+<h1 id="Ollama-安装和使用"><a href="#Ollama-安装和使用" class="headerlink" title="Ollama 安装和使用"></a>Ollama 安装和使用</h1><blockquote>
+<p>Ollama是一款启动并运行大型语言模型的工具。</p>
+</blockquote>
+<blockquote>
+<p>安装完成后，我们直接打开命令行执行 ollama –version 判断是否安装成功。</p>
+</blockquote>
+<blockquote>
+<p>ollama 会在我们本地服务监听 11434 端口。</p>
+</blockquote>
+<h2 id="在线部署大模型"><a href="#在线部署大模型" class="headerlink" title="在线部署大模型"></a>在线部署大模型</h2><blockquote>
+<p>我们可以直接使用 ollama run 模型名称 来下载和运行我们想要的模型。例如：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 查看ollama版本</span><br><span class="line">ollama --version</span><br><span class="line"># 下载大模型</span><br><span class="line">ollama pull deepseek--r1:1.5b</span><br><span class="line"># 运行大模型</span><br><span class="line">ollama run deepseek-r1:1.5b</span><br></pre></td></tr></table></figure>
+
+<h2 id="离线部署大模型"><a href="#离线部署大模型" class="headerlink" title="离线部署大模型"></a>离线部署大模型</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 在联网生成大模型描述文件</span><br><span class="line">ollama show deepseek-r1:1.5b --modelfile &gt; modelfile.txt</span><br><span class="line"></span><br><span class="line"># 复制大模型和大模型描述文件到离线电脑某个文件夹，然后使用如下命令离线部署</span><br><span class="line">ollama create deepseek-r1:1.5b -f modelfile.txt</span><br><span class="line"></span><br><span class="line"># 验证是否离线部署成功</span><br><span class="line">ollama list</span><br></pre></td></tr></table></figure>
+
+<h1 id="与AI交互的客户端"><a href="#与AI交互的客户端" class="headerlink" title="与AI交互的客户端"></a>与AI交互的客户端</h1><h2 id="ChatBox"><a href="#ChatBox" class="headerlink" title="ChatBox"></a>ChatBox</h2><blockquote>
+<p>Chatbox 是一款开源的 AI 客户端，专为与各种大型语言模型进行交互而设计。它支持包括 Ollama 在内的多种主流模型的 API 接入，无论是本地部署的模型，还是其他服务提供商的模型，都能轻松连接。</p>
+</blockquote>
+<h2 id="Page-Assist-Ollama-实现本地模型联网"><a href="#Page-Assist-Ollama-实现本地模型联网" class="headerlink" title="Page Assist + Ollama - 实现本地模型联网"></a>Page Assist + Ollama - 实现本地模型联网</h2><blockquote>
+<p>Chatbox 提供了联网功能，但是 DeepSeek R1 模型是没办法联网。</p>
+</blockquote>
+<blockquote>
+<p>想要让本地模型联网我们还得靠一个浏览器插件 Page Assist。</p>
+</blockquote>
+<blockquote>
+<p>Page Assist 是一款开源的浏览器扩展程序，旨在为本地 AI 模型（如 Ollama）提供便捷的交互界面。</p>
+</blockquote>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/22699135850" target="_blank" rel="noopener">如何拥有一个无限制、可联网、带本地知识库的私人 DeepSeek？</a>,by ConardLi​.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/25054526736" target="_blank" rel="noopener">如何把你的 DeePseek-R1 微调为某个领域的专家？</a>,by ConardLi​.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/25911959907" target="_blank" rel="noopener">DeepSeek + Cherry Studio：简捷搭建个人知识库</a>,by 苏点点.</li>
+<li><a href="https://deepseek.csdn.net/67c02dcf6670175f992c57dd.html" target="_blank" rel="noopener">打造DeepSeek最强外挂！一篇文章教会你搭建「个人知识库」（喂饭版）</a>,by m0_63171455.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/678196390" target="_blank" rel="noopener">LLM context 长度分析与提升方法总结</a>,by phynlp.</li>
+<li><a href="https://www.reddit.com/r/ollama/comments/1fm67bw/what_do_you_mean_exactly_with_embedding_length/" target="_blank" rel="noopener">What do you mean exactly with “embedding length” ?</a>,by reddit.</li>
+<li><a href="https://medium.com/@techresearchspace/what-is-quantization-in-llm-01ba61968a51" target="_blank" rel="noopener">What is Quantization in LLM</a>,by Nithin Devanand.</li>
+<li><a href="https://github.com/karminski/one-small-step/blob/main/20250129-what-is-quantization-in-LLM/what-is-quantization-in-LLM.md" target="_blank" rel="noopener">什么是大语言模型量化? 每个量化精度都代表什么?</a>,by karminski.</li>
+<li><a href="https://www.53ai.com/news/LargeLanguageModel/2024073165281.html" target="_blank" rel="noopener">大模型｜“上下文长度”和“上下文窗口”不再傻傻分不清楚！</a>,by 智识可乐.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2025/02/04/QT-GUI%E6%8F%92%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%9E%84%E5%BB%BA%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2233,156 +2424,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/12/03/%E5%A5%BD%E7%94%A8%E7%9A%84AI%E5%B7%A5%E5%85%B7%E8%AE%B0%E5%BD%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/12/03/%E5%A5%BD%E7%94%A8%E7%9A%84AI%E5%B7%A5%E5%85%B7%E8%AE%B0%E5%BD%95/" itemprop="url">
-                  好用的AI工具记录
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-12-03 10:41:43 / 修改时间：11:01:06" itemprop="dateCreated datePublished" datetime="2024-12-03T10:41:43+08:00">2024-12-03</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>AI工具可以工作效率，快速交付成果，值得使用。下面记录一下常用的AI工具。</p>
-<h1 id="文本到文本"><a href="#文本到文本" class="headerlink" title="文本到文本"></a>文本到文本</h1><h2 id="ChatGPT"><a href="#ChatGPT" class="headerlink" title="ChatGPT"></a>ChatGPT</h2><p>ChatGPT，全称聊天生成预训练转换器（英语：Chat Generative Pre-trained Transformer），是OpenAI开发的人工智能聊天机器人程序，于2022年12月推出。该程序使用基于GPT-3.5、GPT-4、GPT-4o架构的大型语言模型并以强化学习训练。ChatGPT目前仍以文字方式交互，而除了可以用人类自然对话方式来交互，还可以用于甚为复杂的语言工作，包括自动生成文本、自动问答、自动摘要等多种任务。如：在自动文本生成方面，ChatGPT可以根据输入的文本自动生成类似的文本（剧本、歌曲、企划等），在自动问答方面，ChatGPT可以根据输入的问题自动生成答案。还有编写和调试计算机程序的能力。</p>
-<h1 id="文本到图像"><a href="#文本到图像" class="headerlink" title="文本到图像"></a>文本到图像</h1><h2 id="DALL-E"><a href="#DALL-E" class="headerlink" title="DALL-E"></a>DALL-E</h2><p>DALL-E是一个可以通过文本描述生成图像的人工智能程序，于2021年1月5日由OpenAI发布。</p>
-<p>DALL-E通过120亿参数版本的GPT-3 Transformer模型来理解自然语言输入（例如“五边形形状的绿色皮革钱包”或“一只悲伤水豚的等距视图”）并生成相应的图片。它既可以生成现实的对象（例如“带有蓝色草莓图像的彩色玻璃窗”），也能够生成现实中不存在的对象（例如“具有豪猪纹理的立方体”）。</p>
-<h2 id="Stable-Diffusion"><a href="#Stable-Diffusion" class="headerlink" title="Stable Diffusion"></a>Stable Diffusion</h2><p>Stable Diffusion是2022年发布的深度学习文本到图像生成模型。它主要用于根据文本的描述产生详细图像，尽管它也可以应用于其他任务，如内补绘制、外补绘制，以及在提示词指导下产生图生图的转变。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.snowbeasts.com/blog/details/592" target="_blank" rel="noopener">2024年20个最好的AI工具和应用</a>,by snowbeasts.</li>
-<li><a href="https://zh.wikipedia.org/zh-cn/ChatGPT" target="_blank" rel="noopener">ChatGPT</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/zh-cn/Stable_Diffusion" target="_blank" rel="noopener">Stable Diffusion</a>,by wikipedia.</li>
-<li><a href="https://zh.wikipedia.org/wiki/DALL-E" target="_blank" rel="noopener">DALL-E</a>,by wikipedia.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2430,7 +2471,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">514</span>
+                    <span class="site-state-item-count">515</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

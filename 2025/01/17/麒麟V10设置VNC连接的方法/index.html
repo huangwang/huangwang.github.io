@@ -110,7 +110,7 @@
 <meta property="og:description" content="最近研究了一下麒麟V10 Linux设置VNC连接的方法，记录一下。 VNC Server配置VNC Server应该能够以服务的形式开机自启动，对外以 80 端口提供VNC远程连接服务。 创建 VNC Systemd 服务创建VNC Systemd 服务，实现麒麟 V10 开机后 VNC 服务器自启动。暂未成功。 修改 vncserver 配置修改 vncserver 配置，使 :1 对应 80">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-01-17T10:13:28.000Z">
-<meta property="article:modified_time" content="2025-01-17T12:06:55.913Z">
+<meta property="article:modified_time" content="2025-03-04T14:25:28.759Z">
 <meta property="article:author" content="Jack Huang">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="shell">
@@ -360,12 +360,24 @@
                 
               
 
-              <time title="创建时间：2025-01-17 18:13:28 / 修改时间：20:06:55" itemprop="dateCreated datePublished" datetime="2025-01-17T18:13:28+08:00">2025-01-17</time>
+              <time title="创建时间：2025-01-17 18:13:28" itemprop="dateCreated datePublished" datetime="2025-01-17T18:13:28+08:00">2025-01-17</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2025-03-04 22:25:28" itemprop="dateModified" datetime="2025-03-04T22:25:28+08:00">2025-03-04</time>
               
             
           </span>
@@ -431,13 +443,14 @@
 <h1 id="启动-VNC-服务"><a href="#启动-VNC-服务" class="headerlink" title="启动 VNC 服务"></a>启动 VNC 服务</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 设置 VNC 客户端连接密码</span><br><span class="line">vncpasswd</span><br><span class="line"></span><br><span class="line"># 启动 VNC 服务</span><br><span class="line">vncserver -kill :1</span><br><span class="line">vncserver :1</span><br><span class="line">vncserver -list</span><br></pre></td></tr></table></figure>
 
 <h1 id="连接-VNC-服务"><a href="#连接-VNC-服务" class="headerlink" title="连接 VNC 服务"></a>连接 VNC 服务</h1><p>使用各种 VNC 客户端，填入相关配置连接即可。连接 VNC 服务器遇到一些问题，记录如下。</p>
+<p><strong>建议使用realvnc viewer 客户端，麒麟 v10 自带的 Remmina 客户端连接 80 端口有问题，暂时无法解决。</strong></p>
 <h2 id="中文输入法问题"><a href="#中文输入法问题" class="headerlink" title="中文输入法问题"></a>中文输入法问题</h2><p>打开终端，输入如下命令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fcitx-autostart</span><br><span class="line">fcitx restart</span><br></pre></td></tr></table></figure>
 
 <h2 id="输入正确用户名和密码仍旧跳回登录界面"><a href="#输入正确用户名和密码仍旧跳回登录界面" class="headerlink" title="输入正确用户名和密码仍旧跳回登录界面"></a>输入正确用户名和密码仍旧跳回登录界面</h2><p>原因是主目录下的 .Xauthority 文件拥有者变成了 root ，导致用户登录时无法获取该文件，解决方法如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown user:user .Xauthority</span><br></pre></td></tr></table></figure>
 
-<h2 id="麒麟-V10-自带的-Remmina-无法连接-VNC-服务器的问题"><a href="#麒麟-V10-自带的-Remmina-无法连接-VNC-服务器的问题" class="headerlink" title="麒麟 V10 自带的 Remmina 无法连接 VNC 服务器的问题"></a>麒麟 V10 自带的 Remmina 无法连接 VNC 服务器的问题</h2><p>麒麟 V10 自带的 Remmina 能够连接 VNC 服务器的默认的 5801 端口，但是无法连接 VNC 服务器的 80 端口。该问题暂未解决。</p>
+<h2 id="麒麟-V10-自带的-Remmina-无法连接-VNC-服务器的问题"><a href="#麒麟-V10-自带的-Remmina-无法连接-VNC-服务器的问题" class="headerlink" title="麒麟 V10 自带的 Remmina 无法连接 VNC 服务器的问题"></a>麒麟 V10 自带的 Remmina 无法连接 VNC 服务器的问题</h2><p>麒麟 V10 自带的 Remmina 能够连接 VNC 服务器的默认的 5901 端口，但是无法连接 VNC 服务器的 80 端口。该问题暂未解决。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.runoob.com/w3cnote/linux-check-port-usage.html" target="_blank" rel="noopener">Linux 查看端口占用情况</a>,by runoob.</li>
 <li><a href="https://blog.51cto.com/lenglingx/6393402" target="_blank" rel="noopener">普通用户无法监听 80，443等低于1024端口解决办法</a>,lenglingx.</li>

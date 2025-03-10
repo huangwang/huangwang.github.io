@@ -23109,7 +23109,11 @@ console.log(y);</code></pre></li>
     <url>/2025/01/17/%E9%BA%92%E9%BA%9FV10%E8%AE%BE%E7%BD%AEVNC%E8%BF%9E%E6%8E%A5%E7%9A%84%E6%96%B9%E6%B3%95/</url>
     <content><![CDATA[<p>最近研究了一下麒麟V10 Linux设置VNC连接的方法，记录一下。</p>
 <h1 id="VNC-Server配置"><a href="#VNC-Server配置" class="headerlink" title="VNC Server配置"></a>VNC Server配置</h1><p>VNC Server应该能够以服务的形式开机自启动，对外以 80 端口提供VNC远程连接服务。</p>
-<h2 id="创建-VNC-Systemd-服务"><a href="#创建-VNC-Systemd-服务" class="headerlink" title="创建 VNC Systemd 服务"></a>创建 VNC Systemd 服务</h2><p>创建VNC Systemd 服务，实现麒麟 V10 开机后 VNC 服务器自启动。暂未成功。</p>
+<h2 id="创建-VNC-Systemd-服务"><a href="#创建-VNC-Systemd-服务" class="headerlink" title="创建 VNC Systemd 服务"></a>创建 VNC Systemd 服务</h2><p>创建VNC Systemd 服务，实现麒麟 V10 开机后 VNC 服务器自启动。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;lib&#x2F;systemd&#x2F;system&#x2F;</span><br><span class="line">sudo vim vncserver@:1.service</span><br><span class="line"></span><br><span class="line"># 以下为vnc服务配置文件内容，编辑后保存</span><br><span class="line">[Unit]</span><br><span class="line">Description&#x3D;Remote desktop service (VNC)</span><br><span class="line">After&#x3D;syslog.target network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type&#x3D;forking</span><br><span class="line">WorkingDirectory&#x3D;&#x2F;home&#x2F;jack</span><br><span class="line">User&#x3D;jack</span><br><span class="line">Group&#x3D;jack</span><br><span class="line">PIDFile&#x3D;&#x2F;home&#x2F;jack&#x2F;.vnc&#x2F;%H%i.pid</span><br><span class="line"></span><br><span class="line">ExecStartPre&#x3D;&#x2F;bin&#x2F;sh -c &#39;&#x2F;usr&#x2F;bin&#x2F;vncserver -kill %i &gt; &#x2F;dev&#x2F;null 2&gt;&amp;1 || :&#39;</span><br><span class="line">ExecStart&#x3D;&#x2F;usr&#x2F;bin&#x2F;vncserver -autokill %i</span><br><span class="line">ExecStop&#x3D;&#x2F;usr&#x2F;bin&#x2F;vncserver -kill %i</span><br><span class="line">Restart&#x3D;on-success</span><br><span class="line">RestartSec&#x3D;15</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy&#x3D;multi-user.target</span><br></pre></td></tr></table></figure>
+
+<h2 id="设置-VNC-Systemd-服务开机自启动"><a href="#设置-VNC-Systemd-服务开机自启动" class="headerlink" title="设置 VNC Systemd 服务开机自启动"></a>设置 VNC Systemd 服务开机自启动</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 重新加载配置文件</span><br><span class="line">systemctl daemon-reload</span><br><span class="line"># 设置 VNC 客户端连接密码</span><br><span class="line">vncpasswd</span><br><span class="line"># 启动 vnc 服务</span><br><span class="line">systemctl start vncserver@:1.service</span><br><span class="line"># 查看 vnc 服务状态</span><br><span class="line">systemctl status vncserver@:1.service</span><br><span class="line">journalctl -u vncserver@:1.service</span><br><span class="line">cat &#x2F;var&#x2F;log&#x2F;syslog | grep vnc</span><br><span class="line"># 设置开机自启动</span><br><span class="line">systemctl enable vncserver@:1.service</span><br><span class="line"># 禁止开机自启动</span><br><span class="line">systemctl disable vncserver@:1.service</span><br></pre></td></tr></table></figure>
+
 <h2 id="修改-vncserver-配置"><a href="#修改-vncserver-配置" class="headerlink" title="修改 vncserver 配置"></a>修改 vncserver 配置</h2><p>修改 vncserver 配置，使 :1 对应 80 端口。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 查看 vncserver 的位置</span><br><span class="line">which vncserver</span><br><span class="line"></span><br><span class="line"># 查看 vncserver 软连接到哪个文件</span><br><span class="line">file &#x2F;usr&#x2F;bin&#x2F;vncserver</span><br></pre></td></tr></table></figure>
 
@@ -23122,7 +23126,7 @@ console.log(y);</code></pre></li>
 <h1 id="启动-VNC-服务"><a href="#启动-VNC-服务" class="headerlink" title="启动 VNC 服务"></a>启动 VNC 服务</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 设置 VNC 客户端连接密码</span><br><span class="line">vncpasswd</span><br><span class="line"></span><br><span class="line"># 启动 VNC 服务</span><br><span class="line">vncserver -kill :1</span><br><span class="line">vncserver :1</span><br><span class="line">vncserver -list</span><br></pre></td></tr></table></figure>
 
 <h1 id="连接-VNC-服务"><a href="#连接-VNC-服务" class="headerlink" title="连接 VNC 服务"></a>连接 VNC 服务</h1><p>使用各种 VNC 客户端，填入相关配置连接即可。连接 VNC 服务器遇到一些问题，记录如下。</p>
-<p><strong>建议使用 RealVNC Viewer 客户端，麒麟 v10 自带的 Remmina 客户端连接 80 端口有问题，暂时无法解决。</strong></p>
+<h2 id="vnc-viewer-连接黑屏问题"><a href="#vnc-viewer-连接黑屏问题" class="headerlink" title="vnc viewer 连接黑屏问题"></a>vnc viewer 连接黑屏问题</h2><p>基于 Systemd 设置 VNC 服务开机自启动成功，但是使用 RealVNC Viewer 客户端连接成功后显示黑屏，目前没有解决。<strong>但是使用 vncserver 直接创建 vnc 服务，然后使用 RealVNC Viewer 客户端连接成功后没有出现该问题。</strong></p>
 <h2 id="中文输入法问题"><a href="#中文输入法问题" class="headerlink" title="中文输入法问题"></a>中文输入法问题</h2><p>打开终端，输入如下命令：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">fcitx-autostart</span><br><span class="line">fcitx restart</span><br></pre></td></tr></table></figure>
 
@@ -23130,6 +23134,7 @@ console.log(y);</code></pre></li>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo chown user:user .Xauthority</span><br></pre></td></tr></table></figure>
 
 <h2 id="麒麟-V10-自带的-Remmina-无法连接-VNC-服务器的问题"><a href="#麒麟-V10-自带的-Remmina-无法连接-VNC-服务器的问题" class="headerlink" title="麒麟 V10 自带的 Remmina 无法连接 VNC 服务器的问题"></a>麒麟 V10 自带的 Remmina 无法连接 VNC 服务器的问题</h2><p>麒麟 V10 自带的 Remmina 能够连接 VNC 服务器的默认的 5901 端口，但是无法连接 VNC 服务器的 80 端口。该问题暂未解决。</p>
+<p><strong>建议使用 RealVNC Viewer 客户端，麒麟 v10 自带的 Remmina 客户端连接 80 端口有问题，暂时无法解决。</strong></p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://www.runoob.com/w3cnote/linux-check-port-usage.html" target="_blank" rel="noopener">Linux 查看端口占用情况</a>,by runoob.</li>
 <li><a href="https://blog.51cto.com/lenglingx/6393402" target="_blank" rel="noopener">普通用户无法监听 80，443等低于1024端口解决办法</a>,lenglingx.</li>
@@ -23138,6 +23143,7 @@ console.log(y);</code></pre></li>
 <li><a href="https://www.ruanyifeng.com/blog/2018/03/systemd-timer.html" target="_blank" rel="noopener">Systemd 定时器教程</a>,by 阮一峰.</li>
 <li><a href="https://ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html" target="_blank" rel="noopener">Systemd 入门教程：实战篇</a>,by 阮一峰.</li>
 <li><a href="https://www.ruanyifeng.com/blog/2016/03/node-systemd-tutorial.html" target="_blank" rel="noopener">Node 应用的 Systemd 启动</a>,by 阮一峰.</li>
+<li><a href="https://blog.csdn.net/weixin_43246439/article/details/142390671" target="_blank" rel="noopener">Kylin V10 环境下配置VNC远程桌面访问</a>,by 丷月亮是指路牌.</li>
 </ol>
 ]]></content>
       <tags>

@@ -314,6 +314,178 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/06/08/Python%E6%8F%90%E5%8F%96%E6%95%B0%E6%8D%AE%E5%BA%93%E5%86%85%E5%AE%B9%E5%B9%B6%E6%A0%B9%E6%8D%AE%E6%96%87%E6%A1%A3%E6%A8%A1%E6%9D%BF%E7%94%9F%E6%88%90%E6%96%87%E6%A1%A3%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/06/08/Python%E6%8F%90%E5%8F%96%E6%95%B0%E6%8D%AE%E5%BA%93%E5%86%85%E5%AE%B9%E5%B9%B6%E6%A0%B9%E6%8D%AE%E6%96%87%E6%A1%A3%E6%A8%A1%E6%9D%BF%E7%94%9F%E6%88%90%E6%96%87%E6%A1%A3%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Python提取数据库内容并根据文档模板生成文档的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-06-08 19:05:11 / 修改时间：19:13:11" itemprop="dateCreated datePublished" datetime="2024-06-08T19:05:11+08:00">2024-06-08</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近需要从Oracle数据库中提取一些数据，并使用文档模板生成文档，鉴于Python环境部署的方便性，编程的简便性，于是采用Python开发该程序。方法记录如下：</p>
+<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><h2 id="依赖环境"><a href="#依赖环境" class="headerlink" title="依赖环境"></a>依赖环境</h2><p>核心是 docxtpl 和 oracledb 两个库。</p>
+<ul>
+<li>python 3.8.5，可在windows7上运行，python 3.9以后版本不支持windows7</li>
+<li>Babel==2.15.0</li>
+<li>cffi==1.16.0</li>
+<li>cryptography==42.0.8</li>
+<li>docxcompose==1.4.0</li>
+<li>docxtpl==0.17.0</li>
+<li>jinja2==3.1.4</li>
+<li>lxml==5.2.2</li>
+<li>MarkupSafe==2.1.5</li>
+<li>numpy==1.24.4</li>
+<li>oracledb==2.2.1</li>
+<li>pandas==2.0.3</li>
+<li>pycparser==2.22</li>
+<li>python-dateutil==2.9.0.post0</li>
+<li>python-docx==1.1.2</li>
+<li>pytz==2024.1</li>
+<li>six==1.16.0</li>
+<li>typing-extensions==4.12.2</li>
+<li>tzdata==2024.1</li>
+</ul>
+<h2 id="虚拟环境"><a href="#虚拟环境" class="headerlink" title="虚拟环境"></a>虚拟环境</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mkdir wordtpl_generate</span><br><span class="line">cd wordtpl_generate</span><br><span class="line">python -m venv env</span><br><span class="line">env\Scripts\activate.bat</span><br><span class="line">pip install pandas</span><br><span class="line">pip freeze &gt; requirement.txt</span><br><span class="line">pip download -d packages -r requirement.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="离线迁移"><a href="#离线迁移" class="headerlink" title="离线迁移"></a>离线迁移</h2><p>创建envConfig.bat批处理文件，一键执行离线环境配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python -m venv env</span><br><span class="line">call env\Scripts\activate.bat</span><br><span class="line">pip install --no-index --find-links&#x3D;packages -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<h1 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">import getpass</span><br><span class="line">import oracledb</span><br><span class="line">from docxtpl import DocxTemplate</span><br><span class="line"></span><br><span class="line">def oracledb_test():</span><br><span class="line">    un &#x3D; &#39;scott&#39;</span><br><span class="line">    cs &#x3D; &#39;localhost&#x2F;orclpdb&#39;</span><br><span class="line">    pw &#x3D; getpass.getpass(f&#39;Enter password for &#123;un&#125;@&#123;cs&#125;: &#39;)</span><br><span class="line"></span><br><span class="line">    with oracledb.connect(user&#x3D;un, password&#x3D;pw, dsn&#x3D;cs) as connection:</span><br><span class="line">        with connection.cursor() as cursor:</span><br><span class="line">            sql &#x3D; &quot;&quot;&quot;select sysdate from dual&quot;&quot;&quot;</span><br><span class="line">            for r in cursor.execute(sql):</span><br><span class="line">                print(r)</span><br><span class="line"></span><br><span class="line">def wordtpl_test():</span><br><span class="line">    doc &#x3D; DocxTemplate(&quot;my_word_template.docx&quot;)</span><br><span class="line">    context &#x3D; &#123; &#39;company_name&#39; : &quot;World company&quot; &#125;</span><br><span class="line">    doc.render(context)</span><br><span class="line">    doc.save(&quot;generated_doc.docx&quot;)</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D; &#39;__main__&#39;:</span><br><span class="line">    oracledb_test()</span><br><span class="line">    wordtpl_test()</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://developer.aliyun.com/article/1064481" target="_blank" rel="noopener">Python自动化：根据模板批量生成含指定数据的word文档</a>,by aliyun.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/05/24/Python%E6%8F%90%E5%8F%96csv%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84%E7%89%B9%E5%AE%9A%E5%88%97%E7%9A%84%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1808,185 +1980,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/04/11/Kylin%E7%B3%BB%E7%BB%9F%E4%B8%8B%E8%BD%BD%E5%AE%8C%E6%95%B4deb%E5%8C%85%E5%8F%8A%E4%BE%9D%E8%B5%96%E5%8C%85/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/04/11/Kylin%E7%B3%BB%E7%BB%9F%E4%B8%8B%E8%BD%BD%E5%AE%8C%E6%95%B4deb%E5%8C%85%E5%8F%8A%E4%BE%9D%E8%B5%96%E5%8C%85/" itemprop="url">
-                  Kylin系统下载完整deb包及依赖包
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-04-11 19:23:12" itemprop="dateCreated datePublished" datetime="2024-04-11T19:23:12+08:00">2024-04-11</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2024-06-14 23:20:24" itemprop="dateModified" datetime="2024-06-14T23:20:24+08:00">2024-06-14</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近使用Kylin系统做开发，记录一下使用过程。</p>
-<h1 id="添加官方软件源"><a href="#添加官方软件源" class="headerlink" title="添加官方软件源"></a>添加官方软件源</h1><p>请参考：</p>
-<ul>
-<li><a href="https://blog.csdn.net/qq_44681788/article/details/134374628" target="_blank" rel="noopener">银河麒麟V4.0.2添加官方软件源</a></li>
-</ul>
-<p>主要是修改source.list文件，添加如下内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deb http:&#x2F;&#x2F;archive.kylinos.cn&#x2F;kylin&#x2F;KYLIN-ALL 4.0.2-desktop main restricted universe multiverse</span><br></pre></td></tr></table></figure>
-
-
-<h1 id="下载完整deb包及依赖包"><a href="#下载完整deb包及依赖包" class="headerlink" title="下载完整deb包及依赖包"></a>下载完整deb包及依赖包</h1><p>查看virtualbox所依赖的deb包：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-cache depends virtualbox</span><br></pre></td></tr></table></figure>
-
-<p>下载virtualbox所依赖的deb包：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get download $(apt-cache depends virtualbox | grep -v i386 | grep &quot;依赖&quot; | awk &#39;&#123;print substr($0,11)&#125;&#39;)</span><br></pre></td></tr></table></figure>
-
-<p>安装所有deb包：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dpkg -i *.deb</span><br></pre></td></tr></table></figure>
-
-<h1 id="搜索deb包"><a href="#搜索deb包" class="headerlink" title="搜索deb包"></a>搜索deb包</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-cache search virtualbox</span><br></pre></td></tr></table></figure>
-
-<h1 id="查看显卡信息"><a href="#查看显卡信息" class="headerlink" title="查看显卡信息"></a>查看显卡信息</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 方法1</span><br><span class="line">lspci | grep -i vga</span><br><span class="line">lspci | grep -i nvidia</span><br><span class="line">lspci -v -s 00:0f.0</span><br><span class="line"></span><br><span class="line"># 方法2</span><br><span class="line">lshw -C video</span><br><span class="line">lshw -C display</span><br><span class="line">lshw -C video | grep configuration</span><br><span class="line">modinfo vboxvideo</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/ITxiaozhang7/article/details/121671120" target="_blank" rel="noopener">ubuntu 下载完整deb包及依赖包</a>,by lucky科技汪.</li>
-<li><a href="https://blog.csdn.net/qq_44681788/article/details/134374628" target="_blank" rel="noopener">银河麒麟V4.0.2添加官方软件源</a>,by 123无敌，就你了.</li>
-<li><a href="https://www.cnblogs.com/whxiao/p/16481431.html" target="_blank" rel="noopener">grep,awk,cut 字符串截取</a>,by WH·xiao.</li>
-<li><a href="https://www.sysgeek.cn/graphics-card-information-linux/" target="_blank" rel="noopener">Linux中如何查看显卡硬件信息</a>,by 系统极客.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2034,7 +2027,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">516</span>
+                    <span class="site-state-item-count">517</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -314,6 +314,206 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/01/21/PostgreSQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/01/21/PostgreSQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  PostgreSQL数据库学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-01-21 08:16:36 / 修改时间：21:13:43" itemprop="dateCreated datePublished" datetime="2024-01-21T08:16:36+08:00">2024-01-21</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近公司决定使用 PostgreSQL 数据库，提前学习一下。</p>
+<h1 id="PostgreSQL简介"><a href="#PostgreSQL简介" class="headerlink" title="PostgreSQL简介"></a>PostgreSQL简介</h1><p>PostgreSQL 是一个功能强大的开源对象关系数据库系统，它使用并扩展了 SQL 语言，并结合了许多功能，可以安全地存储和扩展最复杂的数据工作负载。PostgreSQL 的起源可以追溯到 1986 年，是加州大学伯克利分校 POSTGRES 项目的一部分，在核心平台上已经有超过 35 年的积极开发历史。</p>
+<p>PostgreSQL 以其成熟的架构、可靠性、数据完整性、强大的功能集、可扩展性以及软件背后的开源社区的奉献精神而赢得了良好的声誉，以始终如一地提供高性能和创新的解决方案。PostgreSQL 可在所有主要操作系统上运行，自 2001 年以来一直符合 ACID 标准，并具有强大的附加组件，例如流行的 PostGIS 地理空间数据库扩展器。毫不奇怪，PostgreSQL已成为许多人和组织的首选开源关系数据库。</p>
+<p>PostgreSQL 具有许多功能，旨在帮助开发人员构建应用程序、管理员保护数据完整性和构建容错环境，并帮助您管理数据，无论数据集有多大或多小。除了免费和开源之外，PostgreSQL 还具有高度可扩展性。例如，您可以定义自己的数据类型，构建自定义函数，甚至可以使用不同的编程语言编写代码，而无需重新编译数据库！</p>
+<h1 id="PostgreSQL-功能简介"><a href="#PostgreSQL-功能简介" class="headerlink" title="PostgreSQL 功能简介"></a>PostgreSQL 功能简介</h1><h2 id="Data-Types-数据类型"><a href="#Data-Types-数据类型" class="headerlink" title="Data Types 数据类型"></a>Data Types 数据类型</h2><ul>
+<li>Primitives: Integer, Numeric, String, Boolean<br>基元：整数、数字、字符串、布尔值</li>
+<li>Structured: Date/Time, Array, Range / Multirange, UUID<br>结构化：日期/时间、数组、范围/多范围、UUID</li>
+<li>Document: JSON/JSONB, XML, Key-value (Hstore)<br>文档：JSON/JSONB、XML、键值 （Hstore）</li>
+<li>Geometry: Point, Line, Circle, Polygon<br>几何图形：点、线、圆、多边形</li>
+<li>Customizations: Composite, Custom Types<br>自定义：复合、自定义类型</li>
+</ul>
+<h2 id="Data-Integrity-数据完整性"><a href="#Data-Integrity-数据完整性" class="headerlink" title="Data Integrity 数据完整性"></a>Data Integrity 数据完整性</h2><ul>
+<li>UNIQUE, NOT NULL 唯一，不为 NULL</li>
+<li>Primary Keys 主键</li>
+<li>Foreign Keys 外键</li>
+<li>Exclusion Constraints 排除约束</li>
+<li>Explicit Locks, Advisory Locks<br>显式锁、咨询锁</li>
+</ul>
+<h2 id="Concurrency-Performance-并发性、性能"><a href="#Concurrency-Performance-并发性、性能" class="headerlink" title="Concurrency, Performance 并发性、性能"></a>Concurrency, Performance 并发性、性能</h2><ul>
+<li>Indexing: B-tree, Multicolumn, Expressions, Partial<br>索引：B 树、多列、表达式、部分</li>
+<li>Advanced Indexing: GiST, SP-Gist, KNN Gist, GIN, BRIN, * Covering indexes, Bloom filters<br>高级索引：GiST、SP-Gist、KNN Gist、GIN、BRIN、覆盖索引、布隆过滤器</li>
+<li>Sophisticated query planner / optimizer, index-only scans, multicolumn statistics<br>复杂的查询计划器/优化器、仅索引扫描、多列统计信息</li>
+<li>Transactions, Nested Transactions (via savepoints)<br>事务、嵌套事务（通过保存点）</li>
+<li>Multi-Version concurrency Control (MVCC)<br>多版本并发控制 （MVCC）</li>
+<li>Parallelization of read queries and building B-tree indexes<br>读取查询的并行化和构建 B 树索引</li>
+<li>Table partitioning 表分区</li>
+<li>All transaction isolation levels defined in the SQL standard, including Serializable<br>SQL 标准中定义的所有事务隔离级别，包括 Serializable</li>
+<li>Just-in-time (JIT) compilation of expressions<br>表达式的实时 （JIT） 编译</li>
+</ul>
+<h1 id="PostgreSQL-安装配置"><a href="#PostgreSQL-安装配置" class="headerlink" title="PostgreSQL 安装配置"></a>PostgreSQL 安装配置</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>PostgreSQL安装过程如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 安装PostgreSQL服务</span><br><span class="line">sudo yum install -y postgresql12 postgresql12-server</span><br><span class="line"></span><br><span class="line"># 初始化数据库</span><br><span class="line">sudo &#x2F;usr&#x2F;pgsql-12&#x2F;bin&#x2F;postgresql-12-setup initdb</span><br><span class="line"></span><br><span class="line"># 启动PostgreSQL服务</span><br><span class="line">sudo systemctl start postgresql-12</span><br><span class="line"></span><br><span class="line"># 设置PostgreSQL服务为开机启动</span><br><span class="line">sudo systemctl enable postgresql-12</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>PostgreSQL安装成功之后，会默认创建一个名为postgres的Linux用户，初始化数据库后，会有名为postgres的数据库，来存储数据库的基础信息，例如用户信息等等，相当于MySQL中默认的名为mysql数据库。</p>
+<p>postgres数据库中会初始化一名超级用户postgres。为了方便我们使用postgres账号进行管理，我们可以修改该账号的密码。具体命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">su postgres</span><br><span class="line"></span><br><span class="line"># 登录PostgreSQL数据库</span><br><span class="line">psql</span><br><span class="line">psql -U dbuser -d exampledb -h 127.0.0.1 -p 5432</span><br><span class="line"></span><br><span class="line"># 为postgres用户设置新密码</span><br><span class="line">ALTER USER postgres WITH PASSWORD &#39;NewPassword&#39;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="PostgreSQL-模式（SCHEMA）"><a href="#PostgreSQL-模式（SCHEMA）" class="headerlink" title="PostgreSQL 模式（SCHEMA）"></a>PostgreSQL 模式（SCHEMA）</h2><p>PostgreSQL 模式（SCHEMA）可以看着是一个表的集合。</p>
+<p>一个模式可以包含视图、索引、数据类型、函数和操作符等。</p>
+<p>相同的对象名称可以被用于不同的模式中而不会出现冲突，例如 schema1 和 myschema 都可以包含名为 mytable 的表。</p>
+<p>使用模式的优势：</p>
+<ul>
+<li><p>允许多个用户使用一个数据库并且不会互相干扰。</p>
+</li>
+<li><p>将数据库对象组织成逻辑组以便更容易管理。</p>
+</li>
+<li><p>第三方应用的对象可以放在独立的模式中，这样它们就不会与其他对象的名称发生冲突。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CREATE SCHEMA schema_name;</span><br><span class="line"># 切换到新创建的模式，以查询模式下的对象</span><br><span class="line">SET search_path TO schema_name;</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据库相关语法示例"><a href="#数据库相关语法示例" class="headerlink" title="数据库相关语法示例"></a>数据库相关语法示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"># 创建数据库</span><br><span class="line">CREATE DATABASE mydb;</span><br><span class="line"></span><br><span class="line"># 查看所有数据库</span><br><span class="line">\l</span><br><span class="line"></span><br><span class="line"># 切换当前数据库</span><br><span class="line">\c mydb</span><br><span class="line"></span><br><span class="line"># 创建表</span><br><span class="line">CREATE TABLE test(id int,body varchar(100));</span><br><span class="line"></span><br><span class="line"># 查看当前数据库下所有表</span><br><span class="line">\d</span><br><span class="line"></span><br><span class="line"># 列出某一张表格的结构</span><br><span class="line">\d [table_name]</span><br><span class="line"></span><br><span class="line"># 列出所有用户</span><br><span class="line">\du</span><br><span class="line"></span><br><span class="line"># 列出所有用户，包含额外列</span><br><span class="line">\du+</span><br><span class="line"></span><br><span class="line"># 打开文本编辑器</span><br><span class="line">\3</span><br><span class="line"></span><br><span class="line"># 列出当前数据库和连接的信息</span><br><span class="line">\conninfo</span><br><span class="line"></span><br><span class="line"># 退出</span><br><span class="line">\q</span><br><span class="line"></span><br><span class="line"># 查看SQL命令的解释，比如\h select。</span><br><span class="line">\h</span><br><span class="line"></span><br><span class="line"># 查看psql命令列表</span><br><span class="line">\?</span><br></pre></td></tr></table></figure>
+
+<h2 id="用户与访问授权语法示例"><a href="#用户与访问授权语法示例" class="headerlink" title="用户与访问授权语法示例"></a>用户与访问授权语法示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#新建用户</span><br><span class="line">CREATE USER test WITH PASSWORD &#39;test&#39;;</span><br><span class="line"></span><br><span class="line">#赋予指定账户指定数据库所有权限</span><br><span class="line">GRANT ALL PRIVILEGES ON DATABASE mydb TO test;</span><br><span class="line"></span><br><span class="line">#移除指定账户指定数据库所有权限</span><br><span class="line">REVOKE ALL PRIVILEGES ON DATABASE mydb TO test</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.postgresql.org/about/" target="_blank" rel="noopener">About PostgreSQL</a>,by postgresql.</li>
+<li><a href="https://www.ruanyifeng.com/blog/2013/12/getting_started_with_postgresql.html" target="_blank" rel="noopener">PostgreSQL新手入门</a>,by ruanyifeng.</li>
+<li><a href="https://ken.io/note/centos7-postgresql12-install-and-configuration" target="_blank" rel="noopener">在CentOS 7上安装&amp;配置PostgreSQL 12</a>,by 数据库.</li>
+<li><a href="https://blog.csdn.net/qq_35995514/article/details/132049841" target="_blank" rel="noopener">【PostgreSQL】系列之 一 schema详解（二）</a>,by 阿龙先生啊.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/01/20/GlassFish%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1944,210 +2144,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/11/14/%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B8%88%E6%95%99%E7%A8%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2023/11/14/%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B8%88%E6%95%99%E7%A8%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url">
-                  信息系统项目管理师教程读书笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2023-11-14 21:07:16" itemprop="dateCreated datePublished" datetime="2023-11-14T21:07:16+08:00">2023-11-14</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2023-12-24 19:54:22" itemprop="dateModified" datetime="2023-12-24T19:54:22+08:00">2023-12-24</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>记录信息系统项目管理师的相关知识。</p>
-<h1 id="十二个项目管理原则"><a href="#十二个项目管理原则" class="headerlink" title="十二个项目管理原则"></a>十二个项目管理原则</h1><ul>
-<li>勤勉、尊重和关心他人</li>
-<li>营造协作的项目管理团队环境</li>
-<li>促进干系人有效参与</li>
-<li>聚焦于价值</li>
-<li>识别、评估和响应系统交互</li>
-<li>展现领导力行为</li>
-<li>根据环境进行裁剪</li>
-<li>将质量融入到过程和成果中</li>
-<li>驾驭复杂性</li>
-<li>优化风险应对</li>
-<li>拥抱适应性和韧性</li>
-<li>为实现目标而驱动变革</li>
-</ul>
-<h1 id="五大过程组"><a href="#五大过程组" class="headerlink" title="五大过程组"></a>五大过程组</h1><ul>
-<li>启动过程组</li>
-<li>规划过程组</li>
-<li>执行过程组</li>
-<li>监督过程组</li>
-<li>收尾过程组</li>
-</ul>
-<h1 id="十大知识域"><a href="#十大知识域" class="headerlink" title="十大知识域"></a>十大知识域</h1><ul>
-<li>项目整合管理</li>
-<li>项目范围管理</li>
-<li>项目进度管理</li>
-<li>项目成本管理</li>
-<li>项目质量管理</li>
-<li>项目资源管理</li>
-<li>项目沟通管理</li>
-<li>项目风险管理</li>
-<li>项目采购管理</li>
-<li>项目干系人管理</li>
-</ul>
-<h1 id="八大绩效域"><a href="#八大绩效域" class="headerlink" title="八大绩效域"></a>八大绩效域</h1><ul>
-<li>干系人绩效域</li>
-<li>团队绩效域</li>
-<li>开发方法和生命周期绩效域</li>
-<li>规划绩效域</li>
-<li>项目工作绩效域</li>
-<li>交付绩效域</li>
-<li>测量绩效域</li>
-<li>不确定性绩效域</li>
-</ul>
-<h1 id="项目生命周期"><a href="#项目生命周期" class="headerlink" title="项目生命周期"></a>项目生命周期</h1><ul>
-<li>启动项目</li>
-<li>组织与准备</li>
-<li>执行项目工作</li>
-<li>结束项目</li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.ruankao.org.cn/book/lists" target="_blank" rel="noopener">信息系统项目管理师教程</a>,by ruankao.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2195,7 +2191,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">522</span>
+                    <span class="site-state-item-count">523</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

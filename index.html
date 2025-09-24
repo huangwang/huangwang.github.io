@@ -529,12 +529,24 @@
                 
               
 
-              <time title="创建时间：2025-09-20 12:03:15 / 修改时间：12:28:05" itemprop="dateCreated datePublished" datetime="2025-09-20T12:03:15+08:00">2025-09-20</time>
+              <time title="创建时间：2025-09-20 12:03:15" itemprop="dateCreated datePublished" datetime="2025-09-20T12:03:15+08:00">2025-09-20</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2025-09-24 22:26:14" itemprop="dateModified" datetime="2025-09-24T22:26:14+08:00">2025-09-24</time>
               
             
           </span>
@@ -580,17 +592,44 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">打开注册表编辑器（regedit）。</span><br><span class="line"></span><br><span class="line">导航到 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient。</span><br><span class="line"></span><br><span class="line">找到名为 SpecialPollInterval 的DWORD值，双击打开，在“数值数据”中填入期望的同步间隔（以秒为单位）即可调整同步频率。</span><br></pre></td></tr></table></figure>
 
-<h1 id="Linux平台"><a href="#Linux平台" class="headerlink" title="Linux平台"></a>Linux平台</h1><p>NTP的设置请参考：</p>
+<p><strong>注意：</strong> SpecialPollInterval 值的设置必须在位于 MinPollInterval 和 MaxPollInterval 之间，否则 NTP 客户端不会按 SpecialPollInterval 预期同步。具体请参考：<a href="https://www.sohu.com/a/817704068_120400677" target="_blank" rel="noopener">京准电钟课堂：NTP时钟同步时客户端未按预期同步 </a>。</p>
+<h1 id="Linux平台"><a href="#Linux平台" class="headerlink" title="Linux平台"></a>Linux平台</h1><blockquote>
+<p>chrony 既可作时间服务器服务端，也可作客户端。性能比 ntp 好，且配置管理方便。chrony 由两个程序组成，分别是 chronyd 和 chronyc。chronyd 是一个后台运行的守护进程，用于调整内核中运行的系统时钟和时钟服务器同步。它确定计算机增减时间的比率，并对此进行补偿。chronyc 提供了一个用户界面，用于监控性能并进行多样化的配置。它可以在 chronyd 实例控制的计算机上工作，也可以在一台不同的远程计算机上工作。</p>
+</blockquote>
+<p>以 NTP 工具 Chrony 为例，具体步骤如下：</p>
 <ul>
-<li><a href="https://zhuanlan.zhihu.com/p/18898283639" target="_blank" rel="noopener">第三章：ubuntu 24.04.1 ntp服务安装</a></li>
-<li><a href="https://www.cnblogs.com/lsgxeva/p/14265513.html" target="_blank" rel="noopener">Ubuntu部署NTP服务器和客户端</a></li>
+<li>安装chrony</li>
 </ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 查看 chrony 依赖的包</span><br><span class="line">apt-cache depends chrony</span><br><span class="line"></span><br><span class="line"># 安装chrony，观察chrony依赖的包</span><br><span class="line">sudo apt-get install chrony</span><br><span class="line"></span><br><span class="line"># 下载 chrony及其依赖包</span><br><span class="line">apt-get download chrony </span><br><span class="line"></span><br><span class="line"># 离线安装chrony</span><br><span class="line">sudo dpkg -i *.deb</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>修改配置文件 /etc/chrony/chrony.conf</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 注释默认的 NTP 服务器pool，配置上级时间服务器</span><br><span class="line">server 192.168.1.30 iburst</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>重启chrony服务</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 获取 chronyd 的PID</span><br><span class="line">pgrep chronyd</span><br><span class="line"></span><br><span class="line"># 直接终止（推荐）</span><br><span class="line">kill &lt;chronyd的PID&gt;</span><br><span class="line"></span><br><span class="line"># 强制终止（如果进程没有响应）</span><br><span class="line">kill -9 &lt;chronyd的PID&gt;</span><br><span class="line"></span><br><span class="line"># 启动 chronyd</span><br><span class="line">sudo  chronyd</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看并等待与NTP服务器同步</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 确保你的chrony服务器自身已经成功与上层服务器同步。可以通过 chronyc sources 命令检查，服务端需要先成功同步时间，才能为客户端提供同步服务, NTP服务器前设置 ^* 表示已与该服务区时钟同步。</span><br><span class="line"></span><br><span class="line">chronyc sources -v</span><br><span class="line">chronyc sourcestats -v</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>手动同步NTP客户端时间</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chronyc -a makestep</span><br></pre></td></tr></table></figure>
+
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://huangwang.github.io/2024/10/30/NTP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">NTP协议学习笔记</a>,by jackhaung.</li>
 <li><a href="https://blog.csdn.net/hulangbotufei/article/details/125253825" target="_blank" rel="noopener">WINDOWS 10如何配置NTP服务（Server&amp;Client）</a>,by 胡浪波.</li>
 <li><a href="https://zhuanlan.zhihu.com/p/364727871" target="_blank" rel="noopener">windows系统时间同步及同步频率设置</a>,by li88811.</li>
 <li><a href="https://zhuanlan.zhihu.com/p/18898283639" target="_blank" rel="noopener">第三章：ubuntu 24.04.1 ntp服务安装</a>,by 王小二.</li>
 <li><a href="https://www.cnblogs.com/lsgxeva/p/14265513.html" target="_blank" rel="noopener">Ubuntu部署NTP服务器和客户端</a>,by lsgxeva.</li>
+<li><a href="https://www.sohu.com/a/817704068_120400677" target="_blank" rel="noopener">京准电钟课堂：NTP时钟同步时客户端未按预期同步 </a>, by 安徽京准2024.</li>
 </ol>
 
           

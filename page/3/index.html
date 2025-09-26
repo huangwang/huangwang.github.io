@@ -314,6 +314,192 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/12/19/Linux%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/12/19/Linux%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Linux开机自启动方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-12-19 22:23:14" itemprop="dateCreated datePublished" datetime="2024-12-19T22:23:14+08:00">2024-12-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2025-01-14 22:48:39" itemprop="dateModified" datetime="2025-01-14T22:48:39+08:00">2025-01-14</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在使用 Linux 系统的过程中，默认有一个即时通讯软件开机自启动，想将该应用禁掉，不让其自启动。在 Linux 系统中，设置一个应用自启动的地方很多，遍布整个 Linux 启动流程。因此，首先了解 Linux 启动流程，再说明设置或禁用应用自启动的方法。</p>
+<h1 id="Linux-开机启动流程"><a href="#Linux-开机启动流程" class="headerlink" title="Linux 开机启动流程"></a>Linux 开机启动流程</h1><p>Linux 开机启动流程如下：</p>
+<ul>
+<li>第一阶段：硬件引导启动阶段</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1.1 POST(Power On Self Test) 加电自检</span><br><span class="line">1.2 BIOS</span><br><span class="line">	1.2.1 初始化硬件</span><br><span class="line">	1.2.2 查找启动介质</span><br><span class="line">		HDD: 查找启动硬盘的第一个扇区（MBR&#x2F;BootSector）</span><br><span class="line">1.3 MBR</span><br><span class="line">	1.3.1 Bootloader（启动装载程序）</span><br><span class="line">		GRUB</span><br><span class="line">		分区表</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第二阶段：BootLoader 启动引导阶段</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">2.1 Stage1</span><br><span class="line">	执行 BootLoader 主程序(位于 MBR 前 446个字节)，它的作用是启动 Stage1.5 或 Stage2</span><br><span class="line">2.2 Stage1.5</span><br><span class="line">	Stage1.5 是桥梁，由于 Stage2 较大，存放在文件系统中，需要 Stage1.5 引导位于文件系统中的 Stage2</span><br><span class="line">2.3 Stage2</span><br><span class="line">	Stage2 是 GRUB 的核心映像</span><br><span class="line">2.4 grub.conf</span><br><span class="line">	Stage2 解析 grub.conf 配置文件，加载内核到内存中</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第三阶段：内核引导阶段</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">3.1 &#x2F;boot&#x2F;kernel and Kernel parameter </span><br><span class="line">	内核初始化，加载基本的硬件驱动</span><br><span class="line">	</span><br><span class="line">3.2 &#x2F;boot&#x2F;initrd</span><br><span class="line">	引导 initrd 解压载入</span><br><span class="line">	3.2.1 阶段一：在内存中释放供 kernel 使用的 root filesystem</span><br><span class="line">				执行 initrd 文件系统中的 init，完成加载其他驱动模块</span><br><span class="line">	3.2.2 阶段二：执行真正的根文件系统中的 &#x2F;sbin&#x2F;init 进程</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第四阶段：Sys V init 初始化阶段</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">4.1 &#x2F;sbin&#x2F;init</span><br><span class="line">	4.1.1 &#x2F;etc&#x2F;inittab</span><br><span class="line">		init 进程读取 &#x2F;etc&#x2F;inittab 文件，确定系统启动的运行级别</span><br><span class="line">	4.1.2 &#x2F;etc&#x2F;rc.d&#x2F;rc.sysinit</span><br><span class="line">		执行系统初始化脚本，对系统进行基本的配置</span><br><span class="line">	4.1.3 &#x2F;etc&#x2F;rc.d&#x2F;rcN.d</span><br><span class="line">		根据先前确定的运行级别启动对应运行级别中的服务</span><br><span class="line">	4.1.4 &#x2F;etc&#x2F;rc.d&#x2F;rc.local</span><br><span class="line">		执行用户自定义的开机启动程序</span><br><span class="line">4.2 登录</span><br><span class="line">	4.2.1 &#x2F;sbin&#x2F;mingetty (命令行登录)</span><br><span class="line">		验证通过 执行 &#x2F;etc&#x2F;login </span><br><span class="line">		加载 &#x2F;etc&#x2F;profile  ~&#x2F;.bash_profile  ~&#x2F;.bash_login  ~&#x2F;.profile</span><br><span class="line">		取得 non-login Shell</span><br><span class="line">		</span><br><span class="line">	4.2.2 &#x2F;etc&#x2F;X11&#x2F;prefdm (图形界面登录)</span><br><span class="line">		gdm kdm xdm</span><br><span class="line">		Xinit</span><br><span class="line">		加载 ~&#x2F;.xinitrc  ~&#x2F;.xserverrc</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第五阶段：启动完成</li>
+</ul>
+<h1 id="设置应用自启动方法"><a href="#设置应用自启动方法" class="headerlink" title="设置应用自启动方法"></a>设置应用自启动方法</h1><p>从 Linux 开机流程可知，设置应用自启动主要在 Linux 启动流程的第四阶段。如果是服务或其他非 GUI 应用，可在 4.1 阶段设置开机自启动。如果是 GUI 应用，应在 4.2 阶段设置开机自启动。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://jaminzhang.github.io/linux/Linux-boot-process/" target="_blank" rel="noopener">Linux 系统启动流程</a>,by jaminzhang.</li>
+<li><a href="https://blog.csdn.net/weixin_54015549/article/details/131457432" target="_blank" rel="noopener">Linux开机启动流程(超详细版)</a>,by Code_xw.</li>
+<li><a href="https://zh.wikipedia.org/wiki/Initrd" target="_blank" rel="noopener">initrd</a>,by wikipedia.</li>
+<li><a href="https://blog.csdn.net/gengzhikui1992/article/details/85624879" target="_blank" rel="noopener">linux启动流程——initrd和initramfs</a>,by 网络安全研发随想.</li>
+<li><a href="https://xdaforums.com/t/info-boot-process-android-vs-linux.3785254/" target="_blank" rel="noopener">[INFO] BOOT PROCESS: ANDROID vs. LINUX</a>,by mirfatif.</li>
+<li><a href="https://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html" target="_blank" rel="noopener">Systemd 入门教程：命令篇</a>,by 阮一峰.</li>
+<li><a href="https://www.ruanyifeng.com/blog/2016/03/node-systemd-tutorial.html" target="_blank" rel="noopener">Node 应用的 Systemd 启动</a>,by 阮一峰.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/12/19/%E8%B4%B9%E6%9B%BC%E5%AD%A6%E4%B9%A0%E6%B3%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2016,161 +2202,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/11/14/Qt-Quick-3D%E5%8A%A0%E8%BD%BD3d%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/11/14/Qt-Quick-3D%E5%8A%A0%E8%BD%BD3d%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
-                  Qt_Quick_3D加载3d模型的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-11-14 23:01:44 / 修改时间：23:13:40" itemprop="dateCreated datePublished" datetime="2024-11-14T23:01:44+08:00">2024-11-14</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近工作中使用的一个基于QT开发三维程序中有很多以 .mesh 扩展名结尾的三维模型，搜索了一下，原来是 QtQuick3D 使用的专有三维模型格式。</p>
-<blockquote>
-<p>QtQuick3D 附带Balsam导入工具，用于将常见格式转换为QtQuick3D支持的格式。</p>
-</blockquote>
-<blockquote>
-<p>Balsam的目的是让可以轻松获取在常用工具（Blender，Maya，或3dsMax）中创建的资源，并在QtQuick3D中使用它们。</p>
-</blockquote>
-<blockquote>
-<p>通过balsamui导出mesh文件和qml文件。</p>
-</blockquote>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/zjgo007/article/details/122922420" target="_blank" rel="noopener">Qt Quick 3D系列（一）：加载3d模型</a>,by 喵喵叫的猴.</li>
-<li><a href="https://blog.csdn.net/gongjianbo1992/article/details/106744754" target="_blank" rel="noopener">Qt Quick 3D模块初探</a>,by 龚建波.</li>
-<li><a href="https://blog.csdn.net/zjgo007/article/details/122878344" target="_blank" rel="noopener">Qt Quick 3D中将3D场景(如.obj)转换为.mesh</a>,by 喵喵叫的猴.</li>
-<li><a href="https://blog.csdn.net/weixin_41392061/article/details/131785107" target="_blank" rel="noopener">12、Qt Quick 3D —– 模型加载</a>,by weixin_41392061.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2218,7 +2249,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">526</span>
+                    <span class="site-state-item-count">527</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -314,6 +314,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/06/11/QT%E7%A7%81%E6%9C%89%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/06/11/QT%E7%A7%81%E6%9C%89%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0/" itemprop="url">
+                  QT私有类的设计模式学习
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-06-11 22:30:32 / 修改时间：22:36:25" itemprop="dateCreated datePublished" datetime="2024-06-11T22:30:32+08:00">2024-06-11</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>查看QT源码，会发现很多类会有一个同样名字、但是以Private结尾的孪生类，这是QT用于封装私有操作的一种设计模式。这种设计模式可以有如下优点：</p>
+<ul>
+<li>信息隐藏</li>
+<li>二进制兼容</li>
+</ul>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>myclass.h</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; myclass.h  </span><br><span class="line">#ifndef MYCLASS_H  </span><br><span class="line">#define MYCLASS_H  </span><br><span class="line">#include &lt;QtCore&#x2F;QObject&gt;  </span><br><span class="line">class MyClassPrivate;  </span><br><span class="line">class MyClass: public QObject  </span><br><span class="line">&#123;  </span><br><span class="line">  Q_OBJECT  </span><br><span class="line">public:  </span><br><span class="line">  MyClass(QObject *parent &#x3D; 0);  </span><br><span class="line">  virtual ~MyClass();  </span><br><span class="line">  void dummyFunc();  </span><br><span class="line">signal:  </span><br><span class="line">  void dummySignal();  </span><br><span class="line">private:  </span><br><span class="line">  MyClassPrivate * const d_ptr;  </span><br><span class="line">  Q_DECLARE_PRIVATE(MyClass);  </span><br><span class="line">  Q_DISABLE_COPY(MyClass);  </span><br><span class="line">&#125;;  </span><br><span class="line">#endif &#x2F;&#x2F; MYCLASS_H</span><br></pre></td></tr></table></figure>
+
+<p>myclass.cpp  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; myclass.cpp  </span><br><span class="line">#include &quot;myclass.h&quot;  </span><br><span class="line">class MyClassPrivate  </span><br><span class="line">&#123;  </span><br><span class="line">public:  </span><br><span class="line">  MyClassPrivate(MyClass *parent)  </span><br><span class="line">    : q_ptr(parent)  </span><br><span class="line">  &#123;  </span><br><span class="line">  &#125;  </span><br><span class="line">  void foobar()  </span><br><span class="line">  &#123;  </span><br><span class="line">    Q_Q(MyClass);  </span><br><span class="line">    emit q-&gt;dummySignal();  </span><br><span class="line">  &#125;  </span><br><span class="line">private:  </span><br><span class="line">  MyClass * const q_ptr;  </span><br><span class="line">  Q_DECLARE_PUBLIC(MyClass);  </span><br><span class="line">&#125;;  </span><br><span class="line">MyClass::MyClass(QObject *parent)  </span><br><span class="line">  : QObject(parent)  </span><br><span class="line">  , d_ptr(new MyClassPrivate(this))  </span><br><span class="line">&#123;  </span><br><span class="line">&#125;  </span><br><span class="line">MyClass::~MyClass()  </span><br><span class="line">&#123;  </span><br><span class="line">  Q_D(MyClass);  </span><br><span class="line">  delete d;  </span><br><span class="line">&#125;  </span><br><span class="line">void MyClass::dummyFunc()  </span><br><span class="line">&#123;  </span><br><span class="line">  Q_D(MyClass);  </span><br><span class="line">  d-&gt;foobar();  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.cnblogs.com/zzzsj/p/17511693.html" target="_blank" rel="noopener">C++学习—qt的公有类、私有类、Q_Q、Q_D、二进制兼容</a>,by 手磨咖啡.</li>
+<li><a href="https://blog.csdn.net/weixin_33232568/article/details/131342239" target="_blank" rel="noopener">Qt使用技巧–定义Private类</a>,by 大王怕我去巡山.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/06/08/Python%E6%8F%90%E5%8F%96%E6%95%B0%E6%8D%AE%E5%BA%93%E5%86%85%E5%AE%B9%E5%B9%B6%E6%A0%B9%E6%8D%AE%E6%96%87%E6%A1%A3%E6%A8%A1%E6%9D%BF%E7%94%9F%E6%88%90%E6%96%87%E6%A1%A3%E7%9A%84%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1822,164 +1976,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/04/11/DTO%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/04/11/DTO%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0/" itemprop="url">
-                  DTO模式学习
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-04-11 21:05:39" itemprop="dateCreated datePublished" datetime="2024-04-11T21:05:39+08:00">2024-04-11</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2024-04-12 20:29:21" itemprop="dateModified" datetime="2024-04-12T20:29:21+08:00">2024-04-12</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>DTO模式首次被提出来是在 Martin Fowler 的 EAA 一书中，DTOs 或 Data Transfer Objects 是一种在进程中传递数据的对象，用来减少方法的调用。</p>
-<p>根据 Martin Fowler 的解释，该模式的主要目的是通过在一次调用中批量处理多个命令参数，从而减少请求服务器的次数，进而减少远程操作的网络开销。</p>
-<p>该模式的另一个好处是对序列化的逻辑（序列化是指将对象的结构和数据转换为特定模式用来存储或者传输的机制）进行了封装，提供了单一的变化点去修改序列化的逻辑。它还可以将领域模型与表现层解耦，允许两者独立变化而不互相影响。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.baeldung.com/java-dto-pattern" target="_blank" rel="noopener">The DTO Pattern (Data Transfer Object)</a>,by baeldung.</li>
-<li><a href="https://iyichen.xyz/2022/04/the-dto-pattern/" target="_blank" rel="noopener">[译] DTO模式</a>,by iyichen.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2027,7 +2023,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">527</span>
+                    <span class="site-state-item-count">528</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

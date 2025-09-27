@@ -102,15 +102,15 @@
 
 
 
-  <meta name="description" content="消息队列是一种常用的软件架构，有必要了解和学习它。 定义消息队列（Message Queue，简称MQ）是一种在计算机系统中用于在不同应用程序或服务之间进行异步通信的中间件技术，它通过一个存储消息的队列作为中间人，允许发送者（生产者）将消息放入队列，接收者（消费者）则在准备好时从队列中取出并处理，从而实现系统解耦、异步处理和流量削峰等目标。消息队列的出现解决了分布式系统中数据丢失、服务故障、处理能">
+  <meta name="description" content="消息队列是一种常用的软件架构，有必要了解和学习它。 基本知识定义消息队列（Message Queue，简称MQ）是一种在计算机系统中用于在不同应用程序或服务之间进行异步通信的中间件技术，它通过一个存储消息的队列作为中间人，允许发送者（生产者）将消息放入队列，接收者（消费者）则在准备好时从队列中取出并处理，从而实现系统解耦、异步处理和流量削峰等目标。消息队列的出现解决了分布式系统中数据丢失、服务故障">
 <meta property="og:type" content="article">
 <meta property="og:title" content="消息队列学习笔记">
 <meta property="og:url" content="https://huangwang.github.io/2025/09/26/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Jack Huang&#39;s Blog">
-<meta property="og:description" content="消息队列是一种常用的软件架构，有必要了解和学习它。 定义消息队列（Message Queue，简称MQ）是一种在计算机系统中用于在不同应用程序或服务之间进行异步通信的中间件技术，它通过一个存储消息的队列作为中间人，允许发送者（生产者）将消息放入队列，接收者（消费者）则在准备好时从队列中取出并处理，从而实现系统解耦、异步处理和流量削峰等目标。消息队列的出现解决了分布式系统中数据丢失、服务故障、处理能">
+<meta property="og:description" content="消息队列是一种常用的软件架构，有必要了解和学习它。 基本知识定义消息队列（Message Queue，简称MQ）是一种在计算机系统中用于在不同应用程序或服务之间进行异步通信的中间件技术，它通过一个存储消息的队列作为中间人，允许发送者（生产者）将消息放入队列，接收者（消费者）则在准备好时从队列中取出并处理，从而实现系统解耦、异步处理和流量削峰等目标。消息队列的出现解决了分布式系统中数据丢失、服务故障">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-09-26T13:07:22.000Z">
-<meta property="article:modified_time" content="2025-09-26T13:14:54.345Z">
+<meta property="article:modified_time" content="2025-09-26T13:33:51.026Z">
 <meta property="article:author" content="Jack Huang">
 <meta property="article:tag" content="笔记本">
 <meta property="article:tag" content="软件架构">
@@ -360,7 +360,7 @@
                 
               
 
-              <time title="创建时间：2025-09-26 21:07:22 / 修改时间：21:14:54" itemprop="dateCreated datePublished" datetime="2025-09-26T21:07:22+08:00">2025-09-26</time>
+              <time title="创建时间：2025-09-26 21:07:22 / 修改时间：21:33:51" itemprop="dateCreated datePublished" datetime="2025-09-26T21:07:22+08:00">2025-09-26</time>
             
 
             
@@ -417,35 +417,44 @@
 
       
         <p>消息队列是一种常用的软件架构，有必要了解和学习它。</p>
-<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>消息队列（Message Queue，简称MQ）是一种在计算机系统中用于在不同应用程序或服务之间进行异步通信的中间件技术，它通过一个存储消息的队列作为中间人，允许发送者（生产者）将消息放入队列，接收者（消费者）则在准备好时从队列中取出并处理，从而实现系统解耦、异步处理和流量削峰等目标。消息队列的出现解决了分布式系统中数据丢失、服务故障、处理能力不足以及业务系统间强耦合等问题。</p>
-<h1 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h1><ul>
+<h1 id="基本知识"><a href="#基本知识" class="headerlink" title="基本知识"></a>基本知识</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>消息队列（Message Queue，简称MQ）是一种在计算机系统中用于在不同应用程序或服务之间进行异步通信的中间件技术，它通过一个存储消息的队列作为中间人，允许发送者（生产者）将消息放入队列，接收者（消费者）则在准备好时从队列中取出并处理，从而实现系统解耦、异步处理和流量削峰等目标。消息队列的出现解决了分布式系统中数据丢失、服务故障、处理能力不足以及业务系统间强耦合等问题。</p>
+<h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><ul>
 <li>生产者（Producer）：负责创建和发送消息到消息队列的应用程序或服务。</li>
 <li>消费者（Consumer）：负责从消息队列中接收消息并进行处理的应用程序或服务。</li>
 <li>消息（Message）：在应用程序之间传递的数据包，可以是简单的文本或复杂的数据结构。</li>
 <li>消息队列（Message Queue）：一个存储消息的容器，它本身是一个队列（先进先出）数据结构。</li>
 <li>代理（Broker）：消息队列的核心组件，负责存储消息、确认消息的传递和重试等。</li>
 </ul>
-<h1 id="主要作用"><a href="#主要作用" class="headerlink" title="主要作用"></a>主要作用</h1><ul>
+<h2 id="主要作用"><a href="#主要作用" class="headerlink" title="主要作用"></a>主要作用</h2><ul>
 <li>系统解耦：生产者和消费者之间不需要直接通信，降低了系统之间的依赖性。</li>
 <li>异步通信：消息的发送和接收不需要同时发生，大大提高了系统的吞吐量和响应速度。</li>
 <li>削峰填谷：在高并发场景下，消息队列能够缓冲瞬时的大量请求，将高并发的流量“削峰”，让后端系统有足够的时间处理。</li>
 <li>流量控制：通过控制消费者对消息的处理速度，可以有效避免后端服务因过载而崩溃。</li>
 <li>可靠投递：消息队列能够持久化存储消息，即使接收者暂时不可用，消息也不会丢失，保证了数据的安全。</li>
 </ul>
-<h1 id="常见用例"><a href="#常见用例" class="headerlink" title="常见用例"></a>常见用例</h1><ul>
+<h2 id="常见用例"><a href="#常见用例" class="headerlink" title="常见用例"></a>常见用例</h2><ul>
 <li>分布式事务：:实现不同服务之间的数据最终一致性。</li>
 <li>日志处理：:将日志数据异步地从各个服务发送到集中的日志处理系统。</li>
 <li>实时数据处理：:在流处理和大数据场景下，用于数据流的缓冲和转发。</li>
 </ul>
-<h1 id="主流技术"><a href="#主流技术" class="headerlink" title="主流技术"></a>主流技术</h1><ul>
+<h2 id="主流技术"><a href="#主流技术" class="headerlink" title="主流技术"></a>主流技术</h2><ul>
 <li>RabbitMQ：一个老牌的开源消息队列，功能强大，支持多种消息协议。</li>
 <li>Kafka：由LinkedIn开发，以高性能和高吞吐量著称，常用于大数据流式处理场景。</li>
 <li>RocketMQ：由阿里巴巴开发，是轻量级的高性能分布式消息中间件。</li>
 <li>ActiveMQ：一个由Apache开发的开源消息中间件，支持多种传输协议。</li>
 </ul>
+<h1 id="与模型对比"><a href="#与模型对比" class="headerlink" title="与模型对比"></a>与模型对比</h1><h2 id="消息队列与发布-订阅的对比"><a href="#消息队列与发布-订阅的对比" class="headerlink" title="消息队列与发布/订阅的对比"></a>消息队列与发布/订阅的对比</h2><p>消息队列使用点对点消息传递模式，在该模式中，一个应用程序（称为“发送者”）向队列提交消息，另一个应用程序（称为“接收者”）则从队列中获取并使用消息。发送者和使用者之间存在紧密耦合的一对一关系，并且每条消息只能使用一次。</p>
+<p>如果您的应用程序需要将消息分发给多方，则可以组合多个消息队列，或者使用发布/订阅 (pub/sub) 消息传递模型。</p>
+<p>在发布/订阅消息传递中，生成消息的应用程序称为发布者，而使用该消息的应用程序称为订阅者。每条消息都会发布到一个主题，订阅该主题的每个应用程序都会获得发布到它的所有消息的副本。</p>
+<p>大多数消息传递中间件解决方案都支持消息队列（点对点）和发布/订阅消息模型。</p>
+<h2 id="消息队列与消息总线的对比"><a href="#消息队列与消息总线的对比" class="headerlink" title="消息队列与消息总线的对比"></a>消息队列与消息总线的对比</h2><p>消息总线是一种企业服务总线 (ESB)，它允许服务随处访问数据，同时确保它们在分布式系统架构中保持解耦和独立运行。当使用消息总线时，所有服务或应用程序必须共用通用数据类型、通用命令集和通用通信协议（尽管它们可能用不同的语言编写）。使用者可以决定如何使用信息。</p>
+<p>如果解耦的应用程序要通过消息总线进行通信，则必须转换消息以使其归属于同一类型。相反，消息队列可传输各类消息，无论其类型是否相同。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://cloud.tencent.com/developer/article/1408126" target="_blank" rel="noopener">Kafka、ActiveMQ、RabbitMQ、RocketMQ 区别以及高可用原理</a>,by 爱撸猫的杰.</li>
 <li><a href="https://zh.wikipedia.org/wiki/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97" target="_blank" rel="noopener">消息队列</a>,by wikipedia.</li>
+<li><a href="https://www.ibm.com/cn-zh/think/topics/message-queues" target="_blank" rel="noopener">什么是消息队列？</a>,by ibm.</li>
+<li><a href="https://www.zhihu.com/question/289289899" target="_blank" rel="noopener">消息总线和消息队列有何区别？</a>,by kimmking.</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E4%BC%81%E4%B8%9A%E6%9C%8D%E5%8A%A1%E6%80%BB%E7%BA%BF" target="_blank" rel="noopener">企业服务总线</a>,by wikipedia.</li>
 </ol>
 
       
@@ -491,6 +500,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2025/09/27/IDEA%E6%8E%A7%E5%88%B6%E5%8F%B0%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" rel="prev" title="IDEA控制台中文乱码解决方法">
+                IDEA控制台中文乱码解决方法 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -571,7 +584,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">527</span>
+                    <span class="site-state-item-count">528</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -758,7 +771,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#定义"><span class="nav-number">1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心概念"><span class="nav-number">2.</span> <span class="nav-text">核心概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#主要作用"><span class="nav-number">3.</span> <span class="nav-text">主要作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见用例"><span class="nav-number">4.</span> <span class="nav-text">常见用例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#主流技术"><span class="nav-number">5.</span> <span class="nav-text">主流技术</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本知识"><span class="nav-number">1.</span> <span class="nav-text">基本知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心概念"><span class="nav-number">1.2.</span> <span class="nav-text">核心概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主要作用"><span class="nav-number">1.3.</span> <span class="nav-text">主要作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见用例"><span class="nav-number">1.4.</span> <span class="nav-text">常见用例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主流技术"><span class="nav-number">1.5.</span> <span class="nav-text">主流技术</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#与模型对比"><span class="nav-number">2.</span> <span class="nav-text">与模型对比</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#消息队列与发布-订阅的对比"><span class="nav-number">2.1.</span> <span class="nav-text">消息队列与发布&#x2F;订阅的对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息队列与消息总线的对比"><span class="nav-number">2.2.</span> <span class="nav-text">消息队列与消息总线的对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

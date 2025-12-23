@@ -314,6 +314,167 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/04/28/GitPatch%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/04/28/GitPatch%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/" itemprop="url">
+                  Git Patch使用帮助
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-04-28 20:17:46 / 修改时间：20:59:59" itemprop="dateCreated datePublished" datetime="2021-04-28T20:17:46+08:00">2021-04-28</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>多人协作开发，需要将别人开发的代码合并。这时使用git patch命令合并是最方便。下面介绍这种方法。</p>
+<h1 id="git-patch作用"><a href="#git-patch作用" class="headerlink" title="git patch作用"></a>git patch作用</h1><blockquote>
+<ul>
+<li>什么是patch? 简单来讲,patch中存储的是你对代码的修改</li>
+<li>什么是生成patch? 生成patch就是记录你对代码的修改并将其保存在patch文件中</li>
+<li>什么是打patch? 打patch就是将patch文件中对代码的修改，应用到源代码，从而把对代码的修改应用到code中。</li>
+</ul>
+</blockquote>
+<h1 id="git-patch用法"><a href="#git-patch用法" class="headerlink" title="git patch用法"></a>git patch用法</h1><h2 id="生成patch"><a href="#生成patch" class="headerlink" title="生成patch"></a>生成patch</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ git format-patch HEAD^ 　　　#生成最近的1次commit的patch</span><br><span class="line">$ git format-patch HEAD^^　　　#生成最近的2次commit的patch</span><br><span class="line">$ git format-patch HEAD^^^ 　  #生成最近的3次commit的patch</span><br><span class="line">$ git format-patch HEAD^^^^ 　 #生成最近的4次commit的patch</span><br><span class="line">$ git format-patch &lt;r1&gt;..&lt;r2&gt;  #生成两个commit间的修改的patch（包含两个commit. &lt;r1&gt;和&lt;r2&gt;都是具体的commit号)</span><br><span class="line">$ git format-patch -1 &lt;r1&gt;     #生成单个commit的patch</span><br><span class="line">$ git format-patch &lt;r1&gt;        #生成某commit以来的修改patch（不包含该commit）</span><br><span class="line">$ git format-patch --root &lt;r1&gt;  #生成从根到r1提交的所有patch</span><br></pre></td></tr></table></figure>
+
+<h2 id="应用patch"><a href="#应用patch" class="headerlink" title="应用patch"></a>应用patch</h2><p>检查patch/diff是否能正常打入:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply --check 【path&#x2F;to&#x2F;xxx.patch】</span><br><span class="line">git apply --check 【path&#x2F;to&#x2F;xxx.diff】</span><br></pre></td></tr></table></figure>
+
+<p>打入patch/diff:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git apply 【path&#x2F;to&#x2F;xxx.patch】</span><br><span class="line">git apply 【path&#x2F;to&#x2F;xxx.diff】</span><br><span class="line">git am 【path&#x2F;to&#x2F;xxx.patch】</span><br></pre></td></tr></table></figure>
+
+<h1 id="TortoiseGit-patch用法"><a href="#TortoiseGit-patch用法" class="headerlink" title="TortoiseGit patch用法"></a>TortoiseGit patch用法</h1><p>TortoiseGit是一个Git版本控制客户端，作为Microsoft Windows的外壳扩展实现。它在GNU通用公共许可协议下作为自由软件发布。使用TortoiseGit 的 Create Patch Serial和 Apply Patch Serial两个菜单可以很方便的产生和应用补丁。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://zh.wikipedia.org/wiki/TortoiseGit" target="_blank" rel="noopener">TortoiseGit</a>,by wikipedia.</li>
+<li><a href="https://www.cnblogs.com/ArsenalfanInECNU/p/8931377.html" target="_blank" rel="noopener">如何用git命令生成Patch和打Patch</a>,by 青山牧云人.</li>
+<li><a href="https://www.jianshu.com/p/ec04de3f95cc" target="_blank" rel="noopener">Git 打补丁– patch 和 diff 的使用（详细）</a>,by alanwangmodify.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/04/13/OSG%E9%BC%A0%E6%A0%87%E6%8B%BE%E5%8F%96%E6%8B%96%E6%8B%BD%E7%89%A9%E4%BD%93%E7%9A%84%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1881,192 +2042,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/02/06/QT%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/02/06/QT%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" itemprop="url">
-                  QT核心机制与原理
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2021-02-06 22:14:05" itemprop="dateCreated datePublished" datetime="2021-02-06T22:14:05+08:00">2021-02-06</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2023-08-17 22:15:19" itemprop="dateModified" datetime="2023-08-17T22:15:19+08:00">2023-08-17</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>要想学到QT的精髓，必须对QT的核心机制信号与槽、元对象系统、事件模型有充分的理解。</p>
-<h1 id="信号与槽"><a href="#信号与槽" class="headerlink" title="信号与槽"></a>信号与槽</h1><p>信号和槽是一种高级接口，它们被应用于对象之间的通信，它们是Qt 的核心特性，也是Qt不同于其它同类工具包的重要地方之一。</p>
-<h2 id="信号（signal）"><a href="#信号（signal）" class="headerlink" title="信号（signal）"></a>信号（signal）</h2><p>当对象的状态发生改变时，信号被某一个对象发射（ emit）。只有定义过这个信号的类或者其派生类能够发射这个信号。当一个信号被发射时，与其相关联的槽将被执行，就象一个正常的函数调用一样。信号-槽机制独立于任何GUI 事件循环。只有当所有的槽正确返回以后，发射函数（emit）才返回。</p>
-<h2 id="槽（slot）"><a href="#槽（slot）" class="headerlink" title="槽（slot）"></a>槽（slot）</h2><p>槽是普通的C++成员函数，可以被正常调用，不同之处是它们可以与信号（ signal）相关联。当与其关联的信号被发射时，这个槽就会被调用。槽可以有参数，但槽的参数不能有缺省值。</p>
-<h2 id="信号与槽的关联"><a href="#信号与槽的关联" class="headerlink" title="信号与槽的关联"></a>信号与槽的关联</h2><p>槽和普通的C++成员函数几乎是一样的－可以是虚函数；可以被重载；可以是共有的、 保护的或是私有的，并且也可以被其它C++成员函数直接调用；还有，它们的参数可以是任意类型。唯一不同的是：槽还可以和信号连接在一起，在这种情况下，每当发射这个信号的时候，就会自动调用这个槽。</p>
-<p>connect()语句看起来会是如下的样子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">connect(sender,SIGNAL(signal),receiver,SLOT(slot));</span><br></pre></td></tr></table></figure>
-<p>这里的sender 和receiver 是指向QObject 的指针，signal 和slot 是不带参数的函数名。实际上，SIGNAL()宏和SLOT()会把它们的参数转换成相应的字符串。</p>
-<p>从QObject 或其子类(例如Qwidget)派生的类都能够使用信号和槽机制。这种机制本身是在QObject 中实现的，并不只局限于图形用户界面编程中：当对象的状态得到改变时， 它可以某种方式将信号发射(emit)出去，但它并不了解是谁在接收这个信号。</p>
-<h1 id="元对象系统"><a href="#元对象系统" class="headerlink" title="元对象系统"></a>元对象系统</h1><p>Qt 的元对象系统是一个基于标准C＋＋的扩展，能够使C＋＋更好的适应真正的组件GUI 编程。它为Qt 提供了支持对象间通信的信号与槽机制、实时类型信息和动态属性系统等方面的功能。</p>
-<p>元对象系统在Qt 中主要有以下三部分构成：QObject 类、Q_OBJECT 宏和元对象编译器moc。</p>
-<h2 id="元对象系统机制"><a href="#元对象系统机制" class="headerlink" title="元对象系统机制"></a>元对象系统机制</h2><p>Qt 的主要成就之一是使用了一种机制对C++进行了扩展，并且使用这种机制创建了独立的软件组件。这些组件可以绑定在一起，但任何一个组件对于它所要连接的组件的情况事先都不了解。</p>
-<p>这种机制称为元对象系统（meta-object system），它提供了关键的两项技术：信号－槽以及内省（introspection）。内省功能对于实现信号和槽是必需的，并且允许应用程序的开发人员在运行时获得有关QObject 子类的“元信息”（meta-information），包括一个含有对象的类名以及它所支持的信号和槽的列表。这一机制也支持属性（广泛用于Qt 设计师中）和文本翻译（用于国际化），并且它也为QtScirpt 模块奠定了基础。</p>
-<p>标准C++没有对Qt 的元对象系统所需要的动态元信息提供支持。Qt 通过提供一个独立的moc 工具解决了这个问题，moc 解析Q_OBJECT 类的定义并且通过C++函数提供可供使用的信息。由于moc 使用纯C++来实现它的所有功能，所以Qt 的元对象系统可以在任意C++ 编译器上工作。</p>
-<h2 id="元对象工具（moc）"><a href="#元对象工具（moc）" class="headerlink" title="元对象工具（moc）"></a>元对象工具（moc）</h2><p>Qt 的信号和槽机制是采用标准C++ 来实现的。该实现使用C++ 预处理器和Qt 所包括的moc（元对象编译器）。元对象编译器读取应用程序的头文件，并生成必要的代码，以支持信号和槽机制。</p>
-<h1 id="事件模型"><a href="#事件模型" class="headerlink" title="事件模型"></a>事件模型</h1><p>应用程序对象将系统消息接收为Qt 事件。应用程序可以按照不同的粒度对事件加以监控、过滤并做出响应。</p>
-<p>在Qt 中，事件是指从QEvent 继承的对象。Qt 将事件发送给每个QObject 对象，这样对象便可对事件做出响应。也就是说， Qt 的事件处理机制主要是基于QEvent 类来实现的，QEvent 类是其他事件类的基类。当一个事件产生时， Qt 就会构造一个QEvent 子类的实例来表述该事件，然后将该事件发送到相应的对象上进行处理。</p>
-<p>Qt 的主事件循环能够从事件队列中获取本地窗口系统事件，然后判断事件类型，并将事件分发给特定的接收对象。主事件循环通过调用QCoreApplication::exec() 启动， 随着QCoreApplication::exit()结束，本地的事件循环可用利用QEventLoop 构建。作为事件分发器的QAbstractEventDispatcher 管理着Qt 的事件队列，事件分发器从窗口系统或其他事件源接收事件，然后将他们发送给QCoreApplication 或QApplication 的实例进行处理或继续分发。QAbstractEventDispatcher 为事件分发提供了良好的保护措施。</p>
-<h1 id="事件与信号的区别"><a href="#事件与信号的区别" class="headerlink" title="事件与信号的区别"></a>事件与信号的区别</h1><p>(1) 使用场合和时机不同一般情况下，在“使用”窗口部件时，我们经常需要使用信号，并且会遵循信号与槽的机制；而在“实现”窗口部件时，我们就不得不考虑如何处理事件了。举个例子，当使用QPushButton 时，我们对于它的clicked()信号往往更为关注，而很少关心促成发射该信号的底层的鼠标或者键盘事件。但是，如果要实现一个类似于QPushButton 的类，我们就需要编写一定的处理鼠标和键盘事件的代码，而且在必要的时候，仍然需要发射和接收clicked()信号。</p>
-<p>（2）使用的机制和原理不同</p>
-<p>事件类似于Windows 里的消息，它的发出者一般是窗口系统。相对信号和槽机制，它比较“底层”，它同时支持异步和同步的通信机制，一个事件产生时将被放到事件队列里，然后我们就可以继续执行该事件“后面”的代码。事件的机制是非阻塞的。</p>
-<p>信号和槽机制相对而言比较“高层”，它的发出者一般是对象。从本质上看，它类似于传统的回调机制，是不支持异步调用的。</p>
-<p>(3) 信号与槽在多线程时支持异步调用</p>
-<p>在单线程应用时，你可以把信号与槽看成是一种对象间的同步通信机制，这是因为在这种情况下，信号的释放过程是阻塞的，一定要等到槽函数返回后这个过程才结束，也就是不支持异步调用。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://wizardforcel.gitbooks.io/wudi-qt4/content/101.html" target="_blank" rel="noopener">第13 章Qt 核心机制与原理</a>,by wizardforcel.</li>
-<li><a href="https://www.zhihu.com/question/27040542" target="_blank" rel="noopener">如何才能学到Qt的精髓？</a>,by zhihu.</li>
-<li><a href="https://blog.csdn.net/lovekdy/article/details/101698482" target="_blank" rel="noopener">Qt中资源文件的使用及意义</a>,by Stephan_zry.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/615022779" target="_blank" rel="noopener">Qt：Qt资源系统</a>,by qt技术开发老杰.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/24/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/page/53/">53</a><a class="extend next" rel="next" href="/page/26/">下一页</a>
+    <a class="extend prev" rel="prev" href="/page/24/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/26/">下一页</a>
   </nav>
 
 
@@ -2109,7 +2089,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">530</span>
+                    <span class="site-state-item-count">531</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

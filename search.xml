@@ -23797,4 +23797,38 @@ console.log(y);</code></pre></li>
         <tag>C/C++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>DLL导入库生成的方法</title>
+    <url>/2025/12/23/DLL%E5%AF%BC%E5%85%A5%E5%BA%93%E7%94%9F%E6%88%90%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>当使用隐式链接的方法调用 DLL 中的导出函数时，需要代码的头文件、导入库lib和动态链接库。如何缺失导入库lib，将无法使用隐式链接的方式调用 DLL中的函数。幸运的是，通过一些手段可以从DLL中直接生成导入库lib。</p>
+<h1 id="生成导入库流程"><a href="#生成导入库流程" class="headerlink" title="生成导入库流程"></a>生成导入库流程</h1><p>步骤如下：</p>
+<ul>
+<li>从Dll中生成对应def文件，内容如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">include &#39;..\implib.inc&#39;</span><br><span class="line"></span><br><span class="line">; XYZLIBRARY.??4CXyz@@QAEAAV0@$$QAV0@@Z ord.1</span><br><span class="line">implib XyzLibrary.dll, ??4CXyz@@QAEAAV0@$$QAV0@@Z</span><br><span class="line">; XYZLIBRARY.??4CXyz@@QAEAAV0@ABV0@@Z ord.2</span><br><span class="line">implib XyzLibrary.dll, ??4CXyz@@QAEAAV0@ABV0@@Z</span><br><span class="line">; XYZLIBRARY.?Foo@CXyz@@QAEHH@Z ord.3</span><br><span class="line">implib XyzLibrary.dll, ?Foo@CXyz@@QAEHH@Z</span><br><span class="line">; XYZLIBRARY.GetXyz ord.4</span><br><span class="line">implib XyzLibrary.dll, GetXyz</span><br><span class="line">; XYZLIBRARY._GetXyz@0 ord.5</span><br><span class="line">implib XyzLibrary.dll, _GetXyz@0</span><br><span class="line">; XYZLIBRARY._XyzFoo@8 ord.6</span><br><span class="line">implib XyzLibrary.dll, _XyzFoo@8</span><br><span class="line">; XYZLIBRARY._XyzRelease@4 ord.7</span><br><span class="line">implib XyzLibrary.dll, _XyzRelease@4</span><br><span class="line"></span><br><span class="line">endlib</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>根据def文件生成DLL的导入库lib</li>
+</ul>
+<h1 id="自动生成导入库"><a href="#自动生成导入库" class="headerlink" title="自动生成导入库"></a>自动生成导入库</h1><p>生成DLL导入库lib的方案有很多，最便利的方法是使用 ImpLib SDK 工具。具体教程如下：</p>
+<ul>
+<li>从官网下载最新的 ImpLib SDK 并解压，将 ImpLib SDK 的bin目录添加到系统环境变量 PATH 下。</li>
+<li>使用工具dll2def自动生成DLL的def文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">\bin\dll2def c:\windows\system32\kernel32.dll kernel32.def</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将生成的kernel32.def文件复制到 ImpLib SDK\src\Win32 文件下，然后运行 build_libs.bat，或者运行如下命令：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">\bin\fasm kernel32.def kernel32.lib</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://huangwang.github.io/2018/06/15/DLL%E5%AF%BC%E5%87%BA%E7%B1%BB%E5%92%8C%E5%87%BD%E6%95%B0/">DLL导出类和函数</a>,by huangwang.</li>
+<li><a href="https://implib.sourceforge.io/EN.HTM" target="_blank" rel="noopener">ImpLib SDK Guide</a>,by implib.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>C/C++</tag>
+      </tags>
+  </entry>
 </search>

@@ -314,6 +314,194 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/11/25/Wireshark%E4%B9%8Bpcap%E6%96%87%E4%BB%B6%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BE%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/11/25/Wireshark%E4%B9%8Bpcap%E6%96%87%E4%BB%B6%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BE%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Wireshark之pcap文件流量回放的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-11-25 21:34:57 / 修改时间：22:11:11" itemprop="dateCreated datePublished" datetime="2024-11-25T21:34:57+08:00">2024-11-25</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>应公司要求编写了一个流量转发加消息格式转换的程序，但是老是报错。于是使用 wireshark 抓包保存成 pcap 文件，然后想通过流量回放复现程序报错原因。下面研究一下流量回放的方法。</p>
+<h1 id="工具介绍"><a href="#工具介绍" class="headerlink" title="工具介绍"></a>工具介绍</h1><h2 id="tcpreplay"><a href="#tcpreplay" class="headerlink" title="tcpreplay"></a>tcpreplay</h2><blockquote>
+<p>tcpreplay是一款强大的网络数据包重放工具，它可以将捕获到的网络流量（通常是pcap格式的文件）重新重放到网络中，实现对网络通信的重现。这在网络故障排查、安全测试、性能测试、开发调试等场景下具有广泛的应用。同时，tcpreplay不仅仅能重放TCP协议报文，它支持重放所有协议报文，同时支持IPv4和IPv6协议栈，不要被命名误导了，类比tcpdump的命名，tcpdump也能抓取所有协议报文而不仅仅是TCP。</p>
+</blockquote>
+<p>TCPReplay包含几个核心组件和功能：</p>
+<ul>
+<li>tcpreplay，将捕获的网络流量（pcap文件）重放回网络，可控制重放速度、循环次数、输出接口等。 </li>
+<li>tcprewrite，修改pcap文件中的数据包内容，例如修改IP地址、端口号、MAC地址等，用于模拟不同的网络环境或进行安全测试。</li>
+<li>tcpprep，将pcap文件中的数据包按照客户端和服务器进行分类，为后续的重放做准备。可提高重放效率，特别是对于大型pcap文件。</li>
+<li>tcpbridge，在两个网络之间建立桥接，将修改后的流量转发到不同的网络。从而实现网络流量的隔离和转发。</li>
+<li>tcpcapinfo，对pcap文件进行解码和调试。可用于分析pcap文件的内容，检查数据包的格式和内容。</li>
+</ul>
+<h1 id="回放操作"><a href="#回放操作" class="headerlink" title="回放操作"></a>回放操作</h1><p>在进行重放之前，最好能预先确认是将整个pcap文件重放，还是有选择性的筛选特定报文再重放。</p>
+<h2 id="完整重放"><a href="#完整重放" class="headerlink" title="完整重放"></a>完整重放</h2><p>具体步骤如下：</p>
+<ul>
+<li>使用 wireshark 或 tcpdump 抓包，生成 pcap 文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tcpdump -i eth0 -nn host 192.168.1.8 and \( tcp port 80 or icmp \) -v -w client.pcap</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>针对TCP流量，更新下client.pcap报文中TCP下的checksum校验和，并输出为client_fix.pcap。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tcprewrite --infile&#x3D;client.pcap --outfile&#x3D;client_fix.pcap --fixcsum</span><br></pre></td></tr></table></figure>
+
+<p>校验和（checksum）是通过对数据进行计算得到的一个数值，发送方和接收方会对相同的数据计算出相同的校验和。如果接收方计算出的校验和与发送方提供的校验和不一致，就说明数据在传输过程中发生了错误，接收方会丢弃该数据包，比如不做csum更新的话，对端收到重放包，校验不对，是不会正常响应的，直接丢弃掉：</p>
+<ul>
+<li>完整回放 pcap 文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tcpreplay -v -t -i eth0 client_fix.pcap #-v参数可以看到重放的每一帧的细节；-t参数尽可能快的重放数据包</span><br></pre></td></tr></table></figure>
+
+<h2 id="筛选重放"><a href="#筛选重放" class="headerlink" title="筛选重放"></a>筛选重放</h2><p>具体步骤如下：</p>
+<ul>
+<li>筛选 pcap 文件。</li>
+</ul>
+<p>Wireshark直接输入过滤表达式后，在左上角选项栏点击 文件（File）–&gt; 导出特定分组（Export Specified Packets）即可。</p>
+<ul>
+<li>修改 pcap 文件的 ip 和 mac 。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tcprewrite --infile&#x3D;client_src.pcap --outfile&#x3D;client_src_rewrite.pcap -S 0.0.0.0&#x2F;0:192.168.1.12 -D 0.0.0.0&#x2F;0:192.168.1.72 --enet-smac&#x3D;00:50:56:81:8e:44 --enet-dmac&#x3D;00:50:56:81:be:58</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>流量回放</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/zhuxian2009/article/details/120841057" target="_blank" rel="noopener">pcap回放——tcpreplay</a>,by zhuxian2009.</li>
+<li><a href="https://cloud.tencent.com/developer/article/2454453" target="_blank" rel="noopener">TCPreplay网络报文/流量重放实战指南： PCAP包的重写与重放</a>,by RokasYang.</li>
+<li><a href="https://mozillazg.com/2015/05/open-tcpdump-result-with-wireshark-gui.html" target="_blank" rel="noopener">使用 wireshark 查看 tcpdump 的抓包结果</a>,by mozillazg.</li>
+<li><a href="https://cloud.tencent.com/developer/article/1479433" target="_blank" rel="noopener">Linux下Pcap包重放工具Tcpreplay的简单使用</a>,by yuanfan2012.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/11/23/Blender%E5%AE%9E%E8%B7%B5%E6%95%99%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2040,172 +2228,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/09/28/%E5%A4%9A%E4%BC%A0%E6%84%9F%E5%99%A8%E5%A4%9A%E7%9B%AE%E6%A0%87%E8%B7%9F%E8%B8%AA%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/09/28/%E5%A4%9A%E4%BC%A0%E6%84%9F%E5%99%A8%E5%A4%9A%E7%9B%AE%E6%A0%87%E8%B7%9F%E8%B8%AA%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
-                  多传感器多目标跟踪方法研究学习笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-09-28 16:07:36 / 修改时间：16:26:38" itemprop="dateCreated datePublished" datetime="2024-09-28T16:07:36+08:00">2024-09-28</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近遇到一个问题，需要将多传感器多目标跟踪获得的航迹进行关联，因此学习研究一下。</p>
-<h1 id="关键技术"><a href="#关键技术" class="headerlink" title="关键技术"></a>关键技术</h1><blockquote>
-<p>分布式多传感器多目标跟踪涉及的目标跟踪、传感器配准、航迹关联、数据融合4项关键技术。</p>
-</blockquote>
-<h2 id="目标跟踪"><a href="#目标跟踪" class="headerlink" title="目标跟踪"></a>目标跟踪</h2><p>目标跟踪是指利用传感器获得的带噪声量测数据，对目标的状态和个数进行估计的过程。</p>
-<p>目标跟踪按目标探测个数可分为单目标跟踪和多目标跟踪，通常它们都基于贝叶斯框架进行递归滤波。</p>
-<h3 id="单目标跟踪"><a href="#单目标跟踪" class="headerlink" title="单目标跟踪"></a>单目标跟踪</h3><h3 id="多目标跟踪"><a href="#多目标跟踪" class="headerlink" title="多目标跟踪"></a>多目标跟踪</h3><h2 id="传感器配准"><a href="#传感器配准" class="headerlink" title="传感器配准"></a>传感器配准</h2><blockquote>
-<p>在分布式多传感器多目标跟踪过程中，需要把来自多个传感器的数据转换到相同的时空参照系中。由于不同传感器传输速率及采样周期不同，而且存在传感器系统偏差和量测误差，直接进行转换会降低数据融合精度，因此在对多传感器数据处理时需要进行传感器时空配准。</p>
-</blockquote>
-<h3 id="时间配准"><a href="#时间配准" class="headerlink" title="时间配准"></a>时间配准</h3><blockquote>
-<p>时间配准就是将各传感器对同一目标的异步量测信息配准到同一时刻。</p>
-</blockquote>
-<h3 id="空间配准"><a href="#空间配准" class="headerlink" title="空间配准"></a>空间配准</h3><blockquote>
-<p>空间配准是利用多传感器对空间公共目标的探测信息对传感器的系统偏差进行估计和补偿的过程，它可以提高信息融合精度。</p>
-</blockquote>
-<h2 id="航迹关联"><a href="#航迹关联" class="headerlink" title="航迹关联"></a>航迹关联</h2><blockquote>
-<p>由于传感器间的探测区域存在重叠，来自不同系统的航迹可能代表同一目标。因此，如何找出同一目标对应的航迹就是分布式数据融合系统中的航迹关联问题。</p>
-</blockquote>
-<blockquote>
-<p>航迹关联算法主要分为两类，一类是基于统计类的方法，一类是基于模糊数学的方法。</p>
-</blockquote>
-<h2 id="数据融合"><a href="#数据融合" class="headerlink" title="数据融合"></a>数据融合</h2><blockquote>
-<p>分布式多传感器多目标跟踪又称分布式多传感器数据融合。在该系统中，各局部传感器首先基于单传感器多目标跟踪算法，形成各自目标航迹，<br>接着各传感器将目标航迹送入融合中心完成时空配准与航迹关联，然后融合中心基于某种融合准则对来自同一目标的航迹进行估计融合，最终形成稳定、<br>高精度的全局航迹。</p>
-</blockquote>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://radars.ac.cn/article/doi/10.12000/JR22111" target="_blank" rel="noopener">分布式多传感器多目标跟踪方法综述</a>,by 曾雅俊, 王俊, 魏少明, 等.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2253,7 +2275,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">531</span>
+                    <span class="site-state-item-count">532</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

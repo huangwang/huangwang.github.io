@@ -314,6 +314,155 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/12/02/Nodejs%E4%BD%BF%E7%94%A8UDP%E9%80%9A%E4%BF%A1%E4%BC%A0%E8%BE%93JSON%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/12/02/Nodejs%E4%BD%BF%E7%94%A8UDP%E9%80%9A%E4%BF%A1%E4%BC%A0%E8%BE%93JSON%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
+                  Nodejs使用UDP通信传输JSON数据的方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-12-02 11:06:14 / 修改时间：16:17:29" itemprop="dateCreated datePublished" datetime="2024-12-02T11:06:14+08:00">2024-12-02</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近需要在Nodejs平台上使用UDP协议接收JSON数据，于是研究一下。</p>
+<h1 id="UDP服务器端代码"><a href="#UDP服务器端代码" class="headerlink" title="UDP服务器端代码"></a>UDP服务器端代码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * UDP服务端</span><br><span class="line"> *&#x2F;</span><br><span class="line">&#x2F;&#x2F;载入udp模块</span><br><span class="line">const dgram &#x3D; require(&quot;dgram&quot;);</span><br><span class="line">&#x2F;&#x2F;创建服务器</span><br><span class="line">const server &#x3D; dgram.createSocket(&quot;udp4&quot;);</span><br><span class="line"> </span><br><span class="line">server.on(&quot;message&quot;,(msg,rinfo)&#x3D;&gt;&#123;</span><br><span class="line">    &#x2F;&#x2F;将接收到的消息返回客户端</span><br><span class="line">    var strmsg &#x3D; &quot;你好，UDP客户端，消息已经收到！&quot;;</span><br><span class="line">    server.send(strmsg,rinfo.port,rinfo.address);</span><br><span class="line">    let jsonData&#x3D;JSON.parse(msg)</span><br><span class="line">    console.log(&quot;服务器接收到来自&quot;+rinfo.address+&quot;:&quot;+rinfo.port+&quot; 的消息：&quot;+jsonData.hello);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">server.on(&quot;listening&quot;,()&#x3D;&gt;&#123;</span><br><span class="line">    let adress &#x3D; server.address();</span><br><span class="line">    console.log(&quot;服务器监听：&quot;,adress.adress+&quot;:&quot;+adress.port);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">server.on(&quot;error&quot;,(err)&#x3D;&gt;&#123;</span><br><span class="line">    console.err(&quot;服务器异常错误：&quot;+err.message);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">server.bind(8234,&quot;127.0.0.1&quot;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="UDP客户端代码"><a href="#UDP客户端代码" class="headerlink" title="UDP客户端代码"></a>UDP客户端代码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * UDP客户端</span><br><span class="line"> *&#x2F;</span><br><span class="line">const dgram &#x3D; require(&quot;dgram&quot;);</span><br><span class="line"> </span><br><span class="line">const client &#x3D; dgram.createSocket(&quot;udp4&quot;);</span><br><span class="line"> </span><br><span class="line">client.on(&quot;message&quot;,(msg,rinfo)&#x3D;&gt;&#123;</span><br><span class="line">    console.log(&quot;接收来自：&quot;+rinfo.address+&quot;:&quot;+rinfo.port+&quot;的消息：&quot;+msg.toString());</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">client.on(&quot;error&quot;,(err)&#x3D;&gt;&#123;</span><br><span class="line">  console.error(&quot;客户端错误：&quot;+err.message);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">client.on(&quot;close&quot;,()&#x3D;&gt;&#123;</span><br><span class="line">    console.log(&quot;socket已关闭&quot;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">let jsonData&#x3D;&#123;</span><br><span class="line">    hello: &quot;我是UDP客户端！&quot;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">client.send(JSON.stringify(jsonData),8234,&quot;127.0.0.1&quot;,(err)&#x3D;&gt;&#123;</span><br><span class="line">    if(err) client.close();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://cloud.tencent.com/developer/article/2079197" target="_blank" rel="noopener">Node js 开发入门 —UDP 编程，小白也能轻松学会</a>,by crmeb.</li>
+<li><a href="https://blog.csdn.net/caofengtao1314/article/details/117063590" target="_blank" rel="noopener">UDP 报文最大可以是多大呢</a>,by cft56200_ln.</li>
+<li><a href="https://blog.csdn.net/u011555996/article/details/126960232" target="_blank" rel="noopener">UDP传输报文大小详解</a>,by luckyone906.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/11/25/Wireshark%E4%B9%8Bpcap%E6%96%87%E4%BB%B6%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BE%E7%9A%84%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2073,161 +2222,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/10/12/HSV%E8%BD%ACRGB%E7%9A%84%E6%95%88%E7%8E%87%E9%97%AE%E9%A2%98%E6%8E%A2%E8%AE%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/10/12/HSV%E8%BD%ACRGB%E7%9A%84%E6%95%88%E7%8E%87%E9%97%AE%E9%A2%98%E6%8E%A2%E8%AE%A8/" itemprop="url">
-                  HSV转RGB的效率问题探讨
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-10-12 22:01:10 / 修改时间：22:47:37" itemprop="dateCreated datePublished" datetime="2024-10-12T22:01:10+08:00">2024-10-12</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近朋友遇到一个技术难题，我也没相关经验，只能记录以下，方便以后解决。</p>
-<h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>朋友想高效地在一块嵌入式的板子上实现 640*480 HSV格式的图片转换成 RGB格式的图片，要求处理时延不能超过20ms。</p>
-<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><p>朋友试了很多中解决方案，包括：</p>
-<ul>
-<li>使用OpenCV的cvtColor函数，性能太差，可能是嵌入式板子的CPU处理器性能差的原因。</li>
-<li>使用OpenGL进行图像格式转换，性能还是不够。</li>
-<li>采用GPU加速图像处理，性能还是不够，GPU可能能够快速处理图像，但是图像数据在CPU和GPU之间的数据搬运也很耗时。</li>
-<li>使用OpenGL帧缓存双缓冲，性能还是不够</li>
-</ul>
-<p>最后建议优化HSV转RGB格式的算法，提高CPU执行效率。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://blog.csdn.net/shandianfengfan/article/details/120600453" target="_blank" rel="noopener">数字图像处理——RGB与HSV图像互相转换原理</a>,by 萌萌哒程序猴.</li>
-<li><a href="https://blog.csdn.net/niu2212035673/article/details/78932454" target="_blank" rel="noopener">OpenGL帧缓存</a>,by 先锋小牛.</li>
-<li><a href="https://blog.csdn.net/u010429424/article/details/76577399" target="_blank" rel="noopener">OpenCV 自学笔记21. RGB色彩空间和HSV色彩空间的理解</a>,by 两鬓已不能斑白.</li>
-<li><a href="https://blog.csdn.net/qq_40243750/article/details/136028179" target="_blank" rel="noopener">opencv中使用cuda加速图像处理</a>,by 我是一个对称矩阵.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2275,7 +2269,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">532</span>
+                    <span class="site-state-item-count">533</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2468,7 +2462,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

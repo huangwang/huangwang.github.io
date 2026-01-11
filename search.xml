@@ -23861,16 +23861,27 @@ console.log(y);</code></pre></li>
 <h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><p>使用 vcpkg 安装 Fast-DDS 所需依赖库。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vcpkg install openssl asio tinyxml2 fastcdr foonathan-memory --triplet x64-windows</span><br></pre></td></tr></table></figure>
 
-<h2 id="编译安装-1"><a href="#编译安装-1" class="headerlink" title="编译安装"></a>编译安装</h2><h3 id="foonathan-memory-vendor-可选，因为会找不到库"><a href="#foonathan-memory-vendor-可选，因为会找不到库" class="headerlink" title="foonathan_memory_vendor (可选，因为会找不到库)"></a>foonathan_memory_vendor (可选，因为会找不到库)</h3><p>FastDDS 依赖 Foonathan Memory（内存管理库），通过源代码编译安装：</p>
+<h2 id="编译安装-1"><a href="#编译安装-1" class="headerlink" title="编译安装"></a>编译安装</h2><p>在Windows平台编译安装使用 Visual Studio 2019.</p>
+<h3 id="foonathan-memory-vendor-可选，当找不到库时"><a href="#foonathan-memory-vendor-可选，当找不到库时" class="headerlink" title="foonathan_memory_vendor (可选，当找不到库时)"></a>foonathan_memory_vendor (可选，当找不到库时)</h3><p>FastDDS 依赖 Foonathan Memory（内存管理库），通过源代码编译安装：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd i:\project\Fast-DDS\</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;eProsima&#x2F;foonathan_memory_vendor.git</span><br><span class="line">cd foonathan_memory_vendor</span><br><span class="line">mkdir build &amp;&amp; cd build</span><br><span class="line">cmake -DCMAKE_INSTALL_PREFIX&#x3D;i:&#x2F;install&#x2F;foonathan_memory_vendor ..</span><br><span class="line">cmake --build . --config Release --target install</span><br></pre></td></tr></table></figure>
 
-<h3 id="FastCDR-可选，因为会找不到库"><a href="#FastCDR-可选，因为会找不到库" class="headerlink" title="FastCDR (可选，因为会找不到库)"></a>FastCDR (可选，因为会找不到库)</h3><p>FastDDS 依赖 FastCDR（序列化库），通过源代码编译安装：</p>
+<h3 id="FastCDR-可选，当找不到库"><a href="#FastCDR-可选，当找不到库" class="headerlink" title="FastCDR (可选，当找不到库)"></a>FastCDR (可选，当找不到库)</h3><p>FastDDS 依赖 FastCDR（序列化库），通过源代码编译安装：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd i:\project\Fast-DDS\</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;eProsima&#x2F;Fast-CDR.git</span><br><span class="line">cd Fast-CDR</span><br><span class="line">mkdir build &amp;&amp; cd build</span><br><span class="line">cmake -A x64 -DCMAKE_INSTALL_PREFIX&#x3D;i:&#x2F;install&#x2F;fastcdr ..</span><br><span class="line">cmake --build . --config Release --target install</span><br></pre></td></tr></table></figure>
 
-<h3 id="eProsima-Fast-DDS"><a href="#eProsima-Fast-DDS" class="headerlink" title="eProsima Fast DDS"></a>eProsima Fast DDS</h3><p>当所有依赖库都安装后，开始安装eProsima Fast DDS：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd i:\project\Fast-DDS\</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;eProsima&#x2F;Fast-DDS.git</span><br><span class="line">cd Fast-DDS</span><br><span class="line">mkdir build &amp;&amp; cd build</span><br><span class="line">cmake -DCMAKE_PREFIX_PATH&#x3D;i:&#x2F;install&#x2F;fastcdr -DCMAKE_INSTALL_PREFIX&#x3D;i:&#x2F;install&#x2F;fastdds  -DCMAKE_TOOLCHAIN_FILE&#x3D;I:&#x2F;project&#x2F;vcpkg&#x2F;scripts&#x2F;buildsystems&#x2F;vcpkg.cmake ..</span><br><span class="line">cmake --build . --target install</span><br></pre></td></tr></table></figure>
+<h3 id="eProsima-Fast-DDS"><a href="#eProsima-Fast-DDS" class="headerlink" title="eProsima Fast DDS"></a>eProsima Fast DDS</h3><p>当所有依赖库都安装后，开始安装eProsima Fast DDS，打开 VS2019的X64本地命令提示符，按如下步骤输入命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd i:\project\Fast-DDS\</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;eProsima&#x2F;Fast-DDS.git</span><br><span class="line">cd Fast-DDS</span><br><span class="line">mkdir build &amp;&amp; cd build</span><br><span class="line">cmake -DCMAKE_INSTALL_PREFIX&#x3D;i:&#x2F;install&#x2F;fastdds   ..</span><br><span class="line">cmake --build . --config Release --target install</span><br></pre></td></tr></table></figure>
 
-<h3 id="fastddsgen"><a href="#fastddsgen" class="headerlink" title="fastddsgen"></a>fastddsgen</h3><p>fastddsgen 是 FastDDS 官方提供的 IDL（Interface Definition Language）编译器，用于将 IDL 定义的数据类型转换为 FastDDS 兼容的代码（支持 C++、Python 等语言），自动生成数据序列化 / 反序列化逻辑、类型注册代码等，是 FastDDS 开发的基础工具。具体安装步骤请参考：</p>
+<p>当执行 cmake -DCMAKE_INSTALL_PREFIX=i:/install/fastdds .. 可能会报找不到 ASIO 的错误，可以编辑 CMakeLists.txt，注释如下代码，再重新运行。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">eprosima_find_thirdparty(Asio asio VERSION 1.13.0)</span><br></pre></td></tr></table></figure>
+<p>当执行 cmake –build . –config Release –target install 可能会报如下错误：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">警告 C4819 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失</span><br></pre></td></tr></table></figure>
+
+<p>请参考以下链接进行处理：</p>
+<ul>
+<li><a href="https://blog.csdn.net/qq_39123140/article/details/124705463" target="_blank" rel="noopener">警告 C4819 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失</a></li>
+</ul>
+<h3 id="fastddsgen"><a href="#fastddsgen" class="headerlink" title="fastddsgen"></a>fastddsgen</h3><p>fastddsgen 是 FastDDS 官方提供的 IDL（Interface Definition Language）编译器，用于将 IDL 定义的数据类型转换为 FastDDS 兼容的代码（支持 C++、Python 等语言），自动生成数据序列化 / 反序列化逻辑、类型注册代码等，是 FastDDS 开发的基础工具。</p>
+<p>具体安装步骤请参考：</p>
 <ul>
 <li><a href="https://www.cnblogs.com/ycfenxi/p/19124121#2.3.fastddsgen%E5%AE%89%E8%A3%85" target="_blank" rel="noopener">通信中间件 Fast DDS(三) ：fastddsgen的安装与利用</a></li>
 </ul>
@@ -23889,6 +23900,7 @@ console.log(y);</code></pre></li>
 </a>,by ycfenxi.</li>
 <li><a href="https://yxchen.net/2024/01/28/language_notes/cmake-vars/" target="_blank" rel="noopener">不使用默认路径的 cmake 项目管理</a>,by 怀中落霞.</li>
 <li><a href="https://blog.8086k.cn/archives/147/" target="_blank" rel="noopener">fastdds在windows下的编译和使用</a>,by 飞羽.</li>
+<li><a href="https://blog.csdn.net/qq_39123140/article/details/124705463" target="_blank" rel="noopener">警告 C4819 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失</a>,by 匈牙利认真的小菠萝.</li>
 </ol>
 ]]></content>
       <tags>

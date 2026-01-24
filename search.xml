@@ -9926,7 +9926,16 @@
 <ol>
 <li>去Python官网下载最新的Python3，当前最新版本为3.7。</li>
 <li>双击Python3.7的安装包进行安装，设置安装路径为C:\Python\Python37，同时将Python路径加入系统Path变量中。</li>
-<li>使用如下命令安装ipython。加参数–trusted-host，否则会报错误：SSLError(SSLCertVerificationError(1, ‘[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed。加参数-i，制定国内pip源，显著提高下载速度。<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip install ipython -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple --trusted-host pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure></li>
+<li>使用如下命令安装ipython。加参数–trusted-host，否则会报错误：SSLError(SSLCertVerificationError(1, ‘[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed。加参数-i，制定国内pip源，显著提高下载速度。<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip install ipython -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple --trusted-host pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h1 id="pip-使用方法"><a href="#pip-使用方法" class="headerlink" title="pip 使用方法"></a>pip 使用方法</h1><p>Python 查看自己的第三方库默认安装路径：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python -m site</span><br><span class="line">pip list</span><br><span class="line">pip show pip</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/inthat/article/details/118711569" target="_blank" rel="noopener">python pip安装的包放在哪里（site-packages目录的位置）</a>,by 西京刀客.</li>
+<li><a href="https://blog.csdn.net/weixin_42148809/article/details/135136815" target="_blank" rel="noopener">pip 常用指令 pip show 命令用法介绍</a>,by 团圆吧.</li>
 </ol>
 ]]></content>
       <tags>
@@ -23926,6 +23935,32 @@ console.log(y);</code></pre></li>
       <tags>
         <tag>笔记本</tag>
         <tag>shell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Transformers工具使用帮助</title>
+    <url>/2026/01/24/Transformers%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/</url>
+    <content><![CDATA[<p>Transformers是为 PyTorch 打造的先进的机器学习工具。Transformers 充当跨文本、计算机视觉、音频、视频与多模态的最先进机器学习模型的「模型定义框架」，同时覆盖推理与训练。</p>
+<p>它将模型的定义集中化，使整个生态系统对该定义达成一致。transformers 是跨框架的枢纽：一旦某模型定义被支持，它通常就能兼容多数训练框架（如 Axolotl、Unsloth、DeepSpeed、FSDP、PyTorch‑Lightning 等）、推理引擎（如 vLLM、SGLang、TGI 等），以及依赖 transformers 模型定义的相关库（如 llama.cpp、mlx 等）。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>Transformers 支持 Python 3.9+，以及 PyTorch 2.1+。</p>
+<p>使用 venv 或 uv（一个基于 Rust 的快速 Python 包与项目管理器）创建并激活虚拟环境：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># venv</span><br><span class="line">python -m venv .my-env</span><br><span class="line">source .my-env&#x2F;bin&#x2F;activate</span><br></pre></td></tr></table></figure>
+
+<p>在虚拟环境中安装 Transformers：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># pip</span><br><span class="line">pip install &quot;transformers[torch]&quot;</span><br></pre></td></tr></table></figure>
+
+<h1 id="快速上手"><a href="#快速上手" class="headerlink" title="快速上手"></a>快速上手</h1><p>使用 Pipeline API 一步上手。Pipeline 是一个高级推理类，支持文本、音频、视觉与多模态任务，负责输入预处理并返回适配的输出。</p>
+<p>实例化一个用于文本生成的 pipeline，指定使用的模型。模型会被下载并缓存，方便复用。最后传入文本作为提示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">from transformers import pipeline</span><br><span class="line"></span><br><span class="line">pipeline &#x3D; pipeline(task&#x3D;&quot;text-generation&quot;, model&#x3D;&quot;Qwen&#x2F;Qwen2.5-1.5B&quot;)</span><br><span class="line">pipeline(&quot;the secret to baking a really good cake is &quot;)</span><br><span class="line">[&#123;&#39;generated_text&#39;: &#39;the secret to baking a really good cake is 1) to use the right ingredients and 2) to follow the recipe exactly. the recipe for the cake is as follows: 1 cup of sugar, 1 cup of flour, 1 cup of milk, 1 cup of butter, 1 cup of eggs, 1 cup of chocolate chips. if you want to make 2 cakes, how much sugar do you need? To make 2 cakes, you will need 2 cups of sugar.&#39;&#125;]</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://huggingface.co/docs/transformers/zh/index" target="_blank" rel="noopener">Transformers简介</a>,by huggingface.</li>
+<li><a href="https://github.com/huggingface/transformers" target="_blank" rel="noopener">Transformers</a>,by huggingface.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>python</tag>
       </tags>
   </entry>
 </search>

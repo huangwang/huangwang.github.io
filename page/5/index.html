@@ -314,6 +314,193 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/10/30/NTP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/10/30/NTP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  NTP协议学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-10-30 22:29:11" itemprop="dateCreated datePublished" datetime="2024-10-30T22:29:11+08:00">2024-10-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-11-02 08:55:59" itemprop="dateModified" datetime="2024-11-02T08:55:59+08:00">2024-11-02</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近遇到一个问题，需要程序进行严格的时间同步，因此学习一下网络时间协议。</p>
+<h1 id="NTP同步原理"><a href="#NTP同步原理" class="headerlink" title="NTP同步原理"></a>NTP同步原理</h1><blockquote>
+<p>网络时间协议NTP（Network Time Protocol）是TCP/IP协议族里面的一个应用层协议，用来使客户端和服务器之间进行时钟同步，提供高精准度的时间校正。NTP服务器从权威时钟源（例如原子钟、GPS）接收精确的协调世界时UTC，客户端再从服务器请求和接收时间。<br>NTP基于UDP报文进行传输，使用的UDP端口号为123。</p>
+</blockquote>
+<p>NTP最典型的授时方式是Client/Server方式:</p>
+<ol>
+<li>客户端首先向服务端发送一个NTP请求报文，其中包含了该报文离开客户端的时间戳t1;</li>
+<li>NTP请求报文到达NTP服务器，此时NTP服务器的时刻为t2。当服务端接收到该报文时，NTP服务器处理之后，于t3时刻发出NTP应答报文。该应答报文中携带报文离开NTP客户端时的时间戳t1、到达NTP服务器时的时间戳t2、离开NTP服务器时的时间戳t3；</li>
+<li>客户端在接收到响应报文时，记录报文返回的时间戳t4。</li>
+</ol>
+<p>客户端用上述4个时间戳参数就能够计算出2个关键参数：</p>
+<ul>
+<li>NTP报文从客户端到服务器的往返延迟delay。</li>
+</ul>
+<p>$delay=(t_4-t_1)-(t_3-t_2)$</p>
+<ul>
+<li>客户端与服务端之间的时间差offset。</li>
+</ul>
+<p>联立方程组：</p>
+<p>$t_2=t_1+offset+delay/2$</p>
+<p>$t_4=t_3+offset+delay/2$</p>
+<p>可得：</p>
+<p>$offset=((t_2-t_1)+(t_3-t_4))/2$</p>
+<p>NTP客户端根据计算得到的offset来调整自己的时钟，实现与NTP服务器的时钟同步。</p>
+<h1 id="NTP时间同步频率"><a href="#NTP时间同步频率" class="headerlink" title="NTP时间同步频率"></a>NTP时间同步频率</h1><p>NTP时间同步频率修改请参考：</p>
+<ul>
+<li><a href="https://blog.csdn.net/qq_43211632/article/details/109157974" target="_blank" rel="noopener">windows修改ntp同步时间间隔</a></li>
+</ul>
+<h1 id="NTP时间同步精度"><a href="#NTP时间同步精度" class="headerlink" title="NTP时间同步精度"></a>NTP时间同步精度</h1><p>打开站点 <a href="https://time.is/" target="_blank" rel="noopener">https://time.is/</a> 可查看机器的时间精度。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://cloud.tencent.com/developer/article/2361936" target="_blank" rel="noopener">六千字详细图解网络时间协议（NTP），带你领略NTP的魅力！</a>,by 网络技术联盟站.</li>
+<li><a href="https://info.support.huawei.com/info-finder/encyclopedia/zh/NTP.html" target="_blank" rel="noopener">什么是NTP？</a>,by 高洋洋.</li>
+<li><a href="https://www.syn029.com/h-nd-343.html" target="_blank" rel="noopener">北斗授时原理及应用</a>,by 西安同步.</li>
+<li><a href="https://www.syn029.com/h-nd-1506.html" target="_blank" rel="noopener">各种Windows系统ntp客户端配置详解</a>,by 西安同步.</li>
+<li><a href="https://blog.csdn.net/qq_43211632/article/details/109157974" target="_blank" rel="noopener">windows修改ntp同步时间间隔</a>,by 梳碧湖的少年.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/10/27/%E5%A4%9A%E7%BD%91%E5%8D%A1%E6%94%B6UDP%E7%BB%84%E6%92%AD%E7%9A%84%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1772,196 +1959,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/07/14/CPlusPlus%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE%E5%B1%82%E8%AE%BE%E8%AE%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/07/14/CPlusPlus%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE%E5%B1%82%E8%AE%BE%E8%AE%A1/" itemprop="url">
-                  CPlusPlus数据访问层设计
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2024-07-14 21:35:16" itemprop="dateCreated datePublished" datetime="2024-07-14T21:35:16+08:00">2024-07-14</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2024-07-18 09:39:27" itemprop="dateModified" datetime="2024-07-18T09:39:27+08:00">2024-07-18</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>三层架构是软件架构中常用的架构，它从上往下分为表示层、业务逻辑层、数据访问层。下面重点介绍 C++ 程序的数据访问层设计。</p>
-<h1 id="什么是-DAO"><a href="#什么是-DAO" class="headerlink" title="什么是 DAO"></a>什么是 DAO</h1><blockquote>
-<p>在计算机软件中，数据访问对象（data access object，DAO）是为某种类型的数据库或其他持久性机制提供一个抽象接口的对象。通过映射应用程序对持久层的调用，DAO 提供一些特定的数据操作，而无需暴露数据库细节。这种隔离支持单一功能原则。</p>
-</blockquote>
-<blockquote>
-<p>数据访问对象模式（Data Access Object Pattern）或 DAO 模式用于把低级的数据访问 API 或操作从高级的业务服务中分离出来。</p>
-</blockquote>
-<p>数据访问对象模式的参与者主要有:</p>
-<ul>
-<li>数据访问对象接口（Data Access Object Interface） - 该接口定义了在一个模型对象上要执行的标准操作。</li>
-<li>数据访问对象实体类（Data Access Object concrete class） - 该类实现了上述的接口。该类负责从数据源获取数据，数据源可以是数据库，也可以是 xml，或者是其他的存储机制。</li>
-<li>模型对象/数值对象（Model Object/Value Object, VO） - 该对象是简单的 POJO，包含了 get/set 方法来存储通过使用 DAO 类检索到的数据。</li>
-</ul>
-<h1 id="主流的-ORM-框架"><a href="#主流的-ORM-框架" class="headerlink" title="主流的 ORM 框架"></a>主流的 ORM 框架</h1><p>C++ 中主流的 ORM 框架有以下几个：</p>
-<ul>
-<li>LiteSQL：<a href="https://sourceforge.net/projects/litesql/" target="_blank" rel="noopener">https://sourceforge.net/projects/litesql/</a></li>
-<li>ODB：<a href="https://www.codesynthesis.com/products/odb/" target="_blank" rel="noopener">https://www.codesynthesis.com/products/odb/</a></li>
-<li>QxOrm：<a href="https://www.qxorm.com/qxorm_en/home.html" target="_blank" rel="noopener">https://www.qxorm.com/qxorm_en/home.html</a></li>
-<li>Wt::Dbo：<a href="https://www.webtoolkit.eu/wt/doc/tutorial/dbo.html" target="_blank" rel="noopener">https://www.webtoolkit.eu/wt/doc/tutorial/dbo.html</a></li>
-</ul>
-<p>其中，LiteSQL 和 ODB 不依赖于特定的框架，而 QxOrm 依赖于 Qt，Wt::Dbo 依赖于 Wt。由于使用QT进行开发，最终决定使用QxOrm。本想使用QDB，但是在QT上开发太麻烦。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://hjk.life/posts/cpp-dao/" target="_blank" rel="noopener">C++实现的DAO(数据访问对象模式)</a>,by Jinkai.</li>
-<li><a href="https://www.ljjyy.com/archives/2023/05/100647" target="_blank" rel="noopener">QxOrm使用教程(ORM for C++ 对象关系映射)</a>,by ljjyy.</li>
-<li><a href="https://www.cnblogs.com/sun-frederick/p/4762972.html" target="_blank" rel="noopener">浅谈C++三层架构</a>,by eric0803.</li>
-<li><a href="https://qt.video/index.php?m=home&c=View&a=index&aid=296" target="_blank" rel="noopener">C++架构之美：设计卓越应用</a>,by qt.video.</li>
-<li><a href="https://www.cnblogs.com/zhangxiong-tianxiadiyi/p/10896413.html" target="_blank" rel="noopener">Dao层设计</a>,by c++天下第一.</li>
-<li><a href="https://bot-man-jl.github.io/articles/?post=2016/How-to-Design-a-Naive-Cpp-ORM" target="_blank" rel="noopener">如何设计一个简单的 C++ ORM</a>,by bot-man-jl.</li>
-<li><a href="https://developer.aliyun.com/article/243125" target="_blank" rel="noopener">C++ ORM ODB入门</a>,by aliyun.</li>
-<li><a href="https://www.jianshu.com/p/4e955d24facb" target="_blank" rel="noopener">TinyORM：一个简单的C++ ORM框架</a>,by davidpp.</li>
-<li><a href="https://www.cnblogs.com/hul201610101100/p/9482311.html" target="_blank" rel="noopener">C++版本 ORM 访问数据库之ODB 的Window环境编译(一)</a>,by Software_hul.</li>
-<li><a href="https://blog.csdn.net/u011057439/article/details/79414886" target="_blank" rel="noopener">Windows下Qt5.5.1中使用ODB</a>,by 严慈善.</li>
-<li><a href="https://www.cnblogs.com/lidabo/p/7545508.html" target="_blank" rel="noopener">【一】ODB - C++ 访问数据库的利器–Hello World On Windows（Version-24）</a>,by C++程序员Carea.</li>
-<li><a href="https://blog.csdn.net/qq_33221533/article/details/103410282" target="_blank" rel="noopener">error LNK2001: 无法解析的外部符号 “__declspec(dllimport) public 解决办法</a>,by 鸡啄米的时光机.</li>
-<li><a href="https://www.qxorm.com/qxorm_en/tutorial.html" target="_blank" rel="noopener">qxBlog project - blog management in C++</a>,by QxOrm.</li>
-<li><a href="https://blog.csdn.net/weixin_40949133/article/details/105809268" target="_blank" rel="noopener">Qt三层架构应用程序设计及开发</a>,by wyh20171105.</li>
-<li><a href="https://www.cnblogs.com/cps666/p/17341147.html" target="_blank" rel="noopener">Qt项目架构经验总结</a>,by cps666.</li>
-<li><a href="https://www.cnblogs.com/ybqjymy/p/14366629.html" target="_blank" rel="noopener">Qt SQL的使用 MySQL</a>,by 一杯清酒邀明月.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2009,7 +2006,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">534</span>
+                    <span class="site-state-item-count">535</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

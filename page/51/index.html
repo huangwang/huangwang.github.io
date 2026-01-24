@@ -314,6 +314,194 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/09/Virtualenv%E7%AE%80%E6%98%93%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/09/Virtualenv%E7%AE%80%E6%98%93%E6%95%99%E7%A8%8B/" itemprop="url">
+                  Virtualenv简易教程
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-09 21:08:13" itemprop="dateCreated datePublished" datetime="2018-10-09T21:08:13+08:00">2018-10-09</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-06-07 22:12:50" itemprop="dateModified" datetime="2021-06-07T22:12:50+08:00">2021-06-07</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>virtualenv是一个创建隔离python环境的工具，主要用于解决包冲突问题。</p>
+<h1 id="安装方法"><a href="#安装方法" class="headerlink" title="安装方法"></a>安装方法</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pip3 install virtualenv -i https:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;pypi&#x2F;simple&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><h2 id="创建项目的虚拟环境"><a href="#创建项目的虚拟环境" class="headerlink" title="创建项目的虚拟环境"></a>创建项目的虚拟环境</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd my_project_folder</span><br><span class="line">$ virtualenv venv #venv是虚拟环境名称</span><br></pre></td></tr></table></figure>
+<p>执行上述命令后，将生成一个与虚拟环境同名的文件夹，包含 Python 可执行文件和 pip 库的拷贝，可用于安装其他包。</p>
+<p>但是默认情况下，虚拟环境中不会包含也无法使用系统环境的global site-packages。比如系统环境里安装了 requests 模块，在虚拟环境里import requests会提示ImportError。如果想使用系统环境的第三方软件包，可以在创建虚拟环境时使用参数–system-site-packages。如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">virtualenv --system-site-packages venv</span><br></pre></td></tr></table></figure>
+<p>此外可以指定虚拟环境所使用的 Python 版本，但前提是系统中已经安装了该版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">virtualenv -p &#x2F;usr&#x2F;bin&#x2F;python2.7 venv</span><br></pre></td></tr></table></figure>
+<h2 id="使用虚拟环境"><a href="#使用虚拟环境" class="headerlink" title="使用虚拟环境"></a>使用虚拟环境</h2><p>启动虚拟环境：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd venv</span><br><span class="line">source bin&#x2F;activate </span><br><span class="line">python -V</span><br></pre></td></tr></table></figure>
+<p>退出虚拟环境：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deactivate</span><br></pre></td></tr></table></figure>
+
+<h1 id="virtualenvwrapper"><a href="#virtualenvwrapper" class="headerlink" title="virtualenvwrapper"></a>virtualenvwrapper</h1><p>virtualenvwrapper是virtualenv 的扩展工具，提供了一系列命令行命令，可以方便地创建、删除、复制、切换不同的虚拟环境。同时，使用该扩展后，所有虚拟环境都会被放置在同一个目录下。</p>
+<h2 id="安装方法-1"><a href="#安装方法-1" class="headerlink" title="安装方法"></a>安装方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install virtualenvwrapper</span><br></pre></td></tr></table></figure>
+
+<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><p>在$home/.bashrc文件中添加如下几行代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># bash -f file检测文件是否是普通文件（既不是目录，也不是设备文件），如果是，则返回 true</span><br><span class="line">if [ -f &#x2F;usr&#x2F;local&#x2F;bin&#x2F;virtualenvwrapper.sh ]; then</span><br><span class="line">   export WORKON_HOME&#x3D;$HOME&#x2F;.virtualenvs </span><br><span class="line">   source &#x2F;usr&#x2F;local&#x2F;bin&#x2F;virtualenvwrapper.sh</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用方法-1"><a href="#使用方法-1" class="headerlink" title="使用方法"></a>使用方法</h2><p>mkvirtualenv 也可以使用 virtualenv 的参数，比如 –python 来指定 Python 版本。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mkvirtualenv venv # 创建虚拟环境，虚拟环境目录都在 WORKON_HOME 里</span><br><span class="line"></span><br><span class="line">lsvirtualenv -b # 列出虚拟环境</span><br><span class="line"></span><br><span class="line">workon [虚拟环境名称] # 切换虚拟环境</span><br><span class="line"></span><br><span class="line">lssitepackages # 查看环境里安装了哪些包</span><br><span class="line"></span><br><span class="line">cdvirtualenv [子目录名] # 进入当前环境的目录</span><br><span class="line"></span><br><span class="line">cpvirtualenv [source] [dest] # 复制虚拟环境</span><br><span class="line"></span><br><span class="line">deactivate # 退出虚拟环境</span><br><span class="line"></span><br><span class="line">rmvirtualenv [虚拟环境名称] # 删除虚拟环境</span><br></pre></td></tr></table></figure>
+
+<h1 id="conda-vs-pip-vs-virtualenv"><a href="#conda-vs-pip-vs-virtualenv" class="headerlink" title="conda vs. pip vs. virtualenv"></a>conda vs. pip vs. virtualenv</h1><p>Conda是一个开源包管理系统和环境管理系统，用于安装多个版本的软件包及其依赖关系，并在它们之间轻松切换。 它适用于Linux，OS X和Windows，是为Python程序创建的，但可以打包和分发任何软件。</p>
+<p>Pip是一个以Python计算机程序语言写成的软件包管理系统，用于安装和管理软件包。</p>
+<p>它们直接的区别如下：</p>
+<p align="center">
+    <img src="images/conda_compare.png" width="90%" alt="conda vs. pip vs. virtualenv"/>
+</p>
+
+<h1 id="pip使用方法"><a href="#pip使用方法" class="headerlink" title="pip使用方法"></a>pip使用方法</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 导出python安装包环境</span><br><span class="line">pip freeze &gt; requirements.txt</span><br><span class="line"># 导入requirements文件</span><br><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/60647332" target="_blank" rel="noopener">最全的Python虚拟环境使用方法</a>,by Stevent.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/37581807" target="_blank" rel="noopener">Pipenv：新一代Python项目环境与依赖管理工具</a>,by 李辉.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/109939711" target="_blank" rel="noopener">Python 修改 pip 源为国内源</a>,by 花晓星辰.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/09/19/Blender%E7%AE%80%E6%98%93%E6%95%99%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -754,7 +942,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-03-17 22:01:58" itemprop="dateModified" datetime="2019-03-17T22:01:58+08:00">2019-03-17</time>
+                <time title="修改时间：2026-01-24 11:17:03" itemprop="dateModified" datetime="2026-01-24T11:17:03+08:00">2026-01-24</time>
               
             
           </span>
@@ -793,7 +981,16 @@
 <ol>
 <li>去Python官网下载最新的Python3，当前最新版本为3.7。</li>
 <li>双击Python3.7的安装包进行安装，设置安装路径为C:\Python\Python37，同时将Python路径加入系统Path变量中。</li>
-<li>使用如下命令安装ipython。加参数–trusted-host，否则会报错误：SSLError(SSLCertVerificationError(1, ‘[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed。加参数-i，制定国内pip源，显著提高下载速度。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install ipython -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple --trusted-host pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure></li>
+<li>使用如下命令安装ipython。加参数–trusted-host，否则会报错误：SSLError(SSLCertVerificationError(1, ‘[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed。加参数-i，制定国内pip源，显著提高下载速度。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install ipython -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple --trusted-host pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h1 id="pip-使用方法"><a href="#pip-使用方法" class="headerlink" title="pip 使用方法"></a>pip 使用方法</h1><p>Python 查看自己的第三方库默认安装路径：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python -m site</span><br><span class="line">pip list</span><br><span class="line">pip show pip</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/inthat/article/details/118711569" target="_blank" rel="noopener">python pip安装的包放在哪里（site-packages目录的位置）</a>,by 西京刀客.</li>
+<li><a href="https://blog.csdn.net/weixin_42148809/article/details/135136815" target="_blank" rel="noopener">pip 常用指令 pip show 命令用法介绍</a>,by 团圆吧.</li>
 </ol>
 
           
@@ -1945,202 +2142,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/02/%E5%85%BC%E5%AE%B9%E5%89%8D%E5%90%8E%E7%AB%AF%E5%A4%9A%E7%A7%8DJS%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83%E7%9A%84%E4%BB%A3%E7%A0%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/02/%E5%85%BC%E5%AE%B9%E5%89%8D%E5%90%8E%E7%AB%AF%E5%A4%9A%E7%A7%8DJS%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83%E7%9A%84%E4%BB%A3%E7%A0%81/" itemprop="url">
-                  兼容前后端多种JS模块规范的代码
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-07-02 22:11:23" itemprop="dateCreated datePublished" datetime="2018-07-02T22:11:23+08:00">2018-07-02</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-09-25 12:55:45" itemprop="dateModified" datetime="2019-09-25T12:55:45+08:00">2019-09-25</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近研究如何在前后端调用同一份js代码。该问题本质是如何兼容前后端各类JS模块规范。上网一搜，已经有很多详细的解决方案和JS模块规范介绍，在这里简单记录一下。</p>
-<h1 id="JS模块规范"><a href="#JS模块规范" class="headerlink" title="JS模块规范"></a>JS模块规范</h1><p>JS模块规范前端主要有AMD、CMD，后端主要有CommonJS。此外还有最新的ES2015模块规范。</p>
-<h2 id="AMD"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</h2><p>AMD（异步模块定义，Asynchronous Module Definition）格式总体的目标是为现在的开发者提供一个可用的模块化 JavaScript 的解决方案。它诞生于 Dojo 在使用 XHR+eval 时的实践经验，其支持者希望未来的解决方案都可以免受由于过去方案的缺陷所带来的麻烦。</p>
-<p>AMD风格模块定义通常包括：一个用来进行模块定义的 define 方法以及一个用来处理依赖项加载的 require 方法。define 根据如下的方法签名来定义具名或匿名的模块：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define(</span><br><span class="line">    module_id &#x2F;*可选*&#x2F;, </span><br><span class="line">    [dependencies] &#x2F;*可选*&#x2F;, </span><br><span class="line">    definition function &#x2F;*用来初始化模块或对象的函数*&#x2F;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-<h2 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h2><p>CMD(Common Module Definition)表示通用模块定义，该规范是国内发展出来的，由阿里的玉伯提出。就像AMD有个requireJS，CMD有个浏览器的实现SeaJS，SeaJS和requireJS一样，都是javascript的前端模块化解决方案。<br>CMD规范简单到只有一个API，即define函数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define(function(require, exports, module) &#123;</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; The module code goes here</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>CMD 与 AMD 挺相近，二者区别如下： </p>
-<ul>
-<li>对于依赖的模块 CMD 是延迟执行，而 AMD 是提前执行（不过 RequireJS 从 2.0 开始，也改成可以延迟执行。 ）</li>
-<li>CMD 推崇依赖就近，AMD 推崇依赖前置。</li>
-<li>AMD 的 api 默认是一个当多个用，CMD 严格的区分推崇职责单一，其每个 API 都简单纯粹。例如：AMD 里 require 分全局的和局部的。CMD 里面没有全局的 require，提供 seajs.use() 来实现模块系统的加载启动。</li>
-</ul>
-<h2 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h2><p>CommonJS是一个志愿性质的工作组，它致力于设计、规划并标准化 JavaScript API。至今为止他们已经尝试着认可了模块标准以及程序包标准。CommonJS 的模块提案为在服务器端声明模块指定了一个简单的 API。不像 AMD，它试图覆盖更宽泛的方面比如 IO、文件系统、promise 模式等等。CommonJS风格模块在nodejs中得到广泛的应用。</p>
-<p>CommonJS风格模块是一段可重用的 JavaScript，它导出一系列特定的对象给依赖它的代码调用——通常来说这样的模块外围没有函数包裹（所以你在这里的例子中不会看到 define）。例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; package&#x2F;lib 是我们须要的一个依赖项</span><br><span class="line">var lib &#x3D; require(&#39;package&#x2F;lib&#39;);</span><br><span class="line"> </span><br><span class="line">&#x2F;&#x2F; 我们的模块的一些行为</span><br><span class="line">function foo()&#123;</span><br><span class="line">    lib.log(&#39;hello world!&#39;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">&#x2F;&#x2F; 把 foo 导出（暴露）给其它模块</span><br><span class="line">exports.foo &#x3D; foo;</span><br></pre></td></tr></table></figure>
-
-<h2 id="ES2015模块规范"><a href="#ES2015模块规范" class="headerlink" title="ES2015模块规范"></a>ES2015模块规范</h2><p>2015 年 6 月， ES2015（即 ECMAScript 6、ES6） 正式发布。ES2015 是该语言的一个显著更新，也是自 2009 年 ES5 标准确定后的第一个重大更新。</p>
-<p>ES2015的模块规范如下：</p>
-<ul>
-<li>一个模块就是一个独立的文件。该文件内部的所有变量，外部无法获取。</li>
-<li>export 命令用于规定模块的对外接口。</li>
-<li>import 命令用于输入其他模块提供的功能。</li>
-<li>ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量。</li>
-</ul>
-<p>ES2015模块示例如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;circle.js</span><br><span class="line">&#x2F;&#x2F;圆面积计算</span><br><span class="line">export function area(radius) &#123;</span><br><span class="line">  return Math.PI * radius * radius;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;main.js</span><br><span class="line">import &#123;area&#125; from &#39;.&#x2F;hangge&#39;;</span><br><span class="line">console.log(&#39;圆面积：&#39; + area(10));</span><br></pre></td></tr></table></figure>
-
-<h1 id="兼容多种模块规范"><a href="#兼容多种模块规范" class="headerlink" title="兼容多种模块规范"></a>兼容多种模块规范</h1><p>需要指出的是下面兼容多种JS模块规范的代码并不支持最新的ES2015模块规范。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">;(function (name, definition) &#123;</span><br><span class="line">  &#x2F;&#x2F; 检测上下文环境是否为AMD或CMD</span><br><span class="line">  var hasDefine &#x3D; typeof define &#x3D;&#x3D;&#x3D; &#39;function&#39;,</span><br><span class="line">    &#x2F;&#x2F; 检查上下文环境是否为Node</span><br><span class="line">    hasExports &#x3D; typeof module !&#x3D;&#x3D; &#39;undefined&#39; &amp;&amp; module.exports;</span><br><span class="line"></span><br><span class="line">  if (hasDefine) &#123;</span><br><span class="line">    &#x2F;&#x2F; AMD环境或CMD环境</span><br><span class="line">    define(definition);</span><br><span class="line">  &#125; else if (hasExports) &#123;</span><br><span class="line">    &#x2F;&#x2F; 定义为普通Node模块</span><br><span class="line">    module.exports &#x3D; definition();</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    &#x2F;&#x2F; 将模块的执行结果挂在window变量中，在浏览器中this指向window对象</span><br><span class="line">    this[name] &#x3D; definition();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)(&#39;hello&#39;, function () &#123;</span><br><span class="line">  var hello &#x3D; function () &#123;&#125;;</span><br><span class="line">  return hello;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h1 id="Webpack兼容所有JS模块规范"><a href="#Webpack兼容所有JS模块规范" class="headerlink" title="Webpack兼容所有JS模块规范"></a>Webpack兼容所有JS模块规范</h1><p>webpack根据webpack.config.js中的入口文件，在入口文件里识别模块依赖，不管这里的模块依赖是用CommonJS写的，还是ES6 Module规范写的，webpack会自动进行分析，并通过转换、编译代码，打包成最终的文件。最终文件中的模块实现是基于webpack自己实现的webpack_require（es5代码），所以打包后的文件可以跑在浏览器上。</p>
-<p>同时以上意味着在webapck环境下，你可以只使用ES6 模块语法书写代码（通常我们都是这么做的），也可以使用CommonJS模块语法，甚至可以两者混合使用。因为从webpack2开始，内置了对ES6、CommonJS、AMD 模块化语句的支持，webpack会对各种模块进行语法分析，并做转换编译。</p>
-<p>具体Webpack兼容所有JS模块规范的原理分析参见<a href="https://juejin.im/post/5c94a2f36fb9a070fc623df4" target="_blank" rel="noopener">Webpack 模块打包原理</a>。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://i.jakeyu.top/2017/09/14/兼容前后端共用模块代码/" target="_blank" rel="noopener">兼容前后端共用模块代码(摘自《深入浅出Node.js》)</a>, by Jake.</li>
-<li><a href="https://segmentfault.com/a/1190000011633813" target="_blank" rel="noopener">兼容多种模块规范(AMD,CMD,Node)的代码</a>, by CodeMan.</li>
-<li><a href="http://justineo.github.io/singles/writing-modular-js/" target="_blank" rel="noopener">使用 AMD、CommonJS 及 ES Harmony 编写模块化的 JavaScript</a>, by ADDY OSMANI.</li>
-<li><a href="http://www.hangge.com/blog/cache/detail_1686.html" target="_blank" rel="noopener">JS - CommonJS、ES2015、AMD、CMD模块规范对比与介绍（附样例）</a>,by hangge.</li>
-<li><a href="https://babeljs.io/docs/en/" target="_blank" rel="noopener">What is Babel?</a>,by Babel.</li>
-<li><a href="https://webpack.js.org/concepts/" target="_blank" rel="noopener">Webpack Concepts</a>,by webpack.</li>
-<li><a href="https://segmentfault.com/a/1190000012386576" target="_blank" rel="noopener">import、require、export、module.exports 混合使用详解</a>,by lv_DaDa.</li>
-<li><a href="https://juejin.im/post/5c94a2f36fb9a070fc623df4" target="_blank" rel="noopener">Webpack 模块打包原理</a>,by lq782655835.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2188,7 +2189,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">534</span>
+                    <span class="site-state-item-count">535</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

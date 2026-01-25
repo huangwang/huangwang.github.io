@@ -110,7 +110,7 @@
 <meta property="og:description" content="Transformers是为 PyTorch 打造的先进的机器学习工具。Transformers 充当跨文本、计算机视觉、音频、视频与多模态的最先进机器学习模型的「模型定义框架」，同时覆盖推理与训练。 它将模型的定义集中化，使整个生态系统对该定义达成一致。transformers 是跨框架的枢纽：一旦某模型定义被支持，它通常就能兼容多数训练框架（如 Axolotl、Unsloth、DeepSpee">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-01-24T03:35:32.000Z">
-<meta property="article:modified_time" content="2026-01-24T03:39:39.817Z">
+<meta property="article:modified_time" content="2026-01-25T02:12:36.989Z">
 <meta property="article:author" content="Jack Huang">
 <meta property="article:tag" content="笔记本">
 <meta property="article:tag" content="python">
@@ -360,12 +360,24 @@
                 
               
 
-              <time title="创建时间：2026-01-24 11:35:32 / 修改时间：11:39:39" itemprop="dateCreated datePublished" datetime="2026-01-24T11:35:32+08:00">2026-01-24</time>
+              <time title="创建时间：2026-01-24 11:35:32" itemprop="dateCreated datePublished" datetime="2026-01-24T11:35:32+08:00">2026-01-24</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2026-01-25 10:12:36" itemprop="dateModified" datetime="2026-01-25T10:12:36+08:00">2026-01-25</time>
               
             
           </span>
@@ -418,20 +430,50 @@
       
         <p>Transformers是为 PyTorch 打造的先进的机器学习工具。Transformers 充当跨文本、计算机视觉、音频、视频与多模态的最先进机器学习模型的「模型定义框架」，同时覆盖推理与训练。</p>
 <p>它将模型的定义集中化，使整个生态系统对该定义达成一致。transformers 是跨框架的枢纽：一旦某模型定义被支持，它通常就能兼容多数训练框架（如 Axolotl、Unsloth、DeepSpeed、FSDP、PyTorch‑Lightning 等）、推理引擎（如 vLLM、SGLang、TGI 等），以及依赖 transformers 模型定义的相关库（如 llama.cpp、mlx 等）。</p>
+<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>pip 下载的包太大，需要清除，可使用如下命令查看：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 查看 pip 下载包缓存位置</span><br><span class="line">pip cache dir</span><br><span class="line"></span><br><span class="line"># 清理所有缓存</span><br><span class="line">pip cache purge</span><br><span class="line"></span><br><span class="line"># 查看 pip 安装包位置</span><br><span class="line">pip show package_name</span><br></pre></td></tr></table></figure>
+
 <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>Transformers 支持 Python 3.9+，以及 PyTorch 2.1+。</p>
-<p>使用 venv 或 uv（一个基于 Rust 的快速 Python 包与项目管理器）创建并激活虚拟环境：</p>
+<h2 id="创建虚拟环境"><a href="#创建虚拟环境" class="headerlink" title="创建虚拟环境"></a>创建虚拟环境</h2><p>使用 venv 或 uv（一个基于 Rust 的快速 Python 包与项目管理器）创建并激活虚拟环境：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># venv</span><br><span class="line">python -m venv .my-env</span><br><span class="line">source .my-env&#x2F;bin&#x2F;activate</span><br></pre></td></tr></table></figure>
 
-<p>在虚拟环境中安装 Transformers：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># pip</span><br><span class="line">pip install &quot;transformers[torch]&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="安装-Transformers"><a href="#安装-Transformers" class="headerlink" title="安装 Transformers"></a>安装 Transformers</h2><p>在虚拟环境中安装 Transformers：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># pip安装 pytorch gpu 版本</span><br><span class="line">pip install torch&#x3D;&#x3D;2.4.1 torchvision&#x3D;&#x3D;0.19.1 torchaudio&#x3D;&#x3D;2.4.1  --index-url https:&#x2F;&#x2F;download.pytorch.org&#x2F;whl&#x2F;cu121</span><br><span class="line">pip install transformers</span><br><span class="line"></span><br><span class="line"># pip安装默认 pytorch cpu 版本</span><br><span class="line">pip install torch&#x3D;&#x3D;2.4.1 torchvision&#x3D;&#x3D;0.19.1 torchaudio&#x3D;&#x3D;2.4.1 \</span><br><span class="line">--index-url https:&#x2F;&#x2F;download.pytorch.org&#x2F;whl&#x2F;cpu</span><br><span class="line">pip install transformers</span><br><span class="line"></span><br><span class="line"># 方括号 [] 的作用是指定额外的可选依赖包。</span><br><span class="line">pip install &quot;transformers[torch]&quot;</span><br></pre></td></tr></table></figure>
 
-<h1 id="快速上手"><a href="#快速上手" class="headerlink" title="快速上手"></a>快速上手</h1><p>使用 Pipeline API 一步上手。Pipeline 是一个高级推理类，支持文本、音频、视觉与多模态任务，负责输入预处理并返回适配的输出。</p>
+<h2 id="检查PyTorch-GPU-版本安装是否成功"><a href="#检查PyTorch-GPU-版本安装是否成功" class="headerlink" title="检查PyTorch GPU 版本安装是否成功"></a>检查PyTorch GPU 版本安装是否成功</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import torch</span><br><span class="line">print(torch.__version__)  # 应该显示 2.4.1+cu121</span><br><span class="line">print(torch.cuda.is_available())  # 应该为 True（GPU版本）</span><br><span class="line">print(torch.version.cuda)  # 应该显示 12.1</span><br></pre></td></tr></table></figure>
+
+<h1 id="快速上手"><a href="#快速上手" class="headerlink" title="快速上手"></a>快速上手</h1><h2 id="官方示例"><a href="#官方示例" class="headerlink" title="官方示例"></a>官方示例</h2><p>使用 Pipeline API 一步上手。Pipeline 是一个高级推理类，支持文本、音频、视觉与多模态任务，负责输入预处理并返回适配的输出。</p>
 <p>实例化一个用于文本生成的 pipeline，指定使用的模型。模型会被下载并缓存，方便复用。最后传入文本作为提示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from transformers import pipeline</span><br><span class="line"></span><br><span class="line">pipeline &#x3D; pipeline(task&#x3D;&quot;text-generation&quot;, model&#x3D;&quot;Qwen&#x2F;Qwen2.5-1.5B&quot;)</span><br><span class="line">pipeline(&quot;the secret to baking a really good cake is &quot;)</span><br><span class="line">[&#123;&#39;generated_text&#39;: &#39;the secret to baking a really good cake is 1) to use the right ingredients and 2) to follow the recipe exactly. the recipe for the cake is as follows: 1 cup of sugar, 1 cup of flour, 1 cup of milk, 1 cup of butter, 1 cup of eggs, 1 cup of chocolate chips. if you want to make 2 cakes, how much sugar do you need? To make 2 cakes, you will need 2 cups of sugar.&#39;&#125;]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from transformers import pipeline</span><br><span class="line"></span><br><span class="line">pipeline &#x3D; pipeline(task&#x3D;&quot;text-generation&quot;, model&#x3D;&quot;Qwen&#x2F;Qwen2.5-1.5B&quot;)</span><br><span class="line">pipeline(&quot;the secret to baking a really good cake is &quot;)</span><br></pre></td></tr></table></figure>
+
+<p>transformers自动下载模型的保存位置：C:\Users\jack.cache\huggingface\hub\，在模型下载以后，可以保存到其他位置。</p>
+<h2 id="下载模型"><a href="#下载模型" class="headerlink" title="下载模型"></a>下载模型</h2><p>由于某些原因，国内的服务器可能无法直接访问huggingface.co。可以通过配置使用其镜像站。例如:hf-mirror.com。</p>
+<p>hf-mirror.com是用于镜像 huggingface.co 域名。作为一个公益项目，致力于帮助国内AI开发者快速、稳定的下载模型、数据集。</p>
+<p>下面介绍从 hf-mirror.com 下载大模型的方法：</p>
+<ul>
+<li>激活 python 虚拟环境</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Script\activate</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置环境变量</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set HF_ENDPOINT&#x3D;https:&#x2F;&#x2F;hf-mirror.com</span><br><span class="line">echo %HF_ENDPOINT%</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下载大模型</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 下载大模型默认保存位置：C:\Users\jack\.cache\huggingface\hub\</span><br><span class="line">hf download Qwen&#x2F;Qwen2.5-0.5B</span><br><span class="line"></span><br><span class="line"># 自定义大模型保存位置</span><br><span class="line">hf download Qwen&#x2F;Qwen2.5-0.5B --local-dir .&#x2F;LLM&#x2F;Qwen&#x2F;Qwen2.5-0.5B</span><br></pre></td></tr></table></figure>
 
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://huggingface.co/docs/transformers/zh/index" target="_blank" rel="noopener">Transformers简介</a>,by huggingface.</li>
 <li><a href="https://github.com/huggingface/transformers" target="_blank" rel="noopener">Transformers</a>,by huggingface.</li>
+<li><a href="https://blog.csdn.net/qq_44853387/article/details/140671945" target="_blank" rel="noopener">transformers无法连接huggingface，无法从huggingface下载模型</a>,by Alley cat.</li>
+<li><a href="https://www.bilibili.com/read/cv39637289/?opus_fallback=1" target="_blank" rel="noopener">大模型文件从huggingface下载失败的解决办法</a>,by AI8ge8888888.</li>
+<li><a href="https://blog.csdn.net/a1920993165/article/details/127989780" target="_blank" rel="noopener">transformers用pipeline下载的模型路径</a>,by 小怪兽会微笑.</li>
+<li><a href="https://www.cnblogs.com/menkeyi/p/18605927" target="_blank" rel="noopener">HF Transformers Pipelines</a>,by MKY-门可意.</li>
+<li><a href="https://comate.baidu.com/zh/page/ce49c75x1lj" target="_blank" rel="noopener">PyTorch中GPU可用性验证与模型训练加速实践</a>,by comate.</li>
+<li><a href="https://blog.frognew.com/2024/06/using-huggingface-cli-to-download-models.html" target="_blank" rel="noopener">使用huggingface-cli下载模型</a>,by 青蛙小白.</li>
 </ol>
 
       
@@ -746,7 +788,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#快速上手"><span class="nav-number">2.</span> <span class="nav-text">快速上手</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基础"><span class="nav-number">1.</span> <span class="nav-text">基础</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建虚拟环境"><span class="nav-number">2.1.</span> <span class="nav-text">创建虚拟环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Transformers"><span class="nav-number">2.2.</span> <span class="nav-text">安装 Transformers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检查PyTorch-GPU-版本安装是否成功"><span class="nav-number">2.3.</span> <span class="nav-text">检查PyTorch GPU 版本安装是否成功</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#快速上手"><span class="nav-number">3.</span> <span class="nav-text">快速上手</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#官方示例"><span class="nav-number">3.1.</span> <span class="nav-text">官方示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载模型"><span class="nav-number">3.2.</span> <span class="nav-text">下载模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

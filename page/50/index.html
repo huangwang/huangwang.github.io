@@ -314,6 +314,205 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/07/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/07/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95/" itemprop="url">
+                  树莓派学习之远程登录
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-07 22:41:31" itemprop="dateCreated datePublished" datetime="2018-11-07T22:41:31+08:00">2018-11-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-02-06 22:24:42" itemprop="dateModified" datetime="2023-02-06T22:24:42+08:00">2023-02-06</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>每次通过USB转串口登录树莓派比较麻烦，可以设置树莓派开启ssh和vnc服务，以便通过ssh或vnc远程登录树莓派。下面介绍在Debian中通过ssh或vnc远程登录树莓派的过程。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="SSH"><a href="#SSH" class="headerlink" title="SSH"></a>SSH</h2><p>Secure Shell（安全外壳协议，简称SSH）是一种加密的网络传输协议，可在不安全的网络中为网络服务提供安全的传输环境。SSH通过在网络中创建安全隧道来实现SSH客户端与服务器之间的连接。SSH最常见的用途是远程登录系统，人们通常利用SSH来传输命令行界面和远程执行命令。</p>
+<h3 id="SSH基本用法"><a href="#SSH基本用法" class="headerlink" title="SSH基本用法"></a>SSH基本用法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 以用户名user，登录远程主机host</span><br><span class="line">$ ssh user@host</span><br><span class="line"># SSH的默认端口是22。使用p参数，可以修改这个端口。</span><br><span class="line">$ ssh -p 2222 user@host</span><br></pre></td></tr></table></figure>
+
+<h3 id="SSH通信过程及风险"><a href="#SSH通信过程及风险" class="headerlink" title="SSH通信过程及风险"></a>SSH通信过程及风险</h3><p>SSH采用了公钥加密保证安全。</p>
+<p>整个过程是这样的：（1）远程主机收到用户的登录请求，把自己的公钥发给用户。（2）用户使用这个公钥，将登录密码加密后，发送回来。（3）远程主机用自己的私钥，解密登录密码，如果密码正确，就同意用户登录。</p>
+<p>这个过程本身是安全的，但是实施的时候存在”中间人攻击”风险：如果有人截获了登录请求，然后冒充远程主机，将伪造的公钥发给用户，那么用户很难辨别真伪。因为不像https协议，SSH协议的公钥是没有证书中心（CA）公证的，也就是说，都是自己签发的。</p>
+<h2 id="VNC"><a href="#VNC" class="headerlink" title="VNC"></a>VNC</h2><p>VNC（Virtual Network Computing），为一种使用RFB协议的显示屏画面分享及远程操作软件。此软件借由网上，可发送键盘与鼠标的动作及即时的显示屏画面。</p>
+<p>VNC与操作系统无关，因此可跨平台使用，例如可用Windows连线到某Linux的计算机，反之亦同。甚至在没有安装客户端程序的计算机中，只要有支持JAVA的浏览器，也可使用。</p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>VNC系统由客户端，服务端和一个协议组成</p>
+<p>VNC的服务端目的是分享其所运行机器的屏幕，服务端被动的允许客户端控制它。VNC客户端（或Viewer）观察控制服务端，与服务端交互。VNC协议Protocol（RFB）是一个简单的协议，传送服务端的原始图像到客户端（一个X,Y位置上的正方形的点阵数据），客户端传送事件消息到服务端。</p>
+<p>服务器发送小方块的帧缓存给客户端，在最简单的情况，VNC协议使用大量的带宽，因此各种各样的方法被发明出来减少通讯的开支，举例来说，有各种各样的编码方法来决定最有效率的方法来传送这些点阵方块。</p>
+<p>VNC默认使用TCP端口5900至5906，而JAVA的VNC客户端使用5800至5806。一个服务端可以在5900端口用“监听模式”连接一个客户端，使用监听模式的一个好处是服务端不需要设置防火墙。</p>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>VNC并非是安全的协议，虽然VNC伺服程序需设置密码才可接受外来连线，且VNC客户端与VNC伺服程序之间的密码传输经过加密，但仍可被轻易的拦截到并使用暴力破解法破解。不过VNC可设计以SSH或VPN传输，以增加安全性。</p>
+<h3 id="VNC软件"><a href="#VNC软件" class="headerlink" title="VNC软件"></a>VNC软件</h3><p>由于VNC以GPL授权，派生出了几个VNC软件：</p>
+<ul>
+<li>RealVNC：由VNC团队部分成员开发，分为全功能商业版及免费版。</li>
+<li>TightVNC：强调节省带宽使用。</li>
+<li>UltraVNC：加入了TightVNC的部分程序及加强性能的图型映射驱动程序，并结合Active Directory及NTLM的账号密码认证，但仅有Windows版本。</li>
+<li>Vine Viewer：MacOSX的VNC客户端。</li>
+</ul>
+<h1 id="配置树莓派支持SSH和VNC"><a href="#配置树莓派支持SSH和VNC" class="headerlink" title="配置树莓派支持SSH和VNC"></a>配置树莓派支持SSH和VNC</h1><p>通过USB转串口登录树莓派后，按如下步骤开启SSH和VNC：</p>
+<ol>
+<li>运行命令raspi-config<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo raspi-config</span><br></pre></td></tr></table></figure></li>
+<li>选择第五项Interfacing Options</li>
+<li>选择enable SSH</li>
+<li>启用SSH，重复步骤一和二，再选择enable VNC。  </li>
+</ol>
+<h1 id="通过SSH或VNC连接树莓派"><a href="#通过SSH或VNC连接树莓派" class="headerlink" title="通过SSH或VNC连接树莓派"></a>通过SSH或VNC连接树莓派</h1><p>debian主机与树莓派在同一个局域网内，则按如下步骤通过SSH或VNC连接树莓派。</p>
+<h2 id="通过nmap命令获取树莓派ip地址"><a href="#通过nmap命令获取树莓派ip地址" class="headerlink" title="通过nmap命令获取树莓派ip地址"></a>通过nmap命令获取树莓派ip地址</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ nmap 192.168.0.1&#x2F;24</span><br><span class="line">Starting Nmap 7.70 ( https:&#x2F;&#x2F;nmap.org ) at 2018-11-08 13:08 CST</span><br><span class="line"></span><br><span class="line">Nmap scan report for 192.168.0.103</span><br><span class="line">Host is up (0.041s latency).</span><br><span class="line">Not shown: 998 closed ports</span><br><span class="line">PORT     STATE SERVICE</span><br><span class="line">22&#x2F;tcp   open  ssh</span><br><span class="line">5900&#x2F;tcp open  vnc</span><br><span class="line"></span><br><span class="line">Nmap done: 256 IP addresses (6 hosts up) scanned in 35.77 seconds</span><br></pre></td></tr></table></figure>
+<p>开启22和5900端口的主机即是树莓派。</p>
+<h2 id="通过ssh远程登录树莓派"><a href="#通过ssh远程登录树莓派" class="headerlink" title="通过ssh远程登录树莓派"></a>通过ssh远程登录树莓派</h2> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 首次登录会给出主机认证不能建立的提示，输入yes可继续，再输入用户密码即可远程登录树莓派</span><br><span class="line">$ ssh pi@192.168.0.103</span><br></pre></td></tr></table></figure>
+
+<h2 id="通过vnc远程登录树莓派"><a href="#通过vnc远程登录树莓派" class="headerlink" title="通过vnc远程登录树莓派"></a>通过vnc远程登录树莓派</h2><ol>
+<li><p>通过ssh登录树莓派后查看其使用的vnc程序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ apt list --installed | grep vnc</span><br><span class="line">realvnc-vnc-server&#x2F;now 6.3.1.36657 armhf [已安装，可升级至：6.3.2.39069]</span><br><span class="line"># 可知，树莓派上使用realvnc程序</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在Debian上安装realvnc客户端程序realvnc-vnc-viewer</p>
+</li>
+<li><p>在终端输入vncviewer，输入树莓派ip、用户名、密码即可登录树莓派</p>
+</li>
+</ol>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li><a href="http://www.ruanyifeng.com/blog/2011/12/ssh_remote_login.html" target="_blank" rel="noopener">SSH原理与运用（一）：远程登录</a>,by 阮一峰.</li>
+<li><a href="https://zh.wikipedia.org/zh-hans/Secure_Shell" target="_blank" rel="noopener">Secure Shell</a>,by wikipedia.</li>
+<li><a href="https://zh.wikipedia.org/zh-hans/VNC" target="_blank" rel="noopener">VNC</a>,by wikipedia.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/71536075" target="_blank" rel="noopener">VPN原理与简单应用</a>,by 新盟-胡巴.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/05/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AD%A6%E4%B9%A0%E4%B9%8BUSB%E8%BD%AC%E4%B8%B2%E5%8F%A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2149,216 +2348,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/10/14/Python%E5%B8%B8%E7%94%A8%E5%BA%93%E7%AE%80%E4%BB%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/14/Python%E5%B8%B8%E7%94%A8%E5%BA%93%E7%AE%80%E4%BB%8B/" itemprop="url">
-                  Python常用库简介
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-10-14 11:22:09" itemprop="dateCreated datePublished" datetime="2018-10-14T11:22:09+08:00">2018-10-14</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-12-05 23:47:16" itemprop="dateModified" datetime="2018-12-05T23:47:16+08:00">2018-12-05</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python的高效开发建立在大量常用库基础上，因此掌握常用的Python库十分必要。下面简单介绍Python的各类常用库。</p>
-<h1 id="常用标准库"><a href="#常用标准库" class="headerlink" title="常用标准库"></a>常用标准库</h1><ul>
-<li>os： 访问操作系统功能模块</li>
-<li>sys： 访问一些环境变量和与 Python 解释器交互</li>
-<li>datetime： 日期时间处理</li>
-<li>collections： 高级数据结构，有序字典，队列等等</li>
-<li>uuid： 生成 UUID 模块</li>
-<li>random： 随机数生成模块</li>
-<li>re： 正则表达式模块</li>
-<li>json： JSON 处理模块</li>
-<li>pdb： 单步调试模块</li>
-</ul>
-<h1 id="科学计算"><a href="#科学计算" class="headerlink" title="科学计算"></a>科学计算</h1><ul>
-<li>scipy：基于Python的matlab实现，旨在实现matlab的所有功能。包含Numpy、Ipython、Pandas、Matplotlib、Sympy等常用库</li>
-<li>numpy： 基于Python的科学计算第三方库，提供了矩阵，线性代数，傅立叶变换等等的解决方案</li>
-<li>pandas： 支持表格等多维数据</li>
-<li>matplotlib： 用Python实现的类matlab的第三方库，用以绘制一些高质量的数学二维图形</li>
-</ul>
-<h1 id="命令交互"><a href="#命令交互" class="headerlink" title="命令交互"></a>命令交互</h1><ul>
-<li>ipython： 交互命令行，适合科学计算</li>
-<li>jupyter： ipython notebook 的延伸，可以直接放在github上</li>
-<li>argparse：(Python 标准库)用于命令项选项与参数解析的模块</li>
-</ul>
-<h1 id="爬虫相关"><a href="#爬虫相关" class="headerlink" title="爬虫相关"></a>爬虫相关</h1><ul>
-<li>urllib: (Python 标准库)，接受URL请求的相关模块</li>
-<li>http: (Python 标准库)，处理所有客户端–服务器http请求的具体细节</li>
-<li>requests: 第三方库，人性化的HTTP请求库，比urllib更好用</li>
-<li>pillow: 处理验证码</li>
-<li>rsa: 处理加密问题</li>
-<li>BeautifulSoup：解析html文档为用户提供需要抓取的数据</li>
-<li>lxml: 是基于 libxml2 这一 XML 解析库的 Python 封装,解析速度比 Beautiful Soup 更快</li>
-</ul>
-<h1 id="环境管理"><a href="#环境管理" class="headerlink" title="环境管理"></a>环境管理</h1><ul>
-<li>virtualenv：创建独立 Python 环境的工具</li>
-<li>virtualenvwrapper：virtualenv 的一组扩展</li>
-</ul>
-<h1 id="包管理"><a href="#包管理" class="headerlink" title="包管理"></a>包管理</h1><ul>
-<li>pip：Python 包和依赖关系管理工具</li>
-<li>conda：跨平台，Python 二进制包管理工具</li>
-</ul>
-<h1 id="并发和并行"><a href="#并发和并行" class="headerlink" title="并发和并行"></a>并发和并行</h1><ul>
-<li>threading：(Python 标准库)更高层的线程接口</li>
-<li>multiprocessing：(Python 标准库) 基于进程的“线程”接口</li>
-</ul>
-<h1 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h1><ul>
-<li>logging：(Python 标准库) 为 Python 提供日志功能。</li>
-</ul>
-<h1 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h1><ul>
-<li>six：Python 2 和 3 的兼容性工具</li>
-</ul>
-<h1 id="计算机视觉"><a href="#计算机视觉" class="headerlink" title="计算机视觉"></a>计算机视觉</h1><ul>
-<li>opencv</li>
-</ul>
-<h1 id="机器学习"><a href="#机器学习" class="headerlink" title="机器学习"></a>机器学习</h1><ul>
-<li>tensorflow</li>
-</ul>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
-<li><a href="https://www.jianshu.com/p/886cbabbfe9e" target="_blank" rel="noopener">Python 笔记四：Python的常用库收集</a>, by brandonxiang </li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2406,7 +2395,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">535</span>
+                    <span class="site-state-item-count">536</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

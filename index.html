@@ -314,6 +314,231 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2026/02/26/%E7%BB%BF%E8%81%94DX4600%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2026/02/26/%E7%BB%BF%E8%81%94DX4600%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E6%96%B9%E6%B3%95/" itemprop="url">
+                  绿联DX4600内网穿透方法
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2026-02-26 22:27:18 / 修改时间：23:24:24" itemprop="dateCreated datePublished" datetime="2026-02-26T22:27:18+08:00">2026-02-26</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>绿联 DX4600 NAS 支持Docker服务，可惜只能在内网使用，必须掌握内网穿透技术，才能在外网访问Docker提供的服务。下面介绍如何在绿联 DX4600 NAS 配置内网穿透的方法。</p>
+<h1 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h1><h2 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h2><p>NAT 是网络地址转换的缩写。它是一种在网络中广泛使用的技术，主要作用是在数据包通过路由器或防火墙时，修改数据包中的源IP地址或目标IP地址。</p>
+<p>NAT主要解决以下问题：</p>
+<ul>
+<li>解决 IPv4 地址短缺问题：NAT 允许一个家庭或公司里的所有设备（电脑、手机、平板等）共享同一个公网 IP 地址上网。</li>
+<li>安全与隐私（天然的防火墙）：因为外界只能看到 NAT 路由器的公网 IP，无法直接访问到你内网的具体设备。</li>
+<li>网络灵活性：你可以在家里随意增加或更换设备，只要它们使用的是私有 IP 地址（如 192.168.0.10）</li>
+</ul>
+<p>NAT常见类型主要有三种：</p>
+<ul>
+<li>静态 NAT ： 一个私有 IP 地址固定映射到一个公网 IP 地址（一对一）</li>
+<li>动态 NAT ：多个私有 IP 地址竞争使用一个公网 IP 地址池（多对多）</li>
+<li>PAT / NAPT： 多对一。让家里所有设备共用路由器上的同一个公网 IP。路由器除了记录 IP 地址，还会记录端口号。当你手机和电脑同时上网时，路由器把它们的请求发出去，但给它们分配不同的源端口。<ul>
+<li>例如：手机请求用的是 公网IP:10001，电脑请求用的是 公网IP:10002。当数据返回时，路由器根据端口号 10001 或 10002，就知道该把数据转发给手机还是电脑。</li>
+</ul>
+</li>
+</ul>
+<h2 id="内网穿透"><a href="#内网穿透" class="headerlink" title="内网穿透"></a>内网穿透</h2><p>内网穿透的核心原理，可以通俗地理解为：让没有公网IP的设备，通过一个有公网IP的中转服务器，和外部设备建立数据通道。</p>
+<p>其工作流程分为两步：</p>
+<p>第一步：建立隧道（内网设备主动连接服务器）<br>第二步：数据转发（打给服务器，转给内网）<br>这个过程就是内网穿透的本质：数据全部经过服务器中转。</p>
+<h3 id="进阶版：P2P（点对点）打洞"><a href="#进阶版：P2P（点对点）打洞" class="headerlink" title="进阶版：P2P（点对点）打洞"></a>进阶版：P2P（点对点）打洞</h3><p>为了提高速度，更高级的穿透（如P2P模式，即点对点模式）会尝试让两个内网设备直接连接。原理如下：</p>
+<ol>
+<li>中介牵线： 服务器依然存在，但它只负责“牵线搭桥”，帮双方交换IP和端口信息。</li>
+<li>打洞： 双方利用UDP协议的特性，互相往对方的公网IP和端口发送数据。虽然一开始会被路由器拒绝，但当双方都发送时，路由器会误以为是之前请求的回复，从而打开一个临时通道。</li>
+<li>直连： 一旦通道打开，两台设备就可以直接通信了，数据不再经过服务器中转，速度取决于双方各自的宽带。</li>
+</ol>
+<p>这就是P2P打洞技术，也是P2P（如BT下载）和视频通话流畅运行的基础。</p>
+<h3 id="P2P（点对点）打洞限制"><a href="#P2P（点对点）打洞限制" class="headerlink" title="P2P（点对点）打洞限制"></a>P2P（点对点）打洞限制</h3><p>NAT的不同“性格”（类型）直接决定了打洞的成败。主要有以下四种类型：</p>
+<table>
+<thead>
+<tr>
+<th>NAT类型</th>
+<th>工作原理</th>
+<th>打洞成功率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>完全锥型</td>
+<td>映射关系建立后，任何外部主机都可以通过这个公网端口访问内网主机。</td>
+<td>✅ 最容易</td>
+</tr>
+<tr>
+<td>受限锥型</td>
+<td>只有内网主机主动发送过数据的外部主机（不限端口），才能通过公网端口向内网发起通信。</td>
+<td>✅ 较容易</td>
+</tr>
+<tr>
+<td>端口受限锥型</td>
+<td>要求更严格，只有内网主机主动发送过数据的特定（IP+端口）组合，才能向内网通信。</td>
+<td>✅ 有条件</td>
+</tr>
+<tr>
+<td>对称型</td>
+<td>最严格。每次内网主机向不同目标主机发起连接，NAT都会重新分配一个新的公网端口，导致无法预测对方的“入口”。</td>
+<td>❌ 基本无效</td>
+</tr>
+</tbody></table>
+<h1 id="实现方法"><a href="#实现方法" class="headerlink" title="实现方法"></a>实现方法</h1><h2 id="使用Docker服务"><a href="#使用Docker服务" class="headerlink" title="使用Docker服务"></a>使用Docker服务</h2><p>请参考：</p>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/605427878" target="_blank" rel="noopener">小白也能轻松上手，深度体验绿联私有云DX4600 Docker功能</a></li>
+</ul>
+<p>目前绿联DX4600提供的Docker镜像仓库均无法下载Docker镜像，可修改使用<a href="https://docker.xuanyuan.me/" target="_blank" rel="noopener">轩辕镜像</a>下载Docker镜像。</p>
+<h2 id="使用cpolar服务"><a href="#使用cpolar服务" class="headerlink" title="使用cpolar服务"></a>使用cpolar服务</h2><p>使用cpolar提供的免费内网穿透服务，可实现远程登陆绿联 DX4600 进行操作。</p>
+<p>DX4600操作系统是基于OpenWrt系统的，因此安装 cpolar 请参考：</p>
+<ul>
+<li><a href="https://www.cpolar.com/blog/openwrt-router-installation-cpolar" target="_blank" rel="noopener">OpenWrt路由器上的安装教程</a></li>
+</ul>
+<p>具体步骤如下：</p>
+<ul>
+<li>开启绿联 DX4600 调试功能</li>
+<li>使用 MobaXterm 远程登陆绿联 DX4600系统</li>
+<li>使用如下命令安装 cpolar</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 下载公钥</span><br><span class="line">wget -O cpolar-public.key http:&#x2F;&#x2F;openwrt.cpolar.com&#x2F;releases&#x2F;public.key</span><br><span class="line">opkg-key add cpolar-public.key</span><br><span class="line"></span><br><span class="line"># 更新包管理器</span><br><span class="line">opkg update</span><br><span class="line"></span><br><span class="line"># 安装cpolar插件</span><br><span class="line"></span><br><span class="line">opkg install cpolar</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>用浏览器访问 <a href="http://nas_ip:9200" target="_blank" rel="noopener">http://nas_ip:9200</a> ，创建访问绿联 DX4600的 SSH隧道。注意绿联 DX4600 ssh服务的端口为922。</li>
+<li>登录 cpolar官网，注册账号，可以看到创建的 ssh 隧道，后续可以在外网通过该 ssh 隧道远程登录内网的绿联 DX4600。</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://blog.csdn.net/Tiam_cr/article/details/131031665" target="_blank" rel="noopener">外网SSH远程连接linux服务器「cpolar内网穿透」</a>,by 不会kao代码的小王.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/1979845279005033038" target="_blank" rel="noopener">手把手教你：零基础实现绿联NAS外网访问，随时随地访问Docker服务</a>,by 黑衣教主.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/626815499" target="_blank" rel="noopener">NAS探索篇一：绿联DX4600利用DDNS-GO和阿里云免费部署动态解析</a>,by 墨鱼的猪.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/659832115" target="_blank" rel="noopener">原来Docker这么好用，绿联DX4600,Docker上手实际操作体验</a>,by 鼠鼠的鼠.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/16935371020" target="_blank" rel="noopener">NAS用户必备！170 多个好玩的，好用的docker容器</a>,by 什么值得买​.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2026/01/24/Transformers%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1896,175 +2121,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2025/09/22/Vlan%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2025/09/22/Vlan%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95/" itemprop="url">
-                  Vlan配置方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2025-09-22 22:26:45 / 修改时间：23:21:17" itemprop="dateCreated datePublished" datetime="2025-09-22T22:26:45+08:00">2025-09-22</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近单位有一台计算机，只有一个网卡，但是需要通三个网段通信，为了避免各个网段之间的组播通信流量占用带宽，拟采用Vlan技术，使用三次交换机进行逻辑隔离。具体过程记录如下。</p>
-<h1 id="具体方法"><a href="#具体方法" class="headerlink" title="具体方法"></a>具体方法</h1><p>使用 VLAN 接口。</p>
-<p>核心思想是：在计算机的网络接口上创建多个虚拟接口，并将每个虚拟接口关联到不同的VLAN。</p>
-<p>这种方法适用于支持802.1Q VLAN标记的交换机和操作系统。它在单个物理网卡上创建多个逻辑接口。</p>
-<ul>
-<li><p>物理连接：服务器通过一根网线连接到支持802.1Q的交换机端口。该交换机端口需要被配置为Trunk模式，允许携带多个VLAN的流量。</p>
-</li>
-<li><p>服务器端配置：在服务器的操作系统上，你需要创建VLAN虚拟接口。</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">例如：</span><br><span class="line"></span><br><span class="line">物理网卡名：eth0</span><br><span class="line"></span><br><span class="line">创建的虚拟接口：</span><br><span class="line"></span><br><span class="line">eth0.10 (对应VLAN 10)</span><br><span class="line"></span><br><span class="line">eth0.20 (对应VLAN 20)</span><br><span class="line"></span><br><span class="line">eth0.30 (对应VLAN 30)</span><br></pre></td></tr></table></figure>
-
-<p>对于Realtek网卡，可使用realtek diagnostic utility工具，创建多个vlan网口。具体请参考 <a href="https://www.cnblogs.com/weihua2020/p/14151012.html" target="_blank" rel="noopener">realtek adapter的vlan设定</a>。</p>
-<ul>
-<li>IP地址分配：为每个虚拟接口分配一个属于相应VLAN网段的IP地址。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">eth0.10 -&gt; 192.168.10.100&#x2F;24 (VLAN 10的网关可能是 192.168.10.1)</span><br><span class="line"></span><br><span class="line">eth0.20 -&gt; 192.168.20.100&#x2F;24 (VLAN 20的网关可能是 192.168.20.1)</span><br><span class="line"></span><br><span class="line">eth0.30 -&gt; 192.168.30.100&#x2F;24 (VLAN 30的网关可能是 192.168.30.1)</span><br></pre></td></tr></table></figure>
-
-<p><strong>工作原理：</strong> 当服务器要发送一个数据包到VLAN 10的网络时，它会通过 eth0.10 发出，操作系统会自动给这个数据包打上VLAN 10的标签。交换机的Trunk端口收到后，会根据标签将数据包转发到VLAN 10。反之，当交换机发送一个带有VLAN 20标签的数据包给服务器时，只有服务器的 eth0.20 接口能接收到它。</p>
-<h1 id="跨Vlan通信"><a href="#跨Vlan通信" class="headerlink" title="跨Vlan通信"></a>跨Vlan通信</h1><ul>
-<li>方式一：使用三层交换机（推荐方案）</li>
-<li>方式二：使用路由器（“单臂路由”）</li>
-<li>方式三：使用防火墙</li>
-</ul>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://www.cnblogs.com/weihua2020/p/14151012.html" target="_blank" rel="noopener">realtek adapter的vlan设定</a>,by helloweifa.</li>
-<li><a href="https://info.support.huawei.com/info-finder/encyclopedia/zh/VLAN.html" target="_blank" rel="noopener">什么是VLAN</a>,by huawei.</li>
-<li><a href="https://info.support.huawei.com/info-finder/encyclopedia/zh/%E7%BB%84%E6%92%AD.html" target="_blank" rel="noopener">什么是组播？</a>,by huawei.</li>
-<li><a href="https://support.huawei.com/enterprise/zh/doc/EDOC1000141427/fcc07a2e" target="_blank" rel="noopener">配置终端直连三层网关设备进行VLAN间通信示例</a>,by huawei.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2112,7 +2168,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">535</span>
+                    <span class="site-state-item-count">536</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

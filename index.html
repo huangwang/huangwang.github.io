@@ -314,6 +314,207 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2026/04/23/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8BAgent%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2026/04/23/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8BAgent%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
+                  大语言模型Agent学习笔记
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2026-04-23 21:57:04 / 修改时间：22:19:06" itemprop="dateCreated datePublished" datetime="2026-04-23T21:57:04+08:00">2026-04-23</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近一段事件，基于 LLM 的 Agent 非常火爆，比如 OpenClaw 龙虾。那么什么是 AI Agent，基于 LLM 的 Agent 带来了哪些突破呢？值得探究一下。</p>
+<h1 id="什么是-AI-Agent"><a href="#什么是-AI-Agent" class="headerlink" title="什么是 AI Agent"></a>什么是 AI Agent</h1><p>在生成式人工智能的背景下，AI 代理（也称为复合 AI 系统或自主 AI）是一类能够在复杂环境中自主运行的智能代理。自主 AI 工具优先考虑决策而非内容创建，并且不需要持续监督。</p>
+<p>AI 代理具有几个关键属性，包括复杂的目标结构、自然语言接口、能够在无需用户监督的情况下独立行动的能力，以及集成软件工具或规划系统。它们的控制流程通常由大型语言模型（LLMs）驱动。代理还包括用于记忆先前用户-代理交互的记忆系统和用于组织代理组件的编排软件。</p>
+<p>AI 代理的一个常见应用是任务的自动化，例如根据用户的提示请求预订旅行计划。</p>
+<h1 id="AI-Agent-构成"><a href="#AI-Agent-构成" class="headerlink" title="AI Agent 构成"></a>AI Agent 构成</h1><blockquote>
+<p>AI Agent = LLM（推理） + Tools（工具） + Planning（规划） + Memory（记忆）</p>
+</blockquote>
+<blockquote>
+<p>其执行流程如下：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">用户输入</span><br><span class="line">   ↓</span><br><span class="line">[感知 Perception] ← 记忆</span><br><span class="line">   ↓</span><br><span class="line">[规划 Planning]  → 分解任务</span><br><span class="line">   ↓</span><br><span class="line">[决策 Decision]  → 选择行动</span><br><span class="line">   ↓</span><br><span class="line">[执行 Action]    → 调用工具</span><br><span class="line">   ↓</span><br><span class="line">[观察 Observation] → 获取结果</span><br><span class="line">   ↓</span><br><span class="line">(循环直到完成)</span><br><span class="line">   ↓</span><br><span class="line">返回最终答案</span><br></pre></td></tr></table></figure>
+
+<h1 id="AI-Agent-分类"><a href="#AI-Agent-分类" class="headerlink" title="AI Agent 分类"></a>AI Agent 分类</h1><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>特点</th>
+<th>适用场景</th>
+<th>代表框架</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ReAct</td>
+<td>推理+行动交替</td>
+<td>单步任务、工具调用</td>
+<td>LangChain</td>
+</tr>
+<tr>
+<td>Plan-and-Execute</td>
+<td>先规划再执行</td>
+<td>复杂多步任务</td>
+<td>BabyAGI</td>
+</tr>
+<tr>
+<td>Autonomous</td>
+<td>自主循环运行</td>
+<td>长期目标任务</td>
+<td>AutoGPT</td>
+</tr>
+<tr>
+<td>Multi-Agent</td>
+<td>多智能体协作</td>
+<td>复杂系统、角色分工</td>
+<td>MetaGPT</td>
+</tr>
+</tbody></table>
+<h1 id="AI-Agent-关键技术"><a href="#AI-Agent-关键技术" class="headerlink" title="AI Agent 关键技术"></a>AI Agent 关键技术</h1><ul>
+<li>大语言模型 （LLM） </li>
+<li>工具调用（Function Calling）</li>
+<li>工具库设计</li>
+<li>记忆机制<ul>
+<li>短期记忆（对话历史）</li>
+<li>长期记忆（向量数据库）</li>
+<li>结构化记忆（实体记忆）</li>
+</ul>
+</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://meiluosi.github.io/2024/10/13/LLM-Agent%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/" target="_blank" rel="noopener">LLM Agent开发指南</a>,by meiluosi.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/2000210358820946463" target="_blank" rel="noopener">万字长文解读LLM Agent：总体框架、经典论文与实践</a>, 魔法学院的Chilia.</li>
+<li><a href="https://en.wikipedia.org/wiki/AI_agent" target="_blank" rel="noopener">AI agent</a>,by wikipedia.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2026/04/21/%E5%8E%A8%E6%88%BF%E5%AE%9E%E9%AA%8C%E5%AE%A4%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1906,175 +2107,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2025/12/23/DLL%E5%AF%BC%E5%85%A5%E5%BA%93%E7%94%9F%E6%88%90%E7%9A%84%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2025/12/23/DLL%E5%AF%BC%E5%85%A5%E5%BA%93%E7%94%9F%E6%88%90%E7%9A%84%E6%96%B9%E6%B3%95/" itemprop="url">
-                  DLL导入库生成的方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2025-12-23 22:14:50 / 修改时间：22:38:52" itemprop="dateCreated datePublished" datetime="2025-12-23T22:14:50+08:00">2025-12-23</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>当使用隐式链接的方法调用 DLL 中的导出函数时，需要代码的头文件、导入库lib和动态链接库。如何缺失导入库lib，将无法使用隐式链接的方式调用 DLL中的函数。幸运的是，通过一些手段可以从DLL中直接生成导入库lib。</p>
-<h1 id="生成导入库流程"><a href="#生成导入库流程" class="headerlink" title="生成导入库流程"></a>生成导入库流程</h1><p>步骤如下：</p>
-<ul>
-<li>从Dll中生成对应def文件，内容如下：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">include &#39;..\implib.inc&#39;</span><br><span class="line"></span><br><span class="line">; XYZLIBRARY.??4CXyz@@QAEAAV0@$$QAV0@@Z ord.1</span><br><span class="line">implib XyzLibrary.dll, ??4CXyz@@QAEAAV0@$$QAV0@@Z</span><br><span class="line">; XYZLIBRARY.??4CXyz@@QAEAAV0@ABV0@@Z ord.2</span><br><span class="line">implib XyzLibrary.dll, ??4CXyz@@QAEAAV0@ABV0@@Z</span><br><span class="line">; XYZLIBRARY.?Foo@CXyz@@QAEHH@Z ord.3</span><br><span class="line">implib XyzLibrary.dll, ?Foo@CXyz@@QAEHH@Z</span><br><span class="line">; XYZLIBRARY.GetXyz ord.4</span><br><span class="line">implib XyzLibrary.dll, GetXyz</span><br><span class="line">; XYZLIBRARY._GetXyz@0 ord.5</span><br><span class="line">implib XyzLibrary.dll, _GetXyz@0</span><br><span class="line">; XYZLIBRARY._XyzFoo@8 ord.6</span><br><span class="line">implib XyzLibrary.dll, _XyzFoo@8</span><br><span class="line">; XYZLIBRARY._XyzRelease@4 ord.7</span><br><span class="line">implib XyzLibrary.dll, _XyzRelease@4</span><br><span class="line"></span><br><span class="line">endlib</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>根据def文件生成DLL的导入库lib</li>
-</ul>
-<h1 id="自动生成导入库"><a href="#自动生成导入库" class="headerlink" title="自动生成导入库"></a>自动生成导入库</h1><p>生成DLL导入库lib的方案有很多，最便利的方法是使用 ImpLib SDK 工具。具体教程如下：</p>
-<ul>
-<li>从官网下载最新的 ImpLib SDK 并解压，将 ImpLib SDK 的bin目录添加到系统环境变量 PATH 下。</li>
-<li>使用工具dll2def自动生成DLL的def文件</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\bin\dll2def c:\windows\system32\kernel32.dll kernel32.def</span><br></pre></td></tr></table></figure>
-<ul>
-<li>将生成的kernel32.def文件复制到 ImpLib SDK\src\Win32 文件下，然后运行 build_libs.bat，或者运行如下命令：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\bin\fasm kernel32.def kernel32.lib</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://huangwang.github.io/2018/06/15/DLL%E5%AF%BC%E5%87%BA%E7%B1%BB%E5%92%8C%E5%87%BD%E6%95%B0/">DLL导出类和函数</a>,by huangwang.</li>
-<li><a href="https://implib.sourceforge.io/EN.HTM" target="_blank" rel="noopener">ImpLib SDK Guide</a>,by implib.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/2/">下一页</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/55/">55</a><a class="extend next" rel="next" href="/page/2/">下一页</a>
   </nav>
 
 
@@ -2117,7 +2154,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">540</span>
+                    <span class="site-state-item-count">541</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

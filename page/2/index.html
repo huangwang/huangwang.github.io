@@ -314,6 +314,214 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2026/01/24/Transformers%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2026/01/24/Transformers%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/" itemprop="url">
+                  Transformers工具使用帮助
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2026-01-24 11:35:32" itemprop="dateCreated datePublished" datetime="2026-01-24T11:35:32+08:00">2026-01-24</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2026-01-25 16:40:05" itemprop="dateModified" datetime="2026-01-25T16:40:05+08:00">2026-01-25</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Transformers是为 PyTorch 打造的先进的机器学习工具。Transformers 充当跨文本、计算机视觉、音频、视频与多模态的最先进机器学习模型的「模型定义框架」，同时覆盖推理与训练。</p>
+<p>它将模型的定义集中化，使整个生态系统对该定义达成一致。transformers 是跨框架的枢纽：一旦某模型定义被支持，它通常就能兼容多数训练框架（如 Axolotl、Unsloth、DeepSpeed、FSDP、PyTorch‑Lightning 等）、推理引擎（如 vLLM、SGLang、TGI 等），以及依赖 transformers 模型定义的相关库（如 llama.cpp、mlx 等）。</p>
+<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>pip 下载的包太大，需要清除，可使用如下命令查看：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 查看 pip 下载包缓存位置</span><br><span class="line">pip cache dir</span><br><span class="line"></span><br><span class="line"># 清理所有缓存</span><br><span class="line">pip cache purge</span><br><span class="line"></span><br><span class="line"># 查看 pip 安装包位置</span><br><span class="line">pip show package_name</span><br></pre></td></tr></table></figure>
+
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>Transformers 支持 Python 3.9+，以及 PyTorch 2.1+。</p>
+<h2 id="创建虚拟环境"><a href="#创建虚拟环境" class="headerlink" title="创建虚拟环境"></a>创建虚拟环境</h2><p>使用 venv 或 uv（一个基于 Rust 的快速 Python 包与项目管理器）创建并激活虚拟环境：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># venv</span><br><span class="line">python -m venv .my-env</span><br><span class="line">source .my-env&#x2F;bin&#x2F;activate</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装-Transformers"><a href="#安装-Transformers" class="headerlink" title="安装 Transformers"></a>安装 Transformers</h2><p>在虚拟环境中安装 Transformers：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># pip安装 pytorch gpu 版本</span><br><span class="line">pip install torch&#x3D;&#x3D;2.4.1 torchvision&#x3D;&#x3D;0.19.1 torchaudio&#x3D;&#x3D;2.4.1  --index-url https:&#x2F;&#x2F;download.pytorch.org&#x2F;whl&#x2F;cu121</span><br><span class="line">pip install transformers</span><br><span class="line"></span><br><span class="line"># pip安装默认 pytorch cpu 版本</span><br><span class="line">pip install torch&#x3D;&#x3D;2.4.1 torchvision&#x3D;&#x3D;0.19.1 torchaudio&#x3D;&#x3D;2.4.1 --index-url https:&#x2F;&#x2F;download.pytorch.org&#x2F;whl&#x2F;cpu</span><br><span class="line">pip install transformers</span><br><span class="line"></span><br><span class="line"># 方括号 [] 的作用是指定额外的可选依赖包。</span><br><span class="line">pip install &quot;transformers[torch]&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="检查PyTorch-GPU-版本安装是否成功"><a href="#检查PyTorch-GPU-版本安装是否成功" class="headerlink" title="检查PyTorch GPU 版本安装是否成功"></a>检查PyTorch GPU 版本安装是否成功</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import torch</span><br><span class="line">print(torch.__version__)  # 应该显示 2.4.1+cu121</span><br><span class="line">print(torch.cuda.is_available())  # 应该为 True（GPU版本）</span><br><span class="line">print(torch.version.cuda)  # 应该显示 12.1</span><br></pre></td></tr></table></figure>
+
+<h1 id="快速上手"><a href="#快速上手" class="headerlink" title="快速上手"></a>快速上手</h1><h2 id="官方示例"><a href="#官方示例" class="headerlink" title="官方示例"></a>官方示例</h2><p>使用 Pipeline API 一步上手。Pipeline 是一个高级推理类，支持文本、音频、视觉与多模态任务，负责输入预处理并返回适配的输出。</p>
+<p>实例化一个用于文本生成的 pipeline，指定使用的模型。模型会被下载并缓存，方便复用。最后传入文本作为提示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from transformers import pipeline</span><br><span class="line"></span><br><span class="line">pipeline &#x3D; pipeline(task&#x3D;&quot;text-generation&quot;, model&#x3D;&quot;Qwen&#x2F;Qwen2.5-1.5B&quot;)</span><br><span class="line">pipeline(&quot;the secret to baking a really good cake is &quot;)</span><br></pre></td></tr></table></figure>
+
+<p>transformers自动下载模型的保存位置：C:\Users\jack.cache\huggingface\hub\，在模型下载以后，可以保存到其他位置。</p>
+<h2 id="下载模型"><a href="#下载模型" class="headerlink" title="下载模型"></a>下载模型</h2><p>由于某些原因，国内的服务器可能无法直接访问huggingface.co。可以通过配置使用其镜像站。例如:hf-mirror.com。</p>
+<p>hf-mirror.com是用于镜像 huggingface.co 域名。作为一个公益项目，致力于帮助国内AI开发者快速、稳定的下载模型、数据集。</p>
+<p>下面介绍从 hf-mirror.com 下载大模型的方法：</p>
+<ul>
+<li>激活 python 虚拟环境</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Script\activate</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置环境变量</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set HF_ENDPOINT&#x3D;https:&#x2F;&#x2F;hf-mirror.com</span><br><span class="line">echo %HF_ENDPOINT%</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下载大模型</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 下载大模型默认保存位置：C:\Users\jack\.cache\huggingface\hub\</span><br><span class="line">hf download Qwen&#x2F;Qwen2.5-0.5B</span><br><span class="line"></span><br><span class="line"># 自定义大模型保存位置</span><br><span class="line">hf download Qwen&#x2F;Qwen2.5-0.5B --local-dir .&#x2F;LLM&#x2F;Qwen&#x2F;Qwen2.5-0.5B</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下载数据集</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 自定义数据集保存位置</span><br><span class="line">hf download --repo-type dataset --local-dir DataSet&#x2F;glue glue</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://huggingface.co/docs/transformers/zh/index" target="_blank" rel="noopener">Transformers简介</a>,by huggingface.</li>
+<li><a href="https://github.com/huggingface/transformers" target="_blank" rel="noopener">Transformers</a>,by huggingface.</li>
+<li><a href="https://blog.csdn.net/qq_44853387/article/details/140671945" target="_blank" rel="noopener">transformers无法连接huggingface，无法从huggingface下载模型</a>,by Alley cat.</li>
+<li><a href="https://www.bilibili.com/read/cv39637289/?opus_fallback=1" target="_blank" rel="noopener">大模型文件从huggingface下载失败的解决办法</a>,by AI8ge8888888.</li>
+<li><a href="https://blog.csdn.net/a1920993165/article/details/127989780" target="_blank" rel="noopener">transformers用pipeline下载的模型路径</a>,by 小怪兽会微笑.</li>
+<li><a href="https://www.cnblogs.com/menkeyi/p/18605927" target="_blank" rel="noopener">HF Transformers Pipelines</a>,by MKY-门可意.</li>
+<li><a href="https://comate.baidu.com/zh/page/ce49c75x1lj" target="_blank" rel="noopener">PyTorch中GPU可用性验证与模型训练加速实践</a>,by comate.</li>
+<li><a href="https://blog.frognew.com/2024/06/using-huggingface-cli-to-download-models.html" target="_blank" rel="noopener">使用huggingface-cli下载模型</a>,by 青蛙小白.</li>
+<li><a href="https://blog.csdn.net/weixin_59243359/article/details/142312831" target="_blank" rel="noopener">最简单的一文安装Pytorch+CUDA</a>,by crownyouyou.</li>
+<li><a href="https://blog.csdn.net/qq_45744200/article/details/145113110" target="_blank" rel="noopener">安装PyTorch 2.4.1+cu121（本机电脑cuda支持12.7）</a>,by 程序改变世界&amp;.</li>
+<li><a href="https://hf-mirror.com/" target="_blank" rel="noopener">hf-mirror</a>,by hf-mirror.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/681946705" target="_blank" rel="noopener">从模型到前端，你应该知道的LLM生态系统指南</a>,by deephub.</li>
+<li><a href="https://blog.csdn.net/xx_nm98/article/details/144789007" target="_blank" rel="noopener">7个用于运行LLM的最佳开源WebUI</a>,by Python编程杰哥.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2026/01/13/%E9%93%B6%E6%B2%B3%E9%BA%92%E9%BA%9F%E6%A1%8C%E9%9D%A2%E7%89%88V4%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E8%AE%BF%E9%97%AE%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1857,219 +2065,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2025/09/20/NTP%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5%E8%AE%BE%E7%BD%AE%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2025/09/20/NTP%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5%E8%AE%BE%E7%BD%AE%E6%96%B9%E6%B3%95/" itemprop="url">
-                  NTP时间同步设置方法
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2025-09-20 12:03:15" itemprop="dateCreated datePublished" datetime="2025-09-20T12:03:15+08:00">2025-09-20</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2026-06-05 19:21:54" itemprop="dateModified" datetime="2026-06-05T19:21:54+08:00">2026-06-05</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>对于分布式系统的运转而言，各个分布式的实体基于同一时间标准是必要条件，如果各个分布式实体的时间标准不统一，整个系统必然分崩离析。下面介绍在不同操作系统平台设置 NTP 客户端的方法。</p>
-<h1 id="Windows平台"><a href="#Windows平台" class="headerlink" title="Windows平台"></a>Windows平台</h1><h2 id="默认的-w32time"><a href="#默认的-w32time" class="headerlink" title="默认的 w32time"></a>默认的 w32time</h2><ul>
-<li>设置 NTP 时间服务器</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">打开日期和时间设置</span><br><span class="line"></span><br><span class="line">找到Internet时间设置</span><br><span class="line"></span><br><span class="line">选择NTP服务器并同步</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>调整时间同步频率</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">打开注册表编辑器（regedit）。</span><br><span class="line"></span><br><span class="line">导航到 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient。</span><br><span class="line"></span><br><span class="line">找到名为 SpecialPollInterval 的DWORD值，双击打开，在“数值数据”中填入期望的同步间隔（以秒为单位）即可调整同步频率。</span><br></pre></td></tr></table></figure>
-
-<p><strong>注意：</strong> SpecialPollInterval 值的设置必须在位于 MinPollInterval 和 MaxPollInterval 之间，否则 NTP 客户端不会按 SpecialPollInterval 预期同步。具体请参考：<a href="https://www.sohu.com/a/817704068_120400677" target="_blank" rel="noopener">京准电钟课堂：NTP时钟同步时客户端未按预期同步 </a>。</p>
-<h2 id="Meinberg的NTP服务程序"><a href="#Meinberg的NTP服务程序" class="headerlink" title="Meinberg的NTP服务程序"></a>Meinberg的NTP服务程序</h2><p>安装 Meinberg NTP 服务程序请参考：</p>
-<ul>
-<li><a href="https://blog.csdn.net/weixin_30907523/article/details/99386124" target="_blank" rel="noopener">windows做时间服务器，linux和windows时间同步</a></li>
-</ul>
-<p>Meinberg NTP 服务程序的配置：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">restrict 0.0.0.0 mask 0.0.0.0 nomodify</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"># Use drift file </span><br><span class="line">driftfile &quot;C:\Program Files (x86)\NTP\etc\ntp.drift&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server time.windows.com iburst minpoll 6 maxpoll 7</span><br><span class="line">server 1.asia.pool.ntp.org iburst minpoll 6 maxpoll 7</span><br><span class="line">server 2.asia.pool.ntp.org iburst minpoll 6 maxpoll 7</span><br><span class="line">server 0.us.pool.ntp.org iburst minpoll 6 maxpoll 7</span><br><span class="line">server 1.us.pool.ntp.org iburst minpoll 6 maxpoll 7</span><br><span class="line">server 2.us.pool.ntp.org iburst minpoll 6 maxpoll 7</span><br></pre></td></tr></table></figure>
-
-<p>查看NTP目前运行状态</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd C:\Program Files (x86)\NTP\bin</span><br><span class="line"></span><br><span class="line">ntpq -p</span><br></pre></td></tr></table></figure>
-
-<h1 id="Linux平台"><a href="#Linux平台" class="headerlink" title="Linux平台"></a>Linux平台</h1><blockquote>
-<p>chrony 既可作时间服务器服务端，也可作客户端。性能比 ntp 好，且配置管理方便。chrony 由两个程序组成，分别是 chronyd 和 chronyc。chronyd 是一个后台运行的守护进程，用于调整内核中运行的系统时钟和时钟服务器同步。它确定计算机增减时间的比率，并对此进行补偿。chronyc 提供了一个用户界面，用于监控性能并进行多样化的配置。它可以在 chronyd 实例控制的计算机上工作，也可以在一台不同的远程计算机上工作。</p>
-</blockquote>
-<p>以 NTP 工具 Chrony 为例，具体步骤如下：</p>
-<ul>
-<li>安装chrony</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 查看 chrony 依赖的包</span><br><span class="line">apt-cache depends chrony</span><br><span class="line"></span><br><span class="line"># 安装chrony，观察chrony依赖的包</span><br><span class="line">sudo apt-get install chrony</span><br><span class="line"></span><br><span class="line"># 下载 chrony及其依赖包</span><br><span class="line">apt-get download chrony </span><br><span class="line"></span><br><span class="line"># 离线安装chrony</span><br><span class="line">sudo dpkg -i *.deb</span><br></pre></td></tr></table></figure>
-
-
-<ul>
-<li>修改配置文件 /etc/chrony/chrony.conf</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 注释默认的 NTP 服务器pool，配置上级时间服务器</span><br><span class="line">server 192.168.1.30 iburst</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>重启chrony服务</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 获取 chronyd 的PID</span><br><span class="line">pgrep chronyd</span><br><span class="line"></span><br><span class="line"># 直接终止（推荐）</span><br><span class="line">kill &lt;chronyd的PID&gt;</span><br><span class="line"></span><br><span class="line"># 强制终止（如果进程没有响应）</span><br><span class="line">kill -9 &lt;chronyd的PID&gt;</span><br><span class="line"></span><br><span class="line"># 启动 chronyd</span><br><span class="line">sudo  chronyd</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>查看并等待与NTP服务器同步</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 确保你的chrony服务器自身已经成功与上层服务器同步。可以通过 chronyc sources 命令检查，服务端需要先成功同步时间，才能为客户端提供同步服务, NTP服务器前设置 ^* 表示已与该服务区时钟同步。</span><br><span class="line"></span><br><span class="line">chronyc sources -v</span><br><span class="line">chronyc sourcestats -v</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>手动同步NTP客户端时间</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chronyc -a makestep</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://huangwang.github.io/2024/10/30/NTP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">NTP协议学习笔记</a>,by jackhaung.</li>
-<li><a href="https://blog.csdn.net/hulangbotufei/article/details/125253825" target="_blank" rel="noopener">WINDOWS 10如何配置NTP服务（Server&amp;Client）</a>,by 胡浪波.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/364727871" target="_blank" rel="noopener">windows系统时间同步及同步频率设置</a>,by li88811.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/18898283639" target="_blank" rel="noopener">第三章：ubuntu 24.04.1 ntp服务安装</a>,by 王小二.</li>
-<li><a href="https://www.cnblogs.com/lsgxeva/p/14265513.html" target="_blank" rel="noopener">Ubuntu部署NTP服务器和客户端</a>,by lsgxeva.</li>
-<li><a href="https://www.sohu.com/a/817704068_120400677" target="_blank" rel="noopener">京准电钟课堂：NTP时钟同步时客户端未按预期同步 </a>, by 安徽京准2024.</li>
-<li><a href="https://www.seegeek.cn/2021/09/18/%E5%AE%89%E8%A3%85meinberg%E7%9A%84ntp%E6%9C%8D%E5%8A%A1%E7%A8%8B%E5%BA%8F/" target="_blank" rel="noopener">安装Meinberg的NTP服务程序</a>,by nick.</li>
-<li><a href="https://blog.csdn.net/weixin_30907523/article/details/99386124" target="_blank" rel="noopener">windows做时间服务器，linux和windows时间同步</a>,by weixin_30907523.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2117,7 +2112,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">544</span>
+                    <span class="site-state-item-count">545</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

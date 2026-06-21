@@ -24412,4 +24412,37 @@ console.log(y);</code></pre></li>
         <tag>python</tag>
       </tags>
   </entry>
+  <entry>
+    <title>生产验证的编程模式读书笔记</title>
+    <url>/2026/06/21/%E7%94%9F%E4%BA%A7%E9%AA%8C%E8%AF%81%E7%9A%84%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>读书使人进步。</p>
+<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><h2 id="位掩码-Bitmask"><a href="#位掩码-Bitmask" class="headerlink" title="位掩码 (Bitmask)"></a>位掩码 (Bitmask)</h2><p>将多个布尔标志打包到一个整数中，通过位运算实现常数时间的集合操作。</p>
+<h2 id="最小堆-优先队列-Min-Heap"><a href="#最小堆-优先队列-Min-Heap" class="headerlink" title="最小堆 / 优先队列 (Min Heap)"></a>最小堆 / 优先队列 (Min Heap)</h2><p>存储在数组中的二叉树，最小元素始终在根节点，支持 O(1) 查看和 O(log n) 插入/删除。</p>
+<h2 id="环形缓冲区-Ring-Buffer"><a href="#环形缓冲区-Ring-Buffer" class="headerlink" title="环形缓冲区 (Ring Buffer)"></a>环形缓冲区 (Ring Buffer)</h2><p>固定大小的缓冲区通过模运算实现循环，提供常数时间的入队出队且无需内存分配。</p>
+<h2 id="Trie-前缀树-Trie-Prefix-Tree"><a href="#Trie-前缀树-Trie-Prefix-Tree" class="headerlink" title="Trie 前缀树 (Trie / Prefix Tree)"></a>Trie 前缀树 (Trie / Prefix Tree)</h2><p>在树中存储字符串，每条边代表一个字符——共享前缀共享节点，实现按键长度 O(k) 查找。</p>
+<h2 id="跳表-Skip-List"><a href="#跳表-Skip-List" class="headerlink" title="跳表 (Skip List)"></a>跳表 (Skip List)</h2><p>概率有序数据结构，O(log n) 搜索、插入和删除——比平衡树更简单，性能相当。</p>
+<h2 id="布隆过滤器-Bloom-Filter"><a href="#布隆过滤器-Bloom-Filter" class="headerlink" title="布隆过滤器 (Bloom Filter)"></a>布隆过滤器 (Bloom Filter)</h2><p>以 O(k) 时间测试集合成员资格，零漏判——代价是可调的误判率。</p>
+<h2 id="LRU-缓存-LRU-Cache"><a href="#LRU-缓存-LRU-Cache" class="headerlink" title="LRU 缓存 (LRU Cache)"></a>LRU 缓存 (LRU Cache)</h2><p>缓存满时淘汰最近最少使用的条目——用哈希表加双向链表实现 O(1) 的 get 和 put。</p>
+<h2 id="B-树-B-Tree"><a href="#B-树-B-Tree" class="headerlink" title="B+ 树 (B+ Tree)"></a>B+ 树 (B+ Tree)</h2><p>自平衡多路树，高扇出——内部节点负责路由，叶节点存储数据，所有叶节点通过链表相连以支持高效范围扫描。</p>
+<h2 id="标签联合体-Tagged-Union-Variant"><a href="#标签联合体-Tagged-Union-Variant" class="headerlink" title="标签联合体 (Tagged Union / Variant)"></a>标签联合体 (Tagged Union / Variant)</h2><p>将类型标签与值联合体配对存储，使一个变量安全地持有不同类型，通过标签分发行为。</p>
+<h2 id="Merkle-树-Merkle-Tree"><a href="#Merkle-树-Merkle-Tree" class="headerlink" title="Merkle 树 (Merkle Tree)"></a>Merkle 树 (Merkle Tree)</h2><p>对叶子节点做哈希，然后逐层向上哈希配对——以 O(log n) 的代价验证任意叶子的完整性，无需重新哈希整个数据集。</p>
+<h2 id="合并迭代器-Merge-Iterator-K-Way-Merge"><a href="#合并迭代器-Merge-Iterator-K-Way-Merge" class="headerlink" title="合并迭代器 (Merge Iterator / K-Way Merge)"></a>合并迭代器 (Merge Iterator / K-Way Merge)</h2><p>使用最小堆将 K 个有序流合并为一个有序输出——跨多个数据源创建”统一视图”的通用方法。</p>
+<h1 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h1><h2 id="信号量-有界并发-Semaphore"><a href="#信号量-有界并发-Semaphore" class="headerlink" title="信号量 / 有界并发 (Semaphore)"></a>信号量 / 有界并发 (Semaphore)</h2><p>通过维护计数器限制并发操作数量——工作前获取，完成后释放，达到上限时阻塞。</p>
+<h2 id="Actor-模型"><a href="#Actor-模型" class="headerlink" title="Actor 模型"></a>Actor 模型</h2><p>每个 Actor 拥有一个信箱并按顺序处理消息——没有共享状态，没有锁，仅通过消息传递实现安全并发。</p>
+<h2 id="工作窃取-Work-Stealing"><a href="#工作窃取-Work-Stealing" class="headerlink" title="工作窃取 (Work Stealing)"></a>工作窃取 (Work Stealing)</h2><p>空闲线程从繁忙线程的队列中窃取任务——无需中央协调即可动态均衡负载。</p>
+<h2 id="MVCC-多版本并发控制"><a href="#MVCC-多版本并发控制" class="headerlink" title="MVCC 多版本并发控制"></a>MVCC 多版本并发控制</h2><p>为每个值保留多个带时间戳的版本，读者永远不阻塞写者——每个事务看到一致的快照，无需加锁。</p>
+<h2 id="协作调度-Cooperative-Scheduling"><a href="#协作调度-Cooperative-Scheduling" class="headerlink" title="协作调度 (Cooperative Scheduling)"></a>协作调度 (Cooperative Scheduling)</h2><p>将长时间运行的任务拆分为小块，在每块之间让出控制权，以保持系统响应。</p>
+<h2 id="双缓冲-Double-Buffering"><a href="#双缓冲-Double-Buffering" class="headerlink" title="双缓冲 (Double Buffering)"></a>双缓冲 (Double Buffering)</h2><p>维护两份状态副本，在它们之间原子切换，让读取方始终看到一致的快照。</p>
+<h1 id="背压-流控-Backpressure"><a href="#背压-流控-Backpressure" class="headerlink" title="背压 / 流控 (Backpressure)"></a>背压 / 流控 (Backpressure)</h1><p>当消费者跟不上时减慢生产者——用有界缓冲区和需求信号防止资源耗尽。</p>
+<h1 id="事件循环-反应器-Event-Loop-Reactor"><a href="#事件循环-反应器-Event-Loop-Reactor" class="headerlink" title="事件循环 / 反应器 (Event Loop / Reactor)"></a>事件循环 / 反应器 (Event Loop / Reactor)</h1><p>单线程循环通过 epoll/kqueue 多路复用 I/O，将就绪事件分发给回调——无需线程即可处理数千连接。</p>
+<h1 id="逻辑时钟-Epoch-Logical-Clock"><a href="#逻辑时钟-Epoch-Logical-Clock" class="headerlink" title="逻辑时钟 / Epoch (Logical Clock)"></a>逻辑时钟 / Epoch (Logical Clock)</h1><p>单调递增的计数器，无需物理时钟即可排序事件——实现一致性快照和过期检测。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://totoro-jam.github.io/battle-tested-patterns/zh/" target="_blank" rel="noopener">Battle-Tested Patterns</a>,by totoro-jam.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>数据结构</tag>
+      </tags>
+  </entry>
 </search>

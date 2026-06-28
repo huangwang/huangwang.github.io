@@ -24433,9 +24433,35 @@ console.log(y);</code></pre></li>
 <h2 id="MVCC-多版本并发控制"><a href="#MVCC-多版本并发控制" class="headerlink" title="MVCC 多版本并发控制"></a>MVCC 多版本并发控制</h2><p>为每个值保留多个带时间戳的版本，读者永远不阻塞写者——每个事务看到一致的快照，无需加锁。</p>
 <h2 id="协作调度-Cooperative-Scheduling"><a href="#协作调度-Cooperative-Scheduling" class="headerlink" title="协作调度 (Cooperative Scheduling)"></a>协作调度 (Cooperative Scheduling)</h2><p>将长时间运行的任务拆分为小块，在每块之间让出控制权，以保持系统响应。</p>
 <h2 id="双缓冲-Double-Buffering"><a href="#双缓冲-Double-Buffering" class="headerlink" title="双缓冲 (Double Buffering)"></a>双缓冲 (Double Buffering)</h2><p>维护两份状态副本，在它们之间原子切换，让读取方始终看到一致的快照。</p>
-<h1 id="背压-流控-Backpressure"><a href="#背压-流控-Backpressure" class="headerlink" title="背压 / 流控 (Backpressure)"></a>背压 / 流控 (Backpressure)</h1><p>当消费者跟不上时减慢生产者——用有界缓冲区和需求信号防止资源耗尽。</p>
-<h1 id="事件循环-反应器-Event-Loop-Reactor"><a href="#事件循环-反应器-Event-Loop-Reactor" class="headerlink" title="事件循环 / 反应器 (Event Loop / Reactor)"></a>事件循环 / 反应器 (Event Loop / Reactor)</h1><p>单线程循环通过 epoll/kqueue 多路复用 I/O，将就绪事件分发给回调——无需线程即可处理数千连接。</p>
-<h1 id="逻辑时钟-Epoch-Logical-Clock"><a href="#逻辑时钟-Epoch-Logical-Clock" class="headerlink" title="逻辑时钟 / Epoch (Logical Clock)"></a>逻辑时钟 / Epoch (Logical Clock)</h1><p>单调递增的计数器，无需物理时钟即可排序事件——实现一致性快照和过期检测。</p>
+<h2 id="背压-流控-Backpressure"><a href="#背压-流控-Backpressure" class="headerlink" title="背压 / 流控 (Backpressure)"></a>背压 / 流控 (Backpressure)</h2><p>当消费者跟不上时减慢生产者——用有界缓冲区和需求信号防止资源耗尽。</p>
+<h2 id="事件循环-反应器-Event-Loop-Reactor"><a href="#事件循环-反应器-Event-Loop-Reactor" class="headerlink" title="事件循环 / 反应器 (Event Loop / Reactor)"></a>事件循环 / 反应器 (Event Loop / Reactor)</h2><p>单线程循环通过 epoll/kqueue 多路复用 I/O，将就绪事件分发给回调——无需线程即可处理数千连接。</p>
+<h2 id="逻辑时钟-Epoch-Logical-Clock"><a href="#逻辑时钟-Epoch-Logical-Clock" class="headerlink" title="逻辑时钟 / Epoch (Logical Clock)"></a>逻辑时钟 / Epoch (Logical Clock)</h2><p>单调递增的计数器，无需物理时钟即可排序事件——实现一致性快照和过期检测。</p>
+<h1 id="系统"><a href="#系统" class="headerlink" title="系统"></a>系统</h1><h2 id="熔断器-Circuit-Breaker"><a href="#熔断器-Circuit-Breaker" class="headerlink" title="熔断器 (Circuit Breaker)"></a>熔断器 (Circuit Breaker)</h2><p>通过跟踪错误次数自动跳闸——快速失败，而不是堆积超时等待。</p>
+<h2 id="限流器-令牌桶-Rate-Limiter"><a href="#限流器-令牌桶-Rate-Limiter" class="headerlink" title="限流器 / 令牌桶 (Rate Limiter)"></a>限流器 / 令牌桶 (Rate Limiter)</h2><p>通过维护一个按固定速率补充的令牌桶来控制吞吐量——每次操作消耗一个令牌，桶空时拒绝请求。</p>
+<h2 id="指数退避重试-Retry-with-Backoff"><a href="#指数退避重试-Retry-with-Backoff" class="headerlink" title="指数退避重试 (Retry with Backoff)"></a>指数退避重试 (Retry with Backoff)</h2><p>操作失败时以指数增长的延迟重试，加随机抖动避免惊群效应。</p>
+<h2 id="预写日志-Write-Ahead-Log"><a href="#预写日志-Write-Ahead-Log" class="headerlink" title="预写日志 (Write-Ahead Log)"></a>预写日志 (Write-Ahead Log)</h2><p>在应用变更前先将每个变更记录到持久存储——重放日志即可从崩溃中恢复，零数据丢失。</p>
+<h2 id="批处理-Batch-Processing"><a href="#批处理-Batch-Processing" class="headerlink" title="批处理 (Batch Processing)"></a>批处理 (Batch Processing)</h2><p>累积单个操作并作为一组执行，将每次操作的开销分摊到整个批次。</p>
+<h2 id="一致性哈希-Consistent-Hashing"><a href="#一致性哈希-Consistent-Hashing" class="headerlink" title="一致性哈希 (Consistent Hashing)"></a>一致性哈希 (Consistent Hashing)</h2><p>将键分布到虚拟环上的节点，添加或移除节点时只重映射约 1/n 的键。</p>
+<h2 id="依赖图-Dependency-Graph"><a href="#依赖图-Dependency-Graph" class="headerlink" title="依赖图 (Dependency Graph)"></a>依赖图 (Dependency Graph)</h2><p>将依赖关系建模为有向无环图，拓扑排序确定合法执行顺序——在死锁前检测循环。</p>
+<h2 id="中间件-管道链-Middleware-Pipeline-Chain"><a href="#中间件-管道链-Middleware-Pipeline-Chain" class="headerlink" title="中间件 / 管道链 (Middleware / Pipeline Chain)"></a>中间件 / 管道链 (Middleware / Pipeline Chain)</h2><p>组合处理器，每个包裹下一个——前处理、调用 next、后处理——形成双向管道。</p>
+<h2 id="注册表-自注册-Registry"><a href="#注册表-自注册-Registry" class="headerlink" title="注册表 / 自注册 (Registry)"></a>注册表 / 自注册 (Registry)</h2><p>组件按名称将自身注册到全局查找表——消费者在运行时发现实现，无需硬编码依赖。</p>
+<h2 id="脏标记-Dirty-Flag"><a href="#脏标记-Dirty-Flag" class="headerlink" title="脏标记 (Dirty Flag)"></a>脏标记 (Dirty Flag)</h2><p>在变更时将对象标记为”脏”，延迟昂贵的重计算直到值真正被需要时再执行，然后清除标记。</p>
+<h2 id="LSM-树-Log-Structured-Merge-Tree"><a href="#LSM-树-Log-Structured-Merge-Tree" class="headerlink" title="LSM 树 (Log-Structured Merge Tree)"></a>LSM 树 (Log-Structured Merge Tree)</h2><p>将写入缓冲在内存中，刷写到磁盘的有序文件，后台合并文件——用读放大换取快速写入。</p>
+<h2 id="检查点-Checkpointing"><a href="#检查点-Checkpointing" class="headerlink" title="检查点 (Checkpointing)"></a>检查点 (Checkpointing)</h2><p>定期快照一致性状态，使恢复只需从检查点开始重放——而不是从时间的起点。</p>
+<h1 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h1><h2 id="对象池-Object-Pool"><a href="#对象池-Object-Pool" class="headerlink" title="对象池 (Object Pool)"></a>对象池 (Object Pool)</h2><p>预分配一组可复用对象，避免热路径上重复分配和垃圾回收的开销。</p>
+<h2 id="对象池-Object-Pool-1"><a href="#对象池-Object-Pool-1" class="headerlink" title="对象池 (Object Pool)"></a>对象池 (Object Pool)</h2><p>共享相同的不可变对象而非创建重复实例，用查找开销换取大量内存节省。</p>
+<h2 id="Arena-分配器-Arena-Allocator"><a href="#Arena-分配器-Arena-Allocator" class="headerlink" title="Arena 分配器 (Arena Allocator)"></a>Arena 分配器 (Arena Allocator)</h2><p>在预分配区域中通过移动指针分配对象——不再需要时一次性释放所有内存。</p>
+<h2 id="空闲链表-Free-List"><a href="#空闲链表-Free-List" class="headerlink" title="空闲链表 (Free List)"></a>空闲链表 (Free List)</h2><p>维护一个已释放槽位的链表，使分配和释放都是 O(1)——复用内存而无需调用系统分配器。</p>
+<h2 id="写时复制-Copy-on-Write"><a href="#写时复制-Copy-on-Write" class="headerlink" title="写时复制 (Copy-on-Write)"></a>写时复制 (Copy-on-Write)</h2><p>通过引用共享数据，直到有人修改时才创建私有副本——为读多写少的场景节省内存和分配开销。</p>
+<h2 id="引用计数-Reference-Counting"><a href="#引用计数-Reference-Counting" class="headerlink" title="引用计数 (Reference Counting)"></a>引用计数 (Reference Counting)</h2><p>通过原子计数器追踪所有者，归零时自动清理——无需垃圾回收的确定性资源生命周期管理。</p>
+<h2 id="墓碑-延迟删除-Tombstone"><a href="#墓碑-延迟删除-Tombstone" class="headerlink" title="墓碑 / 延迟删除 (Tombstone)"></a>墓碑 / 延迟删除 (Tombstone)</h2><p>用墓碑标记代替直接删除条目——后台进程稍后回收空间。</p>
+<h2 id="驻留-符号表-Interning-Symbol-Table"><a href="#驻留-符号表-Interning-Symbol-Table" class="headerlink" title="驻留 / 符号表 (Interning / Symbol Table)"></a>驻留 / 符号表 (Interning / Symbol Table)</h2><p>通过规范化查找表去重不可变值——用 O(1) 的指针比较替代 O(n) 的内容比较。</p>
+<h1 id="行为型"><a href="#行为型" class="headerlink" title="行为型"></a>行为型</h1><h2 id="状态机-State-Machine"><a href="#状态机-State-Machine" class="headerlink" title="状态机 (State Machine)"></a>状态机 (State Machine)</h2><p>将实体的生命周期建模为一组状态和显式转换，让不可能的状态不可表达，每次状态变更可审计。</p>
+<h2 id="观察者-发布-订阅-Observer-Pub-Sub"><a href="#观察者-发布-订阅-Observer-Pub-Sub" class="headerlink" title="观察者 / 发布-订阅 (Observer / Pub-Sub)"></a>观察者 / 发布-订阅 (Observer / Pub-Sub)</h2><p>让对象订阅事件并在事件发生时收到通知，实现生产者与消费者的解耦——发送方不需要知道谁在监听。</p>
+<h2 id="迭代器-惰性求值-Iterator"><a href="#迭代器-惰性求值-Iterator" class="headerlink" title="迭代器 / 惰性求值 (Iterator)"></a>迭代器 / 惰性求值 (Iterator)</h2><p>逐个处理序列中的元素而不实例化整个集合，通过可组合的转换实现零中间分配。</p>
+<h2 id="差异-补丁-Diff-Patch"><a href="#差异-补丁-Diff-Patch" class="headerlink" title="差异/补丁 (Diff / Patch)"></a>差异/补丁 (Diff / Patch)</h2><p>比较两个序列，计算将一个转换为另一个所需的最小操作集（插入、删除、移动）。</p>
+<h2 id="虚函数表-操作分发-Vtable-Ops-Dispatch"><a href="#虚函数表-操作分发-Vtable-Ops-Dispatch" class="headerlink" title="虚函数表 / 操作分发 (Vtable / Ops Dispatch)"></a>虚函数表 / 操作分发 (Vtable / Ops Dispatch)</h2><p>将函数指针组合到结构体中实现运行时多态——接口、trait 和虚方法背后的手动基础。</p>
+<h2 id="访问者-树遍历器-Visitor-Tree-Walker"><a href="#访问者-树遍历器-Visitor-Tree-Walker" class="headerlink" title="访问者 / 树遍历器 (Visitor / Tree Walker)"></a>访问者 / 树遍历器 (Visitor / Tree Walker)</h2><p>将树遍历与操作解耦，通过分发到类型特定的回调——使新操作无需修改树结构。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://totoro-jam.github.io/battle-tested-patterns/zh/" target="_blank" rel="noopener">Battle-Tested Patterns</a>,by totoro-jam.</li>
 </ol>

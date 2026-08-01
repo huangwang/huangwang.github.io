@@ -24471,4 +24471,30 @@ console.log(y);</code></pre></li>
         <tag>数据结构</tag>
       </tags>
   </entry>
+  <entry>
+    <title>gRPC使用帮助</title>
+    <url>/2026/08/01/gRPC%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/</url>
+    <content><![CDATA[<p>开发一个C/S架构的软件，准备使用gRPC技术。</p>
+<h1 id="gRPC-简介"><a href="#gRPC-简介" class="headerlink" title="gRPC 简介"></a>gRPC 简介</h1><p>gRPC (gRPC Remote Procedure Calls) 是一个跨平台的开源高性能远程过程调用（RPC）框架。</p>
+<p>gRPC最初由Google创建，它使用一个通用的RPC基础设施Stubby来连接其数据中心内外运行的大量微服务，始于2001年。2015年3月，Google决定构建下一个版本的Stubby并将其开源，于是就有了gRPC。现在除了Google之外，许多组织都在使用它来支持从微服务到计算的“最后一英里”（移动、Web和物联网）的用例。</p>
+<p>gRPC基于HTTP/2协议传输数据，使用Protocol Buffers作为接口描述语言，并提供认证（authentication）、双向流（bidirectional streaming）和流量控制、阻塞或非阻塞绑定以及取消和超时（Deadlines）等功能。它为许多语言生成跨平台的客户端和服务器绑定。最常见的使用场景包括在微服务风格的架构中连接服务，或将移动设备客户端连接到后端服务。</p>
+<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><p>默认情况下，gRPC 使用 Protocol Buffers，这是 Google 成熟的开源机制，用于序列化结构化 数据（尽管它也可以与其他数据格式如 JSON 一起使用）。</p>
+<p>使用 Protocol Buffers 的第一步是在 proto 文件中定义您要序列化的数据结构：这是一个带有 .proto 扩展名的普通文本文件。Protocol buffer 数据被结构化为 消息 (messages)，其中每条消息都是一条逻辑信息记录，包含一系列称为 字段 (fields) 的名称-值对。以下是一个简单的示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">message Person &#123;</span><br><span class="line">  string name &#x3D; 1;</span><br><span class="line">  int32 id &#x3D; 2;</span><br><span class="line">  bool has_ponycopter &#x3D; 3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后，一旦指定了数据结构，您就可以使用 Protocol Buffer 编译器 protoc 从您的 proto 定义中生成您所选语言的数据访问类。这些类为每个字段提供了简单的访问器，例如 name() 和 set_name()，以及将整个结构序列化/解析为原始字节的方法。</p>
+<p>您可以在普通 proto 文件中定义 gRPC 服务，并将 RPC 方法参数和返回类型指定为 Protocol Buffer 消息:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; The greeter service definition.</span><br><span class="line">service Greeter &#123;</span><br><span class="line">  &#x2F;&#x2F; Sends a greeting</span><br><span class="line">  rpc SayHello (HelloRequest) returns (HelloReply) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; The request message containing the user&#39;s name.</span><br><span class="line">message HelloRequest &#123;</span><br><span class="line">  string name &#x3D; 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; The response message containing the greetings</span><br><span class="line">message HelloReply &#123;</span><br><span class="line">  string message &#x3D; 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://grpc.org.cn/docs/what-is-grpc/introduction/" target="_blank" rel="noopener">gRPC 简介</a>,by gprc.</li>
+<li><a href="https://zh.wikipedia.org/zh-cn/GRPC" target="_blank" rel="noopener">GRPC</a>,by wiki.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>C/C++</tag>
+        <tag>软件架构</tag>
+      </tags>
+  </entry>
 </search>

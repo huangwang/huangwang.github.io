@@ -24548,7 +24548,7 @@ console.log(y);</code></pre></li>
     <url>/2026/08/20/%E7%A6%BB%E7%BA%BF%E9%83%A8%E7%BD%B2AI-Agent%E7%9A%84%E6%96%B9%E6%B3%95/</url>
     <content><![CDATA[<p>最近想离线部署一套AI编程工具，以提高生产力。首先研究离线部署LLM的方法，再研究离线部署AI Agent的方法。</p>
 <h1 id="Pi-离线安装"><a href="#Pi-离线安装" class="headerlink" title="Pi 离线安装"></a>Pi 离线安装</h1><p>开源的AI Agent有很多，这里使用 Pi agent，因为该AI代理具备持久记忆和自我审查能力，支持完全离线运行，可在Ollama等本地模型上使用，具备长期记忆和自主迭代能力。</p>
-<h2 id="安装过程"><a href="#安装过程" class="headerlink" title="安装过程"></a>安装过程</h2><ul>
+<h2 id="安装过程1"><a href="#安装过程1" class="headerlink" title="安装过程1"></a>安装过程1</h2><ul>
 <li><p>安装 NVM nodejs多版本管理工具，从官网下载 <a href="https://www.nvmnode.com/guide/download.html" target="_blank" rel="noopener">NVM</a> 安装 NVM。</p>
 </li>
 <li><p>使用 nvm 安装最新的 nodejs LTS 版本</p>
@@ -24568,10 +24568,20 @@ console.log(y);</code></pre></li>
 <ul>
 <li>打包 npm 包</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm-bundle  @earendil-works&#x2F;pi-coding-agent</span><br></pre></td></tr></table></figure>
 
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<p>因为打包失败，无法离线安装，暂时放弃此安装方式。</p>
+<h2 id="安装过程2"><a href="#安装过程2" class="headerlink" title="安装过程2"></a>安装过程2</h2><ul>
+<li>从github下载 pi，即 <a href="https://github.com/earendil-works/pi/releases/download/v0.84.2/pi-windows-x64.zip" target="_blank" rel="noopener">pi-windows-x64.zip</a></li>
+<li>解压 pi-windows-x64.zip ，并将解压目录添加到 PATH 环境变量</li>
+</ul>
+<h2 id="配置过程"><a href="#配置过程" class="headerlink" title="配置过程"></a>配置过程</h2><p>pi 代理主要有两个配置文件，通常在目录 .pi/agent/ 下，一个配置文件名叫 settings.json，另一个配置文件名叫 models.json ，需要手动创建。两个配置文件内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># settings.json</span><br><span class="line"># 设置 pi 版本、默认 LLM 提供者和默认 LLM</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  &quot;lastChangelogVersion&quot;: &quot;0.84.2&quot;,</span><br><span class="line">  &quot;defaultProvider&quot;: &quot;ollama&quot;,</span><br><span class="line">  &quot;defaultModel&quot;: &quot;deepseek-r1:1.5b&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># models.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  &quot;providers&quot;: &#123;</span><br><span class="line">    &quot;ollama&quot;: &#123;</span><br><span class="line">      &quot;baseUrl&quot;: &quot;http:&#x2F;&#x2F;localhost:11434&#x2F;v1&quot;,</span><br><span class="line">      &quot;api&quot;: &quot;openai-completions&quot;,</span><br><span class="line">      &quot;apiKey&quot;: &quot;ollama&quot;,</span><br><span class="line">      &quot;models&quot;: [</span><br><span class="line">        &#123; &quot;id&quot;: &quot;deepseek-r1:1.5b&quot; &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="内网部署"><a href="#内网部署" class="headerlink" title="内网部署"></a>内网部署</h2><p>拷贝 <a href="https://github.com/earendil-works/pi/releases/download/v0.84.2/pi-windows-x64.zip" target="_blank" rel="noopener">pi-windows-x64.zip</a> 和 目录 .pi/agent/ 到内网机器，按照同样的配置过程设置即可。</p>
+<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a href="https://zhuanlan.zhihu.com/p/2044142137369945147" target="_blank" rel="noopener">别只拿 AI 写代码了——用 Pi Agent + Skill 搭建你的全能工作流</a>,by 玩客笔记.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/2071363866802574677" target="_blank" rel="noopener">Pi Agent 深度剖析：一个”什么都不要”的编码智能体，凭什么一年 8.9 万星？—— 与 Codex、OpenCode 的实现对比</a>,by Arthur.</li>
 </ol>
 ]]></content>
       <tags>

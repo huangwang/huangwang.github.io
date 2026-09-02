@@ -21501,6 +21501,10 @@ console.log(y);</code></pre></li>
 <li><a href="https://zhuanlan.zhihu.com/p/1887585692919522766" target="_blank" rel="noopener">手把手教你离线安装Ollama</a>,by 张云飞.</li>
 <li><a href="https://eastondev.com/blog/zh/posts/ai/20260425-ollama-gpu-acceleration/" target="_blank" rel="noopener">Ollama GPU 加速配置：CUDA、ROCm 与 Metal 全平台实战指南</a>,by easton.</li>
 <li><a href="https://blog.csdn.net/qq_56463139/article/details/145625186" target="_blank" rel="noopener">当使用 ollama 本地部署 Error: could not connect to ollama app, is it running?</a>,by 系着秋天的落叶.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/1894425858841739455" target="_blank" rel="noopener">一文读懂大模型推理中的HTTP协议</a>,by 游凯超.</li>
+<li><a href="https://juejin.cn/post/7624184992536952867" target="_blank" rel="noopener">OpenAI API 协议完全指南 - 大模型应用开发的通用标准</a>,by 不想起名字1111111.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/692336625" target="_blank" rel="noopener">OpenAI API格式详解-Chat Completions</a>,by 啤酒泡泡.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/712003796" target="_blank" rel="noopener">工具调用:OpenAI 工具调用从一到多函数调用</a>,by JPPeng.</li>
 </ol>
 ]]></content>
       <tags>
@@ -24615,6 +24619,36 @@ console.log(y);</code></pre></li>
       <tags>
         <tag>笔记本</tag>
         <tag>机器学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MitmProxy抓包工具使用教程</title>
+    <url>/2026/09/02/MitmProxy%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[<p>最近在测试 trae、workbuddy、pi 三款 ai 代理，调用的是本地 ollama 部署的大模型，三款 ai 代理都会以兼容 OpenAI Api 的方式向 ollama 提供的 <a href="http://127.0.0.1:11434" target="_blank" rel="noopener">http://127.0.0.1:11434</a> 端口发出 http 请求，于是想通过一款 http 代理工具，抓取三款 ai 代理发出的兼容 OpenAI Api风格的 http 请求，从底层了解 ai 代理的原理。使用的 http 代理工具经豆包推荐为 MitmProxy，当然类似的工具还有 Fiddler 等。</p>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>mitmproxy 是一款免费开源的交互式的 https 代理。可以从 <a href="https://www.mitmproxy.org/downloads" target="_blank" rel="noopener">mitmproxy 官网地址</a>下载安装。 </p>
+<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><p>下载后的 mitmproxy 安装包解压后主要有三个可执行文件：</p>
+<ul>
+<li>mitmproxy，提供命令行界面</li>
+<li>mitmdump，提供一个简单的终端输出（还可以配合Python抓包改包）</li>
+<li>mitmweb，提供在线浏览器抓包界面</li>
+</ul>
+<h2 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h2><p>mitmproxy 做 reverse proxy 反向代理，客户端访问 mitmproxy，mitmproxy转发给 ollama 11434，全部流量被捕获。</p>
+<p>方法如下，打开命令提示符窗口，输入如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mitmweb --mode reverse:http:&#x2F;&#x2F;127.0.0.1:11434 -p 8888</span><br></pre></td></tr></table></figure>
+
+<p>mitmweb 会打开网页控制台 <a href="http://127.0.0.1:8081" target="_blank" rel="noopener">http://127.0.0.1:8081</a> , 可以在该网页查看所有转发 http 请求。</p>
+<p>修改 ai 代理自定义模型的 base_url，指向 mitmproxy，即：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">base_url &#x3D; &quot; http:&#x2F;&#x2F;127.0.0.1:8888&#x2F;v1&quot;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.mitmproxy.org/" target="_blank" rel="noopener">mitmproxy</a>,by mitmproxy.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/396398412" target="_blank" rel="noopener">实战|手把手教你如何使用抓包神器MitmProxy</a>,by 李运辰.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>常用工具</tag>
+        <tag>计算机网络</tag>
       </tags>
   </entry>
 </search>

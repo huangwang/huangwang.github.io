@@ -314,6 +314,196 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2026/09/04/QEMU%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jack Huang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2026/09/04/QEMU%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" itemprop="url">
+                  QEMU使用教程
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2026-09-04 21:18:55" itemprop="dateCreated datePublished" datetime="2026-09-04T21:18:55+08:00">2026-09-04</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2026-09-05 08:16:23" itemprop="dateModified" datetime="2026-09-05T08:16:23+08:00">2026-09-05</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近需要在 X86_64 的 Windows 10 的机器上安装 arm64 指令集的银河麒麟 v10 操作系统，因此研究一下 QEMU 的使用方法。</p>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>QEMU 是一款<strong>开源、跨平台的机器模拟器与虚拟机工具</strong>，核心两大能力：<strong>硬件模拟（全系统仿真）</strong> 和 <strong>用户态程序翻译</strong>，不需要依赖硬件虚拟化也能运行。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="Windows-安装"><a href="#Windows-安装" class="headerlink" title="Windows 安装"></a>Windows 安装</h2><ol>
+<li>下载二进制安装包：<a href="https://qemu.weilnetz.de/w64/" target="_blank" rel="noopener">https://qemu.weilnetz.de/w64/</a> ，下载<code>qemu‑w64‑setup‑xxxx.exe</code>安装程序</li>
+<li>安装，记住安装路径，默认：<code>C:\Program Files\qemu</code></li>
+<li><strong>把这个目录加到系统 PATH 环境变量</strong>（必须，否则 cmd 找不到 qemu‑xxx.exe）</li>
+<li>关闭旧 cmd/PowerShell，新开终端验证</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-aarch64.exe --version</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Windows 模拟 arm64：需要额外下载<code>QEMU_EFI.fd</code> UEFI 固件文件。</p>
+</blockquote>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h2 id="准备文件"><a href="#准备文件" class="headerlink" title="准备文件"></a>准备文件</h2><ol>
+<li>下载** ARM64 UEFI 固件 QEMU_EFI.fd（edk2‑aarch64‑code.fd）**，ARM 虚拟机没有 BIOS，靠 EFI 固件引导。</li>
+<li>下载 ARM64 系统 ISO 镜像（Ubuntu‑ARM64 / 银河麒麟 ARM64 等）</li>
+<li>创建虚拟磁盘（cmd 执行）</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu-img create -f qcow2 arm64_disk.qcow2 60G</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h2><p>把下面保存为 <code>install.bat</code>，修改路径为你本机真实路径：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">qemu-system-aarch64.exe ^</span><br><span class="line">-M virt ^</span><br><span class="line">-cpu corte-a72 ^</span><br><span class="line">-m 6G ^</span><br><span class="line">-smp 4 ^</span><br><span class="line">-accel tcg,thread&#x3D;multi ^</span><br><span class="line">-bios &quot;G:\Arm64\edk2-aarch64-code.fd&quot; ^</span><br><span class="line">-device ramfb ^</span><br><span class="line">-device qemu-xhci ^</span><br><span class="line">-device usb-kbd ^</span><br><span class="line">-device usb-tablet ^</span><br><span class="line">-nic user ^</span><br><span class="line">-drive if&#x3D;none,file&#x3D;arm64_disk.qcow2,id&#x3D;hd0 ^</span><br><span class="line">-device virtio-blk-device,drive&#x3D;hd0 ^</span><br><span class="line">-drive file&#x3D;&quot;G:\Arm64\Kylin-Desktop-V10-SP1-2503-Release-20250430-ARM64.iso&quot;,media&#x3D;cdrom</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<ul>
+<li><code>-M virt</code>：QEMU 标准 ARM 虚拟机板卡</li>
+<li><code>-cpu cortex‑a72</code>：模拟 ARMv8‑A CPU；也可以写<code>max</code></li>
+<li><code>-accel tcg,thread=multi</code>：软件多线程翻译，<strong>x86 Windows 唯一可用加速选项</strong>virtio-win</li>
+<li><code>-device ramfb</code>：显卡；不要用 virtio‑gpu，部分 ARM64 UEFI 不兼容QEMU</li>
+<li><code>-nic user</code>：NAT 网络，虚拟机可访问外网</li>
+<li><code>-bios</code>：指定 aarch64 EFI 固件，**缺少直接黑屏无法启动</li>
+</ul>
+<blockquote>
+<p>安装完成后，把命令里的 cdrom 那一行删掉，就是正常启动虚拟机脚本。</p>
+</blockquote>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.qemu.org/" target="_blank" rel="noopener">qemu</a>,by qemu.</li>
+<li><a href="https://dev.to/krjakbrjak/running-qemu-vms-on-arm64-uefi-requirements-5c9e" target="_blank" rel="noopener">Running QEMU VMs on ARM64: UEFI Requirements</a>,by Nikita Vakula.</li>
+<li><a href="https://blog.csdn.net/zengliguang/article/details/153678484" target="_blank" rel="noopener">windows qemu 安装 arm 虚拟机</a>,by 三希.</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2026/09/02/MitmProxy%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -740,7 +930,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2026-09-01 21:51:43" itemprop="dateModified" datetime="2026-09-01T21:51:43+08:00">2026-09-01</time>
+                <time title="修改时间：2026-09-03 21:52:09" itemprop="dateModified" datetime="2026-09-03T21:52:09+08:00">2026-09-03</time>
               
             
           </span>
@@ -827,6 +1017,7 @@
 <li><a href="https://juejin.cn/post/7624184992536952867" target="_blank" rel="noopener">OpenAI API 协议完全指南 - 大模型应用开发的通用标准</a>,by 不想起名字1111111.</li>
 <li><a href="https://zhuanlan.zhihu.com/p/692336625" target="_blank" rel="noopener">OpenAI API格式详解-Chat Completions</a>,by 啤酒泡泡.</li>
 <li><a href="https://zhuanlan.zhihu.com/p/712003796" target="_blank" rel="noopener">工具调用:OpenAI 工具调用从一到多函数调用</a>,by JPPeng.</li>
+<li><a href="https://guangzhengli.com/notes/llm-cache" target="_blank" rel="noopener">大模型 LLM 缓存机制：从原理到工程实践</a>,by guangzhengli.</li>
 </ol>
 
           
@@ -1882,232 +2073,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2026/04/23/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8BAgent%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jack Huang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jack Huang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2026/04/23/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8BAgent%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url">
-                  大语言模型Agent学习笔记
-                </a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2026-04-23 21:57:04" itemprop="dateCreated datePublished" datetime="2026-04-23T21:57:04+08:00">2026-04-23</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2026-04-25 22:07:29" itemprop="dateModified" datetime="2026-04-25T22:07:29+08:00">2026-04-25</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近一段事件，基于 LLM 的 Agent 非常火爆，比如 OpenClaw 龙虾。那么什么是 AI Agent，基于 LLM 的 Agent 带来了哪些突破呢？值得探究一下。</p>
-<h1 id="什么是-AI-Agent"><a href="#什么是-AI-Agent" class="headerlink" title="什么是 AI Agent"></a>什么是 AI Agent</h1><p>在生成式人工智能的背景下，AI 代理（也称为复合 AI 系统或自主 AI）是一类能够在复杂环境中自主运行的智能代理。自主 AI 工具优先考虑决策而非内容创建，并且不需要持续监督。</p>
-<p>AI 代理具有几个关键属性，包括复杂的目标结构、自然语言接口、能够在无需用户监督的情况下独立行动的能力，以及集成软件工具或规划系统。它们的控制流程通常由大型语言模型（LLMs）驱动。代理还包括用于记忆先前用户-代理交互的记忆系统和用于组织代理组件的编排软件。</p>
-<p>AI 代理的一个常见应用是任务的自动化，例如根据用户的提示请求预订旅行计划。</p>
-<h1 id="AI-Agent-构成"><a href="#AI-Agent-构成" class="headerlink" title="AI Agent 构成"></a>AI Agent 构成</h1><blockquote>
-<p>AI Agent = LLM（推理） + Tools（工具） + Planning（规划） + Memory（记忆）</p>
-</blockquote>
-<blockquote>
-<p>其执行流程如下：</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">用户输入</span><br><span class="line">   ↓</span><br><span class="line">[感知 Perception] ← 记忆</span><br><span class="line">   ↓</span><br><span class="line">[规划 Planning]  → 分解任务</span><br><span class="line">   ↓</span><br><span class="line">[决策 Decision]  → 选择行动</span><br><span class="line">   ↓</span><br><span class="line">[执行 Action]    → 调用工具</span><br><span class="line">   ↓</span><br><span class="line">[观察 Observation] → 获取结果</span><br><span class="line">   ↓</span><br><span class="line">(循环直到完成)</span><br><span class="line">   ↓</span><br><span class="line">返回最终答案</span><br></pre></td></tr></table></figure>
-
-<h1 id="AI-Agent-分类"><a href="#AI-Agent-分类" class="headerlink" title="AI Agent 分类"></a>AI Agent 分类</h1><table>
-<thead>
-<tr>
-<th>类型</th>
-<th>特点</th>
-<th>适用场景</th>
-<th>代表框架</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>ReAct</td>
-<td>推理+行动交替</td>
-<td>单步任务、工具调用</td>
-<td>LangChain</td>
-</tr>
-<tr>
-<td>Plan-and-Execute</td>
-<td>先规划再执行</td>
-<td>复杂多步任务</td>
-<td>BabyAGI</td>
-</tr>
-<tr>
-<td>Autonomous</td>
-<td>自主循环运行</td>
-<td>长期目标任务</td>
-<td>AutoGPT</td>
-</tr>
-<tr>
-<td>Multi-Agent</td>
-<td>多智能体协作</td>
-<td>复杂系统、角色分工</td>
-<td>MetaGPT</td>
-</tr>
-</tbody></table>
-<h1 id="AI-Agent-关键技术"><a href="#AI-Agent-关键技术" class="headerlink" title="AI Agent 关键技术"></a>AI Agent 关键技术</h1><ul>
-<li>大语言模型 （LLM） </li>
-<li>工具调用（Function Calling）</li>
-<li>工具库设计</li>
-<li>记忆机制<ul>
-<li>短期记忆（对话历史）</li>
-<li>长期记忆（向量数据库）</li>
-<li>结构化记忆（实体记忆）</li>
-</ul>
-</li>
-</ul>
-<h1 id="AI-Agent-生态位"><a href="#AI-Agent-生态位" class="headerlink" title="AI Agent 生态位"></a>AI Agent 生态位</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────┐</span><br><span class="line">│           外部工具 &#x2F; 数据源          │  文件系统、数据库、GitHub、Slack…</span><br><span class="line">├─────────────────────────────────────┤</span><br><span class="line">│   MCP 服务器 &#x2F; Skills（能力封装层）   │  标准化协议连接 &amp; 模块化能力包</span><br><span class="line">├─────────────────────────────────────┤</span><br><span class="line">│          Agent（执行循环层）         │  感知 → 推理 → 工具调用 → 观察</span><br><span class="line">├─────────────────────────────────────┤</span><br><span class="line">│          LLM（推理核心层）           │  Claude、GPT-4o、DeepSeek、Gemini…</span><br><span class="line">└─────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
-<li><a href="https://meiluosi.github.io/2024/10/13/LLM-Agent%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/" target="_blank" rel="noopener">LLM Agent开发指南</a>,by meiluosi.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/2000210358820946463" target="_blank" rel="noopener">万字长文解读LLM Agent：总体框架、经典论文与实践</a>, 魔法学院的Chilia.</li>
-<li><a href="https://en.wikipedia.org/wiki/AI_agent" target="_blank" rel="noopener">AI agent</a>,by wikipedia.</li>
-<li><a href="https://juejin.cn/post/7575047994682015795?share_token=a891b5c2-eeed-43a8-820c-0805c9520a44" target="_blank" rel="noopener">为什么调用 OpenAI Tools 后，还要再请求一次大模型？——从代码看 LLM 工具调用的本质</a>,by 烟袅破辰.</li>
-<li><a href="https://juejin.cn/post/7575065042158108722" target="_blank" rel="noopener">使用 OpenAI SDK 调用 Tools 实现外部工具集成</a>,by 烟袅破辰.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/1910091651403191244" target="_blank" rel="noopener">大模型工具调用完整指南：从原理到实践</a>,by 鱼XueTr​.</li>
-<li><a href="https://www.cnblogs.com/qiniushanghai/p/19834541" target="_blank" rel="noopener">MCP、Skills、Agent、LLM：四层架构全解，一文理清核心概念</a>,by 七牛云行业应用.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/1999489529032234726" target="_blank" rel="noopener">别搞混了！Agent Skill 和 MCP 到底有什么区别？</a>,by AI大模型入门.</li>
-<li><a href="https://zhuanlan.zhihu.com/p/2010385772486878215" target="_blank" rel="noopener">一文彻底搞懂 OpenClaw 的架构设计与运行原理（万字图文）</a>,by AI架构师汤师爷.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/55/">55</a><a class="extend next" rel="next" href="/page/2/">下一页</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/56/">56</a><a class="extend next" rel="next" href="/page/2/">下一页</a>
   </nav>
 
 
@@ -2150,7 +2120,7 @@
                 
                   <a href="/archives/%20%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">550</span>
+                    <span class="site-state-item-count">551</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

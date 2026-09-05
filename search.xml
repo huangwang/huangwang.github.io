@@ -21505,6 +21505,7 @@ console.log(y);</code></pre></li>
 <li><a href="https://juejin.cn/post/7624184992536952867" target="_blank" rel="noopener">OpenAI API 协议完全指南 - 大模型应用开发的通用标准</a>,by 不想起名字1111111.</li>
 <li><a href="https://zhuanlan.zhihu.com/p/692336625" target="_blank" rel="noopener">OpenAI API格式详解-Chat Completions</a>,by 啤酒泡泡.</li>
 <li><a href="https://zhuanlan.zhihu.com/p/712003796" target="_blank" rel="noopener">工具调用:OpenAI 工具调用从一到多函数调用</a>,by JPPeng.</li>
+<li><a href="https://guangzhengli.com/notes/llm-cache" target="_blank" rel="noopener">大模型 LLM 缓存机制：从原理到工程实践</a>,by guangzhengli.</li>
 </ol>
 ]]></content>
       <tags>
@@ -24649,6 +24650,54 @@ console.log(y);</code></pre></li>
         <tag>笔记本</tag>
         <tag>常用工具</tag>
         <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>QEMU使用教程</title>
+    <url>/2026/09/04/QEMU%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[<p>最近需要在 X86_64 的 Windows 10 的机器上安装 arm64 指令集的银河麒麟 v10 操作系统，因此研究一下 QEMU 的使用方法。</p>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>QEMU 是一款<strong>开源、跨平台的机器模拟器与虚拟机工具</strong>，核心两大能力：<strong>硬件模拟（全系统仿真）</strong> 和 <strong>用户态程序翻译</strong>，不需要依赖硬件虚拟化也能运行。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="Windows-安装"><a href="#Windows-安装" class="headerlink" title="Windows 安装"></a>Windows 安装</h2><ol>
+<li>下载二进制安装包：<a href="https://qemu.weilnetz.de/w64/" target="_blank" rel="noopener">https://qemu.weilnetz.de/w64/</a> ，下载<code>qemu‑w64‑setup‑xxxx.exe</code>安装程序</li>
+<li>安装，记住安装路径，默认：<code>C:\Program Files\qemu</code></li>
+<li><strong>把这个目录加到系统 PATH 环境变量</strong>（必须，否则 cmd 找不到 qemu‑xxx.exe）</li>
+<li>关闭旧 cmd/PowerShell，新开终端验证</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">qemu-system-aarch64.exe --version</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Windows 模拟 arm64：需要额外下载<code>QEMU_EFI.fd</code> UEFI 固件文件。</p>
+</blockquote>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h2 id="准备文件"><a href="#准备文件" class="headerlink" title="准备文件"></a>准备文件</h2><ol>
+<li>下载** ARM64 UEFI 固件 QEMU_EFI.fd（edk2‑aarch64‑code.fd）**，ARM 虚拟机没有 BIOS，靠 EFI 固件引导。</li>
+<li>下载 ARM64 系统 ISO 镜像（Ubuntu‑ARM64 / 银河麒麟 ARM64 等）</li>
+<li>创建虚拟磁盘（cmd 执行）</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">qemu-img create -f qcow2 arm64_disk.qcow2 60G</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h2><p>把下面保存为 <code>install.bat</code>，修改路径为你本机真实路径：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">qemu-system-aarch64.exe ^</span><br><span class="line">-M virt ^</span><br><span class="line">-cpu corte-a72 ^</span><br><span class="line">-m 6G ^</span><br><span class="line">-smp 4 ^</span><br><span class="line">-accel tcg,thread&#x3D;multi ^</span><br><span class="line">-bios &quot;G:\Arm64\edk2-aarch64-code.fd&quot; ^</span><br><span class="line">-device ramfb ^</span><br><span class="line">-device qemu-xhci ^</span><br><span class="line">-device usb-kbd ^</span><br><span class="line">-device usb-tablet ^</span><br><span class="line">-nic user ^</span><br><span class="line">-drive if&#x3D;none,file&#x3D;arm64_disk.qcow2,id&#x3D;hd0 ^</span><br><span class="line">-device virtio-blk-device,drive&#x3D;hd0 ^</span><br><span class="line">-drive file&#x3D;&quot;G:\Arm64\Kylin-Desktop-V10-SP1-2503-Release-20250430-ARM64.iso&quot;,media&#x3D;cdrom</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<ul>
+<li><code>-M virt</code>：QEMU 标准 ARM 虚拟机板卡</li>
+<li><code>-cpu cortex‑a72</code>：模拟 ARMv8‑A CPU；也可以写<code>max</code></li>
+<li><code>-accel tcg,thread=multi</code>：软件多线程翻译，<strong>x86 Windows 唯一可用加速选项</strong>virtio-win</li>
+<li><code>-device ramfb</code>：显卡；不要用 virtio‑gpu，部分 ARM64 UEFI 不兼容QEMU</li>
+<li><code>-nic user</code>：NAT 网络，虚拟机可访问外网</li>
+<li><code>-bios</code>：指定 aarch64 EFI 固件，**缺少直接黑屏无法启动</li>
+</ul>
+<blockquote>
+<p>安装完成后，把命令里的 cdrom 那一行删掉，就是正常启动虚拟机脚本。</p>
+</blockquote>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://www.qemu.org/" target="_blank" rel="noopener">qemu</a>,by qemu.</li>
+<li><a href="https://dev.to/krjakbrjak/running-qemu-vms-on-arm64-uefi-requirements-5c9e" target="_blank" rel="noopener">Running QEMU VMs on ARM64: UEFI Requirements</a>,by Nikita Vakula.</li>
+<li><a href="https://blog.csdn.net/zengliguang/article/details/153678484" target="_blank" rel="noopener">windows qemu 安装 arm 虚拟机</a>,by 三希.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>笔记本</tag>
+        <tag>常用工具</tag>
       </tags>
   </entry>
 </search>

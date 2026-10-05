@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="基本概念显示相关 dip  设备独立像素（density-independent pixel, dip）也叫逻辑分辨率，是一种可以被程序所控制的虚拟像素，在Web开发中对应CSS像素。  pp  物理像素（physical pixel, PP）也叫设备像素，由设备的屏幕决定，其实就是屏幕中控制显示的最小单位。例如，华为荣耀V20的屏幕显示分辨率2310*1080即为物理像素。  dpr  设备像素">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信小程序开发笔记">
+<meta property="og:url" content="https://huangwang.github.io/2020/05/03/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="基本概念显示相关 dip  设备独立像素（density-independent pixel, dip）也叫逻辑分辨率，是一种可以被程序所控制的虚拟像素，在Web开发中对应CSS像素。  pp  物理像素（physical pixel, PP）也叫设备像素，由设备的屏幕决定，其实就是屏幕中控制显示的最小单位。例如，华为荣耀V20的屏幕显示分辨率2310*1080即为物理像素。  dpr  设备像素">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-03T08:44:15.000Z">
+<meta property="article:modified_time" content="2020-06-07T01:59:05.998Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="软件工程">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2020/05/03/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2020/05/03/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/","path":"2020/05/03/微信小程序开发笔记/","title":"微信小程序开发笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>微信小程序开发笔记 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA%E7%9B%B8%E5%85%B3"><span class="nav-number">1.1.</span> <span class="nav-text">显示相关</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">自定义组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/05/03/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="微信小程序开发笔记 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          微信小程序开发笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-05-03 16:44:15" itemprop="dateCreated datePublished" datetime="2020-05-03T16:44:15+08:00">2020-05-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2020-06-07 09:59:05" itemprop="dateModified" datetime="2020-06-07T09:59:05+08:00">2020-06-07</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="显示相关"><a href="#显示相关" class="headerlink" title="显示相关"></a>显示相关</h2><ul>
+<li>dip</li>
+</ul>
+<p>设备独立像素（density-independent pixel, dip）也叫逻辑分辨率，是一种可以被程序所控制的虚拟像素，在Web开发中对应CSS像素。</p>
+<ul>
+<li>pp</li>
+</ul>
+<p>物理像素（physical pixel, PP）也叫设备像素，由设备的屏幕决定，其实就是屏幕中控制显示的最小单位。例如，华为荣耀V20的屏幕显示分辨率2310*1080即为物理像素。</p>
+<ul>
+<li>dpr</li>
+</ul>
+<p>设备像素比（device pixel ratio,dpr）计算公式如下：</p>
+<p>$$dpr&#x3D;物理像素&#x2F;设备独立像素$$</p>
+<p>这条公式成立的前提是，缩放比Scale为1，原因下面讲到缩放的时候就会知道。根据这种关系，如果设备像素大于设备独立像素（DPR大于1的设备，我们常说的高清屏或者视网膜Retina屏），就会出现一个设备独立像素对应多个设备像素的情况。</p>
+<p>在JavaScript中，可以通过window.devicePixelRatio获取到当前设备的dpr，但遗憾的是并不是所有的都支持。</p>
+<p><strong>通过访问<a target="_blank" rel="noopener" href="https://www.mydevice.io/">mydevice</a>,可获得各类显示屏的dpr、dpi等参数信息。</strong> 例如，通过访问该网站可知华为荣耀V20的dpr为3。</p>
+<ul>
+<li>rpx</li>
+</ul>
+<p>微信小程序对于rem的一种应用规定，官方规定屏幕宽度为20rem，规定屏幕宽为750rpx，因此微信中1rem&#x3D;750&#x2F;20rpx，iphone6下，1px&#x3D;1rpx&#x3D;0.5pt，使用rpx作为单位，微信小程序会自动在不同的分辨率下进行转换，而使用px为单位不会转换，iphone6p下1px&#x3D;0.6rpx；</p>
+<ul>
+<li>rem</li>
+</ul>
+<p>在移动端做适配通常用rem作为单位，rem是根据html的fontsize去动态计算实际px；</p>
+<ul>
+<li>pt</li>
+</ul>
+<p>pt是逻辑分辨率，pt的大小和屏幕尺寸有关系，简单可以理解为长度和视觉单位；1个pt可以有1个px，也可以有2个，3个或更多的px，但人的视网膜极限为2倍@2x，增加再多也不会让屏幕看起来更加好了，比如iphone6，2个px构成一个pt，ip6以物理像素750*1334这视觉稿进行设计；</p>
+<h1 id="自定义组件"><a href="#自定义组件" class="headerlink" title="自定义组件"></a>自定义组件</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/296a1ddd64a6">px、rpx、rem、pt、dpr学习笔记</a>,by puxiaotaoc.</li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000017784801">不要再问我移动适配的问题了</a>,by 写Bug.</li>
+<li><a target="_blank" rel="noopener" href="https://www.dazhuanlan.com/2019/09/23/5d88cf937a0ef/">微信小程序日期时间选择器以及组件封装</a>,by 大专栏.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38543537/article/details/82880025">微信小程序template模板与component组件的区别及使用方法</a>,by 小破孩呦.</li>
+<li><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/community/develop/doc/313d65073ae7aa97138fc820a2305e08">小程序app.js中onLaunch和主页的onLoad方法问题</a>,by Feebas.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/longlongValue/article/details/79745681">微信小程序分享参数传递（微信小程序获取分享path参数）</a>,by longlongValue.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/skye_95/article/details/97001609">微信小程序（四）：通过list列表跳转详情页</a>,by 扎哈的信徒.</li>
+<li><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/ebook?action=get_post_info&docid=000ee2c29d4f805b0086a37a254c0a">2.2 WXML 模板</a>,by 微信开放社区.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/ChibiMarukoChan/article/details/86496769">微信小程序-表单验证（WxValidate使用）</a>,by chibimarukochan.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/magi1201/article/details/74784928">JS数组的深浅拷贝</a>,by 蜗牛-.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/hacker_Lees/article/details/79612167">js正则校验数字和字母字符串</a>,by hacker_LeeFei.</li>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/entry/5ba21f8a5188256bab2955cd">微信小程序onLaunch异步，首页 onLoad 先执行 ?</a>,by juejing.</li>
+<li><a target="_blank" rel="noopener" href="https://www.zc0317.com/post/view?id=72">解决微信小程序 app onLaunch异步请求，在没有请求执行完就加载首页了的问题</a>,by admin.</li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b3cbd68151e3">微信小程序canvas尺寸设置</a>,by 楠倏之语.</li>
+<li><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/extended/weui/quickstart.html">WeUI组件库快速上手</a>,by weixin.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/" rel="tag"># 软件工程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/04/25/%E6%B5%81%E7%A8%8B%E5%9B%BE%E7%BB%98%E5%88%B6%E8%A7%84%E8%8C%83/" rel="prev" title="流程图绘制规范">
+                  <i class="fa fa-angle-left"></i> 流程图绘制规范
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/06/%E8%87%AA%E5%AE%9A%E4%B9%89Win7%E5%8E%9F%E7%89%88%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85%E5%85%89%E7%9B%98/" rel="next" title="自定义Win7原版镜像安装光盘">
+                  自定义Win7原版镜像安装光盘 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

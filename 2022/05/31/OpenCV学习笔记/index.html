@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="背景提取当观察场景的是一个固定的相机，背景几乎保持不变。在这种情况下，感兴趣的元素是在场景中运动的物体。我们将这些运动的物体称为前景，为了提取出这些前景物体，我们需要对背景建模，然后将当前帧的模型与背景模型进行比较，以检测前景物体。 运动前景对象的有效检测对于对象跟踪、目标分类、行为理解等后期处理至关重要。区分前景对象，关键的一个问题是：确定一个非常合适的背景。背景从象素的角度来理解，每一个象素就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenCV学习笔记">
+<meta property="og:url" content="https://huangwang.github.io/2022/05/31/OpenCV%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="背景提取当观察场景的是一个固定的相机，背景几乎保持不变。在这种情况下，感兴趣的元素是在场景中运动的物体。我们将这些运动的物体称为前景，为了提取出这些前景物体，我们需要对背景建模，然后将当前帧的模型与背景模型进行比较，以检测前景物体。 运动前景对象的有效检测对于对象跟踪、目标分类、行为理解等后期处理至关重要。区分前景对象，关键的一个问题是：确定一个非常合适的背景。背景从象素的角度来理解，每一个象素就">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-31T15:40:23.000Z">
+<meta property="article:modified_time" content="2022-07-10T12:13:16.711Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="计算机视觉">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2022/05/31/OpenCV%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2022/05/31/OpenCV%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/","path":"2022/05/31/OpenCV学习笔记/","title":"OpenCV学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>OpenCV学习笔记 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E6%8F%90%E5%8F%96"><span class="nav-number">1.</span> <span class="nav-text">背景提取</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BA%E5%AE%9A%E8%83%8C%E6%99%AF%E6%8F%90%E5%8F%96%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">固定背景提取法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E8%A7%86%E9%A2%91%E5%BA%8F%E5%88%97%E5%8A%A8%E6%80%81%E5%BB%BA%E7%AB%8B%E8%83%8C%E6%99%AF"><span class="nav-number">1.2.</span> <span class="nav-text">根据视频序列动态建立背景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9D%87%E5%80%BC%E6%B3%95%E3%80%81%E4%B8%AD%E5%80%BC%E6%B3%95%E3%80%81%E6%BB%91%E5%8A%A8%E5%9D%87%E5%80%BC%E6%BB%A4%E6%B3%A2%E3%80%81%E5%8D%95%E9%AB%98%E6%96%AF"><span class="nav-number">1.2.1.</span> <span class="nav-text">均值法、中值法、滑动均值滤波、单高斯</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%A7%E9%97%B4%E5%B7%AE%E5%88%86%E6%B3%95"><span class="nav-number">1.2.2.</span> <span class="nav-text">帧间差分法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E9%AB%98%E6%96%AF%E6%B3%95"><span class="nav-number">1.2.3.</span> <span class="nav-text">混合高斯法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5"><span class="nav-number">2.</span> <span class="nav-text">参考连接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/05/31/OpenCV%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="OpenCV学习笔记 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OpenCV学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-05-31 23:40:23" itemprop="dateCreated datePublished" datetime="2022-05-31T23:40:23+08:00">2022-05-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-07-10 20:13:16" itemprop="dateModified" datetime="2022-07-10T20:13:16+08:00">2022-07-10</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="背景提取"><a href="#背景提取" class="headerlink" title="背景提取"></a>背景提取</h1><p>当观察场景的是一个固定的相机，背景几乎保持不变。在这种情况下，感兴趣的元素是在场景中运动的物体。我们将这些运动的物体称为前景，为了提取出这些前景物体，我们需要对背景建模，然后将当前帧的模型与背景模型进行比较，以检测前景物体。</p>
+<p>运动前景对象的有效检测对于对象跟踪、目标分类、行为理解等后期处理至关重要。区分前景对象，关键的一个问题是：确定一个非常合适的背景。背景从象素的角度来理解，每一个象素就是有可能是前景点，也有可能是背景点，那么我们就要防止背景中误进入原属于前景点的对象，目前有几种常用的方法，但分别有利弊。</p>
+<p>具体请参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41498261/article/details/103633583">OpenCV视频篇——背景&#x2F;前景提取</a>。</p>
+<h2 id="固定背景提取法"><a href="#固定背景提取法" class="headerlink" title="固定背景提取法"></a>固定背景提取法</h2><h2 id="根据视频序列动态建立背景"><a href="#根据视频序列动态建立背景" class="headerlink" title="根据视频序列动态建立背景"></a>根据视频序列动态建立背景</h2><h3 id="均值法、中值法、滑动均值滤波、单高斯"><a href="#均值法、中值法、滑动均值滤波、单高斯" class="headerlink" title="均值法、中值法、滑动均值滤波、单高斯"></a>均值法、中值法、滑动均值滤波、单高斯</h3><h3 id="帧间差分法"><a href="#帧间差分法" class="headerlink" title="帧间差分法"></a>帧间差分法</h3><p>背景就是上一帧图像。每一帧与上一帧进行差分运算。</p>
+<p>优点：速度较快，稳定性较好。</p>
+<p>缺点：可能出现物体的“空洞现象”，空洞是由于某一大型运动物体，它的两帧之间存在象素十分接近的重合部分，所以导致这部分被差分剪去了。</p>
+<h3 id="混合高斯法"><a href="#混合高斯法" class="headerlink" title="混合高斯法"></a>混合高斯法</h3><h1 id="参考连接"><a href="#参考连接" class="headerlink" title="参考连接"></a>参考连接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LaoYuanPython/article/details/109105916">OpenCV-Python图像乘法运算cv2.multiply函数详解及像素值溢出归一化处理</a>,by LaoYuanPython.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/shine-lee/p/9884551.html">OpenCV各版本差异与演化，从1.x到4.0</a>,by 日拱一卒.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/37777074">主成分分析（PCA）原理详解</a>.</li>
+<li><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2017/12/image-and-wave-filters.html">图像与滤波</a>,by 阮一峰.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/wsp_1138886114/article/details/102553174">OpenCV—python 视频分析背景提取与前景提取</a>,by SongpingWang.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41498261/article/details/103633583">OpenCV视频篇——背景&#x2F;前景提取</a>,by WaitFoF.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/126580277">40. 如何消除摄影中的运动模糊?</a>,by Wang Hawk.</li>
+<li><a target="_blank" rel="noopener" href="https://its401.com/article/weixin_43532890/114523558">基于opencv对高空拍摄视频消抖处理_js君-程序员ITS401</a>,by its401.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/38343732">马尔科夫随机场(MRF)在深度学习图像处理中的应用-图像分割、纹理迁移</a>,by OLDPAN.</li>
+<li><a target="_blank" rel="noopener" href="http://www.apmygs.com/2479.html">图像去噪（噪声）的主要算法</a>,by 工程之家.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/liyuqian199695/article/details/49148053">opencv2中的背景&#x2F;前景分离（类BackgroundSubtractor）</a>,by 阳光下的Smiles.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/jinshengtao/article/details/26278725">混合高斯背景建模原理及实现</a>,by taotao1233.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/Small_Munich/article/details/111957481">【OpenCV学习系列】之Background Subtraction</a>,by AutoSleep.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/iracer/article/details/51339377">OpenCV —数据持久化: FileStorage类的数据存取操作与示例</a>,by iracer.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/freshmen/p/4534966.html">OpenCV中InputArray和OutputArray使用方法</a>,by Curnane.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/llh_1178/article/details/77833447">图像处理之灰色图转化为RGB图像</a>,by llh_1178.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%87%A0%E4%BD%95%E4%B8%AD%E5%BF%83">几何中心</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xudong-bupt/p/3522457.html">C++ vector 删除符合条件的元素</a>,by 旭东.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" rel="tag"># 计算机视觉</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/05/27/%E5%8F%8C%E7%9B%AE%E6%B5%8B%E8%B7%9D%E7%AC%94%E8%AE%B0/" rel="prev" title="双目测距笔记">
+                  <i class="fa fa-angle-left"></i> 双目测距笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/06/09/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E6%BC%94%E7%A4%BA/" rel="next" title="计算机图像处理演示">
+                  计算机图像处理演示 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

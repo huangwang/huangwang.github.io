@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="QT 开发配置QT 环境配置请参考：  Qt创建Qt Designer自定义控件及使用 Qt编写自定义控件及插件的使用 【QT-版本】QT版本对应windows及数据库 Qt LIBS .pro文件内相对路径的问题（已解决）  QT 建立带子项目的工程请参考：  Qt 建立带有子项目的工程  使用VS打开QT项目请参考：  使用VS 打开QT项目  QxORM 使用帮助请参考：  QxORM My">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qt开发实战记录">
+<meta property="og:url" content="https://huangwang.github.io/2022/09/14/Qt%E5%BC%80%E5%8F%91%E5%AE%9E%E6%88%98%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="QT 开发配置QT 环境配置请参考：  Qt创建Qt Designer自定义控件及使用 Qt编写自定义控件及插件的使用 【QT-版本】QT版本对应windows及数据库 Qt LIBS .pro文件内相对路径的问题（已解决）  QT 建立带子项目的工程请参考：  Qt 建立带有子项目的工程  使用VS打开QT项目请参考：  使用VS 打开QT项目  QxORM 使用帮助请参考：  QxORM My">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-14T15:02:55.000Z">
+<meta property="article:modified_time" content="2025-07-19T04:58:20.833Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta property="article:tag" content="QT">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2022/09/14/Qt%E5%BC%80%E5%8F%91%E5%AE%9E%E6%88%98%E8%AE%B0%E5%BD%95/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2022/09/14/Qt%E5%BC%80%E5%8F%91%E5%AE%9E%E6%88%98%E8%AE%B0%E5%BD%95/","path":"2022/09/14/Qt开发实战记录/","title":"Qt开发实战记录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Qt开发实战记录 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#QT-%E5%BC%80%E5%8F%91%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">QT 开发配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#QT-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">1.1.</span> <span class="nav-text">QT 环境配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QT-%E5%BB%BA%E7%AB%8B%E5%B8%A6%E5%AD%90%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%B7%A5%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">QT 建立带子项目的工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8VS%E6%89%93%E5%BC%80QT%E9%A1%B9%E7%9B%AE"><span class="nav-number">1.3.</span> <span class="nav-text">使用VS打开QT项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QxORM-%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9"><span class="nav-number">1.4.</span> <span class="nav-text">QxORM 使用帮助</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QT-%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">QT 核心机制与原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#QT%E4%BF%A1%E5%8F%B7%E6%A7%BD"><span class="nav-number">2.1.</span> <span class="nav-text">QT信号槽</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QT%E4%B8%ADpaintEvent%E4%BA%8B%E4%BB%B6%E7%9A%84%E8%A7%A6%E5%8F%91%E6%97%B6%E9%97%B4"><span class="nav-number">2.2.</span> <span class="nav-text">QT中paintEvent事件的触发时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#osgQOpenGLWidget%E4%B8%ADpaintEvent%E4%BA%8B%E4%BB%B6%E7%9A%84%E5%AE%9A%E6%97%B6%E8%A7%A6%E5%8F%91"><span class="nav-number">2.3.</span> <span class="nav-text">osgQOpenGLWidget中paintEvent事件的定时触发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QThread%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8"><span class="nav-number">2.4.</span> <span class="nav-text">QThread线程使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1"><span class="nav-number">2.5.</span> <span class="nav-text">网络通信</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QT-%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">QT 控件使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#QMenuBar%E3%80%81QMenu%E3%80%81QAction%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.</span> <span class="nav-text">QMenuBar、QMenu、QAction的使用方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spacer%E9%83%A8%E4%BB%B6%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">Spacer部件使用方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Splitter%E9%83%A8%E4%BB%B6%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">Splitter部件使用方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QTableView%E9%83%A8%E4%BB%B6%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">3.4.</span> <span class="nav-text">QTableView部件使用方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QDateTimeEdit%E9%83%A8%E4%BB%B6"><span class="nav-number">3.5.</span> <span class="nav-text">QDateTimeEdit部件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QComboBox%E9%83%A8%E4%BB%B6"><span class="nav-number">3.6.</span> <span class="nav-text">QComboBox部件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QGroupBox%E9%83%A8%E4%BB%B6"><span class="nav-number">3.7.</span> <span class="nav-text">QGroupBox部件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QT-MVC"><span class="nav-number">3.8.</span> <span class="nav-text">QT MVC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QT-%E8%87%AA%E5%AE%9A%E4%B9%89QAbstractListModel"><span class="nav-number">3.9.</span> <span class="nav-text">QT 自定义QAbstractListModel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6"><span class="nav-number">3.10.</span> <span class="nav-text">自定义控件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QT-%E7%95%8C%E9%9D%A2%E7%BE%8E%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">QT 界面美化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#QT%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6"><span class="nav-number">4.1.</span> <span class="nav-text">QT资源文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QT%E6%A0%B7%E5%BC%8F%E8%A1%A8"><span class="nav-number">4.2.</span> <span class="nav-text">QT样式表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QT-%E9%83%A8%E7%BD%B2"><span class="nav-number">5.</span> <span class="nav-text">QT 部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#QT-%E5%AE%89%E8%A3%85%E5%8C%85%E5%88%B6%E4%BD%9C"><span class="nav-number">5.1.</span> <span class="nav-text">QT 安装包制作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QT-%E5%85%B7%E4%BD%93%E5%AE%9E%E8%B7%B5"><span class="nav-number">6.</span> <span class="nav-text">QT 具体实践</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/09/14/Qt%E5%BC%80%E5%8F%91%E5%AE%9E%E6%88%98%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Qt开发实战记录 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Qt开发实战记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-09-14 23:02:55" itemprop="dateCreated datePublished" datetime="2022-09-14T23:02:55+08:00">2022-09-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-19 12:58:20" itemprop="dateModified" datetime="2025-07-19T12:58:20+08:00">2025-07-19</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="QT-开发配置"><a href="#QT-开发配置" class="headerlink" title="QT 开发配置"></a>QT 开发配置</h1><h2 id="QT-环境配置"><a href="#QT-环境配置" class="headerlink" title="QT 环境配置"></a>QT 环境配置</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/17e8e2a275f6">Qt创建Qt Designer自定义控件及使用</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/georgeOfChina/p/7773141.html">Qt编写自定义控件及插件的使用</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/u013307195/article/details/125704528">【QT-版本】QT版本对应windows及数据库</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_40892578/article/details/120215877">Qt LIBS .pro文件内相对路径的问题（已解决）</a></li>
+</ul>
+<h2 id="QT-建立带子项目的工程"><a href="#QT-建立带子项目的工程" class="headerlink" title="QT 建立带子项目的工程"></a>QT 建立带子项目的工程</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zzzsj/p/15955189.html">Qt 建立带有子项目的工程</a></li>
+</ul>
+<h2 id="使用VS打开QT项目"><a href="#使用VS打开QT项目" class="headerlink" title="使用VS打开QT项目"></a>使用VS打开QT项目</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/shuilan0066/article/details/110232474">使用VS 打开QT项目</a></li>
+</ul>
+<h2 id="QxORM-使用帮助"><a href="#QxORM-使用帮助" class="headerlink" title="QxORM 使用帮助"></a>QxORM 使用帮助</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://wenku.csdn.net/answer/2f8hrtem53">QxORM MySQL使用</a></li>
+</ul>
+<h1 id="QT-核心机制与原理"><a href="#QT-核心机制与原理" class="headerlink" title="QT 核心机制与原理"></a>QT 核心机制与原理</h1><h2 id="QT信号槽"><a href="#QT信号槽" class="headerlink" title="QT信号槽"></a>QT信号槽</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/AcStudio/article/details/120801000">QT信号槽连接两个不同的类</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jfzhu/p/13501678.html">Qt信号与槽使用方法最完整总结</a></li>
+</ul>
+<h2 id="QT中paintEvent事件的触发时间"><a href="#QT中paintEvent事件的触发时间" class="headerlink" title="QT中paintEvent事件的触发时间"></a>QT中paintEvent事件的触发时间</h2><p>当发生一下情况时会产生绘制事件并调用paintEvent()函数:</p>
+<ol>
+<li><p>在窗口部件第一次显示时，系统会自动产生一个绘图事件，从而强制绘制这个窗口部件。</p>
+</li>
+<li><p>当重新调整窗口部件的大小时，系统也会产生一个绘制事件。</p>
+</li>
+<li><p>当窗口部件被其他窗口部件遮挡，然后又再次显示出来的时候，就会对那些隐藏的区域产生一个绘制事件。</p>
+</li>
+</ol>
+<h2 id="osgQOpenGLWidget中paintEvent事件的定时触发"><a href="#osgQOpenGLWidget中paintEvent事件的定时触发" class="headerlink" title="osgQOpenGLWidget中paintEvent事件的定时触发"></a>osgQOpenGLWidget中paintEvent事件的定时触发</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yjphhw/p/11070614.html">QObject的timerEvent使用</a>。</li>
+</ul>
+<h2 id="QThread线程使用"><a href="#QThread线程使用" class="headerlink" title="QThread线程使用"></a>QThread线程使用</h2><p>QThread 的两种使用方法:</p>
+<p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/wzj0808/article/details/80517012">Qt学习：子线程QThread的使用</a>。</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/364710810">QThread 的使用方法</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xyf327/p/15032670.html">QT从入门到入土（五（1））——多线程（QThread）</a></li>
+</ul>
+<h2 id="网络通信"><a href="#网络通信" class="headerlink" title="网络通信"></a>网络通信</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44875787/article/details/136072122">Qt之UDP编程</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7031172079059746847">Qt学习（十五）—— 网络通信之UDP</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/gongjianbo1992/article/details/107874702">Qt网络编程（2）：QUdpSocket的基本使用</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/xie__jin__cheng/article/details/140273903">qt hasPendingDatagrams() 函数</a></li>
+</ul>
+<h1 id="QT-控件使用方法"><a href="#QT-控件使用方法" class="headerlink" title="QT 控件使用方法"></a>QT 控件使用方法</h1><h2 id="QMenuBar、QMenu、QAction的使用方法"><a href="#QMenuBar、QMenu、QAction的使用方法" class="headerlink" title="QMenuBar、QMenu、QAction的使用方法"></a>QMenuBar、QMenu、QAction的使用方法</h2><p>请参考</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/ImagineMiracle-wxn/p/Qt_QMenuBar_IM_Shell.html">Qt QMenuBar和QMenu以及QAction巧妙的使用方法</a>。</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/swartz_lubel/article/details/54985130">qt中的菜单QMenu QAction</a></li>
+</ul>
+<h2 id="Spacer部件使用方法"><a href="#Spacer部件使用方法" class="headerlink" title="Spacer部件使用方法"></a>Spacer部件使用方法</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/LaoYuanPython/p/12235174.html">Qt Designer的Spacers部件详解</a></li>
+</ul>
+<h2 id="Splitter部件使用方法"><a href="#Splitter部件使用方法" class="headerlink" title="Splitter部件使用方法"></a>Splitter部件使用方法</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/imxiangzi/article/details/52584599">QSplitter分割界面 初始比例</a></li>
+</ul>
+<h2 id="QTableView部件使用方法"><a href="#QTableView部件使用方法" class="headerlink" title="QTableView部件使用方法"></a>QTableView部件使用方法</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/lvdongjie/p/3757531.html">QTableWidget与QTableView的区别</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_51559926/article/details/109496627">Qt5 ui界面下显示数据库内容，tableView用法</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/codegb/p/16653462.html">QTableView实现在表格内直接对数据库内容进行修改、新增和删除等操作</a></li>
+</ul>
+<h2 id="QDateTimeEdit部件"><a href="#QDateTimeEdit部件" class="headerlink" title="QDateTimeEdit部件"></a>QDateTimeEdit部件</h2><p>请参考:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/waleon/5561510">Qt 之 QDateEdit 和 QTimeEdit</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/qnkk123/p/7685246.html">QDateEdit 设置为空，显示日历</a></li>
+</ul>
+<h2 id="QComboBox部件"><a href="#QComboBox部件" class="headerlink" title="QComboBox部件"></a>QComboBox部件</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/yao_hou/article/details/105028851">C++ Qt QComboBox使用教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/ShineLeBlog/articles/14856547.html">2021.6.6：QT——QComboBox下拉框及用法</a></li>
+</ul>
+<h2 id="QGroupBox部件"><a href="#QGroupBox部件" class="headerlink" title="QGroupBox部件"></a>QGroupBox部件</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/Colorful___/article/details/139047832">【Qt】界面组织大师：Qt中的容器控件QGroupBox与QTabWidget</a></li>
+</ul>
+<h2 id="QT-MVC"><a href="#QT-MVC" class="headerlink" title="QT MVC"></a>QT MVC</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/Lutx/article/details/7161467">QSortFilterProxyModel实现QTreeView的过滤的缺点和改进</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/12053502/qfilesystemmodel-and-qsortfilterproxymodel-dont-work-well-together">QFileSystemModel and QSortFilterProxyModel don’t work well together?</a></li>
+<li><a target="_blank" rel="noopener" href="https://forum.qt.io/topic/104345/qfilesystemmodel-and-qsortfilterproxymodel-root-index-is-not-preserved">QFileSystemModel and QSortFilterProxyModel - root index is not preserved</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42219627/article/details/122946594">QSortFilterProxyModel的使用</a></li>
+</ul>
+<h2 id="QT-自定义QAbstractListModel"><a href="#QT-自定义QAbstractListModel" class="headerlink" title="QT 自定义QAbstractListModel"></a>QT 自定义QAbstractListModel</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://wiki.qt.io/How_to_use_QAbstractListModel">How to use QAbstractListModel</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.walletfox.com/course/customqfilesystemmodel.php">Subclassing QFileSystemModel to filter images by size</a></li>
+</ul>
+<h2 id="自定义控件"><a href="#自定义控件" class="headerlink" title="自定义控件"></a>自定义控件</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/luoxiang/p/14449127.html">Qt实战12.可自由展开的ToolBox</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41453285/article/details/100067213">Qt：53—Widget组件的自定义与提升(promoted)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/17e8e2a275f6">Qt创建Qt Designer自定义控件及使用</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/dingc-jc/p/9969658.html">Qt Designer 插件测试报错问题</a></li>
+</ul>
+<h1 id="QT-界面美化"><a href="#QT-界面美化" class="headerlink" title="QT 界面美化"></a>QT 界面美化</h1><h2 id="QT资源文件"><a href="#QT资源文件" class="headerlink" title="QT资源文件"></a>QT资源文件</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/Sparrow_du/article/details/79580679">QT添加资源文件并使用</a></li>
+</ul>
+<h2 id="QT样式表"><a href="#QT样式表" class="headerlink" title="QT样式表"></a>QT样式表</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/983595">Qt | 关于样式表的使用 QStyleSheet</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15346415/3675010">Qt：62—Qt样式表（setStyleSheet函数、.qss文件）</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_53144843/article/details/124639836">QT添加qss文件和资源文件</a></li>
+</ul>
+<h1 id="QT-部署"><a href="#QT-部署" class="headerlink" title="QT 部署"></a>QT 部署</h1><h2 id="QT-安装包制作"><a href="#QT-安装包制作" class="headerlink" title="QT 安装包制作"></a>QT 安装包制作</h2><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/mars_xiaolei/article/details/83825447">Qt5+安装包制作（Qt Installer Framework）</a></li>
+</ul>
+<h1 id="QT-具体实践"><a href="#QT-具体实践" class="headerlink" title="QT 具体实践"></a>QT 具体实践</h1><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/LuoLewin/article/details/121166207">Qt中登录界面跳转到主界面的两种方法</a></li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/luoxiang/p/14449127.html">Qt实战12.可自由展开的ToolBox</a>,by 罗祥.</li>
+<li><a target="_blank" rel="noopener" href="https://www.twblogs.net/a/5e503aaabd9eee101e86f73c/?lang=zh-cn">Qt匿名函数 - Lambda</a>,by automoblie0.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43829212/article/details/118405577">VS2019 This application failed to start because no Qt platform plugin could be initialized</a>,by KeyeSssss.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/u014779536/article/details/106788778">Qt 5.15 LTS版本 安装教程 在线安装</a>,by 超级大洋葱806.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_40953784/article/details/104454442">Qt之QAbstractButton属性验证</a>,by 小黑屋1024.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/352450372">Qt update刷新之源码分析(一)</a>,by IT文艺男.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/u013693952/article/details/95723422">QT关键问题解决之paintevent理解</a>,by Jeacean.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41598072/article/details/103694711">Qt中openGL的四个重要事件(initializeGL() resizeGL() paintGL() pdateGL())调用规则</a>,by AplusX.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/pugang/p/13251395.html">QOpenGLWidget 揭秘</a>,by SolidMango.</li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1705815">通过QOpenGLWidget绘制三角形</a>,by 张诺谦.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/392967849">QT中paintEvent事件的触发时间</a>,by 星辰大海.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yjphhw/p/11070614.html">QObject的timerEvent使用</a>,by 随便看看.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/lusanshui/article/details/97638520">Qt中QTimer和timerevent的区别与用法</a>,by lusanshui.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/wzj0808/article/details/80517012">Qt学习：子线程QThread的使用</a>,by 壁立千仞无欲则刚.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/ImagineMiracle-wxn/p/Qt_QMenuBar_IM_Shell.html">Qt QMenuBar和QMenu以及QAction巧妙的使用方法</a>,by Imagine Miracle.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/swartz_lubel/article/details/54985130">qt中的菜单QMenu QAction</a>,by swartz_lubel.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15047489/4257148">QWidget禁止最大化 </a>,by mb5fca0c87ea3a4.</li>
+<li><a target="_blank" rel="noopener" href="https://wiki.qt.io/How_to_use_QAbstractListModel">How to use QAbstractListModel</a>,by wiki.qt.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/laiyingpeng/p/12485970.html">VS2017 配置 Qt5.13 32位和64位版本开发环境问题报错《error LNK1112: 模块计算机类型“X86”与目标计算机类型“x64”冲突》</a>,by 灼光.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/C-C/" rel="tag"># C/C++</a>
+              <a href="/tags/QT/" rel="tag"># QT</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/09/09/Vuejs%E4%BF%AE%E6%94%B9%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%B1%9E%E6%80%A7%E5%80%BC%E8%A7%86%E5%9B%BE%E4%B8%8D%E6%9B%B4%E6%96%B0%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" rel="prev" title="Vue2修改对象的属性值视图不更新解决方法">
+                  <i class="fa fa-angle-left"></i> Vue2修改对象的属性值视图不更新解决方法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/09/19/Goolge-C-%E9%A3%8E%E6%A0%BC%E6%8C%87%E5%8D%97%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="Goolge C++风格指南学习笔记">
+                  Goolge C++风格指南学习笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

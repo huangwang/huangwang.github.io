@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="学习一下网络交换机配置的知识，记录一下。 eNSP简介eNSP(Enterprise Network Simulation Platform)是一款由华为提供的免费的、可扩展的、图形化的网络设备仿真平台，主要对企业网路由器、交换机、WLAN等设备进行软件仿真，完美呈现真实设备部署实景，支持大型网络模拟，让你有机会在没有真实设备的情况下也能够开展实验测试，学习网络技术。 eNSP具体安装过程请参考:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="华为交换机配置学习笔记">
+<meta property="og:url" content="https://huangwang.github.io/2023/09/14/%E5%8D%8E%E4%B8%BA%E4%BA%A4%E6%8D%A2%E6%9C%BA%E9%85%8D%E7%BD%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="学习一下网络交换机配置的知识，记录一下。 eNSP简介eNSP(Enterprise Network Simulation Platform)是一款由华为提供的免费的、可扩展的、图形化的网络设备仿真平台，主要对企业网路由器、交换机、WLAN等设备进行软件仿真，完美呈现真实设备部署实景，支持大型网络模拟，让你有机会在没有真实设备的情况下也能够开展实验测试，学习网络技术。 eNSP具体安装过程请参考:">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-09-14T04:44:20.000Z">
+<meta property="article:modified_time" content="2023-10-18T14:54:09.193Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2023/09/14/%E5%8D%8E%E4%B8%BA%E4%BA%A4%E6%8D%A2%E6%9C%BA%E9%85%8D%E7%BD%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2023/09/14/%E5%8D%8E%E4%B8%BA%E4%BA%A4%E6%8D%A2%E6%9C%BA%E9%85%8D%E7%BD%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/","path":"2023/09/14/华为交换机配置学习笔记/","title":"华为交换机配置学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>华为交换机配置学习笔记 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#eNSP%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">eNSP简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VRP%E7%AE%80%E4%BB%8B"><span class="nav-number">2.</span> <span class="nav-text">VRP简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">常用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IP%E4%B8%8EMac%E7%BB%91%E5%AE%9A"><span class="nav-number">3.1.</span> <span class="nav-text">IP与Mac绑定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IP%E4%B8%8EMac%E8%A7%A3%E7%BB%91"><span class="nav-number">3.2.</span> <span class="nav-text">IP与Mac解绑</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/09/14/%E5%8D%8E%E4%B8%BA%E4%BA%A4%E6%8D%A2%E6%9C%BA%E9%85%8D%E7%BD%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="华为交换机配置学习笔记 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          华为交换机配置学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-09-14 12:44:20" itemprop="dateCreated datePublished" datetime="2023-09-14T12:44:20+08:00">2023-09-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-18 22:54:09" itemprop="dateModified" datetime="2023-10-18T22:54:09+08:00">2023-10-18</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>学习一下网络交换机配置的知识，记录一下。</p>
+<h1 id="eNSP简介"><a href="#eNSP简介" class="headerlink" title="eNSP简介"></a>eNSP简介</h1><p>eNSP(Enterprise Network Simulation Platform)是一款由华为提供的免费的、可扩展的、图形化的网络设备仿真平台，主要对企业网路由器、交换机、WLAN等设备进行软件仿真，完美呈现真实设备部署实景，支持大型网络模拟，让你有机会在没有真实设备的情况下也能够开展实验测试，学习网络技术。</p>
+<p>eNSP具体安装过程请参考:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://bbs.huaweicloud.com/blogs/348672">ENSP安装教程【手把手教学】</a></li>
+<li><a target="_blank" rel="noopener" href="https://king321.cn/%E8%A7%A3%E5%86%B3virtualbox-host-only-network2%E9%97%AE%E9%A2%98/">解决VirtualBox Host-Only NetWork #2问题</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/yanjian_0809/article/details/103079445">使用VirtualBox打开虚拟机报错：Raw-mode is unavailable courtesy of Hyper-V</a></li>
+<li><a target="_blank" rel="noopener" href="https://appuals.com/fix-virtual-machine-has-terminated-unexpectedly-during-startup-with-exit-code-1-0x1/">5 Ways to Fix ‘Virtual machine has terminated unexpectedly’ Error</a></li>
+</ul>
+<h1 id="VRP简介"><a href="#VRP简介" class="headerlink" title="VRP简介"></a>VRP简介</h1><h1 id="常用场景"><a href="#常用场景" class="headerlink" title="常用场景"></a>常用场景</h1><h2 id="IP与Mac绑定"><a href="#IP与Mac绑定" class="headerlink" title="IP与Mac绑定"></a>IP与Mac绑定</h2><p>具体流程如下：</p>
+<ol>
+<li>查看目标IP将要接入的交换机管理IP。</li>
+<li>登录接入层交换机</li>
+<li>进入交换机系统视图，静态绑定IP与Mac地址</li>
+</ol>
+<p>具体命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">telnet 192.168.0.111</span><br><span class="line">&gt; display current-configuration</span><br><span class="line"># 查看mac要绑定的交换机端口</span><br><span class="line">&gt; display mac-address | include c03f-abcd-cc92</span><br><span class="line"># 查看路由表</span><br><span class="line">&gt; display ip routing-table</span><br><span class="line">&gt; system-view</span><br><span class="line">] interface GigabitEthernet 0/0/8</span><br><span class="line"># 查看交换机网口配置</span><br><span class="line">] display this</span><br><span class="line"># 使能动态arp检测功能</span><br><span class="line">] arp anti-attack check user-bind enable</span><br><span class="line"># 使能ip报文检查功能</span><br><span class="line">] ip source check user-bind enable</span><br><span class="line">] display this</span><br><span class="line"># 以下命令可将IP、Mac、Interface、Vlan进行绑定</span><br><span class="line">] user-bind static ip-address 10.0.0.32 mac-address c03f-abcd-cc92 interface GigabitEthernet 0/0/8 vlan 8</span><br><span class="line">] quit</span><br><span class="line">&gt; save</span><br></pre></td></tr></table></figure>
+
+<h2 id="IP与Mac解绑"><a href="#IP与Mac解绑" class="headerlink" title="IP与Mac解绑"></a>IP与Mac解绑</h2><p>具体命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">telnet 192.168.0.111</span><br><span class="line">&gt; system-view</span><br><span class="line">] undo user-bind static ip-address 10.0.0.32 mac-address c03f-abcd-cc92 vlan 8</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/26629364/">HCNA网络技术实验指南</a>,by 华为技术有限公司.</li>
+<li><a target="_blank" rel="noopener" href="https://bbs.huaweicloud.com/blogs/348672">ENSP安装教程【手把手教学】</a>,by 黑城笑.</li>
+<li><a target="_blank" rel="noopener" href="https://king321.cn/%E8%A7%A3%E5%86%B3virtualbox-host-only-network2%E9%97%AE%E9%A2%98/">解决VirtualBox Host-Only NetWork #2问题</a>,by King.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/yanjian_0809/article/details/103079445">使用VirtualBox打开虚拟机报错：Raw-mode is unavailable courtesy of Hyper-V</a>,by yanjian_0809.</li>
+<li><a target="_blank" rel="noopener" href="https://appuals.com/fix-virtual-machine-has-terminated-unexpectedly-during-startup-with-exit-code-1-0x1/">5 Ways to Fix ‘Virtual machine has terminated unexpectedly’ Error</a>,by Kevin Arrows.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/09/12/VSCode%E5%B8%B8%E7%94%A8%E6%8F%92%E4%BB%B6%E6%8E%A8%E8%8D%90/" rel="prev" title="VSCode常用插件推荐">
+                  <i class="fa fa-angle-left"></i> VSCode常用插件推荐
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/09/28/x3py%E6%8F%92%E4%BB%B6%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="x3py插件框架学习笔记">
+                  x3py插件框架学习笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

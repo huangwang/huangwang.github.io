@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="四元数是由爱尔兰数学家威廉·卢云·哈密顿在1843年创立出的数学概念。单位四元数（Unit quaternion）可以用于表示三维空间里的旋转。它与常用的另外两种表示方式（三维正交矩阵和欧拉角）是等价的，但是避免了欧拉角表示法中的万向锁问题。比起三维正交矩阵表示，四元数表示能够更方便地给出旋转的转轴与旋转角。 欧拉角欧拉角（Euler Angles）是一种描述三维旋转的方式，根据欧拉旋转定理，任何">
+<meta property="og:type" content="article">
+<meta property="og:title" content="四元数与旋转矩阵">
+<meta property="og:url" content="https://huangwang.github.io/2020/01/15/%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="四元数是由爱尔兰数学家威廉·卢云·哈密顿在1843年创立出的数学概念。单位四元数（Unit quaternion）可以用于表示三维空间里的旋转。它与常用的另外两种表示方式（三维正交矩阵和欧拉角）是等价的，但是避免了欧拉角表示法中的万向锁问题。比起三维正交矩阵表示，四元数表示能够更方便地给出旋转的转轴与旋转角。 欧拉角欧拉角（Euler Angles）是一种描述三维旋转的方式，根据欧拉旋转定理，任何">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-15T11:26:04.000Z">
+<meta property="article:modified_time" content="2021-04-09T15:30:47.240Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="数学">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="飞行仿真">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2020/01/15/%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2020/01/15/%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5/","path":"2020/01/15/四元数与旋转矩阵/","title":"四元数与旋转矩阵"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>四元数与旋转矩阵 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AC%A7%E6%8B%89%E8%A7%92"><span class="nav-number">1.</span> <span class="nav-text">欧拉角</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E8%A7%92%E7%9A%84%E8%AE%B0%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">旋转角的记法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5"><span class="nav-number">2.</span> <span class="nav-text">旋转矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B1%E6%AC%A7%E6%8B%89%E8%A7%92%E6%B1%82%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5"><span class="nav-number">2.1.</span> <span class="nav-text">由欧拉角求旋转矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B1%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E6%AC%A7%E6%8B%89%E8%A7%92"><span class="nav-number">2.2.</span> <span class="nav-text">由旋转矩阵求欧拉角</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">四元数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0%E6%B1%82%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5"><span class="nav-number">3.1.</span> <span class="nav-text">四元数求旋转矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%9B%9B%E5%85%83%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">旋转矩阵求四元数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0%E8%BF%9B%E8%A1%8C%E5%A7%BF%E6%80%81%E5%8F%98%E6%8D%A2"><span class="nav-number">3.3.</span> <span class="nav-text">四元数进行姿态变换</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/01/15/%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="四元数与旋转矩阵 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          四元数与旋转矩阵
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-01-15 19:26:04" itemprop="dateCreated datePublished" datetime="2020-01-15T19:26:04+08:00">2020-01-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2021-04-09 23:30:47" itemprop="dateModified" datetime="2021-04-09T23:30:47+08:00">2021-04-09</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>四元数是由爱尔兰数学家威廉·卢云·哈密顿在1843年创立出的数学概念。单位四元数（Unit quaternion）可以用于表示三维空间里的旋转。它与常用的另外两种表示方式（三维正交矩阵和欧拉角）是等价的，但是避免了欧拉角表示法中的万向锁问题。比起三维正交矩阵表示，四元数表示能够更方便地给出旋转的转轴与旋转角。</p>
+<h1 id="欧拉角"><a href="#欧拉角" class="headerlink" title="欧拉角"></a>欧拉角</h1><p>欧拉角（Euler Angles）是一种描述三维旋转的方式，根据欧拉旋转定理，任何一个旋转都可以用三个旋转的参数来表示。但欧拉角的描述方式有很多种，并没有一个统一标准。对于定义一个欧拉角，需要明确的内容包括：</p>
+<ol>
+<li>三个旋转角的组合方式（是xyz还是yzx还是zxy）</li>
+<li>旋转角度的参考坐标系统（旋转是相对于固定的坐标系还是相对于自身的坐标系）</li>
+<li>使用旋转角度是左手系还是右手系</li>
+<li>三个旋转角的记法</li>
+</ol>
+<h2 id="旋转角的记法"><a href="#旋转角的记法" class="headerlink" title="旋转角的记法"></a>旋转角的记法</h2><table>
+<thead>
+<tr>
+<th>顺序</th>
+<th>飞行器</th>
+<th>望远镜</th>
+<th>符号</th>
+<th>角速度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>第一</td>
+<td>heading</td>
+<td>azimuth</td>
+<td>$θ$</td>
+<td>yaw</td>
+</tr>
+<tr>
+<td>第二</td>
+<td>attitude</td>
+<td>elevation</td>
+<td>$ϕ$</td>
+<td>pitch</td>
+</tr>
+<tr>
+<td>第三</td>
+<td>bank</td>
+<td>tilt</td>
+<td>$ψ$</td>
+<td>roll</td>
+</tr>
+</tbody></table>
+<h1 id="旋转矩阵"><a href="#旋转矩阵" class="headerlink" title="旋转矩阵"></a>旋转矩阵</h1><p>对于两个三维点 $p_1(x_1, y_1, z_1)$，$p_2(x_2,y_2,z_2)$，由点 $p_1$ 经过旋转矩阵 $R$ 旋转到 $p_2$，则有：</p>
+<p>$$R &#x3D; \left[ \begin{matrix}<br>r_{11}  &amp; r_{12} &amp; r_{13}\<br>r_{21}  &amp; r_{22} &amp; r_{23}\<br>r_{31}  &amp; r_{32} &amp; r_{33}<br>\end{matrix} \right]$$</p>
+<p>$$\left[ \begin{matrix}<br>x_2 \<br>y_2 \<br>z_2<br>\end{matrix} \right] &#x3D; R<br>\left[ \begin{matrix}<br>x_1 \<br>y_1 \<br>z_1<br>\end{matrix} \right]$$</p>
+<p>注：旋转矩阵为正交矩阵$RR^T&#x3D;E$</p>
+<ul>
+<li>绕x轴旋转：</li>
+</ul>
+<p>$$R_x(\theta) &#x3D; \left[ \begin{matrix}<br>1  &amp; 0 &amp; 0\<br>0  &amp; cos\theta &amp; -sin\theta\<br>0  &amp; sin\theta &amp; cos\theta<br>\end{matrix} \right]$$</p>
+<ul>
+<li>绕y轴旋转:</li>
+</ul>
+<p>$$R_y(\theta) &#x3D; \left[ \begin{matrix}<br>cos\theta  &amp; 0 &amp; sin\theta\<br>0  &amp; 1 &amp; 0\<br>-sin\theta  &amp; 0 &amp; cos\theta<br>\end{matrix} \right]$$</p>
+<ul>
+<li>绕z轴旋转：</li>
+</ul>
+<p>$$R_z(\theta) &#x3D; \left[ \begin{matrix}<br>cos\theta  &amp; -sin\theta &amp; 0\<br>sin\theta  &amp; cos\theta &amp; 0\<br>0  &amp; 0 &amp; 1<br>\end{matrix} \right]$$</p>
+<ul>
+<li>任意旋转矩阵：</li>
+</ul>
+<p>任何一个旋转可以表示为依次绕着三个旋转轴旋三个角度的组合。这三个角度称为<strong>欧拉角</strong>。</p>
+<h2 id="由欧拉角求旋转矩阵"><a href="#由欧拉角求旋转矩阵" class="headerlink" title="由欧拉角求旋转矩阵"></a>由欧拉角求旋转矩阵</h2><p>设三个轴$x，y，z$的欧拉角分别为$θ_x,θ_y,θ_z$，正弦值、余弦值分别为$s_x, c_x, s_y, c_y, s_z, c_z$那么旋转矩阵为：</p>
+<p>$$R(\theta_x,\theta_y,\theta_z)&#x3D;R_z(\theta_z)R_y(\theta_y)R_x(\theta_x) &#x3D; \left[ \begin{matrix}<br>c_y c_z  &amp; c_z s_x s_y - c_x s_z &amp; s_x s_z + c_x c_z s_y\<br>c_y s_z  &amp; c_x c_z + s_x s_y s_z &amp; c_x s_y s_z - c_z s_z\<br>-s_y  &amp; c_y s_x &amp; c_x c_y<br>\end{matrix} \right]$$</p>
+<h2 id="由旋转矩阵求欧拉角"><a href="#由旋转矩阵求欧拉角" class="headerlink" title="由旋转矩阵求欧拉角"></a>由旋转矩阵求欧拉角</h2><p>$$R &#x3D; \left[ \begin{matrix}<br>r_{11}  &amp; r_{12} &amp; r_{13}\<br>r_{21}  &amp; r_{22} &amp; r_{23}\<br>r_{31}  &amp; r_{32} &amp; r_{33}<br>\end{matrix} \right] &#x3D; \left[ \begin{matrix}<br>c_y c_z  &amp; c_z s_x s_y - c_x s_z &amp; s_x s_z + c_x c_z s_y\<br>c_y s_z  &amp; c_x c_z + s_x s_y s_z &amp; c_x s_y s_z - c_z s_z\<br>-s_y  &amp; c_y s_x &amp; c_x c_y<br>\end{matrix} \right]$$</p>
+<p>解方程可得：</p>
+<p>$$\theta_x &#x3D; atan2(r_{32}, r_{33})$$<br>$$\theta_y &#x3D; atan2(-r_{31}, \sqrt{r_{32}^2+r_{33}^2})$$<br>$$\theta_z &#x3D; atan2(r_{21}, r_{11})$$</p>
+<p>注意：atan2()为C++中的函数，atan2(y，x) 求的是y&#x2F;x的反正切，其返回值为[-pi,+pi]之间的一个数。</p>
+<h1 id="四元数"><a href="#四元数" class="headerlink" title="四元数"></a>四元数</h1><p>三维空间的任意旋转，都可以用绕三维空间的某个轴旋转过某个角度来表示，即所谓的Axis-Angle表示方法。这种表示方法里，Axis可用一个三维向量$(x,y,z)$来表示，$θ$可以用一个角度值来表示，直观来讲，一个四维向量$(θ,x,y,z)$就可以表示出三维空间任意的旋转。注意，这里的三维向量$(x,y,z)$只是用来表示axis的方向朝向，因此更紧凑的表示方式是用一个单位向量来表示方向axis，而用该三维向量的长度来表示角度值$θ$。这样以来，可以用一个三维向量$(θ∗x,θ∗y,θ∗z)$就可以表示出三维空间任意的旋转，前提是其中$(x,y,z)$是单位向量。这就是旋转向量(Rotation Vector)的表示方式，OpenCV里大量使用的就是这种表示方法来表示旋转(见OpenCV相机标定部分的rvec)。</p>
+<ul>
+<li>单位向量(x,y,z)旋转θ角度后的四元数：</li>
+</ul>
+<p>$$(cos \frac{\theta}{2}, x<em>sin \frac{\theta}{2}, y</em>sin \frac{\theta}{2}, z*sin \frac{\theta}{2})$$</p>
+<ul>
+<li>对于三维坐标的旋转，可以通过四元数乘法直接操作，与旋转矩阵操作可以等价，但是表示方式更加紧凑，计算量也可以小一些。</li>
+</ul>
+<h2 id="四元数求旋转矩阵"><a href="#四元数求旋转矩阵" class="headerlink" title="四元数求旋转矩阵"></a>四元数求旋转矩阵</h2><p>已知四元数:</p>
+<p>$$\mathbf{q} &#x3D; q_0 +  q_1 i + q_2 j + q_3 k &#x3D; [s, \mathbf{v}]$$</p>
+<p>利用Rodrigues公式可以由四元数求得旋转矩阵R:</p>
+<p>$$R &#x3D; \left[ \begin{matrix}<br>1 - 2 q_2^2 - 2 q_3^2 &amp; 2q_1 q_2 - 2q_0 q_3 &amp; 2 q_1 q_3 + 2 q_0 q_2 \<br>2q_1 q_2 + 2q_0 q_3 &amp; 1 - 2 q_1^2 - 2 q_3^2 &amp; 2 q_2 q_3 - 2 q_0 q_1 \<br>2 q_1 q_3 - 2 q_0 q_2 &amp; 2 q_2 q_3 + 2 q_0 q_1 &amp; 1 - 2 q_1^2 - 2 q_2^2<br>\end{matrix} \right ]$$</p>
+<h2 id="旋转矩阵求四元数"><a href="#旋转矩阵求四元数" class="headerlink" title="旋转矩阵求四元数"></a>旋转矩阵求四元数</h2><p>给出其中一种情况的计算方法：</p>
+<p>$$q_0 &#x3D; \frac{\sqrt{1+r_{11}+r_{22}+r_{33}}}{2}$$<br>$$q_1 &#x3D; \frac{r_{32}-r_{23}}{4q_0}$$<br>$$q_2 &#x3D; \frac{r_{13}-r_{31}}{4q_0}$$<br>$$q_3 &#x3D; \frac{r_{21}-r_{12}}{4q_0}$$</p>
+<p>其中要满足 $q_0 \neq 0$，$1+r_{11}+r_{22}+r_{33}&gt;0$，即 $1+tr(R)&gt;0$</p>
+<h2 id="四元数进行姿态变换"><a href="#四元数进行姿态变换" class="headerlink" title="四元数进行姿态变换"></a>四元数进行姿态变换</h2><p>假设坐标系O1上的点P1(x1, y1, z1), 存在变换矩阵Ｒ, 可计算P1点在坐标系O2上的坐标值为P2(x2, y2, z2)：<br>$$P2&#x3D;R∗P1$$</p>
+<p>矩阵Ｒ对应的四元数为q, 则使用四元数计算为:<br>首先三维空间点用一个虚四元数来描述：P1&#x3D;[0, x1, y1, z1], P2&#x3D;[0, x2, y2, z2]<br>则P2和P1将计算关系为：</p>
+<p>$$P_2&#x3D;qP_1q^{-1}$$</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9B%9B%E5%85%83%E6%95%B8">四元数</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E7%A9%BA%E9%97%B4%E6%97%8B%E8%BD%AC">四元数与空间旋转</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="http://www.p-chao.com/2017-08-29/%E4%BB%8E%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E8%AE%A1%E7%AE%97%E6%AC%A7%E6%8B%89%E8%A7%92/">从旋转矩阵计算欧拉角</a>,by PengChao.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/csxiaoshui/article/details/65446125">旋转变换（一）旋转矩阵</a>,by csxiaoshui.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/lql0716/article/details/72597719">旋转矩阵、欧拉角、四元数理论及其转换关系</a>,by jason_ql.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/csxiaoshui/article/details/65437633">旋转变换（二）欧拉角</a>,by csxiaoshui.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E8%A7%92">欧拉角</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/85108850">欧拉角细节&#x2F;旋转顺序&#x2F;内旋外旋</a>,by 能儿.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/Sandy_WYM_/article/details/84328395">四元数运算与姿态变换</a>,by Yoyo_wym.</li>
+<li><a target="_blank" rel="noopener" href="https://www.mathworks.com/help/aerotbx/flight-parameters-1.html?s_tid=CRUX_lftnav">Flight Parameters and Quaternion Math</a>,by mathwork.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F/" rel="tag"># 飞行仿真</a>
+              <a href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag"># 数学</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/01/13/JSBSim%E6%BA%90%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/" rel="prev" title="JSBSim源代码分析">
+                  <i class="fa fa-angle-left"></i> JSBSim源代码分析
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/01/15/CPlusPlus%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6Catch%E5%85%A5%E9%97%A8/" rel="next" title="CPlusPlus单元测试框架Catch入门">
+                  CPlusPlus单元测试框架Catch入门 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

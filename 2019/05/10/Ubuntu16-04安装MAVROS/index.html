@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="MAVROS包支持运行ROS的计算机、支持Mavlink的自驾仪、支持Mavlink的地面控制站之间使用Mavlink协议进行通信，如图1所示。        图1  px4软件在环仿真  为构建px4软件在环仿真环境，下面介绍在协同计算机上安装Ubuntu16.04、ROS和MAVROS的步骤。 安装ubuntu 16.04安装ubuntu 16.04 LTS桌面板的教程请参考链接Ubuntu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu16.04安装MAVROS">
+<meta property="og:url" content="https://huangwang.github.io/2019/05/10/Ubuntu16-04%E5%AE%89%E8%A3%85MAVROS/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="MAVROS包支持运行ROS的计算机、支持Mavlink的自驾仪、支持Mavlink的地面控制站之间使用Mavlink协议进行通信，如图1所示。        图1  px4软件在环仿真  为构建px4软件在环仿真环境，下面介绍在协同计算机上安装Ubuntu16.04、ROS和MAVROS的步骤。 安装ubuntu 16.04安装ubuntu 16.04 LTS桌面板的教程请参考链接Ubuntu">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://huangwang.github.io/2019/05/10/Ubuntu16-04%E5%AE%89%E8%A3%85MAVROS/images/px4_sitl_overview.png">
+<meta property="article:published_time" content="2019-05-10T10:28:50.000Z">
+<meta property="article:modified_time" content="2019-06-24T14:19:37.410Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="PX4">
+<meta property="article:tag" content="ROS">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="飞行仿真">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://huangwang.github.io/2019/05/10/Ubuntu16-04%E5%AE%89%E8%A3%85MAVROS/images/px4_sitl_overview.png">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2019/05/10/Ubuntu16-04%E5%AE%89%E8%A3%85MAVROS/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2019/05/10/Ubuntu16-04%E5%AE%89%E8%A3%85MAVROS/","path":"2019/05/10/Ubuntu16-04安装MAVROS/","title":"Ubuntu16.04安装MAVROS"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Ubuntu16.04安装MAVROS | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85ubuntu-16-04"><span class="nav-number">1.</span> <span class="nav-text">安装ubuntu 16.04</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85ROS"><span class="nav-number">2.</span> <span class="nav-text">安装ROS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ROS%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.</span> <span class="nav-text">ROS简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85ROS-1"><span class="nav-number">2.2.</span> <span class="nav-text">安装ROS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8CROS"><span class="nav-number">2.3.</span> <span class="nav-text">运行ROS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85MAVROS"><span class="nav-number">3.</span> <span class="nav-text">安装MAVROS</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/05/10/Ubuntu16-04%E5%AE%89%E8%A3%85MAVROS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Ubuntu16.04安装MAVROS | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ubuntu16.04安装MAVROS
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-05-10 18:28:50" itemprop="dateCreated datePublished" datetime="2019-05-10T18:28:50+08:00">2019-05-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-06-24 22:19:37" itemprop="dateModified" datetime="2019-06-24T22:19:37+08:00">2019-06-24</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>MAVROS包支持运行ROS的计算机、支持Mavlink的自驾仪、支持Mavlink的地面控制站之间使用Mavlink协议进行通信，如图1所示。</p>
+<p align="center">
+    <img src="images/px4_sitl_overview.png" width="90%" alt="px4软件在环仿真"/>
+</p>
+<center>图1  px4软件在环仿真</center>
+
+<p>为构建px4软件在环仿真环境，下面介绍在协同计算机上安装Ubuntu16.04、ROS和MAVROS的步骤。</p>
+<h1 id="安装ubuntu-16-04"><a href="#安装ubuntu-16-04" class="headerlink" title="安装ubuntu 16.04"></a>安装ubuntu 16.04</h1><p>安装ubuntu 16.04 LTS桌面板的教程请参考链接<a target="_blank" rel="noopener" href="https://forum.ubuntu.org.cn/viewtopic.php?t=478527">Ubuntu 16.04 安装基础入门教程（图文）</a>。</p>
+<h1 id="安装ROS"><a href="#安装ROS" class="headerlink" title="安装ROS"></a>安装ROS</h1><h2 id="ROS简介"><a href="#ROS简介" class="headerlink" title="ROS简介"></a>ROS简介</h2><p>ROS（机器人操作系统，Robot Operating System），是专为机器人软件开发所设计出来的一套电脑操作系统架构。它是一个开源的元级操作系统（后操作系统），提供类似于操作系统的服务，包括硬件抽象描述、底层驱动程序管理、共用功能的执行、程序间消息传递、程序发行包管理，它也提供一些工具和库用于获取、建立、编写和执行多机融合的程序。</p>
+<p>ROS的首要设计目标是在机器人研发领域提高代码复用率。ROS是一种分布式处理框架（又名Nodes）。这使可执行文件能被单独设计，并且在运行时松散耦合。这些过程可以封装到数据包（Packages）和堆栈（Stacks）中，以便于共享和分发。ROS还支持代码库的联合系统。使得协作亦能被分发。这种从文件系统级别到社区一级的设计让独立地决定发展和实施工作成为可能。上述所有功能都能由ROS的基础工具实现。</p>
+<p>ROS有三个层次的概念：分别为Filesystem level，Computation graph level， 以及Communication level。 以下内容具体的总结了这些层次及概念。除了这三个层次的概念， ROS也定义了两种名称– Package资源名称和Graph资源名称。</p>
+<h2 id="安装ROS-1"><a href="#安装ROS-1" class="headerlink" title="安装ROS"></a>安装ROS</h2><p>不建议在虚拟机中安装Ubuntu，再安装ROS。具体ROS安装步骤请参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/liu-fa/p/5779206.html">ROS 不能再详细的安装教程</a>和<a target="_blank" rel="noopener" href="http://wiki.ros.org/kinetic/Installation/Ubuntu">Ubuntu install of ROS Kinetic</a>。在此只简单记录Ubuntu 16.04 中安装ROS步骤：</p>
+<ul>
+<li>设置source.list</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sh -c &#x27;echo &quot;deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main&quot; &gt; /etc/apt/sources.list.d/ros-latest.list&#x27;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置公钥</li>
+</ul>
+<p>如何在连接服务器的过程中出现问题，可设置可选的hkp:&#x2F;&#x2F;pgp.mit.edu:80 或 hkp:&#x2F;&#x2F;keyserver.ubuntu.com:80</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install ros-kinetic-desktop-full</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>初始化rosdep</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo rosdep init</span><br><span class="line">rosdep update</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>环境配置</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;source /opt/ros/kinetic/setup.bash&quot; &gt;&gt; ~/.bashrc</span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装ros组件构建环境</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install python-catkin-tools python-rosinstall python-rosinstall-generator python-wstool build-essential -y</span><br></pre></td></tr></table></figure>
+
+<h2 id="运行ROS"><a href="#运行ROS" class="headerlink" title="运行ROS"></a>运行ROS</h2><p>在Ubuntu 16.04终端中运行如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"># roscore will start up a ROS Master, a ROS Parameter Server and a rosout logging node</span><br><span class="line">$ roscore</span><br><span class="line"></span><br><span class="line"># rosnode is a command-line tool for printing information about ROS Nodes.</span><br><span class="line">$ rosnode list</span><br><span class="line"></span><br><span class="line"># rospack allows you to get information about packages. </span><br><span class="line"></span><br><span class="line">$ rospack list</span><br><span class="line"></span><br><span class="line"># rosrun will locate PACKAGE and try to find an executable named EXECUTABLE in the PACKAGE tree. If it finds it, it will run it with ARGS.</span><br><span class="line"># Usage: rosrun [--prefix cmd] [--debug] PACKAGE EXECUTABLE [ARGS]</span><br><span class="line">$ rosrun turtlesim turtlesim_node</span><br><span class="line">$ rosrun turtlesim turtle_teleop_key</span><br><span class="line"></span><br><span class="line"># record the message which published in the topic</span><br><span class="line">$ rosbag record /turtle1/cmd_vel</span><br><span class="line"></span><br><span class="line"># check what&#x27;s happen in ros system</span><br><span class="line">$ rosrun rqt_graph rqt_graph</span><br><span class="line"></span><br><span class="line"># rqt_plot displays a scrolling time plot of the data published on topics</span><br><span class="line">$ rosrun rqt_plot rqt_plot</span><br><span class="line"></span><br><span class="line"># rostopic is a command-line tool for printing information about ROS Topics.</span><br><span class="line">$ rostopic list</span><br><span class="line"></span><br><span class="line"># rostopic echo shows the data published on a topic.</span><br><span class="line">$ rostopic echo /turtle1/cmd_vel</span><br><span class="line"></span><br><span class="line"># rostopic type returns the message type of any topic being published.</span><br><span class="line">$ rostopic type /turtle1/cmd_vel</span><br><span class="line"></span><br><span class="line"># rostopic pub publishes data on to a topic currently advertised.</span><br><span class="line">$ rostopic pub -1 /turtle1/cmd_vel geometry_msgs/Twist -- &#x27;[2.0, 0.0, 0.0]&#x27; &#x27;[0.0, 0.0, 1.8]&#x27;</span><br><span class="line"></span><br><span class="line"># rostopic hz reports the rate at which data is published.</span><br><span class="line">$ rostopic hz /turtle1/pose</span><br><span class="line"></span><br><span class="line"># check info of /turtlesim node</span><br><span class="line">$ rosnode info /turtlesim</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="安装MAVROS"><a href="#安装MAVROS" class="headerlink" title="安装MAVROS"></a>安装MAVROS</h1><p>具体安装MAVROS的步骤请参考链接<a target="_blank" rel="noopener" href="https://dev.px4.io/en/ros/mavros_installation.html">MAVROS</a>。下面简单介绍Ubuntu 16.04下从源代码安装MAVROS的过程。</p>
+<ul>
+<li>创建catkin工作空间</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src</span><br><span class="line">cd ~/catkin_ws</span><br><span class="line">catkin init</span><br><span class="line">wstool init src</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装MAVLink</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosinstall_generator --rosdistro kinetic mavlink | tee /tmp/mavros.rosinstall </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装MAVROS</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosinstall_generator --upstream mavros | tee -a /tmp/mavros.rosinstall</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建工作空间和依赖</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wstool merge -t src /tmp/mavros.rosinstall</span><br><span class="line">wstool update -t src -j4</span><br><span class="line">rosdep install --from-paths src --ignore-src -y</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装GeographicLib数据集</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ./src/mavros/mavros/scripts/install_geographiclib_datasets.sh</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>构建源</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">catkin build</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>添加工作空间到ros环境</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Needed or rosrun can&#x27;t find nodes from this workspace.</span><br><span class="line">$ source devel/setup.bash</span><br><span class="line"># Or write in .bashrc</span><br><span class="line">$ echo &quot;source ~/catkin_ws/devel/setup.bash&quot; &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://forum.ubuntu.org.cn/viewtopic.php?t=478527">Ubuntu 16.04 安装基础入门教程（图文）</a>, by ubuntu中文论坛.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%A9%9F%E5%99%A8%E4%BA%BA%E4%BD%9C%E6%A5%AD%E7%B3%BB%E7%B5%B1">机器人操作系统</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/liu-fa/p/5779206.html">ROS 不能再详细的安装教程</a>,by 小萌是个球.</li>
+<li><a target="_blank" rel="noopener" href="http://wiki.ros.org/kinetic/Installation/Ubuntu">Ubuntu install of ROS Kinetic</a>, by ROS.org.</li>
+<li><a target="_blank" rel="noopener" href="http://wiki.ros.org/ROS/Tutorials">ROS Tutorials</a>, by ROS.org.</li>
+<li><a target="_blank" rel="noopener" href="https://dev.px4.io/en/ros/mavros_installation.html">MAVROS</a>, by DroneCode.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/chishuideyu/article/details/53581013">catkin 与 rosbuild解析及两者区别和联系</a>,by Xuefeng_BUPT.</li>
+<li><a target="_blank" rel="noopener" href="http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment">Installing and Configuring Your ROS Environment</a>, by ros.org.</li>
+<li><a target="_blank" rel="noopener" href="http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment">Installing and Configuring Your ROS Environment</a>,by ros.org.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F/" rel="tag"># 飞行仿真</a>
+              <a href="/tags/PX4/" rel="tag"># PX4</a>
+              <a href="/tags/ROS/" rel="tag"># ROS</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/05/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E6%9C%AF%E8%AF%AD%E8%BE%A8%E6%9E%90/" rel="prev" title="计算机科学术语辨析">
+                  <i class="fa fa-angle-left"></i> 计算机科学术语辨析
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/05/11/Dell%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%AE%89%E8%A3%85Ubuntu16-04%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" rel="next" title="Dell笔记本安装Ubuntu16.04出现的问题及解决方案">
+                  Dell笔记本安装Ubuntu16.04出现的问题及解决方案 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

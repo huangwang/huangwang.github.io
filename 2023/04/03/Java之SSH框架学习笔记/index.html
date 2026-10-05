@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="最近处理的几个项目都是用Java语言编写的，学习一下。 Web.xml配置文件Listener为web应用程序定义监听器，监听器用来监听各种事件，比如：application和session事件，所有的监听器按照相同的方式定义，功能取决去它们各自实现的接口，常用的Web事件接口有如下几个：  ServletContextListener：用于监听Web应用的启动和关闭； ServletContex">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java之SSH框架学习笔记">
+<meta property="og:url" content="https://huangwang.github.io/2023/04/03/Java%E4%B9%8BSSH%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="最近处理的几个项目都是用Java语言编写的，学习一下。 Web.xml配置文件Listener为web应用程序定义监听器，监听器用来监听各种事件，比如：application和session事件，所有的监听器按照相同的方式定义，功能取决去它们各自实现的接口，常用的Web事件接口有如下几个：  ServletContextListener：用于监听Web应用的启动和关闭； ServletContex">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://huangwang.github.io/2023/04/03/Java%E4%B9%8BSSH%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/images/sruct2.webp">
+<meta property="og:image" content="https://huangwang.github.io/2023/04/03/Java%E4%B9%8BSSH%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/images/spring.webp">
+<meta property="article:published_time" content="2023-04-03T15:27:40.000Z">
+<meta property="article:modified_time" content="2023-04-04T10:21:07.839Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="常用工具">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://huangwang.github.io/2023/04/03/Java%E4%B9%8BSSH%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/images/sruct2.webp">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2023/04/03/Java%E4%B9%8BSSH%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2023/04/03/Java%E4%B9%8BSSH%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/","path":"2023/04/03/Java之SSH框架学习笔记/","title":"Java之SSH框架学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Java之SSH框架学习笔记 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Web-xml%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">Web.xml配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Listener"><span class="nav-number">1.1.</span> <span class="nav-text">Listener</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Filter"><span class="nav-number">1.2.</span> <span class="nav-text">Filter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Servlet"><span class="nav-number">1.3.</span> <span class="nav-text">Servlet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bean"><span class="nav-number">1.4.</span> <span class="nav-text">Bean</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Web-xml%E5%8A%A0%E8%BD%BD%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.5.</span> <span class="nav-text">Web.xml加载顺序</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Struct2"><span class="nav-number">2.</span> <span class="nav-text">Struct2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring"><span class="nav-number">3.</span> <span class="nav-text">Spring</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/04/03/Java%E4%B9%8BSSH%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Java之SSH框架学习笔记 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java之SSH框架学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-04-03 23:27:40" itemprop="dateCreated datePublished" datetime="2023-04-03T23:27:40+08:00">2023-04-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-04-04 18:21:07" itemprop="dateModified" datetime="2023-04-04T18:21:07+08:00">2023-04-04</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近处理的几个项目都是用Java语言编写的，学习一下。</p>
+<h1 id="Web-xml配置文件"><a href="#Web-xml配置文件" class="headerlink" title="Web.xml配置文件"></a>Web.xml配置文件</h1><h2 id="Listener"><a href="#Listener" class="headerlink" title="Listener"></a>Listener</h2><p><listener>为web应用程序定义监听器，监听器用来监听各种事件，比如：application和session事件，所有的监听器按照相同的方式定义，功能取决去它们各自实现的接口，常用的Web事件接口有如下几个：</p>
+<ul>
+<li>ServletContextListener：用于监听Web应用的启动和关闭；</li>
+<li>ServletContextAttributeListener：用于监听ServletContext范围（application）内属性的改变；</li>
+<li>ServletRequestListener：用于监听用户的请求；</li>
+<li>ServletRequestAttributeListener：用于监听ServletRequest范围（request）内属性的改变；</li>
+<li>HttpSessionListener：用于监听用户session的开始和结束；</li>
+<li>HttpSessionAttributeListener：用于监听HttpSession范围（session）内属性的改变。</li>
+</ul>
+<p><listener>主要用于监听Web应用事件，其中有两个比较重要的WEB应用事件：应用的启动和停止（starting up or shutting down）和Session的创建和失效（created or destroyed）。</p>
+<h2 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h2><p>Filter可认为是Servle的一种“加强版”，主要用于对用户请求request进行预处理，也可以对Response进行后处理，是个典型的处理链。使用Filter的完整流程是：Filter对用户请求进行预处理，接着将请求HttpServletRequest交给Servlet进行处理并生成响应，最后Filter再对服务器响应HttpServletResponse进行后处理。Filter与Servlet具有完全相同的生命周期，且Filter也可以通过<init-param>来配置初始化参数，获取Filter的初始化参数则使用FilterConfig的getInitParameter()。</p>
+<p>换种说法，Servlet里有request和response两个对象，Filter能够在一个request到达Servlet之前预处理request，也可以在离开Servlet时处理response，Filter其实是一个Servlet链。</p>
+<p>以下是Filter的一些常见应用场合：</p>
+<ul>
+<li>认证Filter</li>
+<li>日志和审核Filter</li>
+<li>图片转换Filter</li>
+<li>数据压缩Filter</li>
+<li>密码Filter</li>
+<li>令牌Filter</li>
+<li>触发资源访问事件的Filter</li>
+<li>XSLT Filter</li>
+<li>媒体类型链Filter</li>
+</ul>
+<h2 id="Servlet"><a href="#Servlet" class="headerlink" title="Servlet"></a>Servlet</h2><p>Servlet通常称为服务器端小程序，是运行在服务器端的程序，用于处理及响应客户的请求。Servlet是个特殊的java类，继承于HttpServlet。客户端通常只有GET和POST两种请求方式，Servlet为了响应则两种请求，必须重写doGet()和doPost()方法。</p>
+<h2 id="Bean"><a href="#Bean" class="headerlink" title="Bean"></a>Bean</h2><p>JavaBeans是Java中一种特殊的类，可以将多个对象封装到一个对象（bean）中。特点是可序列化，提供无参构造器，提供getter方法和setter方法访问对象的属性。名称中的“Bean”是用于Java的可重用软件组件的惯用叫法。</p>
+<h2 id="Web-xml加载顺序"><a href="#Web-xml加载顺序" class="headerlink" title="Web.xml加载顺序"></a>Web.xml加载顺序</h2><blockquote>
+<p>总的来说，web.xml的加载顺序是:<context-param>-&gt;<listener>-&gt;<filter>-&gt;<servlet>。其中，如果web.xml中出现了相同的元素，则按照在配置文件中出现的先后顺序来加载。</p>
+</blockquote>
+<blockquote>
+<p>对于某类元素而言，与它们出现的顺序是有关的。以<filter>为例，web.xml中当然可以定义多个<filter>，与<filter>相关的一个元素是<filter-mapping>，注意，对于拥有相同<filter-name>的<filter>和<filter-mapping>元素而言，<filter-mapping>必须出现在<filter>之后，否则当解析到<filter-mapping>时，它所对应的<filter-name>还未定义。web容器启动初始化每个<filter>时，按照<filter>出现的顺序来初始化的，当请求资源匹配多个<filter-mapping>时，<filter>拦截资源是按照<filter-mapping>元素出现的顺序来依次调用doFilter()方法的。<servlet>同<filter>类似，此处不再赘述。</p>
+<p>Servlet里有request和response两个对象，Filter能够在一个request到达Servlet之前预处理request，也可以在离开Servlet时处理response，Filter其实是一个Servlet链。</p>
+</blockquote>
+<h1 id="Struct2"><a href="#Struct2" class="headerlink" title="Struct2"></a>Struct2</h1><p>请参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/beilou310/p/10436856.html">Struct2 基础介绍 </a>。</p>
+<p align="center">
+    <img src="images/sruct2.webp" width="90%" alt="Struct2工作流程"/>
+</p>
+<center>图1  Struct2工作流程</center>
+
+<h1 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h1><p>请参考<a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903577077415950">Spring MVC 解析之 DispatcherServlet</a>。</p>
+<p align="center">
+    <img src="images/spring.webp" width="90%" alt="Spring工作流程"/>
+</p>
+<center>图2  Spring工作流程</center>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/linhuaming/p/9464356.html">web.xml 配置文件 超详细说明！！！ </a>,by 吴川华仔.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/u_3664660/3217638">web.xml文件中加载顺序的优先级 </a>,by laolu0837.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wl0000-03/p/7803276.html">Spring 、SpringMVC 、Struts2之间的区别</a>,by 刘二雄.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/beilou310/p/10436856.html">Struct2 基础介绍 </a>,by shiyuan310.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/javabg/p/7290496.html">深入Struts2的过滤器FilterDispatcher–中文乱码及字符编码过滤器</a>,by  关键步就几步.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/zhoucheng05_13/article/details/54142632">Spring整合Struts2步骤及完整实例</a>,by Star_Ship.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/26787293">Spring和struts2整合详解</a>,by Damon.</li>
+<li><a target="_blank" rel="noopener" href="https://www.jb51.net/article/178242.htm">spring整合struts2过程详解</a>,by 西西嘛呦.</li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903577077415950">Spring MVC 解析之 DispatcherServlet</a>,by 摆码王子.</li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/4851dbedb63d">一文读懂SpringMVC工作流程</a>,by Wizey.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/51kata/p/5152400.html">servlet的url-pattern匹配规则详细描述</a>,by 51kata.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/u_3664660/3216490">Listener,Filter,Servlet执行顺序和生命周期</a>,by laolu0837.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/u012373815/article/details/47174163">springmvc 的参数绑定，springmvc和 struts2的区别</a>,by 双斜杠少年.</li>
+<li><a target="_blank" rel="noopener" href="https://www.51cto.com/article/130441.html">如何集成Struts和Spring</a>,by gxhsnowflower.</li>
+<li><a target="_blank" rel="noopener" href="https://www.yiibai.com/struts_2/struts_spring.html">Struts2和Spring集成</a>,by yiibai.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/wrs120/article/details/79603735">Spring 和 Struts 集成</a>,by 王如霜.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/" rel="tag"># 常用工具</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/03/24/Vue2%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AEflow%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%9F%A5/" rel="prev" title="Vue2项目配置flow类型检查">
+                  <i class="fa fa-angle-left"></i> Vue2项目配置flow类型检查
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/04/08/CSharp%E4%B9%8BNuGet%E6%89%93%E5%8C%85%E5%92%8C%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85/" rel="next" title="C#之NuGet打包和离线安装">
+                  C#之NuGet打包和离线安装 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

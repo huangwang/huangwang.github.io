@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="数据库表主键使用自增整型字段还是使用GUID字段，这是一个问题。下面详细分析它们的优劣。 基础知识数据库设计范式 第一范式（1NF）：强调的是列的原子性，即列不能够再分成其他几列。简而言之，第一范式就是无重复的列  第二范式（2NF）：首先要满足它是1NF，另外还需要包含两部分内容：一是表必须有一个主键；二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。简而言之，第二范式就是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库表主键设计方法">
+<meta property="og:url" content="https://huangwang.github.io/2019/09/20/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E4%B8%BB%E9%94%AE%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="数据库表主键使用自增整型字段还是使用GUID字段，这是一个问题。下面详细分析它们的优劣。 基础知识数据库设计范式 第一范式（1NF）：强调的是列的原子性，即列不能够再分成其他几列。简而言之，第一范式就是无重复的列  第二范式（2NF）：首先要满足它是1NF，另外还需要包含两部分内容：一是表必须有一个主键；二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。简而言之，第二范式就是">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-09-20T13:17:43.000Z">
+<meta property="article:modified_time" content="2019-09-20T14:04:05.527Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2019/09/20/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E4%B8%BB%E9%94%AE%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2019/09/20/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E4%B8%BB%E9%94%AE%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/","path":"2019/09/20/数据库表主键设计方法/","title":"数据库表主键设计方法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数据库表主键设计方法 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E8%8C%83%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">数据库设计范式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E8%8C%83%E5%BC%8F%E4%B8%BB%E9%94%AE%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="nav-number">1.2.</span> <span class="nav-text">反范式主键的设计原则</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E4%B8%BB%E9%94%AE%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">数据库表主键设计方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%A2%9E%E6%95%B4%E5%9E%8B%E5%AD%97%E6%AE%B5%E4%BD%9C%E4%B8%BA%E4%B8%BB%E9%94%AE"><span class="nav-number">2.1.</span> <span class="nav-text">自增整型字段作为主键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GUID%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%BD%9C%E4%B8%BA%E4%B8%BB%E9%94%AE"><span class="nav-number">2.2.</span> <span class="nav-text">GUID字符串作为主键</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E6%B5%81%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%ADGUID%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">主流数据库中GUID实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MSSQL"><span class="nav-number">3.1.</span> <span class="nav-text">MSSQL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL"><span class="nav-number">3.2.</span> <span class="nav-text">MySQL</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/09/20/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E4%B8%BB%E9%94%AE%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="数据库表主键设计方法 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据库表主键设计方法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2019-09-20 21:17:43 / 修改时间：22:04:05" itemprop="dateCreated datePublished" datetime="2019-09-20T21:17:43+08:00">2019-09-20</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>数据库表主键使用自增整型字段还是使用GUID字段，这是一个问题。下面详细分析它们的优劣。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="数据库设计范式"><a href="#数据库设计范式" class="headerlink" title="数据库设计范式"></a>数据库设计范式</h2><ul>
+<li><p>第一范式（1NF）：强调的是列的原子性，即列不能够再分成其他几列。简而言之，第一范式就是无重复的列</p>
+</li>
+<li><p>第二范式（2NF）：首先要满足它是1NF，另外还需要包含两部分内容：一是表必须有一个主键；二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。简而言之，第二范式就是非主属性非部分依赖于主关键字</p>
+</li>
+<li><p>第三范式（3NF）：首先是 2NF，另外非主键列必须直接依赖于主键，不能存在传递依赖。即不能存在：非主键列 A 依赖于非主键列 B，非主键列 B 依赖于主键的情况。简而言之，第三范式（3NF）要求一个数据库表中不包含已在其它表中已包含的非主关键字信息。</p>
+</li>
+</ul>
+<h2 id="反范式主键的设计原则"><a href="#反范式主键的设计原则" class="headerlink" title="反范式主键的设计原则"></a>反范式主键的设计原则</h2><ul>
+<li>主键应当是对用户没有意义的。业务上的‘主键’可以通过唯一键（Unique Key）或唯一索引（Unique Index）和其它约束条件实现</li>
+<li>主键应该是单列的，以便提高连接和筛选操作的效率</li>
+<li>不要更新主键。实际上，因为主键除了惟一地标识一行之外再没有其他的用途了，所以也就没有理由去对它更新。</li>
+<li>主键不应包含动态变化的数据，如时间戳、创建时间列、修改时间列等</li>
+<li>主键应当由计算机自动生成。</li>
+</ul>
+<h1 id="数据库表主键设计方法"><a href="#数据库表主键设计方法" class="headerlink" title="数据库表主键设计方法"></a>数据库表主键设计方法</h1><p>数据库表主键设计主要有自增整型字段和使用GUID字段两种方法。</p>
+<h2 id="自增整型字段作为主键"><a href="#自增整型字段作为主键" class="headerlink" title="自增整型字段作为主键"></a>自增整型字段作为主键</h2><p>最常用的主键设计方法。例如《阿里 Java 开发手册》中规定有以下 MySQL 建表规约：</p>
+<blockquote>
+<p>表必备三字段：id, gmt_create, gmt_modified。 说明：其中id必为主键，类型为unsigned bigint、单表时自增、步长为1。gmt_create, gmt_modified的类型均为date_time类型。</p>
+</blockquote>
+<p>该方法优点是：数据库自动编号，速度快，而且是增量增长，聚集型主键按顺序存放，对于检索非常有利;数字型的，占用空间小，易排序，在程序中传递也方便;如果通过非系统增加记录(比如手动录入，或是用其他工具直接在表里插入新记录，或老系统数据导入)时，非常方便，不用担心主键重复问题。</p>
+<p>该方法缺点是：因为自动增长，在手动要插入指定ID的记录时会显得麻烦，尤其是当系统与其他系统集成时，需要数据导入时，很难保证原系统的ID不发生主键冲突。</p>
+<h2 id="GUID字符串作为主键"><a href="#GUID字符串作为主键" class="headerlink" title="GUID字符串作为主键"></a>GUID字符串作为主键</h2><p>Guid:指在一台机器上生成的数字，它保证对在同一时空中的所有机器都是唯一的，其算法是通过以太网卡地址、纳秒级时间、芯片ID码和许多可能的数字生成。其格式为:04755396-9A29-4B8C-A38D-00042C1B9028。</p>
+<p>GUID字符串作为主键的优点如下：</p>
+<ul>
+<li><p>在扩展数据库的时候，当你有多个数据库包含同一段（片）数据时，比如一个顾客集，使用 GUID 意味着该 ID 在所有的数据库中是唯一标识的，而不是仅仅本数据库唯一。这保障了跨数据库迁移数据的安全。又比如，我曾在项目中把多个数据库分片合并到一个 Hadoop 集群中，也没有产生键的冲突。</p>
+</li>
+<li><p>在插入数据之前，你就能知道这个主键的值，这避免了一轮的数据查找，并且简化了事务的逻辑，即在你插入子记录之前，因为需要使用这个主键作为一个外键，你必须要知道这个主键的值。</p>
+</li>
+<li><p>GUID 不会透露数据的信息，因此被用在 URL 中也比自增整数更安全。比如，我是编号 12345678 号顾客，那么人们就会猜测编号为 12345677 和 12345679 的顾客的存在，这就提供了一种攻击向量。（但是后面我们会看到一个更好的替代品）</p>
+</li>
+</ul>
+<p>GUID字符串作为主键的缺点如下：</p>
+<ul>
+<li>GUID 值较长，不容易记忆和输入，而且这个值是随机、无顺序的。</li>
+<li>GUID 的值有 16 个字节，与其它那些诸如 4 字节的整数相比要相对大一些。这意味着如果在数据库中使用 uniqueidentifier 键，可能会带来两方面的消极影响：存储空间增大;索引时间较慢。</li>
+</ul>
+<h1 id="主流数据库中GUID实现"><a href="#主流数据库中GUID实现" class="headerlink" title="主流数据库中GUID实现"></a>主流数据库中GUID实现</h1><h2 id="MSSQL"><a href="#MSSQL" class="headerlink" title="MSSQL"></a>MSSQL</h2><p>在MS Sql 数据库中可以在建立表结构是指定字段类型为uniqueidentifier,并且其默认值可以使用NewID()来生成唯一的Guid(全局唯一标识符).</p>
+<p>使用NewID生成的比较随机,如果是SQL 2005可以使用NewSequentialid()来顺序生成,在此为了兼顾使用SQL 2000使用了NewID().</p>
+<h2 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h2><p>MySQL中使用UUID()函数生成主键，UUID()函数将生成格式为xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx (8-4-4-4-12)的字符串，包含32个16进制数字，以连字号分为五段。示例：550e8400-e29b-41d4-a716-446655440000。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/kleguan/article/details/74502330">数据库表主键设计原则</a>,by 乐哉悠哉.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/linzhiqiang0316/article/details/52881151">[MySQL]数据库主键设计之思考</a>,by 林老师带你学编程.</li>
+<li><a target="_blank" rel="noopener" href="http://www.nowamagic.net/librarys/veda/detail/383">如何设计数据库的主键</a>,by Veda 原型.</li>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/post/59561e5b6fb9a06bbf6fdf16">[译] 把 UUID 或者 GUID 作为主键？你得小心啦！</a>,by zaraguo.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/shiyong1949/article/details/78411509">MySQL中使用UUID()函数生成主键</a>,by shiyonghm.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/09/16/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E%E4%B8%8E%E7%89%A9%E7%90%86%E5%BC%95%E6%93%8E/" rel="prev" title="游戏引擎与物理引擎">
+                  <i class="fa fa-angle-left"></i> 游戏引擎与物理引擎
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/09/22/netcat%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E7%AE%80%E4%BB%8B/" rel="next" title="netcat使用方法简介">
+                  netcat使用方法简介 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

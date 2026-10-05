@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="使用强化学习实现机器人的连续控制，策略梯度方法是首选。下面即对强化学习中策略梯度方法进行总结。 核心概念免模型学习（Model-Free） vs 有模型学习（Model-Based）不同强化学习算法最重要的区分点之一就是智能体是否能完整了解或学习到所在环境的模型。 环境的模型是指一个预测状态转换和奖励的函数。 有模型学习最大的优势在于智能体能够 提前考虑来进行规划，走到每一步的时候，都提前尝试未来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="策略梯度方法笔记">
+<meta property="og:url" content="https://huangwang.github.io/2020/02/10/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%E6%96%B9%E6%B3%95%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="使用强化学习实现机器人的连续控制，策略梯度方法是首选。下面即对强化学习中策略梯度方法进行总结。 核心概念免模型学习（Model-Free） vs 有模型学习（Model-Based）不同强化学习算法最重要的区分点之一就是智能体是否能完整了解或学习到所在环境的模型。 环境的模型是指一个预测状态转换和奖励的函数。 有模型学习最大的优势在于智能体能够 提前考虑来进行规划，走到每一步的时候，都提前尝试未来">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://huangwang.github.io/2020/02/10/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%E6%96%B9%E6%B3%95%E7%AC%94%E8%AE%B0/images/rl_algorithms.svg">
+<meta property="og:image" content="https://huangwang.github.io/2020/02/10/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%E6%96%B9%E6%B3%95%E7%AC%94%E8%AE%B0/images/ddpg.svg">
+<meta property="article:published_time" content="2020-02-10T08:42:42.000Z">
+<meta property="article:modified_time" content="2021-06-16T14:18:29.791Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://huangwang.github.io/2020/02/10/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%E6%96%B9%E6%B3%95%E7%AC%94%E8%AE%B0/images/rl_algorithms.svg">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2020/02/10/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%E6%96%B9%E6%B3%95%E7%AC%94%E8%AE%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2020/02/10/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%E6%96%B9%E6%B3%95%E7%AC%94%E8%AE%B0/","path":"2020/02/10/策略梯度方法笔记/","title":"策略梯度方法笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>策略梯度方法笔记 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">核心概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%8D%E6%A8%A1%E5%9E%8B%E5%AD%A6%E4%B9%A0%EF%BC%88Model-Free%EF%BC%89-vs-%E6%9C%89%E6%A8%A1%E5%9E%8B%E5%AD%A6%E4%B9%A0%EF%BC%88Model-Based%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">免模型学习（Model-Free） vs 有模型学习（Model-Based）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E7%AD%96%E7%95%A5%EF%BC%88on-policy%EF%BC%89-vs-%E5%BC%82%E7%AD%96%E7%95%A5%EF%BC%88off-policy%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">同策略（on-policy） vs 异策略（off-policy）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E7%BA%BF%EF%BC%88online%EF%BC%89-vs-%E7%A6%BB%E7%BA%BF%EF%BC%88offline%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">在线（online） vs 离线（offline）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%88%86%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">强化学习分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%A6%E5%8F%B7%E5%AE%9A%E4%B9%89"><span class="nav-number">3.</span> <span class="nav-text">符号定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">策略梯度方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%E5%AE%9A%E7%90%86"><span class="nav-number">4.1.</span> <span class="nav-text">策略梯度定理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E7%A1%AE%E5%AE%9A%E6%80%A7%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6-%EF%BC%88DDPG%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">深度确定性策略梯度 （DDPG）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%91%E4%BC%BC%E7%AD%96%E7%95%A5%E4%BC%98%E5%8C%96PPO"><span class="nav-number">5.</span> <span class="nav-text">近似策略优化PPO</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DQN"><span class="nav-number">6.</span> <span class="nav-text">DQN</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SAC"><span class="nav-number">7.</span> <span class="nav-text">SAC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">8.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/02/10/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%E6%96%B9%E6%B3%95%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="策略梯度方法笔记 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          策略梯度方法笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-02-10 16:42:42" itemprop="dateCreated datePublished" datetime="2020-02-10T16:42:42+08:00">2020-02-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2021-06-16 22:18:29" itemprop="dateModified" datetime="2021-06-16T22:18:29+08:00">2021-06-16</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>使用强化学习实现机器人的连续控制，策略梯度方法是首选。下面即对强化学习中策略梯度方法进行总结。</p>
+<h1 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h1><h2 id="免模型学习（Model-Free）-vs-有模型学习（Model-Based）"><a href="#免模型学习（Model-Free）-vs-有模型学习（Model-Based）" class="headerlink" title="免模型学习（Model-Free） vs 有模型学习（Model-Based）"></a>免模型学习（Model-Free） vs 有模型学习（Model-Based）</h2><p>不同强化学习算法最重要的区分点之一就是<strong>智能体是否能完整了解或学习到所在环境的模型。</strong> 环境的模型是指一个预测状态转换和奖励的函数。</p>
+<p>有模型学习最大的优势在于智能体能够 提前考虑来进行规划，走到每一步的时候，都提前尝试未来可能的选择，然后明确地从这些候选项中进行选择。智能体可以把预先规划的结果提取为学习策略。这其中最著名的例子就是 AlphaZero。这个方法起作用的时候，可以大幅度提升采样效率 —— 相对于那些没有模型的方法。</p>
+<p>有模型学习最大的缺点就是智能体往往不能获得环境的真实模型。如果智能体想在一个场景下使用模型，那它必须完全从经验中学习，这会带来很多挑战。最大的挑战就是，智能体探索出来的模型和真实模型之间存在误差，而这种误差会导致智能体在学习到的模型中表现很好，但在真实的环境中表现得不好（甚至很差）。基于模型的学习从根本上讲是非常困难的，即使你愿意花费大量的时间和计算力，最终的结果也可能达不到预期的效果。</p>
+<p>使用模型的算法叫做有模型学习，不基于模型的叫做免模型学习。虽然免模型学习放弃了有模型学习在样本效率方面的潜在收益，但是他们往往更加易于实现和调整。</p>
+<h2 id="同策略（on-policy）-vs-异策略（off-policy）"><a href="#同策略（on-policy）-vs-异策略（off-policy）" class="headerlink" title="同策略（on-policy） vs 异策略（off-policy）"></a>同策略（on-policy） vs 异策略（off-policy）</h2><p>异策略（off-policy）的代表算法Q-learning，亦称SarasMax，其采样的策略（用于执行，behavior policy) 和更新Q值的策略（用于评估，target policy）不一样，行为策略为贪心策略，而target policy为确定性策略，即选择最Q值最优的action。</p>
+<p>同策略（on-policy）的代表算法Sarsa，亦称on-line Q-learning，其采样的策略（用于执行，behavior policy) 和更新Q值的策略（用于评估，target policy）一样,行为策略和目标策略均为贪心策略。Sarsa的每次Q值更新需要知道前一步的状态（state）、前一步的动作（action）、奖赏值（reward）、当前状态（state）、将要执行的动作（action），由此得名Sarsa算法。</p>
+<h2 id="在线（online）-vs-离线（offline）"><a href="#在线（online）-vs-离线（offline）" class="headerlink" title="在线（online） vs 离线（offline）"></a>在线（online） vs 离线（offline）</h2><p>在计算机科学中，在线机器学习是一种机器学习的方法，其中数据按顺序可用，并且用于在每个步骤中为将来的数据更新我们的最佳预测器，而不是通过学习生成最佳预测器的批处理学习技术 一次对整个训练数据集。 在线学习是机器学习领域中的一种常用技术，在该领域中，计算无法训练整个数据集是不可行的，因此需要核心算法。 它也用于算法必须动态适应数据中的新模式的情况下，或者在数据本身随时间而变的情况下（例如，股价预测）使用。 在线学习算法可能易于遭受灾难性干扰，这一问题可以通过增量学习方法来解决。</p>
+<p>在机器学习中，采用离线学习的系统在初始训练阶段完成后不会改变其对目标函数的近似值。这些系统通常也是渴望学习的示例。</p>
+<p>在在线学习中，只有一组可能的元素是已知的，而在离线学习中，学习者则知道这些元素的标识以及它们显示的顺序。</p>
+<h1 id="强化学习分类"><a href="#强化学习分类" class="headerlink" title="强化学习分类"></a>强化学习分类</h1><p align="center">
+    <img src="images/rl_algorithms.svg" width="90%" alt="强化学习简单分类"/>
+</p>
+<center>图1 强化学习简单分类</center>
+
+<p>在机器人学习领域，目前主要有三类有效的免模型的深度强化学习算法：</p>
+<ul>
+<li>TRPO,PPO</li>
+<li>DDPG及其拓展（D4PG,TD3等）</li>
+<li>Soft Q-Learning, Soft Actor-Critic</li>
+</ul>
+<p>PPO算法是TRPO（Trust Region Policy Optimization）算法的近似，该算法更能适应大规模的运算，是目前最主流的DRL算法，同时面向离散控制和连续控制，在OpenAI Five上取得了巨大成功。但是PPO是一种on-policy的算法，也就是PPO面临着严重的sample inefficiency，需要巨量的采样才能学习，这对于真实的机器人训练来说，是无法接受的。</p>
+<p>DDPG及其拓展则是DeepMind开发的面向连续控制的off policy算法，相对PPO 更sample efficient。DDPG训练的是一种确定性策略deterministic policy，即每一个state下都只考虑最优的一个动作。</p>
+<p>Soft Actor-Critic (SAC)是面向Maximum Entropy Reinforcement learning 开发的一种off policy算法，和DDPG相比，Soft Actor-Critic使用的是随机策略stochastic policy，相比确定性策略具有一定的优势（具体后面分析）。Soft Actor-Critic在公开的benchmark中取得了非常好的效果，并且能直接应用到真实机器人上。</p>
+<h1 id="符号定义"><a href="#符号定义" class="headerlink" title="符号定义"></a>符号定义</h1><p>下表给出强化学习常用符号定义。</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$s \in \mathcal{S}$</td>
+<td>状态。</td>
+</tr>
+<tr>
+<td>$a \in \mathcal{A}$</td>
+<td>动作。</td>
+</tr>
+<tr>
+<td>$r \in \mathcal{R}$</td>
+<td>回报。</td>
+</tr>
+<tr>
+<td>$S_{t}, A_{t}, R_{t}$</td>
+<td>一个轨迹中第t个时间步对应的状态、动作以及回报。我可能会偶尔使用$s_t,a_t,r_t$来代替。</td>
+</tr>
+<tr>
+<td>$\gamma$</td>
+<td>折扣因子；用于惩罚未来回报中的不确定性；$0&lt;γ≤1$。</td>
+</tr>
+<tr>
+<td>$G_{t}$</td>
+<td>累积回报；或者说累积折扣回报；$G_{t}&#x3D;\sum_{k&#x3D;0}^{\infty} \gamma^{k} R_{t+k+1}$。</td>
+</tr>
+<tr>
+<td>$P\left(s^{\prime}, r\vert s, a\right)$</td>
+<td>在当前状态s下采取动作a后转移到下一个状态 s′ 并得到回报 r 的概率。</td>
+</tr>
+<tr>
+<td>$\pi(a\vert s)$</td>
+<td>随机策略（智能体行为逻辑）；$\pi_{\theta}( .)$代表由θ参数化的策略。</td>
+</tr>
+<tr>
+<td>$μ(s)$</td>
+<td>确定性策略；虽然也可以把确定性策略记为$π(s)$，但是采用一个不同的字母可以让我们更容易分辨一个策略到底是确定性的还是随机的。π或者μ都是强化学习算法要学习的目标。</td>
+</tr>
+<tr>
+<td>$V(s)$</td>
+<td>状态-值函数衡量状态s的期望累积回报；$V_{w}( .)$代表由w参数化的状态-值函数。</td>
+</tr>
+<tr>
+<td>$V^{\pi}(s)$</td>
+<td>当智能体遵循策略π时状态s的期望累积回报；$V^{\pi}(s)&#x3D;\mathbb{E}<em>{a \sim \pi}\left[G</em>{t}\vert S_{t}&#x3D;s\right]$</td>
+</tr>
+<tr>
+<td>$Q(s,a)$</td>
+<td>动作-值函数，与状态-值函数类似，但是它衡量在状态s下采取动作a后的期望累积回报；$Q_{w}( .)$代表由w参数化的动作-值函数。</td>
+</tr>
+<tr>
+<td>$Q^{\pi}(s, a)$</td>
+<td>与$V^{\pi}(s)$类似，当智能体遵循策略π时，在状态s下采取动作a后的期望累积回报；$Q^{\pi}(s, a)&#x3D;\mathbb{E}<em>{a \sim \pi}\left[G</em>{t}\vert S_{t}&#x3D;s,A_{t}&#x3D;a\right]$</td>
+</tr>
+<tr>
+<td>$A(s, a)$</td>
+<td>优势函数，$A(s,a)&#x3D;Q(s,a)−V(s)$；可以认为优势函数是加强版本的动作-值函数，但是由于它采用状态-值函数作为基准使得它具有更小的方差。</td>
+</tr>
+</tbody></table>
+<h1 id="策略梯度方法"><a href="#策略梯度方法" class="headerlink" title="策略梯度方法"></a>策略梯度方法</h1><p>强化学习的目标是为智能体找到一个最优的行为策略从而获取最大的回报。策略梯度方法主要特点在于直接对策略进行建模并优化。策略通常被建模为由θ参数化的函数$\pi_{\theta}(a | s)$。回报（目标）函数的值受到该策略的直接影响，因而可以采用很多算法来对θ进行优化来最大化回报（目标）函数。</p>
+<p>回报（目标）函数定义如下：<br>$$ J(\theta)&#x3D;E_{\tau \sim \pi_{\theta}} [R(\tau)]&#x3D;\sum_{s \in \mathcal{S}} d^{\pi}(s) V^{\pi}(s)&#x3D;\sum_{s \in \mathcal{S}} d^{\pi}(s) \sum_{a \in \mathcal{A}} \pi_{\theta}(a | s) Q^{\pi}(s, a) $$</p>
+<p>其中$d^{\pi}(s)$代表由$\pi_{\theta}$引出的马尔科夫链的平稳分布（π下的在线策略状态分布）。</p>
+<p>使用梯度上升方法，我们可以将参数 $\theta$ 往梯度 $\nabla_{\theta} J(\theta)$ 给出的方向进行改变从而去找到最优的 $\theta$ 使得其对应的策略 $\pi_{\theta}$ 能够给智能体带来最大的期望累积回报。</p>
+<p>$$\theta_{k+1} &#x3D; \theta_k + \alpha \left. \nabla_{\theta} J(\pi_{\theta}) \right|_{\theta_k}.$$</p>
+<p>策略性能的梯度 $\nabla_{\theta} J(\pi_{\theta})$ ，通常被称为 策略梯度 ，优化策略的算法通常被称为 策略算法 。</p>
+<h2 id="策略梯度定理"><a href="#策略梯度定理" class="headerlink" title="策略梯度定理"></a>策略梯度定理</h2><p>$$\begin{aligned} \nabla_\theta J(\theta) &amp;\propto \sum_{s \in \mathcal{S}} d^\pi(s) \sum_{a \in \mathcal{A}} Q^\pi(s, a) \nabla_\theta \pi_\theta(a \vert s) &amp;\ &amp;&#x3D; \sum_{s \in \mathcal{S}} d^\pi(s) \sum_{a \in \mathcal{A}} \pi_\theta(a \vert s) Q^\pi(s, a) \frac{\nabla_\theta \pi_\theta(a \vert s)}{\pi_\theta(a \vert s)} &amp;\ &amp;&#x3D; \mathbb{E}<em>\pi [Q^\pi(s, a) \nabla</em>\theta \ln \pi_\theta(a \vert s)] &amp; \scriptstyle{\text{; 因为 } (\ln x)’ &#x3D; 1&#x2F;x} \end{aligned}$$</p>
+<p>$\mathbb{E}<em>{\pi}$代表$\mathbb{E}</em>{s \sim d_{\pi}, a \sim \pi_{\theta}}$，下标表示遵循策略$\pi_{\theta}$（在线策略）时状态以及动作的分布。</p>
+<h2 id="深度确定性策略梯度-（DDPG）"><a href="#深度确定性策略梯度-（DDPG）" class="headerlink" title="深度确定性策略梯度 （DDPG）"></a>深度确定性策略梯度 （DDPG）</h2><p>DDPG（Lillicrap, et al., 2015）是深度确定性策略梯度（Deep Deterministic Policy Gradient）的缩写，是一个结合了DPG以及DQN的无模型离线演员-评论家算法。DQN（深度Q网络）通过经验回访以及冻结目标网络的方式来稳定Q函数的训练过程。原始的DQN算法只能在离散的动作空间上使用，DDPG算法在学习一个确定性策略的同时通过演员-评论家框架将其扩展到连续的动作空间中。</p>
+<p align="center">
+    <img src="images/ddpg.svg" width="90%" alt="深度确定性策略梯度算法伪代码"/>
+</p>
+<center>图2 深度确定性策略梯度算法伪代码</center>
+
+<h1 id="近似策略优化PPO"><a href="#近似策略优化PPO" class="headerlink" title="近似策略优化PPO"></a>近似策略优化PPO</h1><h1 id="DQN"><a href="#DQN" class="headerlink" title="DQN"></a>DQN</h1><h1 id="SAC"><a href="#SAC" class="headerlink" title="SAC"></a>SAC</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://tomaxent.com/2019/04/14/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%E6%96%B9%E6%B3%95/">策略梯度方法</a>,by Abracadabra.</li>
+<li><a target="_blank" rel="noopener" href="https://lilianweng.github.io/lil-log/2018/02/19/a-long-peek-into-reinforcement-learning.html#key-concepts">A (Long) Peek into Reinforcement Learning</a>,by Lilian Weng.</li>
+<li><a target="_blank" rel="noopener" href="https://spinningup.readthedocs.io/zh_CN/latest/spinningup/rl_intro3.html">第三部分：策略优化介绍</a>,by spinningup.</li>
+<li><a href="https://huangwang.github.io/2018/11/26/%E6%B7%B1%E5%BA%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%A0%94%E7%A9%B6%E7%AC%94%E8%AE%B0/">深度强化学习研究笔记</a>,by jackhuang.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/81437177">异策略（Q-learning） v.s. 同策略（Sarsa）</a>,by MOMO.</li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Online_machine_learning">Online_machine_learning</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/70360272">最前沿：深度解读Soft Actor-Critic 算法</a>,by Flood Sung.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/41217212">重要性采样（Importance Sampling）</a>,by 时雨.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/60257706">TRPO论文推导</a>,by Ja1r0.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/26308073">强化学习进阶 第七讲 TRPO</a>,by 天津包子馅儿.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41679411/article/details/82421121">强化学习–信赖域系方法：TRPO、PPO</a>,by 秋曾万.</li>
+<li><a target="_blank" rel="noopener" href="http://morningxb.cn/2018/06/16/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-8-%E2%80%94%E2%80%94DQN/">强化学习(8)——DQN</a>,by 自由而无用.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/93629846">理解策略梯度算法</a>,by SIGAI.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/114236301">SAC论文解读以及简易代码复现</a>,by 已注销.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_30615903/article/details/86308045">PPO(Proximal Policy Optimization)近端策略优化算法</a>,by shura_R.</li>
+<li><a target="_blank" rel="noopener" href="https://lilianweng.github.io/lil-log/2018/04/08/policy-gradient-algorithms.html">Policy Gradient Algorithms</a>,by lilianweng.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/60257706">TRPO论文推导</a>,by Ja1r0.</li>
+<li><a target="_blank" rel="noopener" href="https://anesck.github.io/M-D-R_learning_notes/RLTPI/notes_html/9.chapter_nine.html">第九章：连续动作空间的确定性策略</a>,by anesck.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/02/09/%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E7%9A%84%E6%A0%87%E5%87%86%E6%B5%81%E7%A8%8B/" rel="prev" title="科学研究的标准流程">
+                  <i class="fa fa-angle-left"></i> 科学研究的标准流程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/02/13/%E5%9F%BA%E4%BA%8E%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/" rel="next" title="基于模型的设计思想">
+                  基于模型的设计思想 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

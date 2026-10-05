@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="在飞行仿真中，获取飞机的位姿是基本要求。将飞行器视为刚体，根据牛顿第二定律和动量矩定理，即可推导出飞机的质心运动方程和飞机绕质心转动的动力学方程，即刚体的六自由度方程。下面即从《航空飞行器飞行动力学》中摘抄刚体六自由度方程的推导过程。 飞行器质心运动方程根据牛顿第二定理： $$m\frac{dV}{dt}&#x3D;F \tag{1}$$ 式中$m$为飞行器质量，$V$为飞行器飞行速度矢量，$F$">
+<meta property="og:type" content="article">
+<meta property="og:title" content="飞行仿真之刚体六自由度方程">
+<meta property="og:url" content="https://huangwang.github.io/2019/01/06/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F%E4%B9%8B%E5%88%9A%E4%BD%93%E5%85%AD%E8%87%AA%E7%94%B1%E5%BA%A6%E6%96%B9%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="在飞行仿真中，获取飞机的位姿是基本要求。将飞行器视为刚体，根据牛顿第二定律和动量矩定理，即可推导出飞机的质心运动方程和飞机绕质心转动的动力学方程，即刚体的六自由度方程。下面即从《航空飞行器飞行动力学》中摘抄刚体六自由度方程的推导过程。 飞行器质心运动方程根据牛顿第二定理： $$m\frac{dV}{dt}&#x3D;F \tag{1}$$ 式中$m$为飞行器质量，$V$为飞行器飞行速度矢量，$F$">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://huangwang.github.io/2019/01/06/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F%E4%B9%8B%E5%88%9A%E4%BD%93%E5%85%AD%E8%87%AA%E7%94%B1%E5%BA%A6%E6%96%B9%E7%A8%8B/images/DynamicAxis.jpg">
+<meta property="og:image" content="https://huangwang.github.io/2019/01/06/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F%E4%B9%8B%E5%88%9A%E4%BD%93%E5%85%AD%E8%87%AA%E7%94%B1%E5%BA%A6%E6%96%B9%E7%A8%8B/images/MomentumOfCentroid.jpg">
+<meta property="article:published_time" content="2019-01-06T10:50:47.000Z">
+<meta property="article:modified_time" content="2020-07-27T13:59:44.067Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="3D">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="飞行力学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://huangwang.github.io/2019/01/06/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F%E4%B9%8B%E5%88%9A%E4%BD%93%E5%85%AD%E8%87%AA%E7%94%B1%E5%BA%A6%E6%96%B9%E7%A8%8B/images/DynamicAxis.jpg">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2019/01/06/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F%E4%B9%8B%E5%88%9A%E4%BD%93%E5%85%AD%E8%87%AA%E7%94%B1%E5%BA%A6%E6%96%B9%E7%A8%8B/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2019/01/06/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F%E4%B9%8B%E5%88%9A%E4%BD%93%E5%85%AD%E8%87%AA%E7%94%B1%E5%BA%A6%E6%96%B9%E7%A8%8B/","path":"2019/01/06/飞行仿真之刚体六自由度方程/","title":"飞行仿真之刚体六自由度方程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>飞行仿真之刚体六自由度方程 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A3%9E%E8%A1%8C%E5%99%A8%E8%B4%A8%E5%BF%83%E8%BF%90%E5%8A%A8%E6%96%B9%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">飞行器质心运动方程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E5%8A%A8%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%AD%E8%B4%A8%E5%BF%83%E5%8A%A8%E5%8A%9B%E5%AD%A6%E6%96%B9%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">一般动坐标系中质心动力学方程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A3%9E%E8%A1%8C%E5%99%A8%E7%BB%95%E8%B4%A8%E5%BF%83%E7%9A%84%E5%8A%A8%E5%8A%9B%E5%AD%A6%E6%96%B9%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">飞行器绕质心的动力学方程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E5%8A%A8%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%AD%E7%BB%95%E8%B4%A8%E5%BF%83%E8%BD%AC%E5%8A%A8%E5%8A%A8%E5%8A%9B%E5%AD%A6%E6%96%B9%E7%A8%8B"><span class="nav-number">2.1.</span> <span class="nav-text">一般动坐标系中绕质心转动动力学方程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">3.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/01/06/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F%E4%B9%8B%E5%88%9A%E4%BD%93%E5%85%AD%E8%87%AA%E7%94%B1%E5%BA%A6%E6%96%B9%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="飞行仿真之刚体六自由度方程 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          飞行仿真之刚体六自由度方程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-01-06 18:50:47" itemprop="dateCreated datePublished" datetime="2019-01-06T18:50:47+08:00">2019-01-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2020-07-27 21:59:44" itemprop="dateModified" datetime="2020-07-27T21:59:44+08:00">2020-07-27</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在飞行仿真中，获取飞机的位姿是基本要求。将飞行器视为刚体，根据牛顿第二定律和动量矩定理，即可推导出飞机的质心运动方程和飞机绕质心转动的动力学方程，即刚体的六自由度方程。下面即从《航空飞行器飞行动力学》中摘抄刚体六自由度方程的推导过程。</p>
+<h1 id="飞行器质心运动方程"><a href="#飞行器质心运动方程" class="headerlink" title="飞行器质心运动方程"></a>飞行器质心运动方程</h1><p>根据牛顿第二定理：</p>
+<p>$$m\frac{dV}{dt}&#x3D;F \tag{1}$$</p>
+<p>式中$m$为飞行器质量，$V$为飞行器飞行速度矢量，$F$为作用于质心处外力的合力矢量。</p>
+<p>具体研究飞行器质心运动规律时，工程上常建立投影正在一动坐标系的标量方程，并认为大气时静止的。</p>
+<h2 id="一般动坐标系中质心动力学方程"><a href="#一般动坐标系中质心动力学方程" class="headerlink" title="一般动坐标系中质心动力学方程"></a>一般动坐标系中质心动力学方程</h2><p>取原点位于飞行器质心的一动坐标系$Oxyz$，它相对惯性坐标系$O_gx_gy_gz_g$有一转动角速度$w$。质心的绝对速度为$V$，如图1所示。</p>
+<p align="center">
+    <img src="images/DynamicAxis.jpg" width="60%" alt="动系相对于惯性坐标系的关系"/>
+</p>
+<center>图1 动系相对于惯性坐标系的关系</center>
+
+<p>将速度$V$和角速度$w$分别在动坐标系上投影，则有</p>
+<p>$$V&#x3D;V_xi+V_yj+V_zk \tag{2}$$<br>$$w&#x3D;w_xi+w_yj+w_zk \tag{3}$$</p>
+<p>式中$i,j,k$为动坐标系$Oxyz$的单位矢量。由于$w$存在，其方向将随时间变化。</p>
+<p>将公式$(2)和(3)$带入公式$(1)$，则速度$V$的微分，即质心的绝对加速度为：</p>
+<p>$$<br>\frac{F}{m}&#x3D;\frac{dV}{dt}&#x3D;\frac{dV_x}{dt}i+\frac{dV_y}{dt}j+\frac{dV_z}{dt}k+V_x\frac{di}{dt}+V_y\frac{dj}{dt}+V_z\frac{dk}{dt} \tag{4}<br>$$</p>
+<p>式中单位矢量导数$di&#x2F;dt$是矢量端点$i$的速度，此时矢端曲线是绕$w$旋转的圆，因此：</p>
+<p>$$\frac{di}{dt}&#x3D;w\times i$$<br>$$\frac{dj}{dt}&#x3D;w\times y$$<br>$$\frac{dk}{dt}&#x3D;w\times z$$</p>
+<p>将上述关系代入公式$(4)$，即可知质心的绝对加速度可表示为</p>
+<p>$$\frac{F}{m}&#x3D;\frac{dV}{dt}&#x3D;\frac{\delta V}{\delta t}+w \times V  \tag{5}$$</p>
+<p>其中：</p>
+<p>$$\frac{\delta V}{\delta t}&#x3D;\frac{dV_x}{dt}i+\frac{dV_y}{dt}j+\frac{dV_z}{dt}k$$</p>
+<p>式(5)中 $\frac{\delta V}{\delta t}$ 为动系角速度 $w&#x3D;0$ 时的加速度，即相当于观察者站在动坐标系中所看到的质心加速度；$w\times V$为由于存在角速度 $w$ 使 $V$ 相对于动坐标系方向发生变化而产生的加速度；$\frac{dV}{dt}$ 为质心的绝对加速度，即观察者在地面坐标系上所看到的加速度。</p>
+<p>同样合力矢量$F$用动坐标系上投影表示为：</p>
+<p>$$F&#x3D;F_xi+F_yj+F_zk$$</p>
+<p>于是式(5)在动坐标系$Oxyz$上投影的质心动力学标量方程如下：</p>
+<p>$$m(\frac{dV_x}{dt}+V_zw_y-V_yw_z)&#x3D;F_x$$<br>$$m(\frac{dV_y}{dt}+V_xw_z-V_zw_x)&#x3D;F_y$$<br>$$m(\frac{dV_z}{dt}+V_yw_x-V_xw_y)&#x3D;F_z$$</p>
+<p>上述方程组适用于任何动坐标系。</p>
+<h1 id="飞行器绕质心的动力学方程"><a href="#飞行器绕质心的动力学方程" class="headerlink" title="飞行器绕质心的动力学方程"></a>飞行器绕质心的动力学方程</h1><p>根据动量矩定理，飞行器绕质心的转动运动可表示为：</p>
+<p>$$M&#x3D;\frac{dh}{dt} \tag{6}$$</p>
+<p>式中$h$为飞行器对坐标系原点的动量矩；$M$为作用在飞行器上的外力对原点的合力矩。</p>
+<p align="center">
+    <img src="images/MomentumOfCentroid.jpg" width="60%" alt="对质心的动量矩"/>
+</p>
+
+<center>图2 对质心的动量矩</center>
+
+<p>根据动量矩定义，飞行器上任意微元质量为dm，对坐标系原点的动量矩为：</p>
+<p>$$\Delta h&#x3D;r\times V dm$$</p>
+<p>式中$r$为微元质量到坐标系原点的矢径；$V$为该微元质量的速度矢量，则</p>
+<p>$$V&#x3D;V_o+w\times r$$</p>
+<p>式中$V_o$为坐标系原点速度（如坐标原点取为飞行器质心，则为质心速度）；$w$为坐标系转动角速度。</p>
+<p>于是飞行器的总动量矩可积分得出</p>
+<p>$$h&#x3D;\int r\times V dm&#x3D;\int r dm \times V_o +\int r \times (w \times r) dm$$</p>
+<p>取坐标系原点为质心时，有</p>
+<p>$$\int r dm&#x3D;0$$</p>
+<p>飞行器动量矩简化为</p>
+<p>$$h&#x3D;\int r \times (w\times r) dm \tag{7}$$</p>
+<p>上式表明，飞行器的动量矩只取决于转动产生的速度部分，而与质心运动速度$V_o$无关。矢径$r$和角速度$w$用坐标系中投影分量表示为：</p>
+<p>$$r&#x3D;xi+yj+zk$$<br>$$w&#x3D;w_xi+w_yj+w_zk$$</p>
+<p>将上述关系式代入式$(7)$，经整理得：</p>
+<p>$$h_x&#x3D;w_xI_x-w_yI_{xy}-w_zI_{zx}$$<br>$$h_y&#x3D;w_yI_y-w_xI_{xy}-w_zI_{yz}$$<br>$$h_z&#x3D;w_zI_z-w_xI_{zx}-w_yI_{yz}$$</p>
+<p>式中$I_x$,$I_y$,$I_z$分别为飞行器对$O_x$轴,$O_y$轴,$O_z$轴地惯性矩，分别为：</p>
+<p>$$I_x&#x3D;\int (y^2+z^2) dm$$<br>$$I_y&#x3D;\int (x^2+z^2) dm$$<br>$$I_z&#x3D;\int (x^2+y^2) dm$$</p>
+<p>而$I_{xy}$, $I_{yz}$, $I_{zx}$ 则为对 $O_x$ 轴与 $O_y$ 轴，$O_y$ 轴与 $O_z$ 轴，$O_z$ 轴与 $O_x$ 轴的惯性积，分别为：</p>
+<p>$$I_{xy}&#x3D;\int xy dm$$<br>$$I_{yz}&#x3D;\int yz dm$$<br>$$I_{zx}&#x3D;\int zx dm$$</p>
+<h2 id="一般动坐标系中绕质心转动动力学方程"><a href="#一般动坐标系中绕质心转动动力学方程" class="headerlink" title="一般动坐标系中绕质心转动动力学方程"></a>一般动坐标系中绕质心转动动力学方程</h2><p>具体研究飞行器绕质心转动规律时，矢量形式的式$(6)$使用不便。工程习惯上将其投影在一动坐标系上建成方程的标量形式。此时动坐标系在空中以$w$转动，类同于加速度$\frac{dV}{dt}$，动量矩可以表示为：</p>
+<p>$$M&#x3D;\frac{dh}{dt}&#x3D;\frac{\delta h}{\delta t}+w\times h$$</p>
+<p>类似一般动坐标系中质心动力学方程的推导，最终可得转动运动方程的标量形式为：</p>
+<p>$$\frac{dh_x}{dt}+h_zw_y-h_yw_z&#x3D;M_x$$<br>$$\frac{dh_y}{dt}+h_xw_z-h_zw_x&#x3D;M_y$$<br>$$\frac{dh_z}{dt}+h_yw_x-h_xw_y&#x3D;M_z$$</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li>方振平,陈万春,张曙光. 航空飞行器飞行动力学[M]. 2015.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/csxiaoshui/article/details/65446125">旋转变换（一）旋转矩阵</a>,by csxiaoshui.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/35051554">飞行仿真–3.刚体六自由度方程、变换矩阵与四元数</a>,by WFYX.</li>
+<li><a target="_blank" rel="noopener" href="http://wonderffee.github.io/blog/2013/10/17/a-simple-method-to-determine-positive-rotation-in-in-three-dimensional-space/">判断三维坐标系旋转正方向的简单方法</a>,by Wonderffee.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/86464027">（番外）姿态与旋转矩阵（I）</a>,by Tam Alex.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/47208814">一点关于机器人学和计算机视觉中的坐标变换的理解</a>,by Kissrabbit.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/63903303">飞机是怎么飞起来的</a>,by J Pan.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/69241244">如何获得飞机运动方程</a>,by J Pan.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/23617272">【自动控制原理】1.传递函数</a>,by 李寒潭.</li>
+<li><a target="_blank" rel="noopener" href="http://www.360doc.com/content/19/1027/17/37844335_869385575.shtml">空空导弹尾部的齿轮有什么用？</a>,by 不沉俾斯麦.</li>
+<li><a target="_blank" rel="noopener" href="https://wenku.baidu.com/view/6833b77302768e9951e7383a.html">导弹制导原理第4章</a>,by 张庆振.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/105474241">飞行原理术语解析</a>,by 刘斯宁.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/106138927">空气动力学术语解析</a>,by 刘斯宁.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/3D/" rel="tag"># 3D</a>
+              <a href="/tags/%E9%A3%9E%E8%A1%8C%E5%8A%9B%E5%AD%A6/" rel="tag"># 飞行力学</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/01/05/MathJax%E8%AF%AD%E6%B3%95%E7%AC%94%E8%AE%B0/" rel="prev" title="MathJax语法笔记">
+                  <i class="fa fa-angle-left"></i> MathJax语法笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/01/07/%E5%BC%80%E6%BA%90%E8%B7%A8%E5%B9%B3%E5%8F%B0%E4%B8%8B%E8%BD%BD%E5%88%A9%E5%99%A8Aria2/" rel="next" title="开源跨平台下载利器Aria2">
+                  开源跨平台下载利器Aria2 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

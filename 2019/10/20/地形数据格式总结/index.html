@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="地形数据是能够表示地球表面高低起伏状态的数据，即具有高程信息的数据。数字高程模型（DEM）是一种对空间起伏变化的连续表示方法，是一种特殊的 DatasetGrid 数据模型，每个网格的值为高程值，而且有标准的颜色表来表示，这对分幅 DEM 图像的合成很有帮助。 数字地面模型（digital terrain model，DTM）就是以数字的形式来表示实际地形特征的空间分布。有时所指的地形特征点仅指地">
+<meta property="og:type" content="article">
+<meta property="og:title" content="地形数据格式总结">
+<meta property="og:url" content="https://huangwang.github.io/2019/10/20/%E5%9C%B0%E5%BD%A2%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="地形数据是能够表示地球表面高低起伏状态的数据，即具有高程信息的数据。数字高程模型（DEM）是一种对空间起伏变化的连续表示方法，是一种特殊的 DatasetGrid 数据模型，每个网格的值为高程值，而且有标准的颜色表来表示，这对分幅 DEM 图像的合成很有帮助。 数字地面模型（digital terrain model，DTM）就是以数字的形式来表示实际地形特征的空间分布。有时所指的地形特征点仅指地">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-10-20T11:42:06.000Z">
+<meta property="article:modified_time" content="2019-11-15T03:47:04.524Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="Cesium">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2019/10/20/%E5%9C%B0%E5%BD%A2%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F%E6%80%BB%E7%BB%93/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2019/10/20/%E5%9C%B0%E5%BD%A2%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F%E6%80%BB%E7%BB%93/","path":"2019/10/20/地形数据格式总结/","title":"地形数据格式总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>地形数据格式总结 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ETOPO"><span class="nav-number">1.</span> <span class="nav-text">ETOPO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ETOPO1"><span class="nav-number">1.1.</span> <span class="nav-text">ETOPO1</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GEBCO"><span class="nav-number">2.</span> <span class="nav-text">GEBCO</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SRTM"><span class="nav-number">3.</span> <span class="nav-text">SRTM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A8%E5%9B%BDDEM-1km%E3%80%81500m%E5%92%8C250m%E6%95%B0%E6%8D%AE%EF%BC%88SRTM-90m%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">全国DEM 1km、500m和250m数据（SRTM 90m）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hgt%E8%BD%ACtiff"><span class="nav-number">3.2.</span> <span class="nav-text">hgt转tiff</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ASTER-GDEM"><span class="nav-number">4.</span> <span class="nav-text">ASTER GDEM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/20/%E5%9C%B0%E5%BD%A2%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="地形数据格式总结 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          地形数据格式总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-10-20 19:42:06" itemprop="dateCreated datePublished" datetime="2019-10-20T19:42:06+08:00">2019-10-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-11-15 11:47:04" itemprop="dateModified" datetime="2019-11-15T11:47:04+08:00">2019-11-15</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>地形数据是能够表示地球表面高低起伏状态的数据，即具有高程信息的数据。数字高程模型（DEM）是一种对空间起伏变化的连续表示方法，是一种特殊的 DatasetGrid 数据模型，每个网格的值为高程值，而且有标准的颜色表来表示，这对分幅 DEM 图像的合成很有帮助。</p>
+<p>数字地面模型（digital terrain model，DTM）就是以数字的形式来表示实际地形特征的空间分布。有时所指的地形特征点仅指地面点的高程，就将这种数字地形描述称为数字高程模型（digital elevation model，DEM）。最初是于1958年由美国麻省理工学院Miller教授提出。数字地面模型广泛用于遥感，地理信息系统，大地测量和电子地图等领域。</p>
+<p><strong>常用的地形数据主要有：etopo、GTOPO30、GEBCO以及SRTM。按照精度从低到高排序如下：</strong></p>
+<ul>
+<li>etopo5：GMT 网格数据之 etopo5</li>
+<li>etopo2：GMT 网格数据之 ETOPO2v2</li>
+<li>etopo1：GMT 网格数据之 ETOPO1</li>
+<li>GEBCO：GEBCO：全球水深数据</li>
+<li>GTOPO30：GMT 网格数据之 GTOPO30</li>
+<li>SRTM30_PLUS：全球地形起伏数据：SRTM30_PLUS</li>
+<li>SRTM15_PLUS：全球地形起伏数据：SRTM15_PLUS</li>
+<li>SRTM3：高精度地形网格数据 SRTM</li>
+<li>ASTER GDEM：全球数字高程数据：ASTER GDEM</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>数据源</th>
+<th>空间分辨率</th>
+<th>覆盖范围</th>
+<th>陆地&#x2F;海洋</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>etopo5</td>
+<td>5 弧分</td>
+<td>全球</td>
+<td>陆地 + 海洋</td>
+</tr>
+<tr>
+<td>etopo2</td>
+<td>2 弧分</td>
+<td>全球</td>
+<td>陆地 + 海洋</td>
+</tr>
+<tr>
+<td>etopo1</td>
+<td>1 弧分</td>
+<td>全球</td>
+<td>陆地 + 海洋</td>
+</tr>
+<tr>
+<td>GEBCO</td>
+<td>1 弧分 &#x2F; 30 弧秒</td>
+<td>全球</td>
+<td>陆地 + 海洋</td>
+</tr>
+<tr>
+<td>GTOPO30</td>
+<td>30 弧秒</td>
+<td>全球</td>
+<td>陆地</td>
+</tr>
+<tr>
+<td>SRTM30_PLUS</td>
+<td>30 弧秒 (约 1km)</td>
+<td>纬度 [-81,81]</td>
+<td>陆地 + 海洋</td>
+</tr>
+<tr>
+<td>SRTM15_PLUS</td>
+<td>15 弧秒 (约 500m)</td>
+<td>纬度 [-81,81]</td>
+<td>陆地 + 海洋</td>
+</tr>
+<tr>
+<td>SRTM</td>
+<td>3 弧秒 (约 90m)</td>
+<td>纬度 [-60,60]</td>
+<td>陆地</td>
+</tr>
+<tr>
+<td>ASTER GDEM</td>
+<td>1 弧秒 (约 30m)</td>
+<td>纬度 [-83,83]</td>
+<td>陆地</td>
+</tr>
+</tbody></table>
+<h1 id="ETOPO"><a href="#ETOPO" class="headerlink" title="ETOPO"></a>ETOPO</h1><p>ETOPO是一种地形高程数据。该数据由NGDC美国地球物理中心发布（U.S. National Geophysical Data Center ）。与srtm、aster gdem一样，均为高程数据，所不同的是它还包括海洋海底地形数据。</p>
+<p>ETOPO地形数据有五种规格， ETOPO1的效果最好，ETOPO2、ETOPO5数据尽管可以使用，但目前已不推荐采用。其中ETOPO1约三百多兆的压缩包， ETOPO2约九十兆。</p>
+<h2 id="ETOPO1"><a href="#ETOPO1" class="headerlink" title="ETOPO1"></a>ETOPO1</h2><p>ETOPO1包含了全球地形和海洋深度，采样间隔为1弧分，是目前精度最高的global relief数据；其分为两个版本，Ice Surface和Bedrock，两个版本基本一致。不同之处在于在处理南极洲和Greenland地形时，前者给出的是加上冰盖层之后的高程，后者给出的是岩床的高程。</p>
+<p>对于每个版本又细分为 grid-registered和cell-registered，其中grid-registered是权威版本，cell-registered是衍生版本，因而推荐下载使用grid-registered版本。</p>
+<h1 id="GEBCO"><a href="#GEBCO" class="headerlink" title="GEBCO"></a>GEBCO</h1><p>GEBCO数据的全称是General Bathymetric Chart of the Oceans( 全球海洋通用水深数据) ，是由国际海道测量组织(IHO) 和政府间海洋学委员会(IOC) 联合发布的最全面的世界大洋海底地形数据，也是当今海洋模式中最常用的海洋水深数据之一。</p>
+<h1 id="SRTM"><a href="#SRTM" class="headerlink" title="SRTM"></a>SRTM</h1><p>SRTM 即航天飞机雷达地形测绘使命。航天地形测绘是指以人造地球卫星、宇宙飞船、航天飞机等航天器为工作平台，对地球表面所进行的遥感测量。以往的航天测绘由于其精度有限，一般只能制作中、小比例尺地图。SRTM则是美国太空总署（NASA）和国防部国家测绘局（NIMA）以及德国与意大利航天机构共同合作完成联合测量,由美国发射的“奋进”号航天飞机上搭载SRTM系统完成。本次测图任务从2000年2月11日开始至22日结束，共进行了11天总计222小时23分钟的数据采集工作，获取北纬60度至南纬56度之间总面积超过1.19亿平方公里的雷达影像数据，覆盖地球80%以上的陆地表面。</p>
+<p>SRTM系统获取的雷达影像的数据量约9.8万亿字节，经过两年多的数据处理，制成了数字地形高程模型（DEM）。SRTM产品2003年开始公开发布，经历多修订，目前最新的版本为V4.1版本。</p>
+<p>SRTM地形数据主要包含两类数据：SRTM3和SRTM1。</p>
+<ul>
+<li>SRTM3精度为3弧秒，即90m一个点，包括非洲、北美、南美、欧亚、澳大利亚以及部分岛屿；</li>
+<li>SRTM1精度为1弧秒，即30m一个点，仅限美国地区；</li>
+</ul>
+<p>所有的数据被分为1度<em>1度的单元，共计上万个数据文件。文件名代表了该单元左下角的位置；不同网站下载的数据文件名不同，但文件名类似N37W105的 数据文件，其单元左下角的坐标为(37N,105W)；每个SRTM3数据文件包含了1201</em>1201个采样点；高程数据单位为m，参考水准面为 WGS84大地水准面模型；网格划分采用gridline registration方式，因而单元的南北边及左右边与相邻单元的边重合。</p>
+<h2 id="全国DEM-1km、500m和250m数据（SRTM-90m）"><a href="#全国DEM-1km、500m和250m数据（SRTM-90m）" class="headerlink" title="全国DEM 1km、500m和250m数据（SRTM 90m）"></a>全国DEM 1km、500m和250m数据（SRTM 90m）</h2><p>中国海拔高度（DEM）空间分布数据来源于美国奋进号航天飞机的雷达地形测绘SRTM（Shuttle Radar Topography Mission，SRTM）数据。SRTM数据有现实性强、免费获取等优点，全球许多应用研究都采用SRTM数据开展环境分析。该数据集为基于最新的SRTM V4.1数据经重采样生成，包括1km、500m和250m三种精度的全国一张图数据。数据采用WGS84椭球投影。</p>
+<h2 id="hgt转tiff"><a href="#hgt转tiff" class="headerlink" title="hgt转tiff"></a>hgt转tiff</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdal_translate -of GTiff N40E120.hgt N40E120.tif</span><br></pre></td></tr></table></figure>
+
+<h1 id="ASTER-GDEM"><a href="#ASTER-GDEM" class="headerlink" title="ASTER GDEM"></a>ASTER GDEM</h1><p>ASTER GDEM，即先进星载热发射和反射辐射仪全球数字高程模型，与SRTM一样为数字高程DEM，其全球空间分辨率为30米。该数据是根据 NASA的新一代对地观测卫星Terra的详尽观测结果制作完成的。其数据覆盖范围为北纬83°到南纬83°之间的所有陆地区域，达到了地球陆地表面的99%。号称是“迄今最完整的全球地形数据”。</p>
+<p>ASTER GDEM：空间分辨率：1弧度秒 （约30 米），精度：垂直精度20米，水平精度30米，SRTM数据的纬度覆盖范围是[-60,60]，ASTER GDEM数据的纬度覆盖范围为[-83,83]；SRTM的空间分辨率一般为90m，只有美国境内存在空间分辨率为30m的数据；ASTER GDEM的空间分辨率为30m；</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="http://www.resdc.cn/data.aspx?DATAID=123">全国DEM 1km、500m和250m数据（SRTM 90m）</a>,by 资源环境数据云平台.</li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Digital_elevation_model">Digital_elevation_model</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="http://blog.sciencenet.cn/blog-2637373-974284.html">GMT地形数据</a>,by YF2015.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.seisman.info/global-relief-models/">全球地形起伏数据总结</a>,by SeisMan.</li>
+<li><a href="https://huangwang.github.io/2018/06/13/Cesium%E5%8D%AB%E6%98%9F%E5%9C%B0%E5%9B%BE%E5%92%8C%E9%AB%98%E7%A8%8B%E6%95%B0%E6%8D%AE%E5%88%87%E7%89%87%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/">Cesium卫星地图和高程数据切片经验总结</a>,by jackhuang.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.seisman.info/srtm/">高精度地形网格数据 SRTM</a>,by seisman.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36377037/article/details/86300330">工具gdal2srtmtiles的安装使用</a>,by 四域公子.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9C%B0%E7%90%83%E6%A4%AD%E7%90%83">地球椭球</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="http://qiancy.com/2017/01/07/datum-spheroid-parameters-equation/">椭球体的重要参数和公式</a>,by cyqian.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/Cesium/" rel="tag"># Cesium</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/10/20/GDAL%E5%A4%84%E7%90%86%E5%9C%B0%E5%9B%BE%E6%A0%85%E6%A0%BCTif%E9%BB%91%E8%BE%B9%E7%9A%84%E6%96%B9%E6%B3%95/" rel="prev" title="GDAL处理地图栅格Tif黑边的方法">
+                  <i class="fa fa-angle-left"></i> GDAL处理地图栅格Tif黑边的方法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/10/26/CPlusPlus%E9%AB%98%E6%80%A7%E8%83%BD%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="next" title="C++高性能网络编程">
+                  C++高性能网络编程 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

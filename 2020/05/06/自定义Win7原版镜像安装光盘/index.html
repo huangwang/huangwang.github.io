@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="因为Win10的安全问题和Win7用户习惯问题，新电脑要求装Win7系统。但是Win7系统中没有自带USB3.0驱动和固态硬盘nvme驱动，导致安装或启动Win7时USB3.0的鼠标和键盘无法识别，无法操纵。经过研究，决定在Win7原版镜像基础上，注入USB3.0和nvme驱动。 所需工具 DISM++  Dism++是一个Dism的GUI版，但是并不依赖Dism(Deployment Image">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自定义Win7原版镜像安装光盘">
+<meta property="og:url" content="https://huangwang.github.io/2020/05/06/%E8%87%AA%E5%AE%9A%E4%B9%89Win7%E5%8E%9F%E7%89%88%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85%E5%85%89%E7%9B%98/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="因为Win10的安全问题和Win7用户习惯问题，新电脑要求装Win7系统。但是Win7系统中没有自带USB3.0驱动和固态硬盘nvme驱动，导致安装或启动Win7时USB3.0的鼠标和键盘无法识别，无法操纵。经过研究，决定在Win7原版镜像基础上，注入USB3.0和nvme驱动。 所需工具 DISM++  Dism++是一个Dism的GUI版，但是并不依赖Dism(Deployment Image">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-06T05:08:46.000Z">
+<meta property="article:modified_time" content="2025-01-03T02:02:33.261Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2020/05/06/%E8%87%AA%E5%AE%9A%E4%B9%89Win7%E5%8E%9F%E7%89%88%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85%E5%85%89%E7%9B%98/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2020/05/06/%E8%87%AA%E5%AE%9A%E4%B9%89Win7%E5%8E%9F%E7%89%88%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85%E5%85%89%E7%9B%98/","path":"2020/05/06/自定义Win7原版镜像安装光盘/","title":"自定义Win7原版镜像安装光盘"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>自定义Win7原版镜像安装光盘 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%80%E9%9C%80%E5%B7%A5%E5%85%B7"><span class="nav-number">1.</span> <span class="nav-text">所需工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">注入原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%81%E8%A3%85%E6%AD%A5%E9%AA%A4"><span class="nav-number">3.</span> <span class="nav-text">封装步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">4.</span> <span class="nav-text">相关概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/05/06/%E8%87%AA%E5%AE%9A%E4%B9%89Win7%E5%8E%9F%E7%89%88%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85%E5%85%89%E7%9B%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="自定义Win7原版镜像安装光盘 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          自定义Win7原版镜像安装光盘
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-05-06 13:08:46" itemprop="dateCreated datePublished" datetime="2020-05-06T13:08:46+08:00">2020-05-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-01-03 10:02:33" itemprop="dateModified" datetime="2025-01-03T10:02:33+08:00">2025-01-03</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>因为Win10的安全问题和Win7用户习惯问题，新电脑要求装Win7系统。但是Win7系统中没有自带USB3.0驱动和固态硬盘nvme驱动，导致安装或启动Win7时USB3.0的鼠标和键盘无法识别，无法操纵。经过研究，决定在Win7原版镜像基础上，注入USB3.0和nvme驱动。</p>
+<h1 id="所需工具"><a href="#所需工具" class="headerlink" title="所需工具"></a>所需工具</h1><ul>
+<li>DISM++</li>
+</ul>
+<p>Dism++是一个Dism的GUI版，但是并不依赖Dism(Deployment Image Servicing and Management)，直接基于更底层的CBS(Component Based Servicing Reference)。</p>
+<blockquote>
+<p>Dism是一个命令行工具，可用于服务和准备Windows映像，包括用于Windows PE、Windows恢复环境（Windows RE）和Windows安装程序的映像。</p>
+</blockquote>
+<ul>
+<li>easybcd</li>
+</ul>
+<p>EasyBCD是由NeoSmart Technologies开发的程序，用于配置和调整启动配置数据，该启动数据库最初是在Windows Vista中引入的，并在以后的所有Windows版本中使用。EasyBCD可用于为可同时安装某些版本的Windows，Linux，BSD和Mac OS X的计算机设置多重启动环境。<strong>例如删除OneKey Ghost启动项。</strong></p>
+<ul>
+<li>UltraISO</li>
+</ul>
+<p>UltraISO 是一个运行在Microsoft Windows平台上的用来创建、修改和转换ISO文件的软件。自从2002年4月20日UltraISO首次发布以来，它的开发公司EZB Systems就把它定义为一个共享软件。当前EZB Systems域名的注册地址在中国深圳。</p>
+<p>UltraISO用于替换Windows启动镜像中的boot.wim和install.wim。</p>
+<h1 id="注入原理"><a href="#注入原理" class="headerlink" title="注入原理"></a>注入原理</h1><p>Windows7原版镜像中有两个重要文件：install.wim和boot.wim。boot.wim本质时WinPe，用于安装Windows7时的启动，install.wim镜像文件用于Windows7安装后的启动。使用工具Dism++在boot.wim和install.wim中注入USB3.0和nvme驱动，可以确保Windows7系统在安装和启动过程中识别USB3.0的键盘和鼠标，以及固态硬盘，从而保证Windows7的顺序安装和启动。</p>
+<h1 id="封装步骤"><a href="#封装步骤" class="headerlink" title="封装步骤"></a>封装步骤</h1><p>当前很多笔记本已不再支持Win7操纵系统，强行在新机器上安装Win7会出现很多问题。通过验证，总结了如下使用Win7封装步骤：</p>
+<ol>
+<li>制作WeiPE启动盘。WeiPE启动盘使用Win8PE，在新机器上能运行，同时也支持光盘启动。当使用Win7安装盘在新机器上安装操作系统时，如果出现USB3.0鼠标键盘无响应，可尝试使用WeiPE进入Win8PE，然后在Win8PE安装Win7操作系统到新机器上，同时在使用Dism++注入USB3.0和nvme驱动到Win7操作系统中。</li>
+<li>封装Win7系统盘，主要处理boot.wim和install.wim两个文件。boot.wim主要用于自启动安装Win7操作系统，应在其中注入usb3.0和nvme驱动，防止出现安装时无法识别USB3.0的键盘和鼠标，以及固态硬盘的情况。install.wim是Win7的主要文件，使用Dism++在其中注入系统更新和常用软件。</li>
+<li>下载EasyDrv驱动安装包，用于给机器安装相应驱动。</li>
+</ol>
+<p>通过上述三张光盘，相信安装Windows7操作系统不再是麻烦。</p>
+<h1 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h1><ul>
+<li>WinPE</li>
+</ul>
+<p>一种迷你系统，通常体积比较小，只有300MB左右。用于安装系统或者修复系统问题。</p>
+<ul>
+<li>WinRE</li>
+</ul>
+<p>跟WinPE几乎一样，只是WinRE更加侧重于系统修复，并且Vista以后系统自带WinRE，因此我们可以在WinRE做原本在WinPE里做的事情。</p>
+<ul>
+<li>映像文件（Image File）</li>
+</ul>
+<p>一种文件载体，可以保存系统映像。在Dism++中，映像文件有WIM、SWM、ESD以及ISO。</p>
+<ul>
+<li>UEFI</li>
+</ul>
+<p>统一可扩展固件接口（英语：Unified Extensible Firmware Interface，缩写UEFI）是一种个人电脑系统规格，用来定义操作系统与系统固件之间的软件界面，作为BIOS的替代方案。可扩展固件接口负责加电自检、联系操作系统以及提供连接操作系统与硬件的接口。</p>
+<ul>
+<li>BIOS</li>
+</ul>
+<p>BIOS是Basic Input&#x2F;Output System的缩写，中文：基本输入输出系统，亦称为ROM BIOS、System BIOS、PC BIOS，是在通电引导阶段运行硬件初始化，以及为操作系统提供运行时服务的固件。BIOS最早随着CP&#x2F;M操作系统的推出在1975年出现。BIOS预安装在个人电脑的主板上，是个人电脑启动时加载的第一个软件。</p>
+<p>现在，BIOS的作用是初始化和测试硬件组件，以及从大容量存储设备（如硬盘）加载引导程序，并由引导程序加载操作系统。BIOS还为DOS操作系统提供键盘、显示及其他I&#x2F;O设备的硬件抽象层。</p>
+<p>许多BIOS程序都只能在特定电脑型号或特定主板型号上运行。早年，BIOS存储于ROM芯片上；现在的BIOS多存储于闪存芯片上，这方便了BIOS的更新。</p>
+<p>UEFI是旧式BIOS的后继者。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f9dc4f2ada2a">win7原版镜像注入USB3.0和nvme驱动</a>,by 家麟.</li>
+<li><a target="_blank" rel="noopener" href="https://800.ywbb.com/28941.html">连这都知道，足以证明你是windows系统安装的老司机了</a>,by IT教主.</li>
+<li><a target="_blank" rel="noopener" href="https://kknews.cc/code/o86gazq.html">UEFI与Legacy+UEFI的区别有多大，不弄清楚要吃大亏！</a>,by 快启动.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/BIOS">BIOS</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/mao0514/article/details/48245143">Windows PE入门基础知识：Windows PE的作用、命名规则、启动方式、启动原理</a>,by 毛毛虫的爹.</li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/wpeinit-and-startnetcmd-using-winpe-startup-scripts">Wpeinit and Startnet.cmd: Using WinPE Startup Scripts</a>,by microsoft.</li>
+<li><a target="_blank" rel="noopener" href="https://post.smzdm.com/p/alpz8xvo/">WIN7进阶篇，如何制作封装USB3.0，NVME驱动的WIN7镜像</a>,by Dior.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/tech34/article/details/127394725">Win7安装驱动提示“无法验驱动程序数字签名”怎么办？</a>,by 左边右转第二排的张大爷.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/05/03/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/" rel="prev" title="微信小程序开发笔记">
+                  <i class="fa fa-angle-left"></i> 微信小程序开发笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/09/%E4%BA%8C%E7%BB%B4%E7%A0%81%E5%8E%9F%E7%90%86%E5%8F%8A%E7%94%9F%E6%88%90/" rel="next" title="二维码原理及生成">
+                  二维码原理及生成 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="读书使人进步。 数据结构位掩码 (Bitmask)将多个布尔标志打包到一个整数中，通过位运算实现常数时间的集合操作。 最小堆 &#x2F; 优先队列 (Min Heap)存储在数组中的二叉树，最小元素始终在根节点，支持 O(1) 查看和 O(log n) 插入&#x2F;删除。 环形缓冲区 (Ring Buffer)固定大小的缓冲区通过模运算实现循环，提供常数时间的入队出队且无需内存分配。 Tri">
+<meta property="og:type" content="article">
+<meta property="og:title" content="生产验证的编程模式读书笔记">
+<meta property="og:url" content="https://huangwang.github.io/2026/06/21/%E7%94%9F%E4%BA%A7%E9%AA%8C%E8%AF%81%E7%9A%84%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="读书使人进步。 数据结构位掩码 (Bitmask)将多个布尔标志打包到一个整数中，通过位运算实现常数时间的集合操作。 最小堆 &#x2F; 优先队列 (Min Heap)存储在数组中的二叉树，最小元素始终在根节点，支持 O(1) 查看和 O(log n) 插入&#x2F;删除。 环形缓冲区 (Ring Buffer)固定大小的缓冲区通过模运算实现循环，提供常数时间的入队出队且无需内存分配。 Tri">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-21T01:57:34.000Z">
+<meta property="article:modified_time" content="2026-06-28T09:39:07.223Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2026/06/21/%E7%94%9F%E4%BA%A7%E9%AA%8C%E8%AF%81%E7%9A%84%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2026/06/21/%E7%94%9F%E4%BA%A7%E9%AA%8C%E8%AF%81%E7%9A%84%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/","path":"2026/06/21/生产验证的编程模式读书笔记/","title":"生产验证的编程模式读书笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>生产验证的编程模式读书笔记 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E6%8E%A9%E7%A0%81-Bitmask"><span class="nav-number">1.1.</span> <span class="nav-text">位掩码 (Bitmask)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E5%A0%86-%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97-Min-Heap"><span class="nav-number">1.2.</span> <span class="nav-text">最小堆 &#x2F; 优先队列 (Min Heap)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%BD%A2%E7%BC%93%E5%86%B2%E5%8C%BA-Ring-Buffer"><span class="nav-number">1.3.</span> <span class="nav-text">环形缓冲区 (Ring Buffer)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Trie-%E5%89%8D%E7%BC%80%E6%A0%91-Trie-Prefix-Tree"><span class="nav-number">1.4.</span> <span class="nav-text">Trie 前缀树 (Trie &#x2F; Prefix Tree)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%B3%E8%A1%A8-Skip-List"><span class="nav-number">1.5.</span> <span class="nav-text">跳表 (Skip List)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8-Bloom-Filter"><span class="nav-number">1.6.</span> <span class="nav-text">布隆过滤器 (Bloom Filter)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LRU-%E7%BC%93%E5%AD%98-LRU-Cache"><span class="nav-number">1.7.</span> <span class="nav-text">LRU 缓存 (LRU Cache)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-%E6%A0%91-B-Tree"><span class="nav-number">1.8.</span> <span class="nav-text">B+ 树 (B+ Tree)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E8%81%94%E5%90%88%E4%BD%93-Tagged-Union-Variant"><span class="nav-number">1.9.</span> <span class="nav-text">标签联合体 (Tagged Union &#x2F; Variant)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Merkle-%E6%A0%91-Merkle-Tree"><span class="nav-number">1.10.</span> <span class="nav-text">Merkle 树 (Merkle Tree)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E5%B9%B6%E8%BF%AD%E4%BB%A3%E5%99%A8-Merge-Iterator-K-Way-Merge"><span class="nav-number">1.11.</span> <span class="nav-text">合并迭代器 (Merge Iterator &#x2F; K-Way Merge)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91"><span class="nav-number">2.</span> <span class="nav-text">并发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F-%E6%9C%89%E7%95%8C%E5%B9%B6%E5%8F%91-Semaphore"><span class="nav-number">2.1.</span> <span class="nav-text">信号量 &#x2F; 有界并发 (Semaphore)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Actor-%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">Actor 模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E7%AA%83%E5%8F%96-Work-Stealing"><span class="nav-number">2.3.</span> <span class="nav-text">工作窃取 (Work Stealing)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVCC-%E5%A4%9A%E7%89%88%E6%9C%AC%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6"><span class="nav-number">2.4.</span> <span class="nav-text">MVCC 多版本并发控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E4%BD%9C%E8%B0%83%E5%BA%A6-Cooperative-Scheduling"><span class="nav-number">2.5.</span> <span class="nav-text">协作调度 (Cooperative Scheduling)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E7%BC%93%E5%86%B2-Double-Buffering"><span class="nav-number">2.6.</span> <span class="nav-text">双缓冲 (Double Buffering)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E5%8E%8B-%E6%B5%81%E6%8E%A7-Backpressure"><span class="nav-number">2.7.</span> <span class="nav-text">背压 &#x2F; 流控 (Backpressure)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF-%E5%8F%8D%E5%BA%94%E5%99%A8-Event-Loop-Reactor"><span class="nav-number">2.8.</span> <span class="nav-text">事件循环 &#x2F; 反应器 (Event Loop &#x2F; Reactor)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E6%97%B6%E9%92%9F-Epoch-Logical-Clock"><span class="nav-number">2.9.</span> <span class="nav-text">逻辑时钟 &#x2F; Epoch (Logical Clock)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F"><span class="nav-number">3.</span> <span class="nav-text">系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%86%94%E6%96%AD%E5%99%A8-Circuit-Breaker"><span class="nav-number">3.1.</span> <span class="nav-text">熔断器 (Circuit Breaker)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%90%E6%B5%81%E5%99%A8-%E4%BB%A4%E7%89%8C%E6%A1%B6-Rate-Limiter"><span class="nav-number">3.2.</span> <span class="nav-text">限流器 &#x2F; 令牌桶 (Rate Limiter)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E6%95%B0%E9%80%80%E9%81%BF%E9%87%8D%E8%AF%95-Retry-with-Backoff"><span class="nav-number">3.3.</span> <span class="nav-text">指数退避重试 (Retry with Backoff)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E5%86%99%E6%97%A5%E5%BF%97-Write-Ahead-Log"><span class="nav-number">3.4.</span> <span class="nav-text">预写日志 (Write-Ahead Log)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%B9%E5%A4%84%E7%90%86-Batch-Processing"><span class="nav-number">3.5.</span> <span class="nav-text">批处理 (Batch Processing)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C-Consistent-Hashing"><span class="nav-number">3.6.</span> <span class="nav-text">一致性哈希 (Consistent Hashing)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E5%9B%BE-Dependency-Graph"><span class="nav-number">3.7.</span> <span class="nav-text">依赖图 (Dependency Graph)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E4%BB%B6-%E7%AE%A1%E9%81%93%E9%93%BE-Middleware-Pipeline-Chain"><span class="nav-number">3.8.</span> <span class="nav-text">中间件 &#x2F; 管道链 (Middleware &#x2F; Pipeline Chain)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E8%A1%A8-%E8%87%AA%E6%B3%A8%E5%86%8C-Registry"><span class="nav-number">3.9.</span> <span class="nav-text">注册表 &#x2F; 自注册 (Registry)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%84%8F%E6%A0%87%E8%AE%B0-Dirty-Flag"><span class="nav-number">3.10.</span> <span class="nav-text">脏标记 (Dirty Flag)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LSM-%E6%A0%91-Log-Structured-Merge-Tree"><span class="nav-number">3.11.</span> <span class="nav-text">LSM 树 (Log-Structured Merge Tree)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E7%82%B9-Checkpointing"><span class="nav-number">3.12.</span> <span class="nav-text">检查点 (Checkpointing)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E5%AD%98"><span class="nav-number">4.</span> <span class="nav-text">内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%B1%A0-Object-Pool"><span class="nav-number">4.1.</span> <span class="nav-text">对象池 (Object Pool)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%B1%A0-Object-Pool-1"><span class="nav-number">4.2.</span> <span class="nav-text">对象池 (Object Pool)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Arena-%E5%88%86%E9%85%8D%E5%99%A8-Arena-Allocator"><span class="nav-number">4.3.</span> <span class="nav-text">Arena 分配器 (Arena Allocator)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A9%BA%E9%97%B2%E9%93%BE%E8%A1%A8-Free-List"><span class="nav-number">4.4.</span> <span class="nav-text">空闲链表 (Free List)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E6%97%B6%E5%A4%8D%E5%88%B6-Copy-on-Write"><span class="nav-number">4.5.</span> <span class="nav-text">写时复制 (Copy-on-Write)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0-Reference-Counting"><span class="nav-number">4.6.</span> <span class="nav-text">引用计数 (Reference Counting)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A2%93%E7%A2%91-%E5%BB%B6%E8%BF%9F%E5%88%A0%E9%99%A4-Tombstone"><span class="nav-number">4.7.</span> <span class="nav-text">墓碑 &#x2F; 延迟删除 (Tombstone)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A9%BB%E7%95%99-%E7%AC%A6%E5%8F%B7%E8%A1%A8-Interning-Symbol-Table"><span class="nav-number">4.8.</span> <span class="nav-text">驻留 &#x2F; 符号表 (Interning &#x2F; Symbol Table)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%8C%E4%B8%BA%E5%9E%8B"><span class="nav-number">5.</span> <span class="nav-text">行为型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E6%9C%BA-State-Machine"><span class="nav-number">5.1.</span> <span class="nav-text">状态机 (State Machine)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%82%E5%AF%9F%E8%80%85-%E5%8F%91%E5%B8%83-%E8%AE%A2%E9%98%85-Observer-Pub-Sub"><span class="nav-number">5.2.</span> <span class="nav-text">观察者 &#x2F; 发布-订阅 (Observer &#x2F; Pub-Sub)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8-%E6%83%B0%E6%80%A7%E6%B1%82%E5%80%BC-Iterator"><span class="nav-number">5.3.</span> <span class="nav-text">迭代器 &#x2F; 惰性求值 (Iterator)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%AE%E5%BC%82-%E8%A1%A5%E4%B8%81-Diff-Patch"><span class="nav-number">5.4.</span> <span class="nav-text">差异&#x2F;补丁 (Diff &#x2F; Patch)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8-%E6%93%8D%E4%BD%9C%E5%88%86%E5%8F%91-Vtable-Ops-Dispatch"><span class="nav-number">5.5.</span> <span class="nav-text">虚函数表 &#x2F; 操作分发 (Vtable &#x2F; Ops Dispatch)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E8%80%85-%E6%A0%91%E9%81%8D%E5%8E%86%E5%99%A8-Visitor-Tree-Walker"><span class="nav-number">5.6.</span> <span class="nav-text">访问者 &#x2F; 树遍历器 (Visitor &#x2F; Tree Walker)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2026/06/21/%E7%94%9F%E4%BA%A7%E9%AA%8C%E8%AF%81%E7%9A%84%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="生产验证的编程模式读书笔记 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          生产验证的编程模式读书笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-06-21 09:57:34" itemprop="dateCreated datePublished" datetime="2026-06-21T09:57:34+08:00">2026-06-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-06-28 17:39:07" itemprop="dateModified" datetime="2026-06-28T17:39:07+08:00">2026-06-28</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>读书使人进步。</p>
+<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><h2 id="位掩码-Bitmask"><a href="#位掩码-Bitmask" class="headerlink" title="位掩码 (Bitmask)"></a>位掩码 (Bitmask)</h2><p>将多个布尔标志打包到一个整数中，通过位运算实现常数时间的集合操作。</p>
+<h2 id="最小堆-优先队列-Min-Heap"><a href="#最小堆-优先队列-Min-Heap" class="headerlink" title="最小堆 &#x2F; 优先队列 (Min Heap)"></a>最小堆 &#x2F; 优先队列 (Min Heap)</h2><p>存储在数组中的二叉树，最小元素始终在根节点，支持 O(1) 查看和 O(log n) 插入&#x2F;删除。</p>
+<h2 id="环形缓冲区-Ring-Buffer"><a href="#环形缓冲区-Ring-Buffer" class="headerlink" title="环形缓冲区 (Ring Buffer)"></a>环形缓冲区 (Ring Buffer)</h2><p>固定大小的缓冲区通过模运算实现循环，提供常数时间的入队出队且无需内存分配。</p>
+<h2 id="Trie-前缀树-Trie-Prefix-Tree"><a href="#Trie-前缀树-Trie-Prefix-Tree" class="headerlink" title="Trie 前缀树 (Trie &#x2F; Prefix Tree)"></a>Trie 前缀树 (Trie &#x2F; Prefix Tree)</h2><p>在树中存储字符串，每条边代表一个字符——共享前缀共享节点，实现按键长度 O(k) 查找。</p>
+<h2 id="跳表-Skip-List"><a href="#跳表-Skip-List" class="headerlink" title="跳表 (Skip List)"></a>跳表 (Skip List)</h2><p>概率有序数据结构，O(log n) 搜索、插入和删除——比平衡树更简单，性能相当。</p>
+<h2 id="布隆过滤器-Bloom-Filter"><a href="#布隆过滤器-Bloom-Filter" class="headerlink" title="布隆过滤器 (Bloom Filter)"></a>布隆过滤器 (Bloom Filter)</h2><p>以 O(k) 时间测试集合成员资格，零漏判——代价是可调的误判率。</p>
+<h2 id="LRU-缓存-LRU-Cache"><a href="#LRU-缓存-LRU-Cache" class="headerlink" title="LRU 缓存 (LRU Cache)"></a>LRU 缓存 (LRU Cache)</h2><p>缓存满时淘汰最近最少使用的条目——用哈希表加双向链表实现 O(1) 的 get 和 put。</p>
+<h2 id="B-树-B-Tree"><a href="#B-树-B-Tree" class="headerlink" title="B+ 树 (B+ Tree)"></a>B+ 树 (B+ Tree)</h2><p>自平衡多路树，高扇出——内部节点负责路由，叶节点存储数据，所有叶节点通过链表相连以支持高效范围扫描。</p>
+<h2 id="标签联合体-Tagged-Union-Variant"><a href="#标签联合体-Tagged-Union-Variant" class="headerlink" title="标签联合体 (Tagged Union &#x2F; Variant)"></a>标签联合体 (Tagged Union &#x2F; Variant)</h2><p>将类型标签与值联合体配对存储，使一个变量安全地持有不同类型，通过标签分发行为。</p>
+<h2 id="Merkle-树-Merkle-Tree"><a href="#Merkle-树-Merkle-Tree" class="headerlink" title="Merkle 树 (Merkle Tree)"></a>Merkle 树 (Merkle Tree)</h2><p>对叶子节点做哈希，然后逐层向上哈希配对——以 O(log n) 的代价验证任意叶子的完整性，无需重新哈希整个数据集。</p>
+<h2 id="合并迭代器-Merge-Iterator-K-Way-Merge"><a href="#合并迭代器-Merge-Iterator-K-Way-Merge" class="headerlink" title="合并迭代器 (Merge Iterator &#x2F; K-Way Merge)"></a>合并迭代器 (Merge Iterator &#x2F; K-Way Merge)</h2><p>使用最小堆将 K 个有序流合并为一个有序输出——跨多个数据源创建”统一视图”的通用方法。</p>
+<h1 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h1><h2 id="信号量-有界并发-Semaphore"><a href="#信号量-有界并发-Semaphore" class="headerlink" title="信号量 &#x2F; 有界并发 (Semaphore)"></a>信号量 &#x2F; 有界并发 (Semaphore)</h2><p>通过维护计数器限制并发操作数量——工作前获取，完成后释放，达到上限时阻塞。</p>
+<h2 id="Actor-模型"><a href="#Actor-模型" class="headerlink" title="Actor 模型"></a>Actor 模型</h2><p>每个 Actor 拥有一个信箱并按顺序处理消息——没有共享状态，没有锁，仅通过消息传递实现安全并发。</p>
+<h2 id="工作窃取-Work-Stealing"><a href="#工作窃取-Work-Stealing" class="headerlink" title="工作窃取 (Work Stealing)"></a>工作窃取 (Work Stealing)</h2><p>空闲线程从繁忙线程的队列中窃取任务——无需中央协调即可动态均衡负载。</p>
+<h2 id="MVCC-多版本并发控制"><a href="#MVCC-多版本并发控制" class="headerlink" title="MVCC 多版本并发控制"></a>MVCC 多版本并发控制</h2><p>为每个值保留多个带时间戳的版本，读者永远不阻塞写者——每个事务看到一致的快照，无需加锁。</p>
+<h2 id="协作调度-Cooperative-Scheduling"><a href="#协作调度-Cooperative-Scheduling" class="headerlink" title="协作调度 (Cooperative Scheduling)"></a>协作调度 (Cooperative Scheduling)</h2><p>将长时间运行的任务拆分为小块，在每块之间让出控制权，以保持系统响应。</p>
+<h2 id="双缓冲-Double-Buffering"><a href="#双缓冲-Double-Buffering" class="headerlink" title="双缓冲 (Double Buffering)"></a>双缓冲 (Double Buffering)</h2><p>维护两份状态副本，在它们之间原子切换，让读取方始终看到一致的快照。</p>
+<h2 id="背压-流控-Backpressure"><a href="#背压-流控-Backpressure" class="headerlink" title="背压 &#x2F; 流控 (Backpressure)"></a>背压 &#x2F; 流控 (Backpressure)</h2><p>当消费者跟不上时减慢生产者——用有界缓冲区和需求信号防止资源耗尽。</p>
+<h2 id="事件循环-反应器-Event-Loop-Reactor"><a href="#事件循环-反应器-Event-Loop-Reactor" class="headerlink" title="事件循环 &#x2F; 反应器 (Event Loop &#x2F; Reactor)"></a>事件循环 &#x2F; 反应器 (Event Loop &#x2F; Reactor)</h2><p>单线程循环通过 epoll&#x2F;kqueue 多路复用 I&#x2F;O，将就绪事件分发给回调——无需线程即可处理数千连接。</p>
+<h2 id="逻辑时钟-Epoch-Logical-Clock"><a href="#逻辑时钟-Epoch-Logical-Clock" class="headerlink" title="逻辑时钟 &#x2F; Epoch (Logical Clock)"></a>逻辑时钟 &#x2F; Epoch (Logical Clock)</h2><p>单调递增的计数器，无需物理时钟即可排序事件——实现一致性快照和过期检测。</p>
+<h1 id="系统"><a href="#系统" class="headerlink" title="系统"></a>系统</h1><h2 id="熔断器-Circuit-Breaker"><a href="#熔断器-Circuit-Breaker" class="headerlink" title="熔断器 (Circuit Breaker)"></a>熔断器 (Circuit Breaker)</h2><p>通过跟踪错误次数自动跳闸——快速失败，而不是堆积超时等待。</p>
+<h2 id="限流器-令牌桶-Rate-Limiter"><a href="#限流器-令牌桶-Rate-Limiter" class="headerlink" title="限流器 &#x2F; 令牌桶 (Rate Limiter)"></a>限流器 &#x2F; 令牌桶 (Rate Limiter)</h2><p>通过维护一个按固定速率补充的令牌桶来控制吞吐量——每次操作消耗一个令牌，桶空时拒绝请求。</p>
+<h2 id="指数退避重试-Retry-with-Backoff"><a href="#指数退避重试-Retry-with-Backoff" class="headerlink" title="指数退避重试 (Retry with Backoff)"></a>指数退避重试 (Retry with Backoff)</h2><p>操作失败时以指数增长的延迟重试，加随机抖动避免惊群效应。</p>
+<h2 id="预写日志-Write-Ahead-Log"><a href="#预写日志-Write-Ahead-Log" class="headerlink" title="预写日志 (Write-Ahead Log)"></a>预写日志 (Write-Ahead Log)</h2><p>在应用变更前先将每个变更记录到持久存储——重放日志即可从崩溃中恢复，零数据丢失。</p>
+<h2 id="批处理-Batch-Processing"><a href="#批处理-Batch-Processing" class="headerlink" title="批处理 (Batch Processing)"></a>批处理 (Batch Processing)</h2><p>累积单个操作并作为一组执行，将每次操作的开销分摊到整个批次。</p>
+<h2 id="一致性哈希-Consistent-Hashing"><a href="#一致性哈希-Consistent-Hashing" class="headerlink" title="一致性哈希 (Consistent Hashing)"></a>一致性哈希 (Consistent Hashing)</h2><p>将键分布到虚拟环上的节点，添加或移除节点时只重映射约 1&#x2F;n 的键。</p>
+<h2 id="依赖图-Dependency-Graph"><a href="#依赖图-Dependency-Graph" class="headerlink" title="依赖图 (Dependency Graph)"></a>依赖图 (Dependency Graph)</h2><p>将依赖关系建模为有向无环图，拓扑排序确定合法执行顺序——在死锁前检测循环。</p>
+<h2 id="中间件-管道链-Middleware-Pipeline-Chain"><a href="#中间件-管道链-Middleware-Pipeline-Chain" class="headerlink" title="中间件 &#x2F; 管道链 (Middleware &#x2F; Pipeline Chain)"></a>中间件 &#x2F; 管道链 (Middleware &#x2F; Pipeline Chain)</h2><p>组合处理器，每个包裹下一个——前处理、调用 next、后处理——形成双向管道。</p>
+<h2 id="注册表-自注册-Registry"><a href="#注册表-自注册-Registry" class="headerlink" title="注册表 &#x2F; 自注册 (Registry)"></a>注册表 &#x2F; 自注册 (Registry)</h2><p>组件按名称将自身注册到全局查找表——消费者在运行时发现实现，无需硬编码依赖。</p>
+<h2 id="脏标记-Dirty-Flag"><a href="#脏标记-Dirty-Flag" class="headerlink" title="脏标记 (Dirty Flag)"></a>脏标记 (Dirty Flag)</h2><p>在变更时将对象标记为”脏”，延迟昂贵的重计算直到值真正被需要时再执行，然后清除标记。</p>
+<h2 id="LSM-树-Log-Structured-Merge-Tree"><a href="#LSM-树-Log-Structured-Merge-Tree" class="headerlink" title="LSM 树 (Log-Structured Merge Tree)"></a>LSM 树 (Log-Structured Merge Tree)</h2><p>将写入缓冲在内存中，刷写到磁盘的有序文件，后台合并文件——用读放大换取快速写入。</p>
+<h2 id="检查点-Checkpointing"><a href="#检查点-Checkpointing" class="headerlink" title="检查点 (Checkpointing)"></a>检查点 (Checkpointing)</h2><p>定期快照一致性状态，使恢复只需从检查点开始重放——而不是从时间的起点。</p>
+<h1 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h1><h2 id="对象池-Object-Pool"><a href="#对象池-Object-Pool" class="headerlink" title="对象池 (Object Pool)"></a>对象池 (Object Pool)</h2><p>预分配一组可复用对象，避免热路径上重复分配和垃圾回收的开销。</p>
+<h2 id="对象池-Object-Pool-1"><a href="#对象池-Object-Pool-1" class="headerlink" title="对象池 (Object Pool)"></a>对象池 (Object Pool)</h2><p>共享相同的不可变对象而非创建重复实例，用查找开销换取大量内存节省。</p>
+<h2 id="Arena-分配器-Arena-Allocator"><a href="#Arena-分配器-Arena-Allocator" class="headerlink" title="Arena 分配器 (Arena Allocator)"></a>Arena 分配器 (Arena Allocator)</h2><p>在预分配区域中通过移动指针分配对象——不再需要时一次性释放所有内存。</p>
+<h2 id="空闲链表-Free-List"><a href="#空闲链表-Free-List" class="headerlink" title="空闲链表 (Free List)"></a>空闲链表 (Free List)</h2><p>维护一个已释放槽位的链表，使分配和释放都是 O(1)——复用内存而无需调用系统分配器。</p>
+<h2 id="写时复制-Copy-on-Write"><a href="#写时复制-Copy-on-Write" class="headerlink" title="写时复制 (Copy-on-Write)"></a>写时复制 (Copy-on-Write)</h2><p>通过引用共享数据，直到有人修改时才创建私有副本——为读多写少的场景节省内存和分配开销。</p>
+<h2 id="引用计数-Reference-Counting"><a href="#引用计数-Reference-Counting" class="headerlink" title="引用计数 (Reference Counting)"></a>引用计数 (Reference Counting)</h2><p>通过原子计数器追踪所有者，归零时自动清理——无需垃圾回收的确定性资源生命周期管理。</p>
+<h2 id="墓碑-延迟删除-Tombstone"><a href="#墓碑-延迟删除-Tombstone" class="headerlink" title="墓碑 &#x2F; 延迟删除 (Tombstone)"></a>墓碑 &#x2F; 延迟删除 (Tombstone)</h2><p>用墓碑标记代替直接删除条目——后台进程稍后回收空间。</p>
+<h2 id="驻留-符号表-Interning-Symbol-Table"><a href="#驻留-符号表-Interning-Symbol-Table" class="headerlink" title="驻留 &#x2F; 符号表 (Interning &#x2F; Symbol Table)"></a>驻留 &#x2F; 符号表 (Interning &#x2F; Symbol Table)</h2><p>通过规范化查找表去重不可变值——用 O(1) 的指针比较替代 O(n) 的内容比较。</p>
+<h1 id="行为型"><a href="#行为型" class="headerlink" title="行为型"></a>行为型</h1><h2 id="状态机-State-Machine"><a href="#状态机-State-Machine" class="headerlink" title="状态机 (State Machine)"></a>状态机 (State Machine)</h2><p>将实体的生命周期建模为一组状态和显式转换，让不可能的状态不可表达，每次状态变更可审计。</p>
+<h2 id="观察者-发布-订阅-Observer-Pub-Sub"><a href="#观察者-发布-订阅-Observer-Pub-Sub" class="headerlink" title="观察者 &#x2F; 发布-订阅 (Observer &#x2F; Pub-Sub)"></a>观察者 &#x2F; 发布-订阅 (Observer &#x2F; Pub-Sub)</h2><p>让对象订阅事件并在事件发生时收到通知，实现生产者与消费者的解耦——发送方不需要知道谁在监听。</p>
+<h2 id="迭代器-惰性求值-Iterator"><a href="#迭代器-惰性求值-Iterator" class="headerlink" title="迭代器 &#x2F; 惰性求值 (Iterator)"></a>迭代器 &#x2F; 惰性求值 (Iterator)</h2><p>逐个处理序列中的元素而不实例化整个集合，通过可组合的转换实现零中间分配。</p>
+<h2 id="差异-补丁-Diff-Patch"><a href="#差异-补丁-Diff-Patch" class="headerlink" title="差异&#x2F;补丁 (Diff &#x2F; Patch)"></a>差异&#x2F;补丁 (Diff &#x2F; Patch)</h2><p>比较两个序列，计算将一个转换为另一个所需的最小操作集（插入、删除、移动）。</p>
+<h2 id="虚函数表-操作分发-Vtable-Ops-Dispatch"><a href="#虚函数表-操作分发-Vtable-Ops-Dispatch" class="headerlink" title="虚函数表 &#x2F; 操作分发 (Vtable &#x2F; Ops Dispatch)"></a>虚函数表 &#x2F; 操作分发 (Vtable &#x2F; Ops Dispatch)</h2><p>将函数指针组合到结构体中实现运行时多态——接口、trait 和虚方法背后的手动基础。</p>
+<h2 id="访问者-树遍历器-Visitor-Tree-Walker"><a href="#访问者-树遍历器-Visitor-Tree-Walker" class="headerlink" title="访问者 &#x2F; 树遍历器 (Visitor &#x2F; Tree Walker)"></a>访问者 &#x2F; 树遍历器 (Visitor &#x2F; Tree Walker)</h2><p>将树遍历与操作解耦，通过分发到类型特定的回调——使新操作无需修改树结构。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://totoro-jam.github.io/battle-tested-patterns/zh/">Battle-Tested Patterns</a>,by totoro-jam.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/06/17/Pytest%E8%BF%9B%E8%A1%8C%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E7%9A%84%E6%96%B9%E6%B3%95/" rel="prev" title="Pytest进行单元测试的方法">
+                  <i class="fa fa-angle-left"></i> Pytest进行单元测试的方法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/08/01/gRPC%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9/" rel="next" title="gRPC使用帮助">
+                  gRPC使用帮助 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

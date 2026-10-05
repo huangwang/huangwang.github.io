@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Protocol Buffers是一种序列化数据结构的协议。对于透过管道(pipeline)或存储资料进行通信的程序开发上是很有用的。这个方法包含一个接口描述语言，描述一些数据结构，并提供程序工具根据这些描述产生代码，用于将这些数据结构产生或解析资料流。 安装配置protobuf的github发布地址： https:&#x2F;&#x2F;github.com&#x2F;protocolbuffers&#x2F;protobuf&#x2F;rel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Protobuf学习笔记">
+<meta property="og:url" content="https://huangwang.github.io/2021/01/19/Protobuf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="Protocol Buffers是一种序列化数据结构的协议。对于透过管道(pipeline)或存储资料进行通信的程序开发上是很有用的。这个方法包含一个接口描述语言，描述一些数据结构，并提供程序工具根据这些描述产生代码，用于将这些数据结构产生或解析资料流。 安装配置protobuf的github发布地址： https:&#x2F;&#x2F;github.com&#x2F;protocolbuffers&#x2F;protobuf&#x2F;rel">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-19T12:45:51.000Z">
+<meta property="article:modified_time" content="2024-09-26T10:49:43.715Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2021/01/19/Protobuf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2021/01/19/Protobuf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/","path":"2021/01/19/Protobuf学习笔记/","title":"Protobuf学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Protobuf学习笔记 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">安装配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91"><span class="nav-number">2.</span> <span class="nav-text">源码编译</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-proto-%E6%96%87%E4%BB%B6%EF%BC%8C%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">创建 .proto 文件，定义数据结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%86-proto%E6%96%87%E4%BB%B6%EF%BC%8C%E7%BC%96%E8%AF%91%E6%88%90%E6%8C%87%E5%AE%9A%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93"><span class="nav-number">4.</span> <span class="nav-text">将.proto文件，编译成指定语言类库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%A8%8B%E5%BA%8F"><span class="nav-number">5.</span> <span class="nav-text">测试程序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E8%B5%8B%E5%80%BC"><span class="nav-number">6.</span> <span class="nav-text">变量赋值</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#repeated%E7%B1%BB%E5%9E%8B%E5%8F%98%E9%87%8F%E8%B5%8B%E5%80%BC"><span class="nav-number">6.1.</span> <span class="nav-text">repeated类型变量赋值</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">使用问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Several-shared-object-using-same-proto-leading-the-the-error-file-already-exists-in-database"><span class="nav-number">7.1.</span> <span class="nav-text">Several shared object using same proto leading the the error: file already exists in database</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#protobuf-%E8%A7%A3%E6%9E%90%E9%94%99%E8%AF%AF-ParseFromArray-%E6%97%B6%E8%BF%94%E5%9B%9Efalse"><span class="nav-number">7.2.</span> <span class="nav-text">protobuf 解析错误 ParseFromArray 时返回false</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">8.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/01/19/Protobuf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Protobuf学习笔记 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Protobuf学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-01-19 20:45:51" itemprop="dateCreated datePublished" datetime="2021-01-19T20:45:51+08:00">2021-01-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-09-26 18:49:43" itemprop="dateModified" datetime="2024-09-26T18:49:43+08:00">2024-09-26</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Protocol Buffers是一种序列化数据结构的协议。对于透过管道(pipeline)或存储资料进行通信的程序开发上是很有用的。这个方法包含一个接口描述语言，描述一些数据结构，并提供程序工具根据这些描述产生代码，用于将这些数据结构产生或解析资料流。</p>
+<h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><p>protobuf的github发布地址： <a target="_blank" rel="noopener" href="https://github.com/protocolbuffers/protobuf/releases">https://github.com/protocolbuffers/protobuf/releases</a></p>
+<p>protobuf的编译器叫protoc，在上面的网址中找到最新版本的安装包，下载安装。</p>
+<p>这里下载的是：protoc-3.9.1-win64.zip ， windows 64位系统版本的编译器，下载后，解压到你想要的安装目录即可。</p>
+<blockquote>
+<p>提示：解压完成后，将 [protoc安装目录]&#x2F;bin 路径添加到PATH环境变量中</p>
+</blockquote>
+<p>打开cmd，命令窗口执行protoc命令，没有报错的话，就已经安装成功。</p>
+<h1 id="源码编译"><a href="#源码编译" class="headerlink" title="源码编译"></a>源码编译</h1><p>因为需要protobuf的header、lib、dll用于测试，需要编译protobuf的源代码。请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/dai_jing/article/details/83010324">protobuf的编译和使用，在windows平台上</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.itheima.com/news/20200421/135308.html">如何在Qt下编译以及使用protobuf？【C++培训】</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/hp_cpp/article/details/106140704">解决protobuf的Undefined reference to google::protobuf cxx11</a></li>
+</ul>
+<p>如果使用qt进行开发，请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/lb1885727/article/details/74949883">Qt MinGW版编译使用protobuf</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/h2zZhou/p/10253840.html">QT中使用MinGW 编译的protobuf库–包含库的生成和使用</a></li>
+</ul>
+<p><strong>注意：项目依赖库使用的编译链接工具应与项目使用的编译链接工具相同。例如：都使用 msvc2017 64编译链接。或者考虑跨平台使用mingw 64编译链接。</strong></p>
+<h1 id="创建-proto-文件，定义数据结构"><a href="#创建-proto-文件，定义数据结构" class="headerlink" title="创建 .proto 文件，定义数据结构"></a>创建 .proto 文件，定义数据结构</h1><p>proto3 的语法请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.liwenzhou.com/posts/Go/Protobuf3-language-guide-zh/">Protocol Buffers V3中文语法指南[翻译]</a></li>
+</ul>
+<p>proto3 与 proto2 的区别请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/huanggang982/article/details/77944174">Protobuf 的 proto3 与 proto2 的区别</a></li>
+</ul>
+<p>下面是一个proto简单示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 指定protobuf的版本，proto3是最新的语法版本</span><br><span class="line">syntax = &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">package dream;</span><br><span class="line"></span><br><span class="line">message helloworld</span><br><span class="line">&#123;</span><br><span class="line">   int32     id = 1;  // ID</span><br><span class="line">   string    str = 2;  // str</span><br><span class="line">   int32     opt = 3;  //optional field</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="将-proto文件，编译成指定语言类库"><a href="#将-proto文件，编译成指定语言类库" class="headerlink" title="将.proto文件，编译成指定语言类库"></a>将.proto文件，编译成指定语言类库</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protoc -I=$SRC_DIR --cpp_out=$DST_DIR $SRC_DIR/addressbook.proto</span><br></pre></td></tr></table></figure>
+
+<p>在生成的头文件中添加如下宏定义：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define PROTOBUF_USE_DLLS</span><br></pre></td></tr></table></figure>
+
+<h1 id="测试程序"><a href="#测试程序" class="headerlink" title="测试程序"></a>测试程序</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">// TestProtoBuffer.cpp : 此文件包含 &quot;main&quot; 函数。程序执行将在此处开始并结束。</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;fstream&gt;</span><br><span class="line">#include &quot;MessageStruct.pb.h&quot;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;   </span><br><span class="line">	Msg_Header msgHeader;</span><br><span class="line">	msgHeader.set_msgtype(1);</span><br><span class="line">	msgHeader.set_msgsubtype(2);</span><br><span class="line"></span><br><span class="line">	// Write the new address book back to disk.</span><br><span class="line">	fstream output(&quot;./log&quot;, ios::out | ios::trunc | ios::binary);</span><br><span class="line"></span><br><span class="line">	if (!msgHeader.SerializeToOstream(&amp;output)) &#123;</span><br><span class="line">		cerr &lt;&lt; &quot;Failed to write msg.&quot; &lt;&lt; endl;</span><br><span class="line">		return -1;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	Msg_Header msgHeaderFromFile1;</span><br><span class="line">	try &#123;</span><br><span class="line">		string work_dir = &quot;E:\\Target&quot;;</span><br><span class="line">		fstream input(work_dir+&quot;\\Debug\\log&quot;, ios::in | ios::binary);</span><br><span class="line">		if (!msgHeaderFromFile1.ParseFromIstream(&amp;input)) &#123;</span><br><span class="line">			cerr &lt;&lt; &quot;Failed to parse address book.&quot; &lt;&lt; endl;</span><br><span class="line">			return -1;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	catch (exception ex) &#123;</span><br><span class="line">		cout &lt;&lt; ex.what() &lt;&lt; endl;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	std::cout &lt;&lt; &quot;文件反序列化!\n&quot;;</span><br><span class="line">	cout &lt;&lt; msgHeaderFromFile1.msgtype() &lt;&lt; endl;</span><br><span class="line">	cout &lt;&lt; msgHeaderFromFile1.msgsubtype() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">	string testStr;</span><br><span class="line">	msgHeader.SerializeToString(&amp;testStr);</span><br><span class="line">	Msg_Header msgHeaderFromFile2;</span><br><span class="line">	msgHeaderFromFile2.ParseFromString(testStr);</span><br><span class="line"></span><br><span class="line">	std::cout &lt;&lt; &quot;\n字符串反序列化!\n&quot;;</span><br><span class="line">	cout &lt;&lt; msgHeaderFromFile2.msgtype() &lt;&lt; endl;</span><br><span class="line">	cout &lt;&lt; msgHeaderFromFile2.msgsubtype() &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="变量赋值"><a href="#变量赋值" class="headerlink" title="变量赋值"></a>变量赋值</h1><h2 id="repeated类型变量赋值"><a href="#repeated类型变量赋值" class="headerlink" title="repeated类型变量赋值"></a>repeated类型变量赋值</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43795921/article/details/117650918">protobuf中repeated类型变量与C++ vector类型变量的相互赋值方法</a></li>
+</ul>
+<h1 id="使用问题"><a href="#使用问题" class="headerlink" title="使用问题"></a>使用问题</h1><h2 id="Several-shared-object-using-same-proto-leading-the-the-error-file-already-exists-in-database"><a href="#Several-shared-object-using-same-proto-leading-the-the-error-file-already-exists-in-database" class="headerlink" title="Several shared object using same proto leading the the error: file already exists in database"></a>Several shared object using same proto leading the the error: file already exists in database</h2><p>解决方案请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://jashking.github.io/2017/11/17/protobuf-runtime/">Protobuf 使用过程遇到的一个问题</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/what951006/article/details/115360430">vcpkg安装静态库&#x2F;mtd&#x2F;mt</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/xmcy001122/article/details/116227032">Vcpkg使用MD运行时静态库——如何设置？</a></li>
+</ul>
+<h2 id="protobuf-解析错误-ParseFromArray-时返回false"><a href="#protobuf-解析错误-ParseFromArray-时返回false" class="headerlink" title="protobuf 解析错误 ParseFromArray 时返回false"></a>protobuf 解析错误 ParseFromArray 时返回false</h2><p>可能的原因有：</p>
+<ul>
+<li>消息没有序列化，因此消息反序列化失败</li>
+</ul>
+<p>解决方案请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/guangyacyb/article/details/96439413">protobuf 解析错误 ParseFromArray 时返回false</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/xiexingshishu/article/details/46672789">protobuf的ParseFromArray 解析失败的问题</a></li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://colobu.com/2019/10/03/protobuf-ultimate-tutorial-in-go/">Protobuf 终极教程</a>,by 鸟窝.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/141415216">Protobuf通信协议详解：代码演示、详细原理介绍等</a>,by CPP加油站.</li>
+<li><a target="_blank" rel="noopener" href="https://www.liwenzhou.com/posts/Go/Protobuf3-language-guide-zh/">Protocol Buffers V3中文语法指南[翻译]</a>,by 李文周.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/WindSun/p/12594801.html">Qt中使用Protobuf简单案例(Windows + msvc)</a>,by WindSun.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/huanggang982/article/details/77944174">Protobuf 的 proto3 与 proto2 的区别</a>,by huanggang982.</li>
+<li><a target="_blank" rel="noopener" href="https://www.eet-china.com/mp/a63366.html">长文图解Google的protobuf思考、设计、应用</a>,by 嵌入式客栈.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/niuben/p/14212711.html">protobuf优缺点及编码原理</a>,by 牛奔.</li>
+<li><a target="_blank" rel="noopener" href="https://jashking.github.io/2017/11/17/protobuf-runtime/">Protobuf 使用过程遇到的一个问题</a>,by jashwang.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/C-C/" rel="tag"># C/C++</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/01/19/Win7%E4%B8%8BMongoDB%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95/" rel="prev" title="Win7下MongoDB数据库的安装方法">
+                  <i class="fa fa-angle-left"></i> Win7下MongoDB数据库的安装方法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/01/27/FlightGear%E5%9C%A8Windows%E7%9A%84%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/" rel="next" title="FlightGear在Windows的编译安装教程">
+                  FlightGear在Windows的编译安装教程 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

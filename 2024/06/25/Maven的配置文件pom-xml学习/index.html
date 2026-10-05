@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="项目对象模型 (POM) 是 Maven 中的基本工作单元。它是一个 XML 文件，包含有关项目的信息以及 Maven 用于构建项目的配置详细信息。它包含大多数项目的默认值。例如，构建目录为target；源目录为src&#x2F;main&#x2F;java；测试源目录为src&#x2F;test&#x2F;java；等等。执行任务或目标时，Maven 在当前目录中查找 POM。它读取 POM，获">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Maven的配置文件pom.xml学习">
+<meta property="og:url" content="https://huangwang.github.io/2024/06/25/Maven%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6pom-xml%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="项目对象模型 (POM) 是 Maven 中的基本工作单元。它是一个 XML 文件，包含有关项目的信息以及 Maven 用于构建项目的配置详细信息。它包含大多数项目的默认值。例如，构建目录为target；源目录为src&#x2F;main&#x2F;java；测试源目录为src&#x2F;test&#x2F;java；等等。执行任务或目标时，Maven 在当前目录中查找 POM。它读取 POM，获">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-25T13:41:18.000Z">
+<meta property="article:modified_time" content="2025-09-26T12:41:13.802Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2024/06/25/Maven%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6pom-xml%E5%AD%A6%E4%B9%A0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2024/06/25/Maven%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6pom-xml%E5%AD%A6%E4%B9%A0/","path":"2024/06/25/Maven的配置文件pom-xml学习/","title":"Maven的配置文件pom.xml学习"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Maven的配置文件pom.xml学习 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#POM-xml%E6%9C%80%E7%AE%80%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.</span> <span class="nav-text">POM.xml最简示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#POM-xml%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">POM.xml结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-number">2.1.</span> <span class="nav-text">项目基本信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%9A%84%E4%BE%9D%E8%B5%96%E5%88%97%E8%A1%A8"><span class="nav-number">2.2.</span> <span class="nav-text">项目的依赖列表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dependency"><span class="nav-number">2.2.1.</span> <span class="nav-text">dependency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#repository"><span class="nav-number">2.2.2.</span> <span class="nav-text">repository</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%9E%84%E5%BB%BA%E9%85%8D%E7%BD%AE"><span class="nav-number">2.3.</span> <span class="nav-text">项目的构建配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/06/25/Maven%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6pom-xml%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Maven的配置文件pom.xml学习 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Maven的配置文件pom.xml学习
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-06-25 21:41:18" itemprop="dateCreated datePublished" datetime="2024-06-25T21:41:18+08:00">2024-06-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-09-26 20:41:13" itemprop="dateModified" datetime="2025-09-26T20:41:13+08:00">2025-09-26</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>项目对象模型 (POM) 是 Maven 中的基本工作单元。它是一个 XML 文件，包含有关项目的信息以及 Maven 用于构建项目的配置详细信息。它包含大多数项目的默认值。例如，构建目录为target；源目录为src&#x2F;main&#x2F;java；测试源目录为src&#x2F;test&#x2F;java；等等。执行任务或目标时，Maven 在当前目录中查找 POM。它读取 POM，获取所需的配置信息，然后执行目标。</p>
+<h1 id="POM-xml最简示例"><a href="#POM-xml最简示例" class="headerlink" title="POM.xml最简示例"></a>POM.xml最简示例</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</span><br><span class="line"> </span><br><span class="line">  &lt;groupId&gt;com.mycompany.app&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;my-app&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1&lt;/version&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="POM-xml结构"><a href="#POM-xml结构" class="headerlink" title="POM.xml结构"></a>POM.xml结构</h1><h2 id="项目基本信息"><a href="#项目基本信息" class="headerlink" title="项目基本信息"></a>项目基本信息</h2><p>必填项标签：</p>
+<ul>
+<li>groupId：项目的组名，通常为反转的域名，例如：com.example</li>
+<li>artifactId: 项目的唯一标识，通常为项目名称</li>
+<li>version：项目版本号</li>
+<li>packaging：项目打包方式，通常是 jar、war 或 pom, 如果没有指定packaging，则默认是 jar</li>
+</ul>
+<p>其他重要标签：</p>
+<ul>
+<li>modules</li>
+</ul>
+<p>modules 标签用于声明当前 Maven 项目包含的模块子项目，每个子项目都是一个独立的 Maven 项目，具有自己的 pom.xml 文件，可以进行独立构建和测试。在父项目的 pom.xml 文件中，使用 标签来列出所有子项目的名称。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</span><br><span class="line">	</span><br><span class="line">    &lt;groupId&gt;com.ruoyi&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;ruoyi&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;3.8.7&lt;/version&gt;</span><br><span class="line"></span><br><span class="line">    &lt;modules&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-admin&lt;/module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-framework&lt;/module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-system&lt;/module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-quartz&lt;/module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-generator&lt;/module&gt;</span><br><span class="line">        &lt;module&gt;ruoyi-common&lt;/module&gt;</span><br><span class="line">    &lt;/modules&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>parent</li>
+</ul>
+<p>parent 标签用于声明当前 Maven 项目的父项目，它可以将若干个 Maven 项目组织成一个整体，指定版本号，插件版本号等，便于管理和维护，在一个 Maven 项目中，使用标签来引用父项目。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;parent&gt;</span><br><span class="line">        &lt;artifactId&gt;ruoyi&lt;/artifactId&gt;</span><br><span class="line">        &lt;groupId&gt;com.ruoyi&lt;/groupId&gt;</span><br><span class="line">        &lt;version&gt;3.8.7&lt;/version&gt;</span><br><span class="line">    &lt;/parent&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</span><br><span class="line"></span><br><span class="line">    &lt;artifactId&gt;ruoyi-framework&lt;/artifactId&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>properties</li>
+</ul>
+<p>properties 严格来说，并不一定是项目本身的信息，而是人为设置的属性或者说宏，这个标签用来定义和管理项目中所需要的属性，其作用有以下几个：</p>
+<p>(1) 统一管理项目中的常用属性，比如版本号、路径、插件版本等，方便统一修改和管理。</p>
+<p>(2) 可以在配置过程中使用 ${…}占位符引用这些属性，使得配置更加灵活和便捷。</p>
+<p>(3) 避免硬编码，提高代码的可维护性和可读性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;properties&gt;</span><br><span class="line">        &lt;ruoyi.version&gt;3.8.7&lt;/ruoyi.version&gt;</span><br><span class="line">        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;</span><br><span class="line">        &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;</span><br><span class="line">        &lt;java.version&gt;1.8&lt;/java.version&gt;</span><br><span class="line">        &lt;maven-jar-plugin.version&gt;3.1.1&lt;/maven-jar-plugin.version&gt;</span><br><span class="line">        &lt;spring-framework.version&gt;5.3.33&lt;/spring-framework.version&gt;</span><br><span class="line">        &lt;druid.version&gt;1.2.20&lt;/druid.version&gt;</span><br><span class="line">        &lt;bitwalker.version&gt;1.21&lt;/bitwalker.version&gt;</span><br><span class="line">        &lt;swagger.version&gt;3.0.0&lt;/swagger.version&gt;</span><br><span class="line">        &lt;kaptcha.version&gt;2.3.3&lt;/kaptcha.version&gt;</span><br><span class="line">        &lt;pagehelper.boot.version&gt;1.4.7&lt;/pagehelper.boot.version&gt;</span><br><span class="line">        &lt;fastjson.version&gt;2.0.43&lt;/fastjson.version&gt;</span><br><span class="line">        &lt;oshi.version&gt;6.5.0&lt;/oshi.version&gt;</span><br><span class="line">        &lt;commons.io.version&gt;2.13.0&lt;/commons.io.version&gt;</span><br><span class="line">        &lt;poi.version&gt;4.1.2&lt;/poi.version&gt;</span><br><span class="line">        &lt;velocity.version&gt;2.3&lt;/velocity.version&gt;</span><br><span class="line">        &lt;jwt.version&gt;0.9.1&lt;/jwt.version&gt;</span><br><span class="line">    &lt;/properties&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="项目的依赖列表"><a href="#项目的依赖列表" class="headerlink" title="项目的依赖列表"></a>项目的依赖列表</h2><h3 id="dependency"><a href="#dependency" class="headerlink" title="dependency"></a>dependency</h3><p>与项目的依赖列表相关的标签最外层由 dependencies 来囊括，内部包含了各种具体的依赖 dependency，该标签用于指定一个依赖项，它包含以下几个子标签：</p>
+<ul>
+<li>groupId：指定依赖项的groupId，项目的组名</li>
+<li>artifactId：指定依赖项的artifactId，项目的唯一标识符</li>
+<li>version：指定依赖项的版本号。</li>
+<li>scope：指定依赖项在项目中的使用范围。</li>
+</ul>
+<p>其中的 <scope>一般包含以下几种范围：常用的有compile、test、provided 和 runtime。</p>
+<h3 id="repository"><a href="#repository" class="headerlink" title="repository"></a>repository</h3><p>我们还能在pom文件中支持指定Maven仓库，即使用 repositories 和 repository 标签，repository 用于指定一个Maven仓库。</p>
+<h2 id="项目的构建配置"><a href="#项目的构建配置" class="headerlink" title="项目的构建配置"></a>项目的构建配置</h2><p>项目的构建配置信息，包括编译器版本、插件列表、源代码目录等。</p>
+<p>具体请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/mountainstudy/p/17953638">全面详解Maven的配置文件pom.xml（含常用plugin）</a></li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/mountainstudy/p/17953638">全面详解Maven的配置文件pom.xml（含常用plugin）</a>,by Slow菜鸟.</li>
+<li><a target="_blank" rel="noopener" href="https://maven.apache.org/guides/introduction/introduction-to-the-pom.html">Introduction to the POM</a>,by apache.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43671437/article/details/106753461">Maven的三种项目打包方式——pom，jar，war的区别</a>,by Mr.史.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/Baker-Street/p/16156144.html">基于Springboot的maven父子工程pom文件打包配置</a>,by Sherlock先生.</li>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/maven/maven-repositories.html">Maven 仓库</a>,by runoob.</li>
+<li><a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/1419143">maven配置阿里云镜像源</a>,by aliyun.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/06/23/%E4%B8%8D%E5%90%8C%E6%A1%8C%E9%9D%A2%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%97%B4%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E6%96%B9%E6%B3%95/" rel="prev" title="不同桌面操作系统间文件传输方法">
+                  <i class="fa fa-angle-left"></i> 不同桌面操作系统间文件传输方法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/06/28/IDEA%E5%88%9B%E5%BB%BASpringBoot%E9%A1%B9%E7%9B%AE%E5%B9%B6%E5%90%AF%E5%8A%A8%E7%9A%84%E6%96%B9%E6%B3%95/" rel="next" title="IDEA创建SpringBoot项目并启动的方法">
+                  IDEA创建SpringBoot项目并启动的方法 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

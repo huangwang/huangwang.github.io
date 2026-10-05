@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="最近研究如何在前后端调用同一份js代码。该问题本质是如何兼容前后端各类JS模块规范。上网一搜，已经有很多详细的解决方案和JS模块规范介绍，在这里简单记录一下。 JS模块规范JS模块规范前端主要有AMD、CMD，后端主要有CommonJS。此外还有最新的ES2015模块规范。 AMDAMD（异步模块定义，Asynchronous Module Definition）格式总体的目标是为现在的开发者提供">
+<meta property="og:type" content="article">
+<meta property="og:title" content="兼容前后端多种JS模块规范的代码">
+<meta property="og:url" content="https://huangwang.github.io/2018/07/02/%E5%85%BC%E5%AE%B9%E5%89%8D%E5%90%8E%E7%AB%AF%E5%A4%9A%E7%A7%8DJS%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83%E7%9A%84%E4%BB%A3%E7%A0%81/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="最近研究如何在前后端调用同一份js代码。该问题本质是如何兼容前后端各类JS模块规范。上网一搜，已经有很多详细的解决方案和JS模块规范介绍，在这里简单记录一下。 JS模块规范JS模块规范前端主要有AMD、CMD，后端主要有CommonJS。此外还有最新的ES2015模块规范。 AMDAMD（异步模块定义，Asynchronous Module Definition）格式总体的目标是为现在的开发者提供">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-07-02T14:11:23.000Z">
+<meta property="article:modified_time" content="2019-09-25T04:55:45.916Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="nodejs">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2018/07/02/%E5%85%BC%E5%AE%B9%E5%89%8D%E5%90%8E%E7%AB%AF%E5%A4%9A%E7%A7%8DJS%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83%E7%9A%84%E4%BB%A3%E7%A0%81/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2018/07/02/%E5%85%BC%E5%AE%B9%E5%89%8D%E5%90%8E%E7%AB%AF%E5%A4%9A%E7%A7%8DJS%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83%E7%9A%84%E4%BB%A3%E7%A0%81/","path":"2018/07/02/兼容前后端多种JS模块规范的代码/","title":"兼容前后端多种JS模块规范的代码"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>兼容前后端多种JS模块规范的代码 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JS%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83"><span class="nav-number">1.</span> <span class="nav-text">JS模块规范</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AMD"><span class="nav-number">1.1.</span> <span class="nav-text">AMD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMD"><span class="nav-number">1.2.</span> <span class="nav-text">CMD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CommonJS"><span class="nav-number">1.3.</span> <span class="nav-text">CommonJS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES2015%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83"><span class="nav-number">1.4.</span> <span class="nav-text">ES2015模块规范</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%BC%E5%AE%B9%E5%A4%9A%E7%A7%8D%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83"><span class="nav-number">2.</span> <span class="nav-text">兼容多种模块规范</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Webpack%E5%85%BC%E5%AE%B9%E6%89%80%E6%9C%89JS%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83"><span class="nav-number">3.</span> <span class="nav-text">Webpack兼容所有JS模块规范</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/07/02/%E5%85%BC%E5%AE%B9%E5%89%8D%E5%90%8E%E7%AB%AF%E5%A4%9A%E7%A7%8DJS%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83%E7%9A%84%E4%BB%A3%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="兼容前后端多种JS模块规范的代码 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          兼容前后端多种JS模块规范的代码
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-07-02 22:11:23" itemprop="dateCreated datePublished" datetime="2018-07-02T22:11:23+08:00">2018-07-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-09-25 12:55:45" itemprop="dateModified" datetime="2019-09-25T12:55:45+08:00">2019-09-25</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近研究如何在前后端调用同一份js代码。该问题本质是如何兼容前后端各类JS模块规范。上网一搜，已经有很多详细的解决方案和JS模块规范介绍，在这里简单记录一下。</p>
+<h1 id="JS模块规范"><a href="#JS模块规范" class="headerlink" title="JS模块规范"></a>JS模块规范</h1><p>JS模块规范前端主要有AMD、CMD，后端主要有CommonJS。此外还有最新的ES2015模块规范。</p>
+<h2 id="AMD"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</h2><p>AMD（异步模块定义，Asynchronous Module Definition）格式总体的目标是为现在的开发者提供一个可用的模块化 JavaScript 的解决方案。它诞生于 Dojo 在使用 XHR+eval 时的实践经验，其支持者希望未来的解决方案都可以免受由于过去方案的缺陷所带来的麻烦。</p>
+<p>AMD风格模块定义通常包括：一个用来进行模块定义的 define 方法以及一个用来处理依赖项加载的 require 方法。define 根据如下的方法签名来定义具名或匿名的模块：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define(</span><br><span class="line">    module_id /*可选*/, </span><br><span class="line">    [dependencies] /*可选*/, </span><br><span class="line">    definition function /*用来初始化模块或对象的函数*/</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h2 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h2><p>CMD(Common Module Definition)表示通用模块定义，该规范是国内发展出来的，由阿里的玉伯提出。就像AMD有个requireJS，CMD有个浏览器的实现SeaJS，SeaJS和requireJS一样，都是javascript的前端模块化解决方案。<br>CMD规范简单到只有一个API，即define函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define(function(require, exports, module) &#123;</span><br><span class="line"></span><br><span class="line">  // The module code goes here</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>CMD 与 AMD 挺相近，二者区别如下： </p>
+<ul>
+<li>对于依赖的模块 CMD 是延迟执行，而 AMD 是提前执行（不过 RequireJS 从 2.0 开始，也改成可以延迟执行。 ）</li>
+<li>CMD 推崇依赖就近，AMD 推崇依赖前置。</li>
+<li>AMD 的 api 默认是一个当多个用，CMD 严格的区分推崇职责单一，其每个 API 都简单纯粹。例如：AMD 里 require 分全局的和局部的。CMD 里面没有全局的 require，提供 seajs.use() 来实现模块系统的加载启动。</li>
+</ul>
+<h2 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h2><p>CommonJS是一个志愿性质的工作组，它致力于设计、规划并标准化 JavaScript API。至今为止他们已经尝试着认可了模块标准以及程序包标准。CommonJS 的模块提案为在服务器端声明模块指定了一个简单的 API。不像 AMD，它试图覆盖更宽泛的方面比如 IO、文件系统、promise 模式等等。CommonJS风格模块在nodejs中得到广泛的应用。</p>
+<p>CommonJS风格模块是一段可重用的 JavaScript，它导出一系列特定的对象给依赖它的代码调用——通常来说这样的模块外围没有函数包裹（所以你在这里的例子中不会看到 define）。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// package/lib 是我们须要的一个依赖项</span><br><span class="line">var lib = require(&#x27;package/lib&#x27;);</span><br><span class="line"> </span><br><span class="line">// 我们的模块的一些行为</span><br><span class="line">function foo()&#123;</span><br><span class="line">    lib.log(&#x27;hello world!&#x27;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">// 把 foo 导出（暴露）给其它模块</span><br><span class="line">exports.foo = foo;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ES2015模块规范"><a href="#ES2015模块规范" class="headerlink" title="ES2015模块规范"></a>ES2015模块规范</h2><p>2015 年 6 月， ES2015（即 ECMAScript 6、ES6） 正式发布。ES2015 是该语言的一个显著更新，也是自 2009 年 ES5 标准确定后的第一个重大更新。</p>
+<p>ES2015的模块规范如下：</p>
+<ul>
+<li>一个模块就是一个独立的文件。该文件内部的所有变量，外部无法获取。</li>
+<li>export 命令用于规定模块的对外接口。</li>
+<li>import 命令用于输入其他模块提供的功能。</li>
+<li>ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量。</li>
+</ul>
+<p>ES2015模块示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//circle.js</span><br><span class="line">//圆面积计算</span><br><span class="line">export function area(radius) &#123;</span><br><span class="line">  return Math.PI * radius * radius;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//main.js</span><br><span class="line">import &#123;area&#125; from &#x27;./hangge&#x27;;</span><br><span class="line">console.log(&#x27;圆面积：&#x27; + area(10));</span><br></pre></td></tr></table></figure>
+
+<h1 id="兼容多种模块规范"><a href="#兼容多种模块规范" class="headerlink" title="兼容多种模块规范"></a>兼容多种模块规范</h1><p>需要指出的是下面兼容多种JS模块规范的代码并不支持最新的ES2015模块规范。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">;(function (name, definition) &#123;</span><br><span class="line">  // 检测上下文环境是否为AMD或CMD</span><br><span class="line">  var hasDefine = typeof define === &#x27;function&#x27;,</span><br><span class="line">    // 检查上下文环境是否为Node</span><br><span class="line">    hasExports = typeof module !== &#x27;undefined&#x27; &amp;&amp; module.exports;</span><br><span class="line"></span><br><span class="line">  if (hasDefine) &#123;</span><br><span class="line">    // AMD环境或CMD环境</span><br><span class="line">    define(definition);</span><br><span class="line">  &#125; else if (hasExports) &#123;</span><br><span class="line">    // 定义为普通Node模块</span><br><span class="line">    module.exports = definition();</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // 将模块的执行结果挂在window变量中，在浏览器中this指向window对象</span><br><span class="line">    this[name] = definition();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)(&#x27;hello&#x27;, function () &#123;</span><br><span class="line">  var hello = function () &#123;&#125;;</span><br><span class="line">  return hello;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="Webpack兼容所有JS模块规范"><a href="#Webpack兼容所有JS模块规范" class="headerlink" title="Webpack兼容所有JS模块规范"></a>Webpack兼容所有JS模块规范</h1><p>webpack根据webpack.config.js中的入口文件，在入口文件里识别模块依赖，不管这里的模块依赖是用CommonJS写的，还是ES6 Module规范写的，webpack会自动进行分析，并通过转换、编译代码，打包成最终的文件。最终文件中的模块实现是基于webpack自己实现的webpack_require（es5代码），所以打包后的文件可以跑在浏览器上。</p>
+<p>同时以上意味着在webapck环境下，你可以只使用ES6 模块语法书写代码（通常我们都是这么做的），也可以使用CommonJS模块语法，甚至可以两者混合使用。因为从webpack2开始，内置了对ES6、CommonJS、AMD 模块化语句的支持，webpack会对各种模块进行语法分析，并做转换编译。</p>
+<p>具体Webpack兼容所有JS模块规范的原理分析参见<a target="_blank" rel="noopener" href="https://juejin.im/post/5c94a2f36fb9a070fc623df4">Webpack 模块打包原理</a>。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://i.jakeyu.top/2017/09/14/%E5%85%BC%E5%AE%B9%E5%89%8D%E5%90%8E%E7%AB%AF%E5%85%B1%E7%94%A8%E6%A8%A1%E5%9D%97%E4%BB%A3%E7%A0%81/">兼容前后端共用模块代码(摘自《深入浅出Node.js》)</a>, by Jake.</li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000011633813">兼容多种模块规范(AMD,CMD,Node)的代码</a>, by CodeMan.</li>
+<li><a target="_blank" rel="noopener" href="http://justineo.github.io/singles/writing-modular-js/">使用 AMD、CommonJS 及 ES Harmony 编写模块化的 JavaScript</a>, by ADDY OSMANI.</li>
+<li><a target="_blank" rel="noopener" href="http://www.hangge.com/blog/cache/detail_1686.html">JS - CommonJS、ES2015、AMD、CMD模块规范对比与介绍（附样例）</a>,by hangge.</li>
+<li><a target="_blank" rel="noopener" href="https://babeljs.io/docs/en/">What is Babel?</a>,by Babel.</li>
+<li><a target="_blank" rel="noopener" href="https://webpack.js.org/concepts/">Webpack Concepts</a>,by webpack.</li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000012386576">import、require、export、module.exports 混合使用详解</a>,by lv_DaDa.</li>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/post/5c94a2f36fb9a070fc623df4">Webpack 模块打包原理</a>,by lq782655835.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/nodejs/" rel="tag"># nodejs</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/06/22/sequelize-cli%E4%BD%BF%E7%94%A8%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/" rel="prev" title="sequelize-cli使用经验总结">
+                  <i class="fa fa-angle-left"></i> sequelize-cli使用经验总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/07/08/Cookie-Session%E5%92%8CToken%E4%BC%9A%E8%AF%9D%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/" rel="next" title="Cookie,Session和Token会话知识整理">
+                  Cookie,Session和Token会话知识整理 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Python是一种广泛使用的高级编程语言，属于通用型编程语言，由吉多·范罗苏姆创造，第一版发布于1991年。可以视之为一种改良（加入一些其他编程语言的优点，如面向对象）的LISP。作为一种解释型语言，Python的设计哲学强调代码的可读性和简洁的语法（尤其是使用空格缩进划分代码块，而非使用大括号或者关键词）。相比于C++或Java，Python让开发者能够用更少的代码表达想法。不管是小型还是大型程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python3与python2的区别与兼容">
+<meta property="og:url" content="https://huangwang.github.io/2018/05/26/python3%E4%B8%8Epython2%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E5%85%BC%E5%AE%B9/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="Python是一种广泛使用的高级编程语言，属于通用型编程语言，由吉多·范罗苏姆创造，第一版发布于1991年。可以视之为一种改良（加入一些其他编程语言的优点，如面向对象）的LISP。作为一种解释型语言，Python的设计哲学强调代码的可读性和简洁的语法（尤其是使用空格缩进划分代码块，而非使用大括号或者关键词）。相比于C++或Java，Python让开发者能够用更少的代码表达想法。不管是小型还是大型程">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-05-26T10:58:07.000Z">
+<meta property="article:modified_time" content="2018-10-09T12:57:11.000Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2018/05/26/python3%E4%B8%8Epython2%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E5%85%BC%E5%AE%B9/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2018/05/26/python3%E4%B8%8Epython2%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E5%85%BC%E5%AE%B9/","path":"2018/05/26/python3与python2的区别与兼容/","title":"python3与python2的区别与兼容"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>python3与python2的区别与兼容 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#python3%E4%B8%8Epython2%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">python3与python2区别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#print%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">print函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E9%99%A4"><span class="nav-number">1.2.</span> <span class="nav-text">整除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unicode"><span class="nav-number">1.3.</span> <span class="nav-text">Unicode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xrange%E6%A8%A1%E5%9D%97"><span class="nav-number">1.4.</span> <span class="nav-text">xrange模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E7%AD%89%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">1.5.</span> <span class="nav-text">不等运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.6.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8"><span class="nav-number">1.7.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E7%94%A8%E6%88%B7%E7%9A%84%E8%BE%93%E5%85%A5"><span class="nav-number">1.8.</span> <span class="nav-text">解析用户的输入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E5%8F%AF%E8%BF%AD%E4%BB%A3%E5%AF%B9%E8%B1%A1%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF%E5%88%97%E8%A1%A8"><span class="nav-number">1.9.</span> <span class="nav-text">返回可迭代对象，而不是列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#For%E5%BE%AA%E7%8E%AF%E5%8F%98%E9%87%8F%E5%92%8C%E5%85%A8%E5%B1%80%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E6%B3%84%E6%BC%8F"><span class="nav-number">1.10.</span> <span class="nav-text">For循环变量和全局命名空间泄漏</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%BC%E5%AE%B9python3%E4%B8%8Epython2"><span class="nav-number">2.</span> <span class="nav-text">兼容python3与python2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/05/26/python3%E4%B8%8Epython2%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E5%85%BC%E5%AE%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="python3与python2的区别与兼容 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python3与python2的区别与兼容
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-05-26 18:58:07" itemprop="dateCreated datePublished" datetime="2018-05-26T18:58:07+08:00">2018-05-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2018-10-09 20:57:11" itemprop="dateModified" datetime="2018-10-09T20:57:11+08:00">2018-10-09</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Python是一种广泛使用的高级编程语言，属于通用型编程语言，由吉多·范罗苏姆创造，第一版发布于1991年。可以视之为一种改良（加入一些其他编程语言的优点，如面向对象）的LISP。作为一种解释型语言，Python的设计哲学强调代码的可读性和简洁的语法（尤其是使用空格缩进划分代码块，而非使用大括号或者关键词）。相比于C++或Java，Python让开发者能够用更少的代码表达想法。不管是小型还是大型程序，该语言都试图让程序的结构清晰明了。</p>
+<p>与Scheme、Ruby、Perl、Tcl等动态类型编程语言一样，Python拥有动态类型系统和垃圾回收功能，能够自动管理内存使用，并且支持多种编程范式，包括面向对象、命令式、函数式和过程式编程。其本身拥有一个巨大而广泛的标准库。</p>
+<p>Python 解释器本身几乎可以在所有的操作系统中运行。Python的正式解释器CPython是用C语言编写的、是一个由社区驱动的自由软件，目前由Python软件基金会管理。</p>
+<h1 id="python3与python2区别"><a href="#python3与python2区别" class="headerlink" title="python3与python2区别"></a>python3与python2区别</h1><h2 id="print函数"><a href="#print函数" class="headerlink" title="print函数"></a>print函数</h2><p>Python 2 的 print 声明在Python 3中已经被 print() 函数取代</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">print &#x27;Hello, World!&#x27;</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">print(&#x27;Hello, World!&#x27;)</span><br></pre></td></tr></table></figure>
+<h2 id="整除"><a href="#整除" class="headerlink" title="整除"></a>整除</h2><p>&#x2F;是精确除法，&#x2F;&#x2F;是向下取整除法，%是求模。</p>
+<p>&#x2F;&#x2F;和%运算符在2和3版本中一样，但是运算符&#x2F;不一样。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">&gt;&gt;&gt; 3 / 2</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; 3 // 2</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; 3 / 2.0</span><br><span class="line">1.5</span><br><span class="line">&gt;&gt;&gt; 3 // 2.0</span><br><span class="line">1.0</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; 3 / 2</span><br><span class="line">1.5</span><br><span class="line">&gt;&gt;&gt; 3 // 2</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; 3 / 2.0</span><br><span class="line">1.5</span><br><span class="line">&gt;&gt;&gt; 3 // 2.0</span><br><span class="line">1.0</span><br></pre></td></tr></table></figure>
+
+<h2 id="Unicode"><a href="#Unicode" class="headerlink" title="Unicode"></a>Unicode</h2><p>由于历史遗留问题，Python 2.x版本虽然支持Unicode，但在语法上需要’xxx’和u’xxx’两种字符串表示方式。</p>
+<p>在Python 3.x版本中，把’xxx’和u’xxx’统一成Unicode编码，即写不写前缀u都是一样的，而以字节形式表示的字符串则必须加上b前缀：b’xxx’。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; 中国 = &#x27;china&#x27; </span><br><span class="line">&gt;&gt;&gt; print(中国)</span><br><span class="line">china</span><br></pre></td></tr></table></figure>
+
+<h2 id="xrange模块"><a href="#xrange模块" class="headerlink" title="xrange模块"></a>xrange模块</h2><p>在 Python 2 中 xrange() 创建迭代对象的用法是非常流行的。比如： for 循环或者是列表&#x2F;集合&#x2F;字典推导式。</p>
+<p>在 Python 3 中，range() 是像 xrange() 那样实现以至于一个专门的 xrange() 函数都不再存在（在 Python 3 中 xrange() 会抛出命名异常）。</p>
+<h2 id="不等运算符"><a href="#不等运算符" class="headerlink" title="不等运算符"></a>不等运算符</h2><p>Python 2.x中不等于有两种写法 !&#x3D; 和 &lt;&gt;</p>
+<p>Python 3.x中去掉了&lt;&gt;, 只有!&#x3D;一种写法</p>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ul>
+<li>Py3.X去除了long类型，现在只有一种整型——int，但它的行为就像2.X版本的long</li>
+<li>新增了bytes类型，对应于2.X版本的八位串</li>
+<li>dict的.keys()、.items 和.values()方法返回迭代器，而之前的iterkeys()等函数都被废弃。同时去掉的还有 dict.has_key()，用 in替代它吧 。</li>
+</ul>
+<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><ul>
+<li>在 Python 3 中处理异常也轻微的改变了，在 Python 3 中我们现在使用 as 作为关键词。</li>
+<li>捕获异常的语法由 except exc, var 改为 except exc as var。<br>使用语法except (exc1, exc2) as var可以同时捕获多种类别的异常。 Python 2.6已经支持这两种语法。</li>
+</ul>
+<h2 id="解析用户的输入"><a href="#解析用户的输入" class="headerlink" title="解析用户的输入"></a>解析用户的输入</h2><ul>
+<li><p>在python2.x中raw_input()和input()，两个函数都存在，其中区别为</p>
+<p>  raw_input()—将所有输入作为字符串看待，返回字符串类型</p>
+<p>  input()—–只能接收“数字”的输入，在对待纯数字输入时具有自己的特性，它返回所输入的数字的类型（int, float）</p>
+</li>
+<li><p>在python3.x中raw_input()和input()进行了整合，去除了raw_input()，仅保留了input()函数，其接收任意任性输入，将所有输入默认为字符串处理，并返回字符串类型。</p>
+</li>
+</ul>
+<h2 id="返回可迭代对象，而不是列表"><a href="#返回可迭代对象，而不是列表" class="headerlink" title="返回可迭代对象，而不是列表"></a>返回可迭代对象，而不是列表</h2><p>如果在 xrange 章节看到的，现在在 Python 3 中一些方法和函数返回迭代对象 — 代替 Python 2 中的列表。</p>
+<p>因为我们通常那些遍历只有一次，我认为这个改变对节约内存很有意义。尽管如此，它也是可能的，相对于生成器 —- 如需要遍历多次。它是不那么高效的。</p>
+<p>而对于那些情况下，我们真正需要的是列表对象，我们可以通过 list() 函数简单的把迭代对象转换成一个列表。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">&gt;&gt;&gt; print range(3) </span><br><span class="line">[0, 1, 2]</span><br><span class="line">&gt;&gt;&gt; print type(range(3))</span><br><span class="line">&lt;type &#x27;list&#x27;&gt;</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; print(range(3))</span><br><span class="line">range(0, 3)</span><br><span class="line">&gt;&gt;&gt; print(type(range(3)))</span><br><span class="line">&lt;class &#x27;range&#x27;&gt;</span><br><span class="line">&gt;&gt;&gt; print(list(range(3)))</span><br><span class="line">[0, 1, 2]</span><br></pre></td></tr></table></figure>
+<h2 id="For循环变量和全局命名空间泄漏"><a href="#For循环变量和全局命名空间泄漏" class="headerlink" title="For循环变量和全局命名空间泄漏"></a>For循环变量和全局命名空间泄漏</h2><p>在 Python 3.x 中 for 循环变量不会再导致命名空间泄漏。</p>
+<p>在 Python 3.x 中做了一个改变，在 What’s New In Python 3.0 中有如下描述：<br>“列表推导不再支持 [… for var in item1, item2, …] 这样的语法。使用 [… for var in (item1, item2, …)] 代替。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python2</span><br><span class="line">&gt;&gt;&gt; i = 1</span><br><span class="line">&gt;&gt;&gt; print &#x27;before: i =&#x27;, i</span><br><span class="line">before: i = 1</span><br><span class="line">&gt;&gt;&gt; print &#x27;comprehension: &#x27;, [i for i in range(5)]</span><br><span class="line">comprehension:  [0, 1, 2, 3, 4]</span><br><span class="line">&gt;&gt;&gt; print &#x27;after: i =&#x27;, i</span><br><span class="line">after: i = 4</span><br><span class="line"></span><br><span class="line">#!/usr/bin/python3</span><br><span class="line">&gt;&gt;&gt; i = 1</span><br><span class="line">&gt;&gt;&gt; print(&#x27;before: i =&#x27;, i)</span><br><span class="line">before: i = 1</span><br><span class="line">&gt;&gt;&gt; print(&#x27;comprehension:&#x27;, [i for i in range(5)])</span><br><span class="line">comprehension: [0, 1, 2, 3, 4]</span><br><span class="line">&gt;&gt;&gt; print(&#x27;after: i =&#x27;, i)</span><br><span class="line">after: i = 1</span><br></pre></td></tr></table></figure>
+
+<h1 id="兼容python3与python2"><a href="#兼容python3与python2" class="headerlink" title="兼容python3与python2"></a>兼容python3与python2</h1><p>当前python3的普及还不尽人意，因此编写的python程序能同时兼容python2与python3是十分必要的。下面介绍同时支持python2与python3的方法。</p>
+<ul>
+<li>放弃python 2.6之前的python版本</li>
+<li>使用 2to3 工具对代码检查</li>
+<li>使用python -3执行python程序</li>
+<li>from <strong>future</strong> import<br>  “from <strong>future</strong> import”后即可使使用python的未来特性了。python的完整future特性可见 <strong>future</strong> 。python3中所有字符都变成了unicode。在python2中unicode字符在定义时需要在字符前面加 u，但在3中则不需要家u，而且在加u后程序会无法编译通过。为了解决该问题可以 “from future import unicode_literals” ，这样python2中字符的行为将和python3中保持一致，python2中定义普通字符将自动识别为unicode。</li>
+<li>import问题<br>  python3中“少”了很多python2的包，在大多情况下这些包之是改了个名字而已。我们可以在import的时候对这些问题进行处理。  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">try:#python2</span><br><span class="line">    from UserDict import UserDict</span><br><span class="line">    #建议按照python3的名字进行import</span><br><span class="line">    from UserDict import DictMixin as MutableMapping</span><br><span class="line">except ImportError:#python3</span><br><span class="line">    from collections import UserDict</span><br><span class="line">    from collections import MutableMapping</span><br></pre></td></tr></table></figure></li>
+<li>使用python3的方式写程序</li>
+<li>检查当前运行的python版本  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">if sys.version &gt; &#x27;3&#x27;:</span><br><span class="line">    PY3 = True</span><br><span class="line">else:</span><br><span class="line">    PY3 = False</span><br></pre></td></tr></table></figure></li>
+<li>six<br>不推荐使用six。</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Python">https://zh.wikipedia.org/wiki/Python</a>, by wikipedia</li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/85583e032eb8">https://www.jianshu.com/p/85583e032eb8</a>, by EarthChen</li>
+<li><a target="_blank" rel="noopener" href="http://python.jobbole.com/83987/">http://python.jobbole.com/83987/</a>, by 天地一沙鸥</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/05/24/Git%E7%94%A8%E6%B3%95%E6%80%BB%E7%BB%93/" rel="prev" title="Git用法总结">
+                  <i class="fa fa-angle-left"></i> Git用法总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/05/26/matplotlib%E7%94%A8%E6%B3%95%E7%AC%94%E8%AE%B0/" rel="next" title="matplotlib用法笔记">
+                  matplotlib用法笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

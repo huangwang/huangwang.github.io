@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="最近研究了一下麒麟V10 Linux设置VNC连接的方法，记录一下。 VNC Server配置VNC Server应该能够以服务的形式开机自启动，对外以 80 端口提供VNC远程连接服务。 创建 VNC Systemd 服务创建VNC Systemd 服务，实现麒麟 V10 开机后 VNC 服务器自启动。 1234567891011121314151617181920212223cd &#x2F;lib&#x2F;s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="麒麟V10设置VNC连接的方法">
+<meta property="og:url" content="https://huangwang.github.io/2025/01/17/%E9%BA%92%E9%BA%9FV10%E8%AE%BE%E7%BD%AEVNC%E8%BF%9E%E6%8E%A5%E7%9A%84%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="最近研究了一下麒麟V10 Linux设置VNC连接的方法，记录一下。 VNC Server配置VNC Server应该能够以服务的形式开机自启动，对外以 80 端口提供VNC远程连接服务。 创建 VNC Systemd 服务创建VNC Systemd 服务，实现麒麟 V10 开机后 VNC 服务器自启动。 1234567891011121314151617181920212223cd &#x2F;lib&#x2F;s">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-01-17T10:13:28.000Z">
+<meta property="article:modified_time" content="2025-03-10T15:31:00.184Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2025/01/17/%E9%BA%92%E9%BA%9FV10%E8%AE%BE%E7%BD%AEVNC%E8%BF%9E%E6%8E%A5%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2025/01/17/%E9%BA%92%E9%BA%9FV10%E8%AE%BE%E7%BD%AEVNC%E8%BF%9E%E6%8E%A5%E7%9A%84%E6%96%B9%E6%B3%95/","path":"2025/01/17/麒麟V10设置VNC连接的方法/","title":"麒麟V10设置VNC连接的方法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>麒麟V10设置VNC连接的方法 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#VNC-Server%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">VNC Server配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-VNC-Systemd-%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.1.</span> <span class="nav-text">创建 VNC Systemd 服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-VNC-Systemd-%E6%9C%8D%E5%8A%A1%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8"><span class="nav-number">1.2.</span> <span class="nav-text">设置 VNC Systemd 服务开机自启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9-vncserver-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.</span> <span class="nav-text">修改 vncserver 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9-sysctl-conf-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.4.</span> <span class="nav-text">修改 sysctl.conf 配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-VNC-%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.</span> <span class="nav-text">启动 VNC 服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5-VNC-%E6%9C%8D%E5%8A%A1"><span class="nav-number">3.</span> <span class="nav-text">连接 VNC 服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#vnc-viewer-%E8%BF%9E%E6%8E%A5%E9%BB%91%E5%B1%8F%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">vnc viewer 连接黑屏问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E6%96%87%E8%BE%93%E5%85%A5%E6%B3%95%E9%97%AE%E9%A2%98"><span class="nav-number">3.2.</span> <span class="nav-text">中文输入法问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%AD%A3%E7%A1%AE%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E5%AF%86%E7%A0%81%E4%BB%8D%E6%97%A7%E8%B7%B3%E5%9B%9E%E7%99%BB%E5%BD%95%E7%95%8C%E9%9D%A2"><span class="nav-number">3.3.</span> <span class="nav-text">输入正确用户名和密码仍旧跳回登录界面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%BA%92%E9%BA%9F-V10-%E8%87%AA%E5%B8%A6%E7%9A%84-Remmina-%E6%97%A0%E6%B3%95%E8%BF%9E%E6%8E%A5-VNC-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">3.4.</span> <span class="nav-text">麒麟 V10 自带的 Remmina 无法连接 VNC 服务器的问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2025/01/17/%E9%BA%92%E9%BA%9FV10%E8%AE%BE%E7%BD%AEVNC%E8%BF%9E%E6%8E%A5%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="麒麟V10设置VNC连接的方法 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          麒麟V10设置VNC连接的方法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-01-17 18:13:28" itemprop="dateCreated datePublished" datetime="2025-01-17T18:13:28+08:00">2025-01-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-03-10 23:31:00" itemprop="dateModified" datetime="2025-03-10T23:31:00+08:00">2025-03-10</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近研究了一下麒麟V10 Linux设置VNC连接的方法，记录一下。</p>
+<h1 id="VNC-Server配置"><a href="#VNC-Server配置" class="headerlink" title="VNC Server配置"></a>VNC Server配置</h1><p>VNC Server应该能够以服务的形式开机自启动，对外以 80 端口提供VNC远程连接服务。</p>
+<h2 id="创建-VNC-Systemd-服务"><a href="#创建-VNC-Systemd-服务" class="headerlink" title="创建 VNC Systemd 服务"></a>创建 VNC Systemd 服务</h2><p>创建VNC Systemd 服务，实现麒麟 V10 开机后 VNC 服务器自启动。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">cd /lib/systemd/system/</span><br><span class="line">sudo vim vncserver@:1.service</span><br><span class="line"></span><br><span class="line"># 以下为vnc服务配置文件内容，编辑后保存</span><br><span class="line">[Unit]</span><br><span class="line">Description=Remote desktop service (VNC)</span><br><span class="line">After=syslog.target network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">WorkingDirectory=/home/jack</span><br><span class="line">User=jack</span><br><span class="line">Group=jack</span><br><span class="line">PIDFile=/home/jack/.vnc/%H%i.pid</span><br><span class="line"></span><br><span class="line">ExecStartPre=/bin/sh -c &#x27;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&#x27;</span><br><span class="line">ExecStart=/usr/bin/vncserver -autokill %i</span><br><span class="line">ExecStop=/usr/bin/vncserver -kill %i</span><br><span class="line">Restart=on-success</span><br><span class="line">RestartSec=15</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<h2 id="设置-VNC-Systemd-服务开机自启动"><a href="#设置-VNC-Systemd-服务开机自启动" class="headerlink" title="设置 VNC Systemd 服务开机自启动"></a>设置 VNC Systemd 服务开机自启动</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 重新加载配置文件</span><br><span class="line">systemctl daemon-reload</span><br><span class="line"># 设置 VNC 客户端连接密码</span><br><span class="line">vncpasswd</span><br><span class="line"># 启动 vnc 服务</span><br><span class="line">systemctl start vncserver@:1.service</span><br><span class="line"># 查看 vnc 服务状态</span><br><span class="line">systemctl status vncserver@:1.service</span><br><span class="line">journalctl -u vncserver@:1.service</span><br><span class="line">cat /var/log/syslog | grep vnc</span><br><span class="line"># 设置开机自启动</span><br><span class="line">systemctl enable vncserver@:1.service</span><br><span class="line"># 禁止开机自启动</span><br><span class="line">systemctl disable vncserver@:1.service</span><br></pre></td></tr></table></figure>
+
+<h2 id="修改-vncserver-配置"><a href="#修改-vncserver-配置" class="headerlink" title="修改 vncserver 配置"></a>修改 vncserver 配置</h2><p>修改 vncserver 配置，使 :1 对应 80 端口。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 查看 vncserver 的位置</span><br><span class="line">which vncserver</span><br><span class="line"></span><br><span class="line"># 查看 vncserver 软连接到哪个文件</span><br><span class="line">file /usr/bin/vncserver</span><br></pre></td></tr></table></figure>
+
+<p>最终找到麒麟 V10 使用的 vncserver 为 TigerVNC，使用 Vim 修改 TigerVNC配置文件，将 5900 替换为 79。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/bin/tigervncserver</span><br><span class="line"></span><br><span class="line"># 逐个替换并确认</span><br><span class="line">:%s/5900/79/gc</span><br></pre></td></tr></table></figure>
+
+<h2 id="修改-sysctl-conf-配置"><a href="#修改-sysctl-conf-配置" class="headerlink" title="修改 sysctl.conf 配置"></a>修改 sysctl.conf 配置</h2><p>Linux 对于非 root 用户禁止使用 1024 以下端口，但为了避免 VNC 服务被防火墙阻挡，应将 VNC 服务端口调整到 80 。修改 sysctl.conf 文件配置达到此目的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#临时生效</span><br><span class="line">sysctl net.ipv4.ip_unprivileged_port_start=0</span><br><span class="line"></span><br><span class="line">#永久生效</span><br><span class="line">echo &quot;net.ipv4.ip_unprivileged_port_start=0&quot; &gt;&gt; /etc/sysctl.conf</span><br><span class="line">sysctl -p</span><br></pre></td></tr></table></figure>
+
+<h1 id="启动-VNC-服务"><a href="#启动-VNC-服务" class="headerlink" title="启动 VNC 服务"></a>启动 VNC 服务</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 设置 VNC 客户端连接密码</span><br><span class="line">vncpasswd</span><br><span class="line"></span><br><span class="line"># 启动 VNC 服务</span><br><span class="line">vncserver -kill :1</span><br><span class="line">vncserver :1</span><br><span class="line">vncserver -list</span><br></pre></td></tr></table></figure>
+
+<h1 id="连接-VNC-服务"><a href="#连接-VNC-服务" class="headerlink" title="连接 VNC 服务"></a>连接 VNC 服务</h1><p>使用各种 VNC 客户端，填入相关配置连接即可。连接 VNC 服务器遇到一些问题，记录如下。</p>
+<h2 id="vnc-viewer-连接黑屏问题"><a href="#vnc-viewer-连接黑屏问题" class="headerlink" title="vnc viewer 连接黑屏问题"></a>vnc viewer 连接黑屏问题</h2><p>基于 Systemd 设置 VNC 服务开机自启动成功，但是使用 RealVNC Viewer 客户端连接成功后显示黑屏，目前没有解决。<strong>但是使用 vncserver 直接创建 vnc 服务，然后使用 RealVNC Viewer 客户端连接成功后没有出现该问题。</strong></p>
+<h2 id="中文输入法问题"><a href="#中文输入法问题" class="headerlink" title="中文输入法问题"></a>中文输入法问题</h2><p>打开终端，输入如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fcitx-autostart</span><br><span class="line">fcitx restart</span><br></pre></td></tr></table></figure>
+
+<h2 id="输入正确用户名和密码仍旧跳回登录界面"><a href="#输入正确用户名和密码仍旧跳回登录界面" class="headerlink" title="输入正确用户名和密码仍旧跳回登录界面"></a>输入正确用户名和密码仍旧跳回登录界面</h2><p>原因是主目录下的 .Xauthority 文件拥有者变成了 root ，导致用户登录时无法获取该文件，解决方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown user:user .Xauthority</span><br></pre></td></tr></table></figure>
+
+<h2 id="麒麟-V10-自带的-Remmina-无法连接-VNC-服务器的问题"><a href="#麒麟-V10-自带的-Remmina-无法连接-VNC-服务器的问题" class="headerlink" title="麒麟 V10 自带的 Remmina 无法连接 VNC 服务器的问题"></a>麒麟 V10 自带的 Remmina 无法连接 VNC 服务器的问题</h2><p>麒麟 V10 自带的 Remmina 能够连接 VNC 服务器的默认的 5901 端口，但是无法连接 VNC 服务器的 80 端口。该问题暂未解决。</p>
+<p><strong>建议使用 RealVNC Viewer 客户端，麒麟 v10 自带的 Remmina 客户端连接 80 端口有问题，暂时无法解决。</strong></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/linux-check-port-usage.html">Linux 查看端口占用情况</a>,by runoob.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/lenglingx/6393402">普通用户无法监听 80，443等低于1024端口解决办法</a>,lenglingx.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/yanghonker/article/details/41928841">Ubuntu Kylin 输入正确的账号密码，登陆后又跳回到登录界面 解决方案</a>,by YoungHonker.</li>
+<li><a target="_blank" rel="noopener" href="https://ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html">Systemd 入门教程：命令篇</a>,by 阮一峰.</li>
+<li><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2018/03/systemd-timer.html">Systemd 定时器教程</a>,by 阮一峰.</li>
+<li><a target="_blank" rel="noopener" href="https://ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html">Systemd 入门教程：实战篇</a>,by 阮一峰.</li>
+<li><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2016/03/node-systemd-tutorial.html">Node 应用的 Systemd 启动</a>,by 阮一峰.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43246439/article/details/142390671">Kylin V10 环境下配置VNC远程桌面访问</a>,by 丷月亮是指路牌.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/01/14/SQL%E5%88%A4%E6%96%AD%E5%AD%97%E6%AE%B5%E5%80%BC%E6%98%AF%E5%90%A6%E8%BF%9E%E7%BB%AD%E4%B8%8E%E6%98%AF%E5%90%A6%E4%BB%8E1%E5%BC%80%E5%A7%8B/" rel="prev" title="SQL判断字段值是否连续与是否从1开始">
+                  <i class="fa fa-angle-left"></i> SQL判断字段值是否连续与是否从1开始
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/02/04/QT-GUI%E6%8F%92%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%9E%84%E5%BB%BA%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/" rel="next" title="QT_GUI插件系统构建方法研究">
+                  QT_GUI插件系统构建方法研究 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

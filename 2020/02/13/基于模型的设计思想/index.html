@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="基于模型的设计（Model-Based Design，简称MBD）是一种数学及可视化的方法，可以用来处理复杂控制系统、信号处理及通讯系统的设计。基于模型的设计可以用在运动控制、工业设计、航天以及车辆应用中。基于模型的设计也是嵌入式系统设计的方法论。 基于模型的设计类似于基于组件的图形用户界面开发，可极大地提高开发的效率，并保证程序的健壮性。 简介基于模型的设计是一种较有效率的设计方式，在支援开发过">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于模型的设计思想">
+<meta property="og:url" content="https://huangwang.github.io/2020/02/13/%E5%9F%BA%E4%BA%8E%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="基于模型的设计（Model-Based Design，简称MBD）是一种数学及可视化的方法，可以用来处理复杂控制系统、信号处理及通讯系统的设计。基于模型的设计可以用在运动控制、工业设计、航天以及车辆应用中。基于模型的设计也是嵌入式系统设计的方法论。 基于模型的设计类似于基于组件的图形用户界面开发，可极大地提高开发的效率，并保证程序的健壮性。 简介基于模型的设计是一种较有效率的设计方式，在支援开发过">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-02-13T03:04:28.000Z">
+<meta property="article:modified_time" content="2020-02-15T10:27:32.515Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="软件工程">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2020/02/13/%E5%9F%BA%E4%BA%8E%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2020/02/13/%E5%9F%BA%E4%BA%8E%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/","path":"2020/02/13/基于模型的设计思想/","title":"基于模型的设计思想"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>基于模型的设计思想 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%A8%A1%E5%9E%8B%E8%AE%BE%E8%AE%A1%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">基于模型设计的步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%98%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7"><span class="nav-number">4.</span> <span class="nav-text">工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/02/13/%E5%9F%BA%E4%BA%8E%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="基于模型的设计思想 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基于模型的设计思想
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-02-13 11:04:28" itemprop="dateCreated datePublished" datetime="2020-02-13T11:04:28+08:00">2020-02-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2020-02-15 18:27:32" itemprop="dateModified" datetime="2020-02-15T18:27:32+08:00">2020-02-15</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>基于模型的设计（Model-Based Design，简称MBD）是一种数学及可视化的方法，可以用来处理复杂控制系统、信号处理及通讯系统的设计。基于模型的设计可以用在运动控制、工业设计、航天以及车辆应用中。基于模型的设计也是嵌入式系统设计的方法论。</p>
+<p>基于模型的设计类似于基于组件的图形用户界面开发，可极大地提高开发的效率，并保证程序的健壮性。</p>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>基于模型的设计是一种较有效率的设计方式，在支援开发过程（V模型）的同时，在设计过程中建立了沟通用的共同框架。若用这种方式设计控制系统，开发会分为以下四步骤：</p>
+<ul>
+<li>为受控体建模。</li>
+<li>配合受控体，分析及合成适合的控制器。</li>
+<li>针对控制器及受控体进行仿真。</li>
+<li>整合上述的步骤来布署控制器。</li>
+</ul>
+<p>基于模型的设计和传统的设计方法论有很大的不同。设计者在使用基于模型的设计时，不需使用复杂的架构以及繁多的软件代码，只需利用基于模型的设计来定义系统模型，再配合连续及离散的架构方块来产生进阶的机能特性。使用仿真工具建立的模型可以进行快速应用程序开发、软件测试和验证。不但强化了测试以及验证的程序。有些情形下，可以将这个新的设计方法配合硬件在环的仿真，测试系统的动态效应，不但速度更快，也比传统的设计方法论更加有效率。</p>
+<h1 id="基于模型设计的步骤"><a href="#基于模型设计的步骤" class="headerlink" title="基于模型设计的步骤"></a>基于模型设计的步骤</h1><p>基于模型设计的主要步骤如下：</p>
+<ol>
+<li>受控体建模：受控体建模可以以资料驱动（data-driven）为基础，也可以依照首要原则（first principle）建模。资料驱动的建模会配合系统识别或是类似的技术。系统识别会先取得系统在真实世界中的输入输出资料，并进行处理，再配合数学算法来识别系统的模型。在系统识别后，就可以针对受控体设计适合的控制器。首要原则驱动的建模是先找到受控体的统御方程式，再创建方块图模型来实现上述的统御方程式。实体建模（physical modeling）就是一种首要原则驱动的驱动建模方式，模型中会包括许多互相连结的方块，对应实际受控体中的各个元件。</li>
+<li>控制器分析及合成：会使用步骤1得到的数学模型来确认模型的动态特性，再依这些特性设计符合特性的控制器。</li>
+<li>离线的仿真及实时仿真：会分析动态系统在复杂时变输入下的反应特性。这可以将受授体的简易线性非时变模型和控制器一起进行仿真，也可以用受授体的非线性模型和控制器进行仿真。仿真有助于找到规格、需求以及建模时的错误，而不是在之后实际设计控制器时才发现。实时仿真可以用步骤2的控制器进行代码自动生成（automatically generating code）来达到。代码可以布署在特殊的实时原型电脑中，这个电脑可以执行程式并且控制受控体的运作。假如无法取得受控体的原型，或是配合原型的测试有危险性或是太过昂贵，可以配合受控体模型进行自动代码生成。之后可以将代码布署到另一台电脑上，这台电脑和执行控制体的电脑相连。因此可以实时的测试控制器，不过控制的不是实际的受控体，而是实时仿真的受控体模型。</li>
+<li>布署控制器：理想上让步骤2的控制器进行代码自动生成，即可布署控制器。不过一开始时，控制器在实际系统上的性能会和仿真时的性能不同，此时可以用迭代除错方式，分析实际系统上的结果，依分析结果更新控制器模型。配合基于模型设计的工具，可以在统一化可视环境下，进行上述的迭代除错。</li>
+</ol>
+<h1 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h1><p>基于模型的设计相较于传统开发方式的优点有：</p>
+<ul>
+<li>基于模型的设计提供一个共同的开发环境，有助于不同的开发团队之间的一般性沟通、资料分析以及系统验证。</li>
+<li>工程师可以在系统设计早期定位出错误并且修正错误，此时系统修改造成的时间冲击及财务影响都是最小的。</li>
+<li>设计可以复用，有助于提升机能及衍生系统的扩充能力。</li>
+</ul>
+<h1 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h1><p>支持MBD开发的工具主要有：</p>
+<ul>
+<li>Matlab&#x2F;Simulink</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9F%BA%E6%96%BC%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%A8%AD%E8%A8%88">基于模型的设计</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/28834754">Simulink代码生成C&#x2F;C++</a>,by 小二黑.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/23149544">基于模型设计——电力电子的利器</a>,by 陈老四.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/" rel="tag"># 软件工程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/02/10/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%E6%96%B9%E6%B3%95%E7%AC%94%E8%AE%B0/" rel="prev" title="策略梯度方法笔记">
+                  <i class="fa fa-angle-left"></i> 策略梯度方法笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/02/19/Matlab%E6%A0%91%E8%8E%93%E6%B4%BE%E7%A1%AC%E4%BB%B6%E6%94%AF%E6%8C%81%E5%B9%B3%E5%8F%B0%E7%9A%84%E6%90%AD%E5%BB%BA/" rel="next" title="Matlab树莓派硬件支持平台的搭建">
+                  Matlab树莓派硬件支持平台的搭建 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

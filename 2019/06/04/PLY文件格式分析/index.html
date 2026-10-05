@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="PLY文件是一种存储3D模型的文件格式，全名为多边形档案（Polygon File Format）或 史丹佛三角形档案（Stanford Triangle Format）。 该格式主要用以储存立体扫描结果的三维数值，透过多边形片面的集合描述三维物体，与其他格式相较之下这是较为简单的方法。它可以储存的资讯包含颜色、透明度、表面法向量、材质座标与资料可信度，并能对多边形的正反两面设定不同的属性。 在档">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PLY文件格式分析">
+<meta property="og:url" content="https://huangwang.github.io/2019/06/04/PLY%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="PLY文件是一种存储3D模型的文件格式，全名为多边形档案（Polygon File Format）或 史丹佛三角形档案（Stanford Triangle Format）。 该格式主要用以储存立体扫描结果的三维数值，透过多边形片面的集合描述三维物体，与其他格式相较之下这是较为简单的方法。它可以储存的资讯包含颜色、透明度、表面法向量、材质座标与资料可信度，并能对多边形的正反两面设定不同的属性。 在档">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-06-04T11:20:26.000Z">
+<meta property="article:modified_time" content="2019-06-04T11:42:40.649Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="3D">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="计算机图形学">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2019/06/04/PLY%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2019/06/04/PLY%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/","path":"2019/06/04/PLY文件格式分析/","title":"PLY文件格式分析"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>PLY文件格式分析 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">文件格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/06/04/PLY%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="PLY文件格式分析 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PLY文件格式分析
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2019-06-04 19:20:26 / 修改时间：19:42:40" itemprop="dateCreated datePublished" datetime="2019-06-04T19:20:26+08:00">2019-06-04</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>PLY文件是一种存储3D模型的文件格式，全名为多边形档案（Polygon File Format）或 史丹佛三角形档案（Stanford Triangle Format）。</p>
+<p>该格式主要用以储存立体扫描结果的三维数值，透过多边形片面的集合描述三维物体，与其他格式相较之下这是较为简单的方法。它可以储存的资讯包含颜色、透明度、表面法向量、材质座标与资料可信度，并能对多边形的正反两面设定不同的属性。</p>
+<p>在档案内容的储存上PLY有两种版本，分别是纯文字（ASCII）版本与二元码（binary）版本，其差异在储存时是否以ASCII编码表示元素资讯。</p>
+<p>通过分析PLY文件格式，我们可以进而初窥存储3D模型的文件奥秘。</p>
+<h1 id="文件格式"><a href="#文件格式" class="headerlink" title="文件格式"></a>文件格式</h1><p>各种文件格式通常分成文件头和文件内容，PLY格式也不例外。</p>
+<p>每个PLY档都包含档头（header），用以设定网格模型的“元素”与“属性”，以及在档头下方接着一连串的元素“数值资料”。一般而言，网格模型的“元素”就是顶点（vertices）、面（faces），另外还可能包含有边（edges）、深度图样本（samples of range maps）与三角带（triangle strips）等元素。无论是纯文字与二元码的PLY档，档头资讯都是以ASCII编码编写，接续其后的数值资料才有编码之分。</p>
+<p>PLY档案以此行作为开头，以识别PLY格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ply</span><br></pre></td></tr></table></figure>
+
+<p>接着第二行是版本资讯，目前有三种写法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">format ascii 1.0</span><br><span class="line">format binary_little_endian 1.0</span><br><span class="line">format binary_big_endian 1.0</span><br></pre></td></tr></table></figure>
+
+<p>其中ascii, binary_little_endian, binary_big_endian是档案储存的编码方式，而1.0是遵循的标准版本（现阶段仅有PLY 1.0版）。在档头中可使用’comment’作为一行的开头以编写注解，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">comment This is a comment!</span><br></pre></td></tr></table></figure>
+
+<p>描述元素及属性，必须使用’element’及’property’的关键字，一般的格式为element下方接着属性列表，例如:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">element &lt;element name&gt; &lt;number in file&gt;</span><br><span class="line">property &lt;data_type&gt; &lt;property name 1&gt;</span><br><span class="line">property &lt;data_type&gt; &lt;property name 2&gt;</span><br><span class="line">property &lt;data_type&gt; &lt;property name 3&gt;</span><br></pre></td></tr></table></figure>
+
+<p>‘property’不仅定义了资料的型态，其出现顺序亦定义了资料的顺序。内定的资料形态有两种写法：一种是char uchar short ushort int uint float double,另外一种是具有位元长度的int8 uint8 int16 uint16 int32 uint32 float32 float64。 例如，描述一个包含12个顶点的物体，每个顶点使用3个单精度浮点数 (x,y,z）代表点的座标，使用3个unsigned char代表顶点颜色，颜色顺序为 (B, G, R),则档头的写法为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">element vertex 12</span><br><span class="line">property float x</span><br><span class="line">property float y</span><br><span class="line">property float z</span><br><span class="line">property uchar blue</span><br><span class="line">property uchar green</span><br><span class="line">property uchar red</span><br></pre></td></tr></table></figure>
+
+<p>其中vertex是内定的元素类型，接续的6行property描述构成vertex元素的数值字段顺序代表的意义，及其资料形态。</p>
+<p>另一个常使用的元素是面。由于一个面是由3个以上的顶点所组成，因此使用一个“顶点列表”即可描述一个面, PLY格式使用一个特殊关键字’property list’定义之。 例如，一个具有10个面的物体，其PLY档头可能包含：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">element face 10</span><br><span class="line">property list uchar int vertex_indices</span><br></pre></td></tr></table></figure>
+
+<p>‘property list’表示该元素face的特性是由一行的顶点列表来描述。列表开头以uchar型态的数值表示列表的项目数，后面接着资料型态为int的顶点索引值（vertex_indices），顶点索引值从0开始。</p>
+<p>最后，标头必须以此行结尾：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">end_header</span><br></pre></td></tr></table></figure>
+
+<p>档头后接着的是元素资料（端点座标、拓朴连结等）。在ASCII格式中各个端点与面的资讯都是以独立的一行描述，而二元编码格式则连续储存这些资料，载入时须以’element’定义的元素数目以及’property’中设定的资料形态计算各笔字段的长度。</p>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>一个典型的PLY文件结构分成三部分：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">文件头 (从ply开始到end_header）</span><br><span class="line">顶点元素列表</span><br><span class="line">面元素列表</span><br></pre></td></tr></table></figure>
+
+<p>其中的顶点元素列表一般以x y z方式排列，形态如文件头所定义；而面元素列表是以下列格式表示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;组成面的端点數N&gt; &lt;端点#1的索引&gt; &lt;端点#2的索引&gt; ... &lt;端点#N的索引&gt;</span><br></pre></td></tr></table></figure>
+
+<p>以存储一个立方体模型的PLY文件为例，其内容为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">ply</span><br><span class="line">format ascii 1.0</span><br><span class="line">comment made by anonymous</span><br><span class="line">comment this file is a cube</span><br><span class="line">element vertex 8</span><br><span class="line">property float32 x</span><br><span class="line">property float32 y</span><br><span class="line">property float32 z</span><br><span class="line">element face 12</span><br><span class="line">property list uint8 int32 vertex_index</span><br><span class="line">end_header</span><br><span class="line">0 0 0</span><br><span class="line">0 25.8 0</span><br><span class="line">18.9 0 0</span><br><span class="line">18.9 25.8 0</span><br><span class="line">0 0 7.5</span><br><span class="line">0 25.8 7.5</span><br><span class="line">18.9 0 7.5</span><br><span class="line">18.9 25.8 7.5</span><br><span class="line">3 5 1 0</span><br><span class="line">3 5 4 0</span><br><span class="line">3 4 0 2</span><br><span class="line">3 4 6 2</span><br><span class="line">3 7 5 4</span><br><span class="line">3 7 6 4</span><br><span class="line">3 3 2 1</span><br><span class="line">3 1 2 0</span><br><span class="line">3 5 7 1</span><br><span class="line">3 7 1 3</span><br><span class="line">3 7 6 3</span><br><span class="line">3 6 3 2</span><br></pre></td></tr></table></figure>
+
+<p>PLY文件可用blender软件打开。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/PLY">PLY</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/sinat_20530977/article/details/44805107">Opengl学习笔记：（一）.Ply文件文件格式和文件读取</a>,by  为何走到这里.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/3D/" rel="tag"># 3D</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/" rel="tag"># 计算机图形学</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/06/02/%E5%9B%BE%E5%83%8F%E7%89%B9%E5%BE%81%E6%A3%80%E6%B5%8B%E4%B8%8E%E6%8F%8F%E8%BF%B0/" rel="prev" title="图像特征检测与描述">
+                  <i class="fa fa-angle-left"></i> 图像特征检测与描述
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/06/04/%E6%B1%82%E8%A7%A3%E5%B0%84%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E4%BA%A4%E7%82%B9%E7%9A%84%E7%AE%97%E6%B3%95/" rel="next" title="求解射线与三角形交点的算法">
+                  求解射线与三角形交点的算法 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

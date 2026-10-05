@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="ACE自适配通信环境（ADAPTIVE Communication Environment）是可以自由使用、开放源码的面向对象（OO）框架（Framework），在其中实现了许多用于并发通信软件的核心模式。 ACE提供了一组丰富的可复用C++ Wrapper Facade（包装外观）和框架组件，可跨越多种平台完成通用的通信软件任务，其中包括：事件多路分离和事件处理器分派、信号处理、服务初始化、进程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ACE网络库学习笔记">
+<meta property="og:url" content="https://huangwang.github.io/2024/03/20/ACE%E7%BD%91%E7%BB%9C%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="ACE自适配通信环境（ADAPTIVE Communication Environment）是可以自由使用、开放源码的面向对象（OO）框架（Framework），在其中实现了许多用于并发通信软件的核心模式。 ACE提供了一组丰富的可复用C++ Wrapper Facade（包装外观）和框架组件，可跨越多种平台完成通用的通信软件任务，其中包括：事件多路分离和事件处理器分派、信号处理、服务初始化、进程">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-20T12:10:29.000Z">
+<meta property="article:modified_time" content="2025-12-15T15:23:50.125Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2024/03/20/ACE%E7%BD%91%E7%BB%9C%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2024/03/20/ACE%E7%BD%91%E7%BB%9C%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/","path":"2024/03/20/ACE网络库学习笔记/","title":"ACE网络库学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ACE网络库学习笔记 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ACE-Message-Queue"><span class="nav-number">1.</span> <span class="nav-text">ACE_Message_Queue</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ACE-Message-Block"><span class="nav-number">2.</span> <span class="nav-text">ACE_Message_Block</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ACE-Thread-Manager"><span class="nav-number">3.</span> <span class="nav-text">ACE_Thread_Manager</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ACE%E6%97%A5%E5%BF%97%E8%AE%BE%E6%96%BD"><span class="nav-number">4.</span> <span class="nav-text">ACE日志设施</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ACE%E7%BB%84%E6%92%AD%E9%80%9A%E4%BF%A1"><span class="nav-number">5.</span> <span class="nav-text">ACE组播通信</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">问题参考</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ACE%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5%E9%97%AE%E9%A2%98"><span class="nav-number">6.1.</span> <span class="nav-text">ACE静态链接问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ACE-TCP-Server%E6%97%A0%E6%B3%95Open%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">6.2.</span> <span class="nav-text">ACE TCP Server无法Open的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ACE-%E5%A4%9A%E7%BD%91%E5%8F%A3%E5%A4%9A%E6%92%AD%E9%97%AE%E9%A2%98"><span class="nav-number">6.3.</span> <span class="nav-text">ACE 多网口多播问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2024/03/20/ACE%E7%BD%91%E7%BB%9C%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ACE网络库学习笔记 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ACE网络库学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-20 20:10:29" itemprop="dateCreated datePublished" datetime="2024-03-20T20:10:29+08:00">2024-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-12-15 23:23:50" itemprop="dateModified" datetime="2025-12-15T23:23:50+08:00">2025-12-15</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>ACE自适配通信环境（ADAPTIVE Communication Environment）是可以自由使用、开放源码的面向对象（OO）框架（Framework），在其中实现了许多用于并发通信软件的核心模式。</p>
+<p>ACE提供了一组丰富的可复用C++ Wrapper Facade（包装外观）和框架组件，可跨越多种平台完成通用的通信软件任务，其中包括：事件多路分离和事件处理器分派、信号处理、服务初始化、进程间通信、共享内存管理、消息路由、分布式服务动态（重）配置、并发执行和同步，等等。</p>
+<h1 id="ACE-Message-Queue"><a href="#ACE-Message-Queue" class="headerlink" title="ACE_Message_Queue"></a>ACE_Message_Queue</h1><p>ACE消息队列，请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/onlyxuyang/article/details/756346">使用Message_Queue的经典的“有界缓冲区”的ACE实现</a></li>
+</ul>
+<h1 id="ACE-Message-Block"><a href="#ACE-Message-Block" class="headerlink" title="ACE_Message_Block"></a>ACE_Message_Block</h1><p>ACE_Message_Block用于构建“固定”和“可变”长度的消息。ACE_Message_Block可以将多条消息连接在一起，形成一个链表，从而支持复合消息。请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/hgwang/p/5940168.html">ACE_Message_Block消息数据类</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/wallwind/article/details/7215230">ACE_Message_Block—–ACE消息的存储</a></li>
+</ul>
+<h1 id="ACE-Thread-Manager"><a href="#ACE-Thread-Manager" class="headerlink" title="ACE_Thread_Manager"></a>ACE_Thread_Manager</h1><p>ACE线程管理类，请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/calmreason/article/details/36399697">ACE_Thread_Manager（v3.12）</a></li>
+</ul>
+<h1 id="ACE日志设施"><a href="#ACE日志设施" class="headerlink" title="ACE日志设施"></a>ACE日志设施</h1><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/calmreason/article/details/21384545">使用ACE日志设施（二）详细介绍（v4）</a></li>
+</ul>
+<p>如果需要将日志写入文件，请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.reddit.com/r/cpp/comments/k3frzj/quick_intro_to_ace_adaptive_communications/?tl=zh-hans">ACE (自适应通信环境) 库的日志框架快速入门。</a></li>
+</ul>
+<h1 id="ACE组播通信"><a href="#ACE组播通信" class="headerlink" title="ACE组播通信"></a>ACE组播通信</h1><p>请参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://lyingbo.github.io/2013/04/14/ACE%E7%BB%84%E6%92%AD%E9%80%9A%E4%BF%A1/">ACE组播通信</a>,by NoName.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wangfengju/p/6172358.html">linux网络编程之一—–多播（组播）编程 </a>,by 胡永光.</li>
+</ul>
+<h1 id="问题参考"><a href="#问题参考" class="headerlink" title="问题参考"></a>问题参考</h1><h2 id="ACE静态链接问题"><a href="#ACE静态链接问题" class="headerlink" title="ACE静态链接问题"></a>ACE静态链接问题</h2><p>请参考</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://bbs.csdn.net/topics/90295263">ACE的”error LNK2019: unresolved external symbol”链接错误</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/wangyongjun_cn/article/details/5200048">ACE的开发和使用 - FAQ</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/30915000/how-to-solve-unresolved-external-symbol-error-if-nametoindex-in-visual-studio">How to solve unresolved external symbol error - if_nametoindex in visual studio 2013</a></li>
+</ul>
+<h2 id="ACE-TCP-Server无法Open的问题"><a href="#ACE-TCP-Server无法Open的问题" class="headerlink" title="ACE TCP Server无法Open的问题"></a>ACE TCP Server无法Open的问题</h2><p>最近突然发现ACE_SOCK_Acceptor.open方法报错，无法初始化，错误代码是10093，通过分析是WSAStartup()未初始化。最后在main函数文件中通过 #include &lt;ace&#x2F;OS_main.h&gt; 解决。解决原因是该文件中将调用 WSAStartup() 函数初始化。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ACE_INET_Addr commAddr(1500);</span><br><span class="line">if (m_acceptor-&gt;open(commAddr, 1) == -1) &#123;</span><br><span class="line">	ACE_DEBUG((LM_ERROR, &quot;errno=%d&quot;, ACE_OS::last_error()));</span><br><span class="line">	return -1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ACE-多网口多播问题"><a href="#ACE-多网口多播问题" class="headerlink" title="ACE 多网口多播问题"></a>ACE 多网口多播问题</h2><p>当多播时存在多个网口，应指定多播绑定的网口。参考如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;ace/SOCK_Dgram_Mcast.h&quot;</span><br><span class="line">#include &quot;ace/Log_Msg.h&quot;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">        ACE_SOCK_Dgram_Mcast mcast;</span><br><span class="line">        ACE_INET_Addr        srv_addr(&quot;224.0.0.9:520&quot;);</span><br><span class="line"></span><br><span class="line">        /*</span><br><span class="line">        if (mcast.open(srv_addr, &quot;eth0&quot;, 1) == -1)</span><br><span class="line">        &#123;</span><br><span class="line">                ACE_ERROR_RETURN((LM_ERROR, &quot;%p&quot;), -1);</span><br><span class="line">        &#125;*/</span><br><span class="line"></span><br><span class="line">        mcast.join(srv_addr,1,&quot;eth0&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/peirenlei/article/details/1760445">ACE 示例2 — Echo Server</a>,by peirenlei.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/ACE%E8%87%AA%E9%80%82%E9%85%8D%E9%80%9A%E4%BF%A1%E7%8E%AF%E5%A2%83">ACE自适配通信环境</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://maodanp.github.io/2016/05/19/server-concurrent/">服务器并发策略</a>,by maodanp.</li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@hnasr/threads-and-connections-in-backend-applications-a225eed3eddb">Threads and Connections in Backend Applications</a>,by Hussein Nasser.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/wojiuguowei/article/details/90402403">error LNK2019: 无法解析的外部符号 “int __cdecl ace_main_i(int,char * * const)” </a>,by 金士顿.</li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/winsock/windows-sockets-error-codes-2">Windows Sockets Error Codes</a>,by microsoft.</li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/win32/api/winsock/nf-winsock-wsastartup">WSAStartup 函数 (winsock.h)</a>,by microsoft.</li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/win32/api/winsock2/nf-winsock2-socket">socket 函数 (winsock2.h)</a>,by microsoft.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jacklikedogs/p/4276430.html">ACE_SOCK</a>,by 咚咚锵锵.</li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/16477148/c-winsock-10093-error">C++ Winsock 10093 error</a>,by stackoverflow.</li>
+<li><a target="_blank" rel="noopener" href="https://www.dre.vanderbilt.edu/Doxygen/5.7.7/html/ace/a00617.html">ACE_SOCK_Dgram_Mcast Class Reference</a>,by vanderbilt.</li>
+<li><a target="_blank" rel="noopener" href="https://www.reddit.com/r/cpp/comments/k3frzj/quick_intro_to_ace_adaptive_communications/?tl=zh-hans">ACE (自适应通信环境) 库的日志框架快速入门。</a>,by r&#x2F;cpp.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/C-C/" rel="tag"># C/C++</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/03/16/SpringBoot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="prev" title="SpringBoot学习笔记">
+                  <i class="fa fa-angle-left"></i> SpringBoot学习笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/03/25/Windows%E5%92%8CLinux%E6%9F%A5%E7%9C%8B%E7%BB%84%E6%92%AD%E9%80%9A%E4%BF%A1%E7%9A%84%E6%96%B9%E6%B3%95/" rel="next" title="Windows和Linux查看组播通信的方法">
+                  Windows和Linux查看组播通信的方法 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

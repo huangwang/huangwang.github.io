@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="要想学到QT的精髓，必须对QT的核心机制信号与槽、元对象系统、事件模型有充分的理解。 信号与槽信号和槽是一种高级接口，它们被应用于对象之间的通信，它们是Qt 的核心特性，也是Qt不同于其它同类工具包的重要地方之一。 信号（signal）当对象的状态发生改变时，信号被某一个对象发射（ emit）。只有定义过这个信号的类或者其派生类能够发射这个信号。当一个信号被发射时，与其相关联的槽将被执行，就象一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QT核心机制与原理">
+<meta property="og:url" content="https://huangwang.github.io/2021/02/06/QT%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="要想学到QT的精髓，必须对QT的核心机制信号与槽、元对象系统、事件模型有充分的理解。 信号与槽信号和槽是一种高级接口，它们被应用于对象之间的通信，它们是Qt 的核心特性，也是Qt不同于其它同类工具包的重要地方之一。 信号（signal）当对象的状态发生改变时，信号被某一个对象发射（ emit）。只有定义过这个信号的类或者其派生类能够发射这个信号。当一个信号被发射时，与其相关联的槽将被执行，就象一个">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-02-06T14:14:05.000Z">
+<meta property="article:modified_time" content="2023-08-17T14:15:19.466Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="QT">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2021/02/06/QT%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2021/02/06/QT%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/","path":"2021/02/06/QT核心机制与原理/","title":"QT核心机制与原理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>QT核心机制与原理 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E4%B8%8E%E6%A7%BD"><span class="nav-number">1.</span> <span class="nav-text">信号与槽</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%EF%BC%88signal%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">信号（signal）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A7%BD%EF%BC%88slot%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">槽（slot）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E4%B8%8E%E6%A7%BD%E7%9A%84%E5%85%B3%E8%81%94"><span class="nav-number">1.3.</span> <span class="nav-text">信号与槽的关联</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%83%E5%AF%B9%E8%B1%A1%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.</span> <span class="nav-text">元对象系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%83%E5%AF%B9%E8%B1%A1%E7%B3%BB%E7%BB%9F%E6%9C%BA%E5%88%B6"><span class="nav-number">2.1.</span> <span class="nav-text">元对象系统机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%83%E5%AF%B9%E8%B1%A1%E5%B7%A5%E5%85%B7%EF%BC%88moc%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">元对象工具（moc）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">事件模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E4%B8%8E%E4%BF%A1%E5%8F%B7%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.</span> <span class="nav-text">事件与信号的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/02/06/QT%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="QT核心机制与原理 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          QT核心机制与原理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-02-06 22:14:05" itemprop="dateCreated datePublished" datetime="2021-02-06T22:14:05+08:00">2021-02-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-08-17 22:15:19" itemprop="dateModified" datetime="2023-08-17T22:15:19+08:00">2023-08-17</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>要想学到QT的精髓，必须对QT的核心机制信号与槽、元对象系统、事件模型有充分的理解。</p>
+<h1 id="信号与槽"><a href="#信号与槽" class="headerlink" title="信号与槽"></a>信号与槽</h1><p>信号和槽是一种高级接口，它们被应用于对象之间的通信，它们是Qt 的核心特性，也是Qt不同于其它同类工具包的重要地方之一。</p>
+<h2 id="信号（signal）"><a href="#信号（signal）" class="headerlink" title="信号（signal）"></a>信号（signal）</h2><p>当对象的状态发生改变时，信号被某一个对象发射（ emit）。只有定义过这个信号的类或者其派生类能够发射这个信号。当一个信号被发射时，与其相关联的槽将被执行，就象一个正常的函数调用一样。信号-槽机制独立于任何GUI 事件循环。只有当所有的槽正确返回以后，发射函数（emit）才返回。</p>
+<h2 id="槽（slot）"><a href="#槽（slot）" class="headerlink" title="槽（slot）"></a>槽（slot）</h2><p>槽是普通的C++成员函数，可以被正常调用，不同之处是它们可以与信号（ signal）相关联。当与其关联的信号被发射时，这个槽就会被调用。槽可以有参数，但槽的参数不能有缺省值。</p>
+<h2 id="信号与槽的关联"><a href="#信号与槽的关联" class="headerlink" title="信号与槽的关联"></a>信号与槽的关联</h2><p>槽和普通的C++成员函数几乎是一样的－可以是虚函数；可以被重载；可以是共有的、 保护的或是私有的，并且也可以被其它C++成员函数直接调用；还有，它们的参数可以是任意类型。唯一不同的是：槽还可以和信号连接在一起，在这种情况下，每当发射这个信号的时候，就会自动调用这个槽。</p>
+<p>connect()语句看起来会是如下的样子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">connect(sender,SIGNAL(signal),receiver,SLOT(slot));</span><br></pre></td></tr></table></figure>
+<p>这里的sender 和receiver 是指向QObject 的指针，signal 和slot 是不带参数的函数名。实际上，SIGNAL()宏和SLOT()会把它们的参数转换成相应的字符串。</p>
+<p>从QObject 或其子类(例如Qwidget)派生的类都能够使用信号和槽机制。这种机制本身是在QObject 中实现的，并不只局限于图形用户界面编程中：当对象的状态得到改变时， 它可以某种方式将信号发射(emit)出去，但它并不了解是谁在接收这个信号。</p>
+<h1 id="元对象系统"><a href="#元对象系统" class="headerlink" title="元对象系统"></a>元对象系统</h1><p>Qt 的元对象系统是一个基于标准C＋＋的扩展，能够使C＋＋更好的适应真正的组件GUI 编程。它为Qt 提供了支持对象间通信的信号与槽机制、实时类型信息和动态属性系统等方面的功能。</p>
+<p>元对象系统在Qt 中主要有以下三部分构成：QObject 类、Q_OBJECT 宏和元对象编译器moc。</p>
+<h2 id="元对象系统机制"><a href="#元对象系统机制" class="headerlink" title="元对象系统机制"></a>元对象系统机制</h2><p>Qt 的主要成就之一是使用了一种机制对C++进行了扩展，并且使用这种机制创建了独立的软件组件。这些组件可以绑定在一起，但任何一个组件对于它所要连接的组件的情况事先都不了解。</p>
+<p>这种机制称为元对象系统（meta-object system），它提供了关键的两项技术：信号－槽以及内省（introspection）。内省功能对于实现信号和槽是必需的，并且允许应用程序的开发人员在运行时获得有关QObject 子类的“元信息”（meta-information），包括一个含有对象的类名以及它所支持的信号和槽的列表。这一机制也支持属性（广泛用于Qt 设计师中）和文本翻译（用于国际化），并且它也为QtScirpt 模块奠定了基础。</p>
+<p>标准C++没有对Qt 的元对象系统所需要的动态元信息提供支持。Qt 通过提供一个独立的moc 工具解决了这个问题，moc 解析Q_OBJECT 类的定义并且通过C++函数提供可供使用的信息。由于moc 使用纯C++来实现它的所有功能，所以Qt 的元对象系统可以在任意C++ 编译器上工作。</p>
+<h2 id="元对象工具（moc）"><a href="#元对象工具（moc）" class="headerlink" title="元对象工具（moc）"></a>元对象工具（moc）</h2><p>Qt 的信号和槽机制是采用标准C++ 来实现的。该实现使用C++ 预处理器和Qt 所包括的moc（元对象编译器）。元对象编译器读取应用程序的头文件，并生成必要的代码，以支持信号和槽机制。</p>
+<h1 id="事件模型"><a href="#事件模型" class="headerlink" title="事件模型"></a>事件模型</h1><p>应用程序对象将系统消息接收为Qt 事件。应用程序可以按照不同的粒度对事件加以监控、过滤并做出响应。</p>
+<p>在Qt 中，事件是指从QEvent 继承的对象。Qt 将事件发送给每个QObject 对象，这样对象便可对事件做出响应。也就是说， Qt 的事件处理机制主要是基于QEvent 类来实现的，QEvent 类是其他事件类的基类。当一个事件产生时， Qt 就会构造一个QEvent 子类的实例来表述该事件，然后将该事件发送到相应的对象上进行处理。</p>
+<p>Qt 的主事件循环能够从事件队列中获取本地窗口系统事件，然后判断事件类型，并将事件分发给特定的接收对象。主事件循环通过调用QCoreApplication::exec() 启动， 随着QCoreApplication::exit()结束，本地的事件循环可用利用QEventLoop 构建。作为事件分发器的QAbstractEventDispatcher 管理着Qt 的事件队列，事件分发器从窗口系统或其他事件源接收事件，然后将他们发送给QCoreApplication 或QApplication 的实例进行处理或继续分发。QAbstractEventDispatcher 为事件分发提供了良好的保护措施。</p>
+<h1 id="事件与信号的区别"><a href="#事件与信号的区别" class="headerlink" title="事件与信号的区别"></a>事件与信号的区别</h1><p>(1) 使用场合和时机不同一般情况下，在“使用”窗口部件时，我们经常需要使用信号，并且会遵循信号与槽的机制；而在“实现”窗口部件时，我们就不得不考虑如何处理事件了。举个例子，当使用QPushButton 时，我们对于它的clicked()信号往往更为关注，而很少关心促成发射该信号的底层的鼠标或者键盘事件。但是，如果要实现一个类似于QPushButton 的类，我们就需要编写一定的处理鼠标和键盘事件的代码，而且在必要的时候，仍然需要发射和接收clicked()信号。</p>
+<p>（2）使用的机制和原理不同</p>
+<p>事件类似于Windows 里的消息，它的发出者一般是窗口系统。相对信号和槽机制，它比较“底层”，它同时支持异步和同步的通信机制，一个事件产生时将被放到事件队列里，然后我们就可以继续执行该事件“后面”的代码。事件的机制是非阻塞的。</p>
+<p>信号和槽机制相对而言比较“高层”，它的发出者一般是对象。从本质上看，它类似于传统的回调机制，是不支持异步调用的。</p>
+<p>(3) 信号与槽在多线程时支持异步调用</p>
+<p>在单线程应用时，你可以把信号与槽看成是一种对象间的同步通信机制，这是因为在这种情况下，信号的释放过程是阻塞的，一定要等到槽函数返回后这个过程才结束，也就是不支持异步调用。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://wizardforcel.gitbooks.io/wudi-qt4/content/101.html">第13 章Qt 核心机制与原理</a>,by wizardforcel.</li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/27040542">如何才能学到Qt的精髓？</a>,by zhihu.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/lovekdy/article/details/101698482">Qt中资源文件的使用及意义</a>,by Stephan_zry.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/615022779">Qt：Qt资源系统</a>,by qt技术开发老杰.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/QT/" rel="tag"># QT</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/02/02/jsplumb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="prev" title="jsplumb学习笔记">
+                  <i class="fa fa-angle-left"></i> jsplumb学习笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/02/26/JavaScript%E4%BB%8E%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0%E7%9A%84%E6%96%B9%E6%B3%95/" rel="next" title="JavaScript从字符串中创建函数的方法">
+                  JavaScript从字符串中创建函数的方法 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

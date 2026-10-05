@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="最近在使用OSG 3.4的过程中，需要将一个GLB格式的3D模型文件，转换成IVE格式，以便osgDB::readNodeFile函数加载。具体方法是通过Blender建模软件进行3D文件格式转换。这个过程中遇到很多问题，记录一下。 常用的3D文件格式.objOBJ文件是Alias | Wavefront公司为它的一套基于工作站的3D建模和动画软件“AdvancedVisualizer”开发的一种">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSG中GLB转IVE之路">
+<meta property="og:url" content="https://huangwang.github.io/2022/01/20/OSG%E4%B8%ADGLB%E8%BD%ACIVE%E4%B9%8B%E8%B7%AF/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="最近在使用OSG 3.4的过程中，需要将一个GLB格式的3D模型文件，转换成IVE格式，以便osgDB::readNodeFile函数加载。具体方法是通过Blender建模软件进行3D文件格式转换。这个过程中遇到很多问题，记录一下。 常用的3D文件格式.objOBJ文件是Alias | Wavefront公司为它的一套基于工作站的3D建模和动画软件“AdvancedVisualizer”开发的一种">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-20T09:31:58.000Z">
+<meta property="article:modified_time" content="2023-04-10T14:46:14.502Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="3D">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="飞行仿真">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2022/01/20/OSG%E4%B8%ADGLB%E8%BD%ACIVE%E4%B9%8B%E8%B7%AF/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2022/01/20/OSG%E4%B8%ADGLB%E8%BD%ACIVE%E4%B9%8B%E8%B7%AF/","path":"2022/01/20/OSG中GLB转IVE之路/","title":"OSG中GLB转IVE之路"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>OSG中GLB转IVE之路 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%843D%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">常用的3D文件格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#obj"><span class="nav-number">1.1.</span> <span class="nav-text">.obj</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dae"><span class="nav-number">1.2.</span> <span class="nav-text">.dae</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fbx"><span class="nav-number">1.3.</span> <span class="nav-text">.fbx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gltf-%E5%92%8C-glb"><span class="nav-number">1.4.</span> <span class="nav-text">.gltf 和 .glb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSGB"><span class="nav-number">1.5.</span> <span class="nav-text">.OSGB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ive"><span class="nav-number">1.6.</span> <span class="nav-text">.ive</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OSG%E5%AE%9E%E7%94%A8%E5%B7%A5%E5%85%B7"><span class="nav-number">2.</span> <span class="nav-text">OSG实用工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#osgconv"><span class="nav-number">2.1.</span> <span class="nav-text">osgconv</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#osgviewer"><span class="nav-number">2.2.</span> <span class="nav-text">osgviewer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#osg%E6%8F%92%E4%BB%B6"><span class="nav-number">2.3.</span> <span class="nav-text">osg插件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">转换方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">转换需要注意的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2022/01/20/OSG%E4%B8%ADGLB%E8%BD%ACIVE%E4%B9%8B%E8%B7%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="OSG中GLB转IVE之路 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OSG中GLB转IVE之路
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-01-20 17:31:58" itemprop="dateCreated datePublished" datetime="2022-01-20T17:31:58+08:00">2022-01-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-04-10 22:46:14" itemprop="dateModified" datetime="2023-04-10T22:46:14+08:00">2023-04-10</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近在使用OSG 3.4的过程中，需要将一个GLB格式的3D模型文件，转换成IVE格式，以便osgDB::readNodeFile函数加载。具体方法是通过Blender建模软件进行3D文件格式转换。这个过程中遇到很多问题，记录一下。</p>
+<h1 id="常用的3D文件格式"><a href="#常用的3D文件格式" class="headerlink" title="常用的3D文件格式"></a>常用的3D文件格式</h1><h2 id="obj"><a href="#obj" class="headerlink" title=".obj"></a>.obj</h2><p>OBJ文件是Alias | Wavefront公司为它的一套基于工作站的3D建模和动画软件“AdvancedVisualizer”开发的一种标准3D模型文件格式。</p>
+<p>应用OBJ文件一般包括三个子文件，分别是.obj、.mtl、.jpg，除了模型文件，还需要.jpg纹理文件。OBJ可以是传统模型，也可以是倾斜模型。</p>
+<p>特点OBJ格式适合用于3D软件模型之间的互导。比如Smart3D里面生成的模型需要修饰，就可以输出OBJ格式，然后导入到3dsMax进行处理；如果你想把在3dsMax中建的模型调到Maya里面渲染或制作动画，导出OBJ文件就是一种很好的选择。</p>
+<p>目前几乎所有知名的3D软件都支持OBJ文件的读写，不过其中很多需要通过插件才能实现。另外，OBJ文件还是一种文本文件，可以直接用写字板打开进行查看和编辑修改。值得一提的是，老子云平台能够支持OBJ格式数据的上传和OBJ格式与其它格式间的互转。</p>
+<p>其特点如下：</p>
+<ul>
+<li><p>OBJ文件是一种3D模型文件。不包含动画、材质特性、贴图路径、动力学、粒子等信息。</p>
+</li>
+<li><p>OBJ文件主要支持多边形(Polygons)模型。虽然也支持曲线(Curves)、表面(Surfaces)、点组材质(Point Group Materials)，但Maya导出的OBJ文件并不包括这些信息。</p>
+</li>
+<li><p>OBJ文件支持法线和贴图坐标。OBJ只能保存贴图坐标信息，贴图需要手动重新指认，但不需要再调整贴图坐标。</p>
+</li>
+</ul>
+<h2 id="dae"><a href="#dae" class="headerlink" title=".dae"></a>.dae</h2><p>COLLADA ( COLLA borative Design A ctivity ) 是一种用于交互式3D应用程序的交换文件格式。它由非营利性技术联盟Khronos Group管理，并已被 ISO 采用为公开可用的规范 ISO&#x2F;PAS 17506。[1]</p>
+<p>COLLADA 定义了一个开放的标准 XML 模式，用于在各种图形软件应用程序之间交换数字资产，否则这些应用程序可能会将其资产存储在不兼容的文件格式中。描述数字资产的 COLLADA 文档是 XML 文件，通常以.dae（数字资产交换）文件扩展名标识。</p>
+<h2 id="fbx"><a href="#fbx" class="headerlink" title=".fbx"></a>.fbx</h2><p>FBX是FilmBoX软件中所使用的格式，后来这一软件改名为Motionbuilder。</p>
+<p>应用因为Motionbuilder扮演的是动作制作平台，所以FBX格式最大的用途是在3dsMax、Maya、softimage等软件间进行模型、材质、动作和摄影机信息的互导，这样就可以发挥max和maya等各个软件的优势。可以说，<strong>FBX方案是最好的互导方案。</strong></p>
+<p>其优点如下：</p>
+<ul>
+<li><p>FBX格式是一种3D通用模型文件。包含动画、材质特性、贴图、骨骼动画、灯光、摄像机等信息。</p>
+</li>
+<li><p>FBX格式支持多边形(Polygons)游戏模型、曲线(Curves)、表面(Surfaces)、点组材质（Point Group Materials）。</p>
+</li>
+<li><p>FBX格式支持法线和贴图坐标。贴图以及坐标信息都可以存入FBX文件中，文件导入后不需要手动指认贴图以及调整贴图坐标。</p>
+</li>
+</ul>
+<h2 id="gltf-和-glb"><a href="#gltf-和-glb" class="headerlink" title=".gltf 和 .glb"></a>.gltf 和 .glb</h2><p>glTF（ Graphics Language Transmission Format或GL Transmission Format的衍生简称）是三维场景和模型的标准文件格式。glTF 文件使用两种可能的文件扩展名之一，.gltf ( JSON &#x2F; ASCII ) 或 .glb ( binary )。.gltf 文件可以是自包含的，也可以引用外部二进制和纹理资源，而 .glb 文件是完全自包含的。Khronos Group开发和维护的开放标准，支持3D 模型几何、外观、场景图层次结构和动画。它旨在成为一种简化的、可互操作的格式，用于交付 3D 资产，同时最大限度地减少文件大小和应用程序的运行时处理。因此，其创建者将其描述为“ 3D JPEG ”。</p>
+<p>应用GlTF是一种可以减少3D格式中与渲染无关的冗余数据并且在更加适合OpenGL簇加载的一种3D文件格式。GlTF的提出是源自于3D工业和媒体发展的过程中，对3D格式统一化的急迫需求。如果用一句话来描述：GlTF 就是三维文件的 JPEG ，三维格式的 MP3。在没有GlTF的时候，大家都要花很长的的时间来处理模型的载入。尽管一些3D Web框架支持特定于平台的模型格式，如FBX和OBJ，但几乎每个框架都支持GLTF。如果有人要为你提供3D模型，你可以请求他们提供GLTF格式的版本。</p>
+<p>特点GLTF是一种输出格式，这意味着我们无法直接修改它们。但我们可以修改其位置和大小，并对其进行旋转操作。</p>
+<p>另外，GLTF文件不是单个文件，而是包含JSON文档、图片、几何图形、纹理、凹凸贴图等的文件夹。</p>
+<h2 id="OSGB"><a href="#OSGB" class="headerlink" title=".OSGB"></a>.OSGB</h2><p>OSGB的全称是Open Scene Gragh Binary。这里的Binary是二进制的意思。</p>
+<p>应用目前市面上生产的倾斜模型，尤其是Smart3D处理的倾斜摄影三维模型的数据组织方式一般是二进制存贮的、带有嵌入式链接纹理数据（.jpg）的OSGB格式。</p>
+<p>特点此类数据文件碎、数量多、高级别金字塔文件大。因而难以形成高效、标准的网络发布方案，无法实现不同地域、不同部门之间的数据共享。</p>
+<h2 id="ive"><a href="#ive" class="headerlink" title=".ive"></a>.ive</h2><p>ive是由OpenSceneGraph（OSG）创建的三维模型文件，OSG是用于建模和动画处理的开源3D图形工具包； 包含使用该软件创建的3D场景； 用于可视化，仿真，游戏，虚拟现实和其他建模方案。IVE文件以二进制格式存储，有助于查看和渲染场景时提高性能。</p>
+<h1 id="OSG实用工具"><a href="#OSG实用工具" class="headerlink" title="OSG实用工具"></a>OSG实用工具</h1><h2 id="osgconv"><a href="#osgconv" class="headerlink" title="osgconv"></a>osgconv</h2><p>osgconv是一种非常有用的的工具来读取标准的3D格式，如OpenFlight,3DS,Alias Wavefront(OBJ) etc，并且可以将它们转换为一种OSG所支持的格式，如OSG中的ASCII格式的.osg，二进制格式的.ive。</p>
+<p>在程序运行的默认情况下，优化导入的场景图，将形成的这样结果：场景图读取的数据量将会更少且速度会更快。尤其值得指出的是，.ive格式的的文件，快速装载数据的能力使它非常适合数据页和大型的数据库。</p>
+<p>osgconv常用方式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 将cow.obj转成ive</span><br><span class="line">osgconv cow.obj cow.ive</span><br><span class="line"># 沿Z轴逆时针旋转90度</span><br><span class="line">osgconv -o -90-0,0,1 cow.obj cow.ive</span><br></pre></td></tr></table></figure>
+
+<h2 id="osgviewer"><a href="#osgviewer" class="headerlink" title="osgviewer"></a>osgviewer</h2><p>osgviewer 是随 OpenSceneGraph 一起分发的基本场景图查看器。它的主要目的是一个如何编写简单查看器的示例，但它的功能也足以用作基本的 3D 图形查看器。使用方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">osgviewer cow.ive</span><br></pre></td></tr></table></figure>
+
+<h2 id="osg插件"><a href="#osg插件" class="headerlink" title="osg插件"></a>osg插件</h2><p>OpenSceneGraph 核心发行版中有 45 个插件，它们提供了对原生和 3rd 方文件格式的读写支持。OpenSceneGraph 数据库插件库 osgDB 自动按需加载插件，使用正在加载&#x2F;保存的文件的扩展名来确定要加载哪个插件。osgDB 加载必要的插件是透明的，实际上你不应该做任何特殊的事情来加载某种文件类型。唯一需要记住的因素是 OSG 需要支持文件格式（由文件的扩展名决定）并且您应该已经编译了必要的插件。</p>
+<h1 id="转换方法"><a href="#转换方法" class="headerlink" title="转换方法"></a>转换方法</h1><p>将glb文件转换成ive文件的流程如下：</p>
+<ol>
+<li>使用blender 2.92 导入 glb 文件。</li>
+<li>使用blender 2.92 将 glb 文件导出成 dae 文件。注意导出时选择导出纹理图像。该步骤的主要目的是为了获取glb文件的纹理图像。</li>
+<li>使用blender 2.92 将 glb 文件导出成 obj 文件。 注意导出时选择导出纹理图像。该步骤将生成.obj、.mtl、.jpg三种文件，其中.jpg是纹理图像。如果纹理图像导出失败，可使用 dae 文件的纹理图像，同时注意修改.mtl文件中纹理图像的路径。.obj、.mtl均是文本文件，可直接打开。</li>
+<li>使用命令 osgconv -o -90-0,0,1 cow.obj cow.ive 将obj文件转换成ive文件。-o选择将模型朝向沿着坐标轴进行旋转。</li>
+</ol>
+<h1 id="转换需要注意的问题"><a href="#转换需要注意的问题" class="headerlink" title="转换需要注意的问题"></a>转换需要注意的问题</h1><p>3D文件格式转换需要注意的问题主要有：</p>
+<ul>
+<li>blender打开glb文件渲染时出现透明区域，显示背面区域的问题。</li>
+</ul>
+<p>因为对blender建模软件不够熟悉，刚开始以为是纹理贴图的问题，后面才发现是面朝向的问题。法线朝外的面是正面，朝里的面是背面。透明区域的面法线朝里，我们看到的是背面。由于blender着色器默认使用背面剔除功能，导致本应不透明的面被删除，导致出现透明区域现象。</p>
+<p>检测方面很简单，在blender中选择“视图叠加层”-&gt;“面朝向”打勾，模型正面将显示蓝色，背面显示红色。显示红色的区域就是透明区域。</p>
+<p>解决方法很简单，在blender中选择红色区域三角面，选择“网格”-&gt;“法线”-&gt;“翻转”, 将背面变为正面，即可解决模型显示透明区域问题。</p>
+<ul>
+<li><p>blender将glb转换成obj丢失纹理问题。解决方法在转换流程中已有介绍，在此不再详述。</p>
+</li>
+<li><p>模型朝向问题。解决方法在转换流程中已有介绍，在此不再详述。</p>
+</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.bgteach.com/article/132">三维文件格式知多少 | abc、glTF、fbx、obj、dae、stl、3ds..</a>,by 饼干教育.</li>
+<li><a target="_blank" rel="noopener" href="https://new.qq.com/omn/20200828/20200828A04JEE00.html">超实用：一篇文章带你了解市面上主流通用的3D模型格式</a>,by qq.</li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/COLLADA">COLLADA</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/GlTF">glTF</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/mazhenyu/p/5995519.html">osgconv使用指南(转)</a>,by 3D入魔.</li>
+<li><a target="_blank" rel="noopener" href="http://osgchina.org/show.php?id=50">osgconv</a>,by osgchina.</li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Hp4y1v7Cx/">背面剔除，正面剔除是什么能干嘛，从Blender和Unity解读，来2个效果你就懂了</a>,by 拉克哈尼.</li>
+<li><a target="_blank" rel="noopener" href="http://www.openscenegraph.org/index.php/documentation/guides/user-guides/61-osgplugins">osgPlugins</a>,by openscenegraph.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/347726082">科普：FBX格式和OBJ格式异同</a>,by Tech fan.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/3D/" rel="tag"># 3D</a>
+              <a href="/tags/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F/" rel="tag"># 飞行仿真</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/01/18/%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="prev" title="多智能体强化学习">
+                  <i class="fa fa-angle-left"></i> 多智能体强化学习
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/01/25/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" rel="next" title="Python多版本管理工具pyenv">
+                  Python多版本管理工具pyenv <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

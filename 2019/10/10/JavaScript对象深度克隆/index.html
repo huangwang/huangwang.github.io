@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="JavaScript并没有提供对象的复制方法，只能借助第三方库或自己实现对象的深度克隆。具体方法如下： 第三方库实现实现JavaScript库的深度克隆的第三方库主要有：  Underscore —— _.clone() jQuery —— $.clone() &#x2F; $.extend() lodash —— _.clone() &#x2F; _.cloneDeep() 借助 JSON 全局">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript对象深度克隆">
+<meta property="og:url" content="https://huangwang.github.io/2019/10/10/JavaScript%E5%AF%B9%E8%B1%A1%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="JavaScript并没有提供对象的复制方法，只能借助第三方库或自己实现对象的深度克隆。具体方法如下： 第三方库实现实现JavaScript库的深度克隆的第三方库主要有：  Underscore —— _.clone() jQuery —— $.clone() &#x2F; $.extend() lodash —— _.clone() &#x2F; _.cloneDeep() 借助 JSON 全局">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-10-10T13:10:21.000Z">
+<meta property="article:modified_time" content="2019-10-10T13:37:32.701Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2019/10/10/JavaScript%E5%AF%B9%E8%B1%A1%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2019/10/10/JavaScript%E5%AF%B9%E8%B1%A1%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86/","path":"2019/10/10/JavaScript对象深度克隆/","title":"JavaScript对象深度克隆"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JavaScript对象深度克隆 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">第三方库实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Underscore-%E2%80%94%E2%80%94-clone"><span class="nav-number">1.1.</span> <span class="nav-text">Underscore —— _.clone()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jQuery-%E2%80%94%E2%80%94-clone-extend"><span class="nav-number">1.2.</span> <span class="nav-text">jQuery —— $.clone() &#x2F; $.extend()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lodash-%E2%80%94%E2%80%94-clone-cloneDeep"><span class="nav-number">1.3.</span> <span class="nav-text">lodash —— _.clone() &#x2F; _.cloneDeep()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%80%9F%E5%8A%A9-JSON-%E5%85%A8%E5%B1%80%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.4.</span> <span class="nav-text">借助 JSON 全局对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">递归实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/10/JavaScript%E5%AF%B9%E8%B1%A1%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JavaScript对象深度克隆 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaScript对象深度克隆
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2019-10-10 21:10:21 / 修改时间：21:37:32" itemprop="dateCreated datePublished" datetime="2019-10-10T21:10:21+08:00">2019-10-10</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>JavaScript并没有提供对象的复制方法，只能借助第三方库或自己实现对象的深度克隆。具体方法如下：</p>
+<h1 id="第三方库实现"><a href="#第三方库实现" class="headerlink" title="第三方库实现"></a>第三方库实现</h1><p>实现JavaScript库的深度克隆的第三方库主要有：</p>
+<ul>
+<li>Underscore —— _.clone()</li>
+<li>jQuery —— $.clone() &#x2F; $.extend()</li>
+<li>lodash —— _.clone() &#x2F; _.cloneDeep()</li>
+<li>借助 JSON 全局对象</li>
+</ul>
+<h2 id="Underscore-——-clone"><a href="#Underscore-——-clone" class="headerlink" title="Underscore —— _.clone()"></a>Underscore —— _.clone()</h2><p>在 Underscore 中有这样一个方法：_.clone()，这个方法实际上是一种浅复制 (shallow-copy)，所有嵌套的对象和数组都是直接复制引用而并没有进行深复制。其代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// Create a (shallow-cloned) duplicate of an object.</span><br><span class="line">_.clone = function(obj) &#123;</span><br><span class="line">  if (!_.isObject(obj)) return obj;</span><br><span class="line">  return _.isArray(obj) ? obj.slice() : _.extend(&#123;&#125;, obj);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="jQuery-——-clone-extend"><a href="#jQuery-——-clone-extend" class="headerlink" title="jQuery —— $.clone() &#x2F; $.extend()"></a>jQuery —— $.clone() &#x2F; $.extend()</h2><p>在 jQuery 中也有这么一个叫 $.clone() 的方法，可是它并不是用于一般的 JS 对象的深复制，而是用于 DOM 对象。与 Underscore 类似，可以通过 $.extend() 方法来完成深复制。值得庆幸的是，在 jQuery 中可以通过添加一个参数来实现递归extend。调用$.extend(true, {}, …)就可以实现深复制。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var x = &#123;</span><br><span class="line">    a: 1,</span><br><span class="line">    b: &#123; f: &#123; g: 1 &#125; &#125;,</span><br><span class="line">    c: [ 1, 2, 3 ]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var y = $.extend(&#123;&#125;, x),          //shallow copy</span><br><span class="line">    z = $.extend(true, &#123;&#125;, x);    //deep copy</span><br><span class="line"></span><br><span class="line">y.b.f === x.b.f       // true</span><br><span class="line">z.b.f === x.b.f       // false</span><br></pre></td></tr></table></figure>
+
+<h2 id="lodash-——-clone-cloneDeep"><a href="#lodash-——-clone-cloneDeep" class="headerlink" title="lodash —— _.clone() &#x2F; _.cloneDeep()"></a>lodash —— _.clone() &#x2F; _.cloneDeep()</h2><p>在lodash中关于复制的方法有两个，分别是_.clone()和_.cloneDeep()。其中_.clone(obj, true)等价于_.cloneDeep(obj)。</p>
+<h2 id="借助-JSON-全局对象"><a href="#借助-JSON-全局对象" class="headerlink" title="借助 JSON 全局对象"></a>借助 JSON 全局对象</h2><p>针对纯 JSON 数据对象的深复制，使用 JSON 全局对象的 parse 和 stringify 方法来实现深复制也算是一个简单讨巧的方法，但它能正确处理的对象只有 Number, String, Boolean, Array, 扁平对象，即那些能够被 json 直接表示的数据结构。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function jsonClone(obj) &#123;</span><br><span class="line">    return JSON.parse(JSON.stringify(obj));</span><br><span class="line">&#125;</span><br><span class="line">var clone = jsonClone(&#123; a:1 &#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="递归实现"><a href="#递归实现" class="headerlink" title="递归实现"></a>递归实现</h1><p>下面是递归实现对象深度克隆的可用方法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">function clone(obj) &#123;</span><br><span class="line">  // Handle the 3 simple types, and null or undefined</span><br><span class="line">  if (null == obj || &quot;object&quot; != typeof obj) return obj;</span><br><span class="line"> </span><br><span class="line">  // Handle Date</span><br><span class="line">  if (obj instanceof Date) &#123;</span><br><span class="line">    var copy = new Date();</span><br><span class="line">    copy.setTime(obj.getTime());</span><br><span class="line">    return copy;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  // Handle Array</span><br><span class="line">  if (obj instanceof Array) &#123;</span><br><span class="line">    var copy = [];</span><br><span class="line">    for (var i = 0, var len = obj.length; i &lt; len; ++i) &#123;</span><br><span class="line">      copy[i] = clone(obj[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    return copy;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  // Handle Object</span><br><span class="line">  if (obj instanceof Object) &#123;</span><br><span class="line">    var copy = &#123;&#125;;</span><br><span class="line">    for (var attr in obj) &#123;</span><br><span class="line">      if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);</span><br><span class="line">    &#125;</span><br><span class="line">    return copy;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  throw new Error(&quot;Unable to copy obj! Its type isn&#x27;t supported.&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://jerryzou.com/posts/dive-into-deep-clone-in-javascript/">深入剖析 JavaScript 的深复制</a>,by 咀嚼之味.</li>
+<li><a target="_blank" rel="noopener" href="https://www.jb51.net/article/84541.htm">深入理解JavaScript中的对象复制(Object Clone)</a>,by jingxian.</li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/11874748/">JavaScript语言精粹（修订版）</a>,by Douglas Crockford著.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/10/10/%E5%9B%BE%E7%89%87%E6%88%96%E5%A4%9A%E5%AA%92%E4%BD%93%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E5%AD%98%E5%82%A8%E4%B8%8E%E7%AE%A1%E7%90%86/" rel="prev" title="图片或多媒体大文件的存储与管理">
+                  <i class="fa fa-angle-left"></i> 图片或多媒体大文件的存储与管理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/10/13/SQLServer2008%E4%B8%AD%E6%97%A5%E6%9C%9F%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E7%9A%84%E5%AD%98%E5%82%A8/" rel="next" title="SQLServer2008中日期类型数据的存储">
+                  SQLServer2008中日期类型数据的存储 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Cesium中3D模型的运动可以使用CZML直接驱动，但使用该方法前提是能事先计算出3D模型的运动轨迹，具有很大的局限性。那么如何实时驱动3D模型呢？ Cesium渲染过程分析Cesium渲染过程的分析可以参考链接1。Cesium的渲染始于虚拟地球组件CesiumWidget的startRenderLoop方法，在该方法中将调用requestAnimationFrame函数开始渲染。 虚拟地球组件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cesium中3D模型的驱动方法">
+<meta property="og:url" content="https://huangwang.github.io/2018/12/26/Cesium%E4%B8%AD3D%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%A9%B1%E5%8A%A8%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="Cesium中3D模型的运动可以使用CZML直接驱动，但使用该方法前提是能事先计算出3D模型的运动轨迹，具有很大的局限性。那么如何实时驱动3D模型呢？ Cesium渲染过程分析Cesium渲染过程的分析可以参考链接1。Cesium的渲染始于虚拟地球组件CesiumWidget的startRenderLoop方法，在该方法中将调用requestAnimationFrame函数开始渲染。 虚拟地球组件">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-26T12:43:21.000Z">
+<meta property="article:modified_time" content="2023-07-16T12:01:46.564Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="Cesium">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2018/12/26/Cesium%E4%B8%AD3D%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%A9%B1%E5%8A%A8%E6%96%B9%E6%B3%95/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2018/12/26/Cesium%E4%B8%AD3D%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%A9%B1%E5%8A%A8%E6%96%B9%E6%B3%95/","path":"2018/12/26/Cesium中3D模型的驱动方法/","title":"Cesium中3D模型的驱动方法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Cesium中3D模型的驱动方法 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Cesium%E6%B8%B2%E6%9F%93%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">Cesium渲染过程分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#preUpdate%E4%BA%8B%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">preUpdate事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#postUpdate%E4%BA%8B%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text">postUpdate事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#preRender%E4%BA%8B%E4%BB%B6"><span class="nav-number">1.3.</span> <span class="nav-text">preRender事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#postRender%E4%BA%8B%E4%BB%B6"><span class="nav-number">1.4.</span> <span class="nav-text">postRender事件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E6%97%B6%E9%A9%B1%E5%8A%A83D%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">实时驱动3D模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A2%E9%98%85preUpdate%E4%BA%8B%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">订阅preUpdate事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96czml%E5%AE%9E%E4%BD%93%E7%9A%84%E5%8F%82%E6%95%B0"><span class="nav-number">2.2.</span> <span class="nav-text">获取czml实体的参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Entity-API%E5%8A%A0%E8%BD%BD3D%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.3.</span> <span class="nav-text">使用Entity API加载3D模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Primitive-API%E5%8A%A0%E8%BD%BD3d%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.4.</span> <span class="nav-text">使用Primitive API加载3d模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/26/Cesium%E4%B8%AD3D%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%A9%B1%E5%8A%A8%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Cesium中3D模型的驱动方法 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Cesium中3D模型的驱动方法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-12-26 20:43:21" itemprop="dateCreated datePublished" datetime="2018-12-26T20:43:21+08:00">2018-12-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-07-16 20:01:46" itemprop="dateModified" datetime="2023-07-16T20:01:46+08:00">2023-07-16</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Cesium中3D模型的运动可以使用CZML直接驱动，但使用该方法前提是能事先计算出3D模型的运动轨迹，具有很大的局限性。那么如何实时驱动3D模型呢？</p>
+<h1 id="Cesium渲染过程分析"><a href="#Cesium渲染过程分析" class="headerlink" title="Cesium渲染过程分析"></a>Cesium渲染过程分析</h1><p>Cesium渲染过程的分析可以参考链接1。Cesium的渲染始于虚拟地球组件CesiumWidget的startRenderLoop方法，在该方法中将调用requestAnimationFrame函数开始渲染。</p>
+<p>虚拟地球组件CesiumWidget包含Scene组件，在其render方法随后调用Scene的render方法。在场景组件Scene的render方法中提供了preUpdate、postUpdate、preRender、postRender四个事件对象，这四个事件对象将是我们实时驱动3D模型的关键。</p>
+<h2 id="preUpdate事件"><a href="#preUpdate事件" class="headerlink" title="preUpdate事件"></a>preUpdate事件</h2><p>在Cesium更新渲染周期开始之前以目标帧率触发preUpdate事件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">scene.postUpdate.addEventListener(function() &#123;</span><br><span class="line">    // This code will run at 60 FPS</span><br><span class="line">    if (changeToPromptRender) &#123;</span><br><span class="line">        scene.requestRender();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;); </span><br></pre></td></tr></table></figure>
+
+<h2 id="postUpdate事件"><a href="#postUpdate事件" class="headerlink" title="postUpdate事件"></a>postUpdate事件</h2><p>在场景更新之后，新帧渲染之前以目标帧率触发postUpdate事件。</p>
+<h2 id="preRender事件"><a href="#preRender事件" class="headerlink" title="preRender事件"></a>preRender事件</h2><p>在场景更新之后，新帧渲染之前触发preRender事件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">scene.preRender.addEventListener(function() &#123;</span><br><span class="line">    // This code will run when a new frame is rendered</span><br><span class="line">    // including when changeToPromptRender is true</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="postRender事件"><a href="#postRender事件" class="headerlink" title="postRender事件"></a>postRender事件</h2><p>在新帧渲染之后触发postRender事件。</p>
+<h1 id="实时驱动3D模型"><a href="#实时驱动3D模型" class="headerlink" title="实时驱动3D模型"></a>实时驱动3D模型</h1><p>从上一节对Cesium渲染过程分析可知，要实时驱动3D模型，应订阅场景Scene的preUpdate事件，在preUpdate事件的处理函数中改变3D模型的位置和姿态。</p>
+<h2 id="订阅preUpdate事件"><a href="#订阅preUpdate事件" class="headerlink" title="订阅preUpdate事件"></a>订阅preUpdate事件</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//订阅场景的preUpdate事件</span><br><span class="line">viewer.scene.preUpdate.addEventListener(function(scene, time) &#123;</span><br><span class="line">    speedVector = Cesium.Cartesian3.multiplyByScalar(Cesium.Cartesian3.UNIT_X, speed / 10, speedVector);</span><br><span class="line">    position = Cesium.Matrix4.multiplyByPoint(planePrimitive.modelMatrix, speedVector, position);</span><br><span class="line">    pathPosition.addSample(Cesium.JulianDate.now(), position);</span><br><span class="line">    Cesium.Transforms.headingPitchRollToFixedFrame(position, hpRoll, Cesium.Ellipsoid.WGS84, fixedFrameTransform, planePrimitive.modelMatrix);</span><br><span class="line"></span><br><span class="line">    if (fromBehind.checked) &#123;</span><br><span class="line">        // Zoom to model</span><br><span class="line">        Cesium.Matrix4.multiplyByPoint(planePrimitive.modelMatrix, planePrimitive.boundingSphere.center, center);</span><br><span class="line">        hpRange.heading = hpRoll.heading;</span><br><span class="line">        hpRange.pitch = hpRoll.pitch;</span><br><span class="line">        camera.lookAt(center, hpRange);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="获取czml实体的参数"><a href="#获取czml实体的参数" class="headerlink" title="获取czml实体的参数"></a>获取czml实体的参数</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">viewer.scene.preUpdate.addEventListener(function(scene, time) &#123;</span><br><span class="line">    //target是czml实体对象</span><br><span class="line">    //获取time时刻target的位置参数</span><br><span class="line">    target.position.getValue(time,position)</span><br><span class="line">    console.log(position)</span><br><span class="line">    </span><br><span class="line">    target.orientation.getValue(time,orientation)</span><br><span class="line">    console.log(orientation)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">viewer.scene.preUpdate.addEventListener(function(scene, time) &#123;</span><br><span class="line">    var pos=target.position.getValue(time)</span><br><span class="line">    console.log(pos.toString())</span><br><span class="line">    //世界坐标转经纬高</span><br><span class="line">    var cartographicPosition = Cesium.Ellipsoid.WGS84.cartesianToCartographic(pos);</span><br><span class="line">    console.log(cartographicPosition.toString())</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用Entity-API加载3D模型"><a href="#使用Entity-API加载3D模型" class="headerlink" title="使用Entity API加载3D模型"></a>使用Entity API加载3D模型</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">var viewer = new Cesium.Viewer(&#x27;cesiumContainer&#x27;);</span><br><span class="line">var center=Cesium.Cartesian3.fromDegrees(-123.0744619, 44.0503706,100);</span><br><span class="line">var hpr=Cesium.HeadingPitchRoll.fromDegrees(90,-90,0);</span><br><span class="line">//从headingPitchRoll转四元数</span><br><span class="line">var quatern=Cesium.Transforms.headingPitchRollQuaternion(center,hpr);</span><br><span class="line"></span><br><span class="line">var entity = viewer.entities.add(&#123;</span><br><span class="line">    position :center ,    </span><br><span class="line">    orientation:quatern ,</span><br><span class="line">    model : &#123;</span><br><span class="line">        uri : &#x27;../../../../Apps/SampleData/models/missile.glb&#x27;,</span><br><span class="line">        scale: 0.1,</span><br><span class="line">        minimumPixelSize:50,</span><br><span class="line">        maximumScale:5000</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">viewer.trackedEntity = entity;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用Primitive-API加载3d模型"><a href="#使用Primitive-API加载3d模型" class="headerlink" title="使用Primitive API加载3d模型"></a>使用Primitive API加载3d模型</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var viewer = new Cesium.Viewer(&#x27;cesiumContainer&#x27;);</span><br><span class="line"></span><br><span class="line">var center1=Cesium.Cartesian3.fromDegrees(-123.0744619, 44.0503706,100);</span><br><span class="line">var hpr1=Cesium.HeadingPitchRoll.fromDegrees(90,-90,100);</span><br><span class="line">//计算模式矩阵，实现本地坐标系坐标到世界坐标系坐标的转换</span><br><span class="line">var modelMatrix=Cesium.Transforms.headingPitchRollToFixedFrame(center1, hpr1)</span><br><span class="line"></span><br><span class="line">var model = viewer.scene.primitives.add(Cesium.Model.fromGltf(&#123;</span><br><span class="line">    url : &#x27;../../../../Apps/SampleData/models/missile.glb&#x27;,</span><br><span class="line">    modelMatrix : modelMatrix,</span><br><span class="line">    scale : 1.0</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a href="https://huangwang.github.io/2018/11/08/Cesium%E6%91%84%E5%83%8F%E5%A4%B4%E8%B7%9F%E8%B8%AA%E9%A3%9E%E6%9C%BA%E5%AE%9E%E4%BD%93%E6%97%B6%E6%99%83%E5%8A%A8%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/">Cesium摄像头跟踪飞机实体时晃动问题分析</a>,by jack huang.</li>
+<li><a target="_blank" rel="noopener" href="https://cesium.com/blog/2018/01/24/cesium-scene-rendering-performance/">Improving Performance with Explicit Rendering</a>, by Gabby Getz.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15127585/2783324">Cesium 源码打包入门 [ver1.72] </a>,by mob604756f3c518.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/Cesium/" rel="tag"># Cesium</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/12/22/Web%E5%AE%89%E5%85%A8%E6%94%BB%E9%98%B2%E6%8A%80%E6%9C%AF%E6%8E%A2%E8%AE%A8/" rel="prev" title="Web安全攻防技术探讨">
+                  <i class="fa fa-angle-left"></i> Web安全攻防技术探讨
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/12/30/Debian%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8TFTP/" rel="next" title="Debian安装配置使用TFTP">
+                  Debian安装配置使用TFTP <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

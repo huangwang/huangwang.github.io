@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="在浏览器端无需服务器端支持，直接将JS Array数据导出成CSV文件并下载，是一个常见的开发需求。具体方法如下： 123456789var csvContent&#x3D; this.$refs.flightInfoGrid.exportdata(&#x27;csv&#x27;)var link &#x3D; document.createElement(&#x27;a&#x27;);&#x2F;&#x2F; &quot;\ufeff">
+<meta property="og:type" content="article">
+<meta property="og:title" content="客户端使用JS导出CSV文件及中文乱码问题解决方案">
+<meta property="og:url" content="https://huangwang.github.io/2019/08/27/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8JS%E5%AF%BC%E5%87%BACSV%E6%96%87%E4%BB%B6%E5%8F%8A%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="在浏览器端无需服务器端支持，直接将JS Array数据导出成CSV文件并下载，是一个常见的开发需求。具体方法如下： 123456789var csvContent&#x3D; this.$refs.flightInfoGrid.exportdata(&#x27;csv&#x27;)var link &#x3D; document.createElement(&#x27;a&#x27;);&#x2F;&#x2F; &quot;\ufeff">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-08-27T09:29:11.000Z">
+<meta property="article:modified_time" content="2020-05-14T08:39:16.125Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2019/08/27/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8JS%E5%AF%BC%E5%87%BACSV%E6%96%87%E4%BB%B6%E5%8F%8A%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2019/08/27/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8JS%E5%AF%BC%E5%87%BACSV%E6%96%87%E4%BB%B6%E5%8F%8A%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/","path":"2019/08/27/客户端使用JS导出CSV文件及中文乱码问题解决方案/","title":"客户端使用JS导出CSV文件及中文乱码问题解决方案"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>客户端使用JS导出CSV文件及中文乱码问题解决方案 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">中文乱码问题分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UTF-8"><span class="nav-number">2.</span> <span class="nav-text">UTF-8</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/08/27/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8JS%E5%AF%BC%E5%87%BACSV%E6%96%87%E4%BB%B6%E5%8F%8A%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="客户端使用JS导出CSV文件及中文乱码问题解决方案 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          客户端使用JS导出CSV文件及中文乱码问题解决方案
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-08-27 17:29:11" itemprop="dateCreated datePublished" datetime="2019-08-27T17:29:11+08:00">2019-08-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2020-05-14 16:39:16" itemprop="dateModified" datetime="2020-05-14T16:39:16+08:00">2020-05-14</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在浏览器端无需服务器端支持，直接将JS Array数据导出成CSV文件并下载，是一个常见的开发需求。具体方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var csvContent= this.$refs.flightInfoGrid.exportdata(&#x27;csv&#x27;)</span><br><span class="line">var link = document.createElement(&#x27;a&#x27;);</span><br><span class="line">// &quot;\ufeff&quot;是为了解决CSV中文乱码问题</span><br><span class="line">var blob = new Blob([&quot;\ufeff&quot; +csvContent],&#123;type: &#x27;text/csv;charset=utf-8;&#x27;&#125;);</span><br><span class="line">var url = URL.createObjectURL(blob);</span><br><span class="line">link.href = url;</span><br><span class="line">link.setAttribute(&#x27;download&#x27;, &#x27;FlightInfo.csv&#x27;);</span><br><span class="line">link.click();</span><br><span class="line">document.body.removeChild(link);</span><br></pre></td></tr></table></figure>
+
+<h1 id="中文乱码问题分析"><a href="#中文乱码问题分析" class="headerlink" title="中文乱码问题分析"></a>中文乱码问题分析</h1><p>utf-8保存的csv格式要让Excel正常打开的话，必须加入在文件最前面加入BOM(Byte order mark)。</p>
+<p>ANSI的话是可以做到正常显示和保存，但是这是有前提的，就是必须在你的电脑（区域和语言设置）把对非Unicode字符处理设置为Chinese，如果是English的话，显示照样是乱码。</p>
+<p>Unicode的csv，Excel就根本不支持，打开虽然可以显示不乱码，但是已经不是按逗号显示在不同的单元格里面了，而是按行显示在第一个单元格里面。</p>
+<p> BOM（byte-order mark），即字节顺序标记，它是插入到以UTF-8、UTF16或UTF-32编码Unicode文件开头的特殊标记，用来识别Unicode文件的编码类型。具体编码如下表：</p>
+<table>
+<thead>
+<tr>
+<th>BOM</th>
+<th>Encoding</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>EF BB BF</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>FE FF</td>
+<td>UTF-16 (big-endian)</td>
+</tr>
+<tr>
+<td>FF FE</td>
+<td>UTF-16 (little-endian)</td>
+</tr>
+<tr>
+<td>00 00 FE FF</td>
+<td>UTF-32 (big-endian)</td>
+</tr>
+<tr>
+<td>FF FE 00 00</td>
+<td>UTF-32 (little-endian)</td>
+</tr>
+</tbody></table>
+<p>微软建议所有的 Unicode 文件应该以 ZERO WIDTH NOBREAK SPACE（U+FEFF）字符开头。这作为一个“特征符”来识别文件中使用的编码和字节顺序。BOM的本意不错，但它并不是一个通用标准，从而导致了很多不兼容的问题。</p>
+<h1 id="UTF-8"><a href="#UTF-8" class="headerlink" title="UTF-8"></a>UTF-8</h1><p>UTF-8（8-bit Unicode Transformation Format）是一种针对Unicode的可变长度字元编码，也是一种前缀码。它可以用一至四个字节对Unicode字符集中的所有有效编码点进行编码，属于Unicode标准的一部分，最初由肯·汤普逊和罗布·派克提出。</p>
+<p>由于较小值的编码点一般使用频率较高，直接使用Unicode编码效率低下，大量浪费内存空间。UTF-8就是为了解决向后兼容ASCII码而设计，Unicode中前128个字符（与ASCII码一一对应），使用与ASCII码相同的二进制值的单个字节进行编码，这使得原来处理ASCII字元的软体无须或只须做少部份修改，即可继续使用。因此，它逐渐成为电子邮件、网页及其他储存或传送文字优先采用的编码方式。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/oyi319/article/details/6406506">Excel 2007 打开 UTF-8 编码 CSV 文件的BUG</a>,by oyi319.</li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side">How to export JavaScript array info to csv (on client side)?</a>,by stackoverflow.</li>
+<li><a target="_blank" rel="noopener" href="https://my.oschina.net/dawd/blog/801323">blob 导出csv 用execl打开出现乱码</a>,by 黑魔法.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh/UTF-8">UTF-8</a>,by wikipedia.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/08/25/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E5%9B%BE%E6%A0%87icon/" rel="prev" title="如何使用图标icon">
+                  <i class="fa fa-angle-left"></i> 如何使用图标icon
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/09/02/vuejs%E7%BB%84%E4%BB%B6%E9%97%B4%E9%80%9A%E4%BF%A1%E7%9A%84%E6%96%B9%E6%B3%95/" rel="next" title="vuejs组件间通信的方法">
+                  vuejs组件间通信的方法 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

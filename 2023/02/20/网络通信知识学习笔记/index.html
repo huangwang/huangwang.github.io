@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="VLAN请参考VLAN 基础知识和什么是VLAN。 无线数字通信中数据速率、载波频率和带宽的关系请参考无线通信系统中数据带宽、载波频率和载波带宽的关系怎样理解？和无线数字通信中数据速率、载波频率和带宽的关系。 香农定理香农定理给出了信道信息传送速率的上限（比特每秒）和信道信噪比及带宽的关系。香农定理可以解释现代各种无线制式由于带宽不同，所支持的单载波最大吞吐量的不同。 在有随机热噪声的信道上传输数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络通信知识学习笔记">
+<meta property="og:url" content="https://huangwang.github.io/2023/02/20/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E7%9F%A5%E8%AF%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="VLAN请参考VLAN 基础知识和什么是VLAN。 无线数字通信中数据速率、载波频率和带宽的关系请参考无线通信系统中数据带宽、载波频率和载波带宽的关系怎样理解？和无线数字通信中数据速率、载波频率和带宽的关系。 香农定理香农定理给出了信道信息传送速率的上限（比特每秒）和信道信噪比及带宽的关系。香农定理可以解释现代各种无线制式由于带宽不同，所支持的单载波最大吞吐量的不同。 在有随机热噪声的信道上传输数">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-02-20T14:35:48.000Z">
+<meta property="article:modified_time" content="2023-02-26T15:04:24.277Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2023/02/20/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E7%9F%A5%E8%AF%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2023/02/20/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E7%9F%A5%E8%AF%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/","path":"2023/02/20/网络通信知识学习笔记/","title":"网络通信知识学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>网络通信知识学习笔记 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#VLAN"><span class="nav-number">1.</span> <span class="nav-text">VLAN</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A0%E7%BA%BF%E6%95%B0%E5%AD%97%E9%80%9A%E4%BF%A1%E4%B8%AD%E6%95%B0%E6%8D%AE%E9%80%9F%E7%8E%87%E3%80%81%E8%BD%BD%E6%B3%A2%E9%A2%91%E7%8E%87%E5%92%8C%E5%B8%A6%E5%AE%BD%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">2.</span> <span class="nav-text">无线数字通信中数据速率、载波频率和带宽的关系</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A6%99%E5%86%9C%E5%AE%9A%E7%90%86"><span class="nav-number">2.1.</span> <span class="nav-text">香农定理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A5%88%E5%A5%8E%E6%96%AF%E7%89%B9%E5%87%86%E5%88%99"><span class="nav-number">2.2.</span> <span class="nav-text">奈奎斯特准则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%BD%E6%B3%A2"><span class="nav-number">2.3.</span> <span class="nav-text">载波</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B0%83%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">调制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E4%BF%A1%E5%8F%B7%E8%B0%83%E5%88%B6"><span class="nav-number">3.1.</span> <span class="nav-text">模拟信号调制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E4%BF%A1%E5%8F%B7%E8%B0%83%E5%88%B6"><span class="nav-number">3.2.</span> <span class="nav-text">数字信号调制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2023/02/20/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E7%9F%A5%E8%AF%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="网络通信知识学习笔记 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          网络通信知识学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-02-20 22:35:48" itemprop="dateCreated datePublished" datetime="2023-02-20T22:35:48+08:00">2023-02-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-26 23:04:24" itemprop="dateModified" datetime="2023-02-26T23:04:24+08:00">2023-02-26</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="VLAN"><a href="#VLAN" class="headerlink" title="VLAN"></a>VLAN</h1><p>请参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/35616289">VLAN 基础知识</a>和<a target="_blank" rel="noopener" href="https://info.support.huawei.com/info-finder/encyclopedia/zh/VLAN.html">什么是VLAN</a>。</p>
+<h1 id="无线数字通信中数据速率、载波频率和带宽的关系"><a href="#无线数字通信中数据速率、载波频率和带宽的关系" class="headerlink" title="无线数字通信中数据速率、载波频率和带宽的关系"></a>无线数字通信中数据速率、载波频率和带宽的关系</h1><p>请参考<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/23115645">无线通信系统中数据带宽、载波频率和载波带宽的关系怎样理解？</a>和<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/53760015">无线数字通信中数据速率、载波频率和带宽的关系</a>。</p>
+<h2 id="香农定理"><a href="#香农定理" class="headerlink" title="香农定理"></a>香农定理</h2><p>香农定理给出了信道信息传送速率的上限（比特每秒）和信道信噪比及带宽的关系。香农定理可以解释现代各种无线制式由于带宽不同，所支持的单载波最大吞吐量的不同。</p>
+<p>在有随机热噪声的信道上传输数据信号时，信道容量$R_{max}$与信道带宽W，信噪比S&#x2F;N关系为：<br> $$R_{max}&#x3D;W*log2(1+S&#x2F;N)$$</p>
+<p>注意这里的log2是以2为底的对数。</p>
+<h2 id="奈奎斯特准则"><a href="#奈奎斯特准则" class="headerlink" title="奈奎斯特准则"></a>奈奎斯特准则</h2><p>对于一个带宽为W（Hz）的无噪声低通信道，最高的码元传输速率Bmax:</p>
+<p>$$B_{max}&#x3D;2W(Baud)$$</p>
+<p>即每赫兹带宽的理想低通信道的最高码元传输速率是每秒2个码元。</p>
+<h2 id="载波"><a href="#载波" class="headerlink" title="载波"></a>载波</h2><p>载波（carrier wave）是指被调制以传输信号的波形，一般为正弦波。一般要求正弦载波的频率远远高于调制信号的带宽，否则会发生混叠，使传输信号失真。 可以这样理解，我们一般需要发送的数据的频率是低频的，如果按照本身的数据的频率来传输，不利于接收和同步。使用载波传输，我们可以将数据的信号加载到载波的信号上，接收方按照载波的频率来接收数据信号，有意义的信号波的波幅与无意义的信号的波幅是不同的，将这些信号提取出来就是我们需要的数据信号。 载波就是携带信息&#x2F;信号的波形，它携带的方式是进行频率、振幅、相位间隔调制。</p>
+<p>电子计算机科学中，基频（baseband）加上载波（carrier wave）而成为宽频（broadband）。</p>
+<p>载波是信号调制与发射的载体，它只有一个中心频率，和带宽本身没任何关系。比如11n协议规定可以工作在2G频段，也可以工作在5G频段，其他因素都一样的。假定20M带宽，工作在2G频段的时候载波频率是2.4GHz，那它实际占用的频谱资源是2.390GHz-2.410GHz。工作在5G频段的时候载波频率是5GHz，那它实际占用的频谱资源是4.990GHz-5.010GHz。</p>
+<h1 id="调制"><a href="#调制" class="headerlink" title="调制"></a>调制</h1><h2 id="模拟信号调制"><a href="#模拟信号调制" class="headerlink" title="模拟信号调制"></a>模拟信号调制</h2><p>请参考<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%8C%AF%E5%B9%85%E8%AA%BF%E8%AE%8A">幅度调制</a>。</p>
+<h2 id="数字信号调制"><a href="#数字信号调制" class="headerlink" title="数字信号调制"></a>数字信号调制</h2><p>请参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34840129/article/details/88785772">数字调制的原理</a>。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/35616289">VLAN 基础知识</a>,by 行道科技.</li>
+<li><a target="_blank" rel="noopener" href="https://info.support.huawei.com/info-finder/encyclopedia/zh/VLAN.html">什么是VLAN</a>,by huawei.</li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000022099473">集线器、交换机、路由器、网桥、网关之间的区别和联系</a>,by danielxue7.</li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/20485878">带宽和频率的关系到底是什么？</a>,by zhihu.</li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/23115645">无线通信系统中数据带宽、载波频率和载波带宽的关系怎样理解？</a>,by zhihu.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/53760015">无线数字通信中数据速率、载波频率和带宽的关系</a>,by furious.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/%E8%AA%BF%E8%AE%8A">调制</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%95%B0%E5%AD%97%E4%BF%A1%E5%8F%B7/915663">数字信号</a>,by baidubaike.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34840129/article/details/88785772">数字调制的原理</a>,by bebr.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%8C%AF%E5%B9%85%E8%AA%BF%E8%AE%8A">幅度调制</a>,by wikipedia.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/06/%E7%BD%91%E9%A1%B5%E9%9F%B3%E9%A2%91%E6%97%A0%E6%B3%95%E8%87%AA%E5%8A%A8%E6%92%AD%E6%94%BE%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" rel="prev" title="网页音频无法自动播放的解决方案">
+                  <i class="fa fa-angle-left"></i> 网页音频无法自动播放的解决方案
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/03/13/Windows%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8MongoDB%E6%9C%8D%E5%8A%A1%E5%99%A81067%E9%94%99%E8%AF%AF%E6%81%A2%E5%A4%8D%E8%AE%B0%E5%BD%95/" rel="next" title="Windows无法启动MongoDB服务器1067错误恢复记录">
+                  Windows无法启动MongoDB服务器1067错误恢复记录 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

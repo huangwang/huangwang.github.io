@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="购买笔记本拥有Intel集成显卡和NVIDIA显卡，如何在Debian Linux下启用NVIDIA显卡是一个难题。幸运的是，通过bumblebee软件可在Linux下支持NVIDIA Optimus技术，实现Intel集成显卡和NVIDIA显卡之间的切换使用。 背景知识NVIDIA OptimusOptimus是NVIDIA针对笔记本电脑的显示切换技术。它可以实现笔记本电脑中独立显卡与主板内置显">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Debian系统安装NVIDIA驱动支持双显卡切换">
+<meta property="og:url" content="https://huangwang.github.io/2018/12/10/Debian%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85NVIDIA%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81%E5%8F%8C%E6%98%BE%E5%8D%A1%E5%88%87%E6%8D%A2/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="购买笔记本拥有Intel集成显卡和NVIDIA显卡，如何在Debian Linux下启用NVIDIA显卡是一个难题。幸运的是，通过bumblebee软件可在Linux下支持NVIDIA Optimus技术，实现Intel集成显卡和NVIDIA显卡之间的切换使用。 背景知识NVIDIA OptimusOptimus是NVIDIA针对笔记本电脑的显示切换技术。它可以实现笔记本电脑中独立显卡与主板内置显">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-10T12:27:27.000Z">
+<meta property="article:modified_time" content="2018-12-10T13:36:51.000Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2018/12/10/Debian%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85NVIDIA%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81%E5%8F%8C%E6%98%BE%E5%8D%A1%E5%88%87%E6%8D%A2/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2018/12/10/Debian%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85NVIDIA%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81%E5%8F%8C%E6%98%BE%E5%8D%A1%E5%88%87%E6%8D%A2/","path":"2018/12/10/Debian系统安装NVIDIA驱动支持双显卡切换/","title":"Debian系统安装NVIDIA驱动支持双显卡切换"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Debian系统安装NVIDIA驱动支持双显卡切换 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">背景知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NVIDIA-Optimus"><span class="nav-number">1.1.</span> <span class="nav-text">NVIDIA Optimus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bumblebee"><span class="nav-number">1.2.</span> <span class="nav-text">Bumblebee</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">安装配置过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A6%81%E6%AD%A2%E5%8A%A0%E8%BD%BD%E5%BC%80%E6%BA%90%E9%A9%B1%E5%8A%A8nouveau"><span class="nav-number">2.1.</span> <span class="nav-text">禁止加载开源驱动nouveau</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">安装内核头文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85NVIDIA%E9%A9%B1%E5%8A%A8"><span class="nav-number">2.3.</span> <span class="nav-text">安装NVIDIA驱动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%8F%8C%E6%98%BE%E5%8D%A1%E5%88%87%E6%8D%A2%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E5%8C%85"><span class="nav-number">2.4.</span> <span class="nav-text">安装双显卡切换解决方案包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%BD%93%E5%89%8D%E7%94%A8%E6%88%B7%E5%88%B0bumblebee%E7%94%A8%E6%88%B7%E7%BB%84"><span class="nav-number">2.5.</span> <span class="nav-text">添加当前用户到bumblebee用户组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9bumblebee%E9%85%8D%E7%BD%AE"><span class="nav-number">2.6.</span> <span class="nav-text">修改bumblebee配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%90%AF%E8%BF%9B%E5%85%A5%E6%A1%8C%E9%9D%A2"><span class="nav-number">2.7.</span> <span class="nav-text">重启进入桌面</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%8B%AC%E6%98%BE%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F"><span class="nav-number">3.</span> <span class="nav-text">使用独显运行程序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/12/10/Debian%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85NVIDIA%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81%E5%8F%8C%E6%98%BE%E5%8D%A1%E5%88%87%E6%8D%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Debian系统安装NVIDIA驱动支持双显卡切换 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Debian系统安装NVIDIA驱动支持双显卡切换
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2018-12-10 20:27:27 / 修改时间：21:36:51" itemprop="dateCreated datePublished" datetime="2018-12-10T20:27:27+08:00">2018-12-10</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>购买笔记本拥有Intel集成显卡和NVIDIA显卡，如何在Debian Linux下启用NVIDIA显卡是一个难题。幸运的是，通过bumblebee软件可在Linux下支持NVIDIA Optimus技术，实现Intel集成显卡和NVIDIA显卡之间的切换使用。</p>
+<h1 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h1><h2 id="NVIDIA-Optimus"><a href="#NVIDIA-Optimus" class="headerlink" title="NVIDIA Optimus"></a>NVIDIA Optimus</h2><p>Optimus是NVIDIA针对笔记本电脑的显示切换技术。它可以实现笔记本电脑中独立显卡与主板内置显卡之间无缝、自动、实时的切换（用户无需重启或手动调整），从而实现能源的节约。</p>
+<p>利用Optimus技术后，计算机的显示输出永远都只会通过集成式芯片组的显示核心。独立显卡的显示输出将会被废掉，有关的输出亦会发送到前者。由于显示输出的设备是固定的，所以黑屏现象将会被解决。额外的切换线路亦变得不需要，因为在不需要独立显示核心的时候，系统会索性断绝其电源供应。当系统的显示负载轻的时候，就会完全利用内置的显示核心。当负载增加后，系统就会打开独立显示核心作计算之用。协议分工方面由驱动程序负责，NVIDIA声称可以兼容所有的API。</p>
+<h2 id="Bumblebee"><a href="#Bumblebee" class="headerlink" title="Bumblebee"></a>Bumblebee</h2><p>Bumblebee 致力于使 NVIDIA Optimus 在 GNU&#x2F;Linux 系统上可用，实现两块不同的供电配置的显卡同时插入使用，共享同一个 framebuffer。</p>
+<h1 id="安装配置过程"><a href="#安装配置过程" class="headerlink" title="安装配置过程"></a>安装配置过程</h1><h2 id="禁止加载开源驱动nouveau"><a href="#禁止加载开源驱动nouveau" class="headerlink" title="禁止加载开源驱动nouveau"></a>禁止加载开源驱动nouveau</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/modprobe.d/nvidia-installer-disable-nouveau.conf</span><br><span class="line"></span><br><span class="line">#上述文件不存在则新建，在文件中添加下面两行文字</span><br><span class="line">blacklist nouveau</span><br><span class="line">options nouveau modeset = 0</span><br><span class="line"></span><br><span class="line">#系统重启后使用以下命令查看nouveau驱动是否被禁止</span><br><span class="line">lsmod |grep -i nouveau</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装内核头文件"><a href="#安装内核头文件" class="headerlink" title="安装内核头文件"></a>安装内核头文件</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install -y linux-headers-$(uname -r)</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装NVIDIA驱动"><a href="#安装NVIDIA驱动" class="headerlink" title="安装NVIDIA驱动"></a>安装NVIDIA驱动</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 关于是否生存xorg.conf文件，选no</span><br><span class="line">$ sudo apt-get install  nvidia-driver nvidia-xconfig nvidia-kernel-dkms</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装双显卡切换解决方案包"><a href="#安装双显卡切换解决方案包" class="headerlink" title="安装双显卡切换解决方案包"></a>安装双显卡切换解决方案包</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get install bumblebee-nvidia primus</span><br></pre></td></tr></table></figure>
+
+<h2 id="添加当前用户到bumblebee用户组"><a href="#添加当前用户到bumblebee用户组" class="headerlink" title="添加当前用户到bumblebee用户组"></a>添加当前用户到bumblebee用户组</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ adduser $USER bumblebee</span><br></pre></td></tr></table></figure>
+
+<h2 id="修改bumblebee配置"><a href="#修改bumblebee配置" class="headerlink" title="修改bumblebee配置"></a>修改bumblebee配置</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/bumeblebee/bumblebee.conf</span><br><span class="line">: Driver=nvidia</span><br><span class="line"></span><br><span class="line">#将/etc/bumeblebee/bumblebee.conf文件中的Driver=* 改成 =nvidia</span><br><span class="line"></span><br><span class="line">$ vi /etc/bumblebee/xorg.conf.nvidia</span><br><span class="line">:BusID &quot;PCI:01:00:0&quot; </span><br><span class="line"></span><br><span class="line">#在/etc/bumblebee/xorg.conf.nvidia文件中，将Section“Device”部分添加PCI ID</span><br><span class="line"></span><br><span class="line"># 可使用如下命令查看NVIDIA显卡的BUS ID</span><br><span class="line">nvidia-xconfig --query-gpu-info | grep &#x27;BusID : &#x27; | cut -d &#x27; &#x27; -f6</span><br></pre></td></tr></table></figure>
+
+<h2 id="重启进入桌面"><a href="#重启进入桌面" class="headerlink" title="重启进入桌面"></a>重启进入桌面</h2><p>如果无法进入桌面环境，则安装失败，进入高级修复使用如下命令进行清理。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get purge nvidia* bumblebee* prime*</span><br></pre></td></tr></table></figure>
+
+<p>bumblebee服务开机不会启动，设置开机启动即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ update-rc.d -f bumblebee defaults</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用独显运行程序"><a href="#使用独显运行程序" class="headerlink" title="使用独显运行程序"></a>使用独显运行程序</h1><p>bumblebee不能做到集显和独显之间自动切换，系统运行时默认使用集显，当你需要使用独显运行某个程序或者游戏的时候，终端执行如下命令即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ optirum command #使用独显运行command程序</span><br><span class="line">$ optirum -b primus command #使用独显运行command程序，提升性能</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/37252268">kali 在支持双显卡切换机器宏碁（Acer）V3下安装NVIDIA驱动</a>, by 不梦君.</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/europa502/Installing-Nvidia-drivers-on-Kali-Linux">Installing-Nvidia-drivers-on-Kali-Linux</a>, by europa502.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/NVIDIA_Optimus">NVIDIA Optimus</a>, by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://linux.cn/article-3946-1.html">在Ubuntu上安装和配置Nvidia Optimus驱动</a>, by Linux中国.</li>
+<li><a target="_blank" rel="noopener" href="https://wiki.archlinux.org/index.php/Bumblebee(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">Bumblebee</a>,by archlinux.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/12/09/Linux%E5%9B%BE%E5%BD%A2%E7%95%8C%E9%9D%A2%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="prev" title="Linux图形界面基础知识">
+                  <i class="fa fa-angle-left"></i> Linux图形界面基础知识
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/12/10/%E9%A3%9E%E8%A1%8C%E5%8A%9B%E5%AD%A6%E4%B8%AD%E5%9D%90%E6%A0%87%E7%B3%BB%E5%AE%9A%E4%B9%89/" rel="next" title="飞行力学中坐标系定义">
+                  飞行力学中坐标系定义 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

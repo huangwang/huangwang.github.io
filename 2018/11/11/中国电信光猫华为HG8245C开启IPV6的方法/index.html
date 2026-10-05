@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="据报道，目前中国电信已成功创建了IP骨干网全面支持IPv6，并且在4G网络开启了IPv6服务，在100多个城域网提供了IPv6服务[1]。那么如何使家里宽带用上IPv6服务呢？这个问题最关键是设置入户光猫使其支持IPv6。以如何光猫华为HG8245C为例，说明设置过程。 基础知识IPv6简介网际协议第6版（英文：Internet Protocol version 6，缩写：IPv6）是网际协议（I">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中国电信光猫华为HG8245C开启IPV6的方法">
+<meta property="og:url" content="https://huangwang.github.io/2018/11/11/%E4%B8%AD%E5%9B%BD%E7%94%B5%E4%BF%A1%E5%85%89%E7%8C%AB%E5%8D%8E%E4%B8%BAHG8245C%E5%BC%80%E5%90%AFIPV6%E7%9A%84%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="据报道，目前中国电信已成功创建了IP骨干网全面支持IPv6，并且在4G网络开启了IPv6服务，在100多个城域网提供了IPv6服务[1]。那么如何使家里宽带用上IPv6服务呢？这个问题最关键是设置入户光猫使其支持IPv6。以如何光猫华为HG8245C为例，说明设置过程。 基础知识IPv6简介网际协议第6版（英文：Internet Protocol version 6，缩写：IPv6）是网际协议（I">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://huangwang.github.io/2018/11/11/%E4%B8%AD%E5%9B%BD%E7%94%B5%E4%BF%A1%E5%85%89%E7%8C%AB%E5%8D%8E%E4%B8%BAHG8245C%E5%BC%80%E5%90%AFIPV6%E7%9A%84%E6%96%B9%E6%B3%95/images/open_ipv6.png">
+<meta property="article:published_time" content="2018-11-11T12:50:15.000Z">
+<meta property="article:modified_time" content="2019-04-04T12:32:05.934Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="IPv6">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://huangwang.github.io/2018/11/11/%E4%B8%AD%E5%9B%BD%E7%94%B5%E4%BF%A1%E5%85%89%E7%8C%AB%E5%8D%8E%E4%B8%BAHG8245C%E5%BC%80%E5%90%AFIPV6%E7%9A%84%E6%96%B9%E6%B3%95/images/open_ipv6.png">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2018/11/11/%E4%B8%AD%E5%9B%BD%E7%94%B5%E4%BF%A1%E5%85%89%E7%8C%AB%E5%8D%8E%E4%B8%BAHG8245C%E5%BC%80%E5%90%AFIPV6%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2018/11/11/%E4%B8%AD%E5%9B%BD%E7%94%B5%E4%BF%A1%E5%85%89%E7%8C%AB%E5%8D%8E%E4%B8%BAHG8245C%E5%BC%80%E5%90%AFIPV6%E7%9A%84%E6%96%B9%E6%B3%95/","path":"2018/11/11/中国电信光猫华为HG8245C开启IPV6的方法/","title":"中国电信光猫华为HG8245C开启IPV6的方法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>中国电信光猫华为HG8245C开启IPV6的方法 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">IPv6简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">IPv6格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E5%9C%B0%E5%9D%80%E5%88%86%E7%B1%BB"><span class="nav-number">1.3.</span> <span class="nav-text">IPv6地址分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%9C%B0%E5%9D%80"><span class="nav-number">1.3.1.</span> <span class="nav-text">常用地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%9C%B0%E5%9D%80"><span class="nav-number">1.3.2.</span> <span class="nav-text">特殊地址</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%AA%E6%8C%87%E5%AE%9A%E5%9C%B0%E5%9D%80"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">未指定地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%93%BE%E8%B7%AF%E6%9C%AC%E5%9C%B0%E5%9C%B0%E5%9D%80"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">链路本地地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%94%AF%E4%B8%80%E5%8C%BA%E5%9F%9F%E4%BD%8D%E5%9F%9F"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">唯一区域位域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E6%92%AD%E5%9C%B0%E5%9D%80"><span class="nav-number">1.3.2.4.</span> <span class="nav-text">多播地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IPv4%E8%BD%AC%E8%AF%91%E5%9C%B0%E5%9D%80"><span class="nav-number">1.3.2.5.</span> <span class="nav-text">IPv4转译地址</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E4%BC%98%E5%8A%BF"><span class="nav-number">1.4.</span> <span class="nav-text">IPv6优势</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%8D%8E%E4%B8%BA%E5%85%89%E7%8C%ABHG8245C%E5%BC%80%E5%90%AFIPv6%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">设置华为光猫HG8245C开启IPv6步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/11/11/%E4%B8%AD%E5%9B%BD%E7%94%B5%E4%BF%A1%E5%85%89%E7%8C%AB%E5%8D%8E%E4%B8%BAHG8245C%E5%BC%80%E5%90%AFIPV6%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="中国电信光猫华为HG8245C开启IPV6的方法 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          中国电信光猫华为HG8245C开启IPV6的方法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-11-11 20:50:15" itemprop="dateCreated datePublished" datetime="2018-11-11T20:50:15+08:00">2018-11-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-04-04 20:32:05" itemprop="dateModified" datetime="2019-04-04T20:32:05+08:00">2019-04-04</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>据报道，目前中国电信已成功创建了IP骨干网全面支持IPv6，并且在4G网络开启了IPv6服务，在100多个城域网提供了IPv6服务<sup>[1]</sup>。那么如何使家里宽带用上IPv6服务呢？这个问题最关键是设置入户光猫使其支持IPv6。以如何光猫华为HG8245C为例，说明设置过程。</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="IPv6简介"><a href="#IPv6简介" class="headerlink" title="IPv6简介"></a>IPv6简介</h2><p>网际协议第6版（英文：Internet Protocol version 6，缩写：IPv6）是网际协议（IP）的最新版本，用作互联网的网上层协议，用它来取代IPv4主要是为了解决IPv4地址枯竭问题，不过它也在其他很多方面对IPv4有所改进。</p>
+<h2 id="IPv6格式"><a href="#IPv6格式" class="headerlink" title="IPv6格式"></a>IPv6格式</h2><p>IPv6二进位制下为128位长度，以16位为一组，每组以冒号“:”隔开，可以分为8组，每组以4位十六进制方式表示。例如：2001:0db8:85a3:08d3:1319:8a2e:0370:7344 是一个合法的IPv6地址。</p>
+<p>同时IPv6在某些条件下可以省略：</p>
+<ol>
+<li>每项数字前导的0可以省略，省略后前导数字仍是0则继续，例如下组IPv6是等价的。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">2001:0DB8:02de:0000:0000:0000:0000:0e13</span><br><span class="line">2001:DB8:2de:0000:0000:0000:0000:e13</span><br><span class="line">2001:DB8:2de:000:000:000:000:e13</span><br><span class="line">2001:DB8:2de:00:00:00:00:e13</span><br><span class="line">2001:DB8:2de:0:0:0:0:e13</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>可以用双冒号“::”表示一组0或多组连续的0，但只能出现一次。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">* 2001:DB8:2de:0:0:0:0:e13</span><br><span class="line">   2001:DB8:2de::e13</span><br><span class="line">* 2001:0DB8:0000:0000:0000:0000:1428:57ab</span><br><span class="line">   2001:0DB8:0000:0000:0000::1428:57ab</span><br><span class="line">   2001:0DB8:0:0:0:0:1428:57ab</span><br><span class="line">   2001:0DB8:0::0:1428:57ab</span><br><span class="line">   2001:0DB8::1428:57ab</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>如果这个地址实际上是IPv4的地址，后32位可以用10进制数表示；因此::ffff:192.168.89.9 相等于::ffff:c0a8:5909。</li>
+</ol>
+<h2 id="IPv6地址分类"><a href="#IPv6地址分类" class="headerlink" title="IPv6地址分类"></a>IPv6地址分类</h2><h3 id="常用地址"><a href="#常用地址" class="headerlink" title="常用地址"></a>常用地址</h3><p>IPv6地址可分为三种:</p>
+<ul>
+<li>单播（unicast）地址：单播地址标示一个网上接口。协议会把送往地址的数据包送往给其接口。</li>
+<li>任播（anycast）地址: Anycast是IPv6特有的数据发送方式，它像是IPv4的Unicast（单点传播）与Broadcast（多点广播）的综合。</li>
+<li>多播（multicast）地址: 多播地址也称组播地址。多播地址也被指定到一群不同的接口，送到多播地址的数据包会被发送到所有的地址。</li>
+</ul>
+<h3 id="特殊地址"><a href="#特殊地址" class="headerlink" title="特殊地址"></a>特殊地址</h3><h4 id="未指定地址"><a href="#未指定地址" class="headerlink" title="未指定地址"></a>未指定地址</h4><ul>
+<li>::&#x2F;128－所有比特皆为零的地址称作未指定地址。</li>
+</ul>
+<h4 id="链路本地地址"><a href="#链路本地地址" class="headerlink" title="链路本地地址"></a>链路本地地址</h4><ul>
+<li>::1&#x2F;128－是一种单播绕回地址。如果一个应用程序将数据包送到此地址，IPv6堆栈会转送这些数据包绕回到同样的虚拟接口（相当于IPv4中的127.0.0.1&#x2F;8）。</li>
+<li>fe80::&#x2F;10－这些链路本地地址指明，这些地址只在区域连线中是合法的，这有点类似于IPv4中的169.254.0.0&#x2F;16。</li>
+</ul>
+<h4 id="唯一区域位域"><a href="#唯一区域位域" class="headerlink" title="唯一区域位域"></a>唯一区域位域</h4><ul>
+<li>fc00::&#x2F;7－唯一区域地址（ULA，unique local address）只可在一群网站中绕送。</li>
+</ul>
+<h4 id="多播地址"><a href="#多播地址" class="headerlink" title="多播地址"></a>多播地址</h4><ul>
+<li>ff00::&#x2F;8－这个前置表明定义在”IP Version 6 Addressing Architecture”（RFC 4291）中的多播地址[</li>
+</ul>
+<h4 id="IPv4转译地址"><a href="#IPv4转译地址" class="headerlink" title="IPv4转译地址"></a>IPv4转译地址</h4><ul>
+<li>::ffff:x.x.x.x&#x2F;96－用于IPv4映射地址。</li>
+<li>2001::&#x2F;32－用于Teredo隧道。</li>
+<li>2002::&#x2F;16－用于6to4。</li>
+</ul>
+<h2 id="IPv6优势"><a href="#IPv6优势" class="headerlink" title="IPv6优势"></a>IPv6优势</h2><ul>
+<li>巨大的地址空间</li>
+<li>新的协议头格式，加快路由速度</li>
+<li>有效地、分级的寻址和路由结构</li>
+<li>有状态和无状态的地址配置</li>
+<li>内置的安全性</li>
+<li>更好的支持Qos</li>
+<li>用新协议处理邻节点的交互</li>
+<li>可扩展性</li>
+</ul>
+<h1 id="设置华为光猫HG8245C开启IPv6步骤"><a href="#设置华为光猫HG8245C开启IPv6步骤" class="headerlink" title="设置华为光猫HG8245C开启IPv6步骤"></a>设置华为光猫HG8245C开启IPv6步骤</h1><p>在设置华为光猫HG8245C开启IPv6之前，一是要确保所在电信已支持IPv6服务。二是获取华为HG8245C隐藏管理员帐号telecomadmin的密码，通常为<strong>nE7jA%5m</strong>。</p>
+<p>以隐藏管理员帐号telecomadmin登录华为HG8245C的Web管理控制台后，选择“网络-&gt;宽带设置”，选择连接”2_INTERNET_R_VID_”,设置协议类型为“IPv4&#x2F;IPv6”，设置前缀获取方式为“DHCPv6-PD”,再点应用即可。</p>
+<p align="center">
+    <img src="images/open_ipv6.png" width="90%" alt="开启IPv6"/>
+</p>
+
+<p>在Debian Linux中打开终端，输入如下命令或者浏览网站<a target="_blank" rel="noopener" href="http://test-ipv6.com/%E9%AA%8C%E8%AF%81IPv6%E3%80%82">http://test-ipv6.com/验证IPv6。</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ ip addr</span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: wlan0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000</span><br><span class="line">    link/ether e4:70:b8:30:f1:5b brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.1.100/24 brd 192.168.1.255 scope global dynamic noprefixroute wlan0</span><br><span class="line">       valid_lft 251566sec preferred_lft 251566sec</span><br><span class="line">    inet6 240e:bc:e60:3d00:ea5b:f704:6b65:fab1/64 scope global dynamic noprefixroute </span><br><span class="line">       valid_lft 258984sec preferred_lft 172584sec</span><br><span class="line">    inet6 fe80::4e2c:4397:f016:3eb4/64 scope link noprefixroute </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="http://www.c114.com.cn/news/117/a1059059.html">中国电信：IPv6在线用户已超千万 年底将完成端到端服务能力</a>.2018-07-16</li>
+<li>维基百科.<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/IPv6">IPv6</a></li>
+<li><a target="_blank" rel="noopener" href="http://network.51cto.com/art/201006/204898.htm">掌握IPv6网络协议的优势</a>,2010-06-10</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/IPv6/" rel="tag"># IPv6</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/11/09/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AD%A6%E4%B9%A0%E4%B9%8BSFTP%E7%AE%A1%E7%90%86%E6%96%87%E4%BB%B6/" rel="prev" title="树莓派学习之SFTP管理文件">
+                  <i class="fa fa-angle-left"></i> 树莓派学习之SFTP管理文件
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/11/17/%E7%94%9F%E6%B4%BB%E4%B8%AD%E7%9A%84%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%8B%E8%B4%AD%E4%B9%B0%E8%BD%A6%E5%B1%95%E9%BB%84%E7%89%9B%E7%A5%A8/" rel="next" title="生活中的统计学之购买车展黄牛票">
+                  生活中的统计学之购买车展黄牛票 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

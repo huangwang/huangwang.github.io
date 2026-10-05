@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="图片、声音、视频等大文件在后台数据库中的存储管理方式通常有两种:  文件存储到数据库中 文件存储到文件系统中,数据库中保存文件路径  这两种文件存储管理方式有各自优缺点, 选择哪种方法存储大文件应根据具体情况而定。 文件系统存储管理方式文件系统存储管理方式将文件存储到磁盘中，在数据库中使用varchar类型记录文件路径。该方法的缺点主要有：  文件不支持DELETE  当删除文件路径时，不支持自动">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图片或多媒体大文件的存储与管理">
+<meta property="og:url" content="https://huangwang.github.io/2019/10/10/%E5%9B%BE%E7%89%87%E6%88%96%E5%A4%9A%E5%AA%92%E4%BD%93%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E5%AD%98%E5%82%A8%E4%B8%8E%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="图片、声音、视频等大文件在后台数据库中的存储管理方式通常有两种:  文件存储到数据库中 文件存储到文件系统中,数据库中保存文件路径  这两种文件存储管理方式有各自优缺点, 选择哪种方法存储大文件应根据具体情况而定。 文件系统存储管理方式文件系统存储管理方式将文件存储到磁盘中，在数据库中使用varchar类型记录文件路径。该方法的缺点主要有：  文件不支持DELETE  当删除文件路径时，不支持自动">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-10-10T00:45:27.000Z">
+<meta property="article:modified_time" content="2019-10-11T14:07:39.267Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="软件工程">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2019/10/10/%E5%9B%BE%E7%89%87%E6%88%96%E5%A4%9A%E5%AA%92%E4%BD%93%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E5%AD%98%E5%82%A8%E4%B8%8E%E7%AE%A1%E7%90%86/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2019/10/10/%E5%9B%BE%E7%89%87%E6%88%96%E5%A4%9A%E5%AA%92%E4%BD%93%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E5%AD%98%E5%82%A8%E4%B8%8E%E7%AE%A1%E7%90%86/","path":"2019/10/10/图片或多媒体大文件的存储与管理/","title":"图片或多媒体大文件的存储与管理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>图片或多媒体大文件的存储与管理 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">文件系统存储管理方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E5%AD%98%E5%82%A8%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">数据库中存储文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E5%AA%92%E4%BD%93%E5%A4%A7%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8%E5%BB%BA%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">多媒体大文件存储建议</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/10/%E5%9B%BE%E7%89%87%E6%88%96%E5%A4%9A%E5%AA%92%E4%BD%93%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E5%AD%98%E5%82%A8%E4%B8%8E%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="图片或多媒体大文件的存储与管理 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          图片或多媒体大文件的存储与管理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-10-10 08:45:27" itemprop="dateCreated datePublished" datetime="2019-10-10T08:45:27+08:00">2019-10-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-10-11 22:07:39" itemprop="dateModified" datetime="2019-10-11T22:07:39+08:00">2019-10-11</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>图片、声音、视频等大文件在后台数据库中的存储管理方式通常有两种:</p>
+<ul>
+<li>文件存储到数据库中</li>
+<li>文件存储到文件系统中,数据库中保存文件路径</li>
+</ul>
+<p>这两种文件存储管理方式有各自优缺点, 选择哪种方法存储大文件应根据具体情况而定。</p>
+<h1 id="文件系统存储管理方式"><a href="#文件系统存储管理方式" class="headerlink" title="文件系统存储管理方式"></a>文件系统存储管理方式</h1><p>文件系统存储管理方式将文件存储到磁盘中，在数据库中使用varchar类型记录文件路径。该方法的缺点主要有：</p>
+<ul>
+<li>文件不支持DELETE</li>
+</ul>
+<p>当删除文件路径时，不支持自动删除对应文件。</p>
+<ul>
+<li>文件不支持事务隔离</li>
+</ul>
+<p>如果改变文件内容或删除文件，这些操作将立刻被其他客户端看到。</p>
+<ul>
+<li>文件不支持回滚</li>
+</ul>
+<p>数据库记录能够恢复，但文件删除不能。</p>
+<ul>
+<li><p>文件不支持数据库的备份工具</p>
+</li>
+<li><p>文件不支持SQL的访问权限设置</p>
+</li>
+<li><p>文件不是SQL数据类型</p>
+</li>
+</ul>
+<p>数据库不会验证文件路径是否有效。当文件移动、重命名、删除时，数据不会自动更新路径。</p>
+<h1 id="数据库中存储文件"><a href="#数据库中存储文件" class="headerlink" title="数据库中存储文件"></a>数据库中存储文件</h1><p>数据库通常支持BLOB类型，可用于存储任何二进制数据。数据库中存储文件，其优点对应文件系统管理存储方式的缺点。同样，数据库中存储文件也存在一些缺点：</p>
+<ul>
+<li>对数据库的读&#x2F;写的速度永远都赶不上文件系统处理的速度</li>
+<li>数据库备份变的巨大，越来越耗时间</li>
+<li>对文件的访问需要穿越你的应用层和数据库层</li>
+</ul>
+<h1 id="多媒体大文件存储建议"><a href="#多媒体大文件存储建议" class="headerlink" title="多媒体大文件存储建议"></a>多媒体大文件存储建议</h1><p>当只涉及较小规模图片、音频的存储时，建议直接存放到数据库中。当涉及视频大文件存储时，建议还是用文件系统存储。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://gitee.com/jkxqj/java_wiki/blob/master/SQL%E5%8F%8D%E6%A8%A1%E5%BC%8F.pdf">SQL反模式</a>,by Bill karwin著, 谭振林, Push Chen译.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/hellojesson/p/6295797.html">特殊格式文件(视频、声音等) 在数据库中的存储方式</a>,by Jesson.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wangtao_20/p/3440570.html">关于图片或者文件在数据库的存储方式归纳</a>,by 王滔.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/studyzy/archive/2009/02/23/1396712.html">SQL Server 2008新特性——FILESTREAM</a>,by 曾毅.</li>
+<li><a target="_blank" rel="noopener" href="https://www.iteye.com/blog/lxy2330-961266">oracle对大对象类型操作：blob，clob，nclob，bfile</a>,by lxy2330.</li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/22128674">类似优酷土豆视频网站的视频源文件一般是存储在什么样系统上？</a>,by zhihu.</li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/18518290/how-to-add-hours-to-current-date-in-sql-server/18518412">How to add hours to current date in SQL Server?</a>,by stackoverflow.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/" rel="tag"># 软件工程</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/10/10/Windows%E4%B8%8BQT%E4%B8%8EOSG%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" rel="prev" title="Windows下QT与OSG开发环境配置">
+                  <i class="fa fa-angle-left"></i> Windows下QT与OSG开发环境配置
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/10/10/JavaScript%E5%AF%B9%E8%B1%A1%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86/" rel="next" title="JavaScript对象深度克隆">
+                  JavaScript对象深度克隆 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="在数学中，**傅里叶级数（Fourier series）**能将任何周期函数或周期信号分解成一个（可能由无穷个元素组成的）简单振荡函数的集合，即正弦函数和余弦函数（或者，等价地使用复指数）。**傅里叶变换（Fourier transform）**是一种线性积分变换，用于信号在时域（或空域）和频域之间的变换，在物理学和工程学中有许多应用。傅里叶变换就像化学分析，确定物质的基本成分；信号来自自然界，也">
+<meta property="og:type" content="article">
+<meta property="og:title" content="傅里叶级数和变换学习笔记">
+<meta property="og:url" content="https://huangwang.github.io/2019/07/01/%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0%E5%92%8C%E5%8F%98%E6%8D%A2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="在数学中，**傅里叶级数（Fourier series）**能将任何周期函数或周期信号分解成一个（可能由无穷个元素组成的）简单振荡函数的集合，即正弦函数和余弦函数（或者，等价地使用复指数）。**傅里叶变换（Fourier transform）**是一种线性积分变换，用于信号在时域（或空域）和频域之间的变换，在物理学和工程学中有许多应用。傅里叶变换就像化学分析，确定物质的基本成分；信号来自自然界，也">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-07-01T12:50:33.000Z">
+<meta property="article:modified_time" content="2019-10-04T09:31:39.913Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="计算机视觉">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2019/07/01/%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0%E5%92%8C%E5%8F%98%E6%8D%A2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2019/07/01/%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0%E5%92%8C%E5%8F%98%E6%8D%A2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/","path":"2019/07/01/傅里叶级数和变换学习笔记/","title":"傅里叶级数和变换学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>傅里叶级数和变换学习笔记 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0%E5%85%AC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">傅里叶级数公式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0%E7%9A%84%E6%94%B6%E6%95%9B%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">傅里叶级数的收敛性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0%E7%9A%84%E6%8C%87%E6%95%B0%E5%BD%A2%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">傅里叶级数的指数形式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2"><span class="nav-number">4.</span> <span class="nav-text">傅里叶变换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2%E6%9D%A1%E4%BB%B6"><span class="nav-number">5.</span> <span class="nav-text">傅里叶变换条件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/07/01/%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0%E5%92%8C%E5%8F%98%E6%8D%A2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="傅里叶级数和变换学习笔记 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          傅里叶级数和变换学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-07-01 20:50:33" itemprop="dateCreated datePublished" datetime="2019-07-01T20:50:33+08:00">2019-07-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-10-04 17:31:39" itemprop="dateModified" datetime="2019-10-04T17:31:39+08:00">2019-10-04</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在数学中，**傅里叶级数（Fourier series）**能将任何周期函数或周期信号分解成一个（可能由无穷个元素组成的）简单振荡函数的集合，即正弦函数和余弦函数（或者，等价地使用复指数）。**傅里叶变换（Fourier transform）**是一种线性积分变换，用于信号在时域（或空域）和频域之间的变换，在物理学和工程学中有许多应用。傅里叶变换就像化学分析，确定物质的基本成分；信号来自自然界，也可对其进行分析，确定其基本成分。</p>
+<h1 id="傅里叶级数公式"><a href="#傅里叶级数公式" class="headerlink" title="傅里叶级数公式"></a>傅里叶级数公式</h1><p>傅里叶级数的公式：</p>
+<p>$$<br>f(t) &#x3D;\frac{a_{0}}{2}+a_{1}cos(\omega t)+b_{1}sin(\omega t) \<br>+a_{2}cos(2\omega t)+b_{2}sin(2\omega t) +…\<br>&#x3D;\frac{a_{0}}{2}+\sum_{n&#x3D;1}^{\infty}{[a_{n}cos(n\omega t)+b_{n}sin(n\omega t)]}  \tag{1}<br>$$</p>
+<p>其中：<br>$$<br>a_{n}&#x3D;\frac{2}{T}\int_{t_{0}}^{t_{0}+T}f(t)cos(n\omega t)dt \tag{2}<br>$$<br>$$<br>b_{n}&#x3D;\frac{2}{T}\int_{t_{0}}^{t_{0}+T}f(t)sin(n\omega t)dt \tag{3}<br>$$</p>
+<h1 id="傅里叶级数的收敛性"><a href="#傅里叶级数的收敛性" class="headerlink" title="傅里叶级数的收敛性"></a>傅里叶级数的收敛性</h1><p>若傅里叶级数不收敛于$f(t)$，则不能在两者之间画等号。关于傅里叶级数的收敛性，最常用的为狄利克雷条件：</p>
+<blockquote>
+<p>对于一个周期为$2\pi$的函数$f(x)$，如果它满足：</p>
+</blockquote>
+<blockquote>
+<p>（1）在一个周期内连续或只有有限个第一类间断点；</p>
+</blockquote>
+<blockquote>
+<p>（2）在一个周期内只有有限个极值点。</p>
+</blockquote>
+<blockquote>
+<p>那么$f(x)$的傅里叶级数收敛于$\frac{f(x+0)+f(x-0)}{2}$。</p>
+</blockquote>
+<p>狄利克雷条件只是傅里叶级数收敛的充分条件，而非必要条件，级数收敛不代表该条件成立。</p>
+<p>下面给出一个周期函数的傅里叶级数的计算示例。</p>
+<p>周期为$2\pi$的函数$f(x)$，在$(-\pi,\pi)$上$f(x)&#x3D;x$，求$f(x)$的傅里叶级数。</p>
+<p>$$a_n&#x3D;\frac{1}{\pi}\int_{-\pi}^{\pi}x\mathrm{cos}nx\mathrm{d}x&#x3D;0$$</p>
+<p>$$b_n&#x3D;\frac{1}{\pi}\int_{-\pi}^{\pi}x\mathrm{sin}nx\mathrm{d}x&#x3D;(-1)^{n+1}\frac{2}{n}$$</p>
+<p>狄利克雷条件显然成立，所以</p>
+<p>$$f(x)&#x3D;\sum^{\infty}_{n&#x3D;1}(-1)^{n+1}\frac{2}{n}\mathrm{sin}nx$$</p>
+<h1 id="傅里叶级数的指数形式"><a href="#傅里叶级数的指数形式" class="headerlink" title="傅里叶级数的指数形式"></a>傅里叶级数的指数形式</h1><p>令$i$表示虚数单位，傅里叶级数的指数形式为:</p>
+<p>$$f(t)&#x3D;\sum^{\infty}_{n&#x3D;-\infty}c_ne^{in\omega t}$$</p>
+<p>其中,</p>
+<p>$$c_n&#x3D;\frac{1}{T}\int^{T}_{0}f(t)e^{-in\omega t}\mathrm{d}t$$</p>
+<p>指数形式与三角形式是相等的，推导如下:</p>
+<p>$$\begin{aligned}<br>&amp;\quad\sum^{\infty}<em>{n&#x3D;-\infty}c_ne^{in\omega t}\<br>&amp;&#x3D;c_0+\sum^{\infty}</em>{n&#x3D;1}(c_ne^{in\omega t}+c_{-n}e^{-in\omega t}） \<br>&amp;&#x3D;c_0+\sum^{\infty}<em>{n&#x3D;1}[(c_n+c</em>{-n})\mathrm{cos}n\omega t+i(c_n-c_{-n})\mathrm{sin}n\omega t] \<br>&amp;&#x3D;\frac{a_0}{2}+\sum_{n&#x3D;1}^{\infty}(a_n \mathrm{cos}n \omega t+b_n \mathrm{sin}n \omega t)<br>\end{aligned}<br>$$</p>
+<h1 id="傅里叶变换"><a href="#傅里叶变换" class="headerlink" title="傅里叶变换"></a>傅里叶变换</h1><p>傅里叶变换是傅里叶级数在非周期函数上的推广。对非周期函数$f(x)$，其周期$T\rightarrow\infty$。因为$\omega_0&#x3D;\frac{2\pi}{T}$，则$\omega_0\rightarrow0$。</p>
+<p>观察傅里叶级数的指数形式</p>
+<p>$$f(t)&#x3D;\sum^{\infty}_{n&#x3D;-\infty}c_ne^{in\omega t} \tag{1}$$</p>
+<p>其中,</p>
+<p>$$c_n&#x3D;\frac{1}{T}\int^{T}_{0}f(t)e^{-in\omega t}\mathrm{d}t \tag{2}$$</p>
+<p>当 $\omega_0\rightarrow0$ 时， $n\omega_0$ 从原本的离散变化变成了连续变化， $c_n$ 也就可以表示为关于 $n\omega_0$ 的函数 $F(n\omega_0)$ 。</p>
+<p>傅里叶级数中公式（2）的积分的上下限不一定是$0$到$T$，只需要$f(t)$的一个周期就可以了。即对于任意的$x_0$, 公式(2)可表示为：</p>
+<p>$$c_n&#x3D;\frac{1}{T}\int^{x_0+T}_{x_0}f(t)e^{-in\omega_0 t}\mathrm{d}t \tag{3}$$</p>
+<p>这个积分需要积一整个周期，而此时的周期为无穷大，也就是整个定义域上都需要积，所以要从$-\infty$积分到$\infty$。</p>
+<p>只需要让上式中的 $T\rightarrow\infty$ ， $\omega_0\rightarrow0$ ，便可以得到 $F(n\omega_0)$ 的表达式。不妨令 $\omega&#x3D;n\omega_0$ ，就得到了 </p>
+<p>$$F(\omega)&#x3D;\frac{1}{T}\int^{\infty}_{-\infty}f(t)e^{-i\omega t}\mathrm{d}t \tag{4}$$ </p>
+<p>由于$\frac{1}{T}\rightarrow0$，我们先丢弃$\frac{1}{T}$，之后用到$F(\omega)$在乘回来，于是令：</p>
+<p>$$F(\omega)&#x3D;\int^{\infty}_{-\infty}f(t)e^{-i\omega t}\mathrm{d}t \tag{5}$$ </p>
+<p>将公式（5）代入公式（1），并代入$\frac{1}{T}&#x3D;\frac{\omega_0}{2\pi}$，则有：</p>
+<p>$$f(t)&#x3D;\frac{1}{2\pi}\sum^{\infty}_{n&#x3D;-\infty}F(n\omega_0)e^{in\omega_0 t}\omega_0 \tag{6}$$</p>
+<p>因为 $\omega&#x3D;n\omega_0$ ，每次 $\omega$ 的增量 $d\omega$ 都是由于 $n$ 变为 $n+1$ 造成的，所以</p>
+<p>$$\mathrm{d}\omega&#x3D;(n+1)\omega_0-n\omega_0&#x3D;\omega_0$$</p>
+<p>同时 $n\omega_0$ 连续变化，原本的离散意义下的求和就该变为连续意义下的积分，于是公式（6）变形为：</p>
+<p>$$f(t)&#x3D;\frac{1}{2\pi}\int_{-\infty}^{\infty}F(\omega)e^{i\omega t}\mathrm{d}\omega \tag{7}$$</p>
+<p>至此得到傅里叶变换的两个公式：</p>
+<p>$$F(\omega)&#x3D;ℱ[f(t)]&#x3D;\int^{\infty}_{-\infty}f(t)e^{-i\omega t}\mathrm{d}t$$</p>
+<p>$$f(t)&#x3D;ℱ^{-1}[F(\omega)]&#x3D;\frac{1}{2\pi}\int_{-\infty}^{\infty}F(\omega)e^{i\omega t}\mathrm{d}\omega$$</p>
+<h1 id="傅里叶变换条件"><a href="#傅里叶变换条件" class="headerlink" title="傅里叶变换条件"></a>傅里叶变换条件</h1><p>由于傅里叶变换是从傅里叶级数推导得来的，所以还是狄利克雷条件，不过此时还要加上第三条，  $f(t)$ 在一个周期内绝对可积。</p>
+<p>这一个条件在 $f(t)$ 为周期函数时，可以由前两个条件推出来，因为周期和函数值均为有限值，所以在一个周期内一定绝对可积。但是推广到傅里叶变换后，这个推导就不成立了，需要单独判定第三个条件。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/19763358">傅里叶分析之掐死教程</a>,by Heinrich.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/32341301">傅里叶级数和傅里叶变换</a>,by 木不shi丁.</li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21665935">傅里叶级数和傅里叶变换是什么关系？</a>,by 马同学.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/52158237">傅里叶级数与傅里叶变换推导</a>,by 令狐哦打.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0">傅里叶级数</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2">傅里叶变换</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/41455378">傅里叶系列（一）傅里叶级数的推导</a>,by ElPsyCongree.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/55566705">傅里叶变换（一） 傅里叶级数</a>,by misaka.</li>
+<li><a target="_blank" rel="noopener" href="http://www.jezzamon.com/fourier/zh-cn.html">傅里叶变换交互式入门</a>,by Jez Swanson.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" rel="tag"># 计算机视觉</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/06/29/%E4%BD%BF%E7%94%A8python3-PyQt5-pycharm%E6%A1%8C%E9%9D%A2GUI%E5%BC%80%E5%8F%91/" rel="prev" title="使用python3+PyQt5+PyCharm桌面GUI开发">
+                  <i class="fa fa-angle-left"></i> 使用python3+PyQt5+PyCharm桌面GUI开发
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/07/05/%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%BA%BF%E6%80%A7%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="信号与线性系统学习笔记">
+                  信号与线性系统学习笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Sequelize 是一个基于 promise 的 Node.js ORM, 目前支持 Postgres, MySQL, SQLite 和 Microsoft SQL Server. 它具有强大的事务支持, 关联关系, 读取和复制等功能[2]. 下面主要介绍如何使用sequelize-cli工具快速构建nodejs的数据访问层。 基于express创建nodejs web应用基于express建立">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sequelize-cli使用经验总结">
+<meta property="og:url" content="https://huangwang.github.io/2018/06/22/sequelize-cli%E4%BD%BF%E7%94%A8%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="Sequelize 是一个基于 promise 的 Node.js ORM, 目前支持 Postgres, MySQL, SQLite 和 Microsoft SQL Server. 它具有强大的事务支持, 关联关系, 读取和复制等功能[2]. 下面主要介绍如何使用sequelize-cli工具快速构建nodejs的数据访问层。 基于express创建nodejs web应用基于express建立">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-06-22T14:12:55.000Z">
+<meta property="article:modified_time" content="2022-10-17T09:18:49.061Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="nodejs">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2018/06/22/sequelize-cli%E4%BD%BF%E7%94%A8%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2018/06/22/sequelize-cli%E4%BD%BF%E7%94%A8%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/","path":"2018/06/22/sequelize-cli使用经验总结/","title":"sequelize-cli使用经验总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>sequelize-cli使用经验总结 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8Eexpress%E5%88%9B%E5%BB%BAnodejs-web%E5%BA%94%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">基于express创建nodejs web应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8Esequelize%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE%E5%B1%82%E5%92%8C%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.</span> <span class="nav-text">基于sequelize创建数据访问层和数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85sequlize"><span class="nav-number">2.1.</span> <span class="nav-text">安装sequlize</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85sequelize-cli"><span class="nav-number">2.2.</span> <span class="nav-text">安装sequelize-cli</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E5%88%9D%E5%A7%8B%E7%9A%84ORM%E5%BC%95%E5%AF%BC%E6%A1%86%E6%9E%B6"><span class="nav-number">2.3.</span> <span class="nav-text">建立初始的ORM引导框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BB%A5%E8%BF%9E%E6%8E%A5%E5%88%B0%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F%EF%BC%8C%E5%B9%B6%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.4.</span> <span class="nav-text">修改配置文件以连接到数据库管理系统，并创建数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.5.</span> <span class="nav-text">创建模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%85%B3%E7%B3%BB"><span class="nav-number">2.6.</span> <span class="nav-text">定义关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%92%8C%E8%BF%90%E8%A1%8C%E8%BF%81%E7%A7%BB"><span class="nav-number">2.7.</span> <span class="nav-text">修改和运行迁移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%A7%8D%E5%AD%90%EF%BC%8C%E7%94%9F%E6%88%90%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE"><span class="nav-number">2.8.</span> <span class="nav-text">创建种子，生成测试数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">工程实践经验总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2018/06/22/sequelize-cli%E4%BD%BF%E7%94%A8%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="sequelize-cli使用经验总结 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          sequelize-cli使用经验总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-06-22 22:12:55" itemprop="dateCreated datePublished" datetime="2018-06-22T22:12:55+08:00">2018-06-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-10-17 17:18:49" itemprop="dateModified" datetime="2022-10-17T17:18:49+08:00">2022-10-17</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Sequelize 是一个基于 promise 的 Node.js ORM, 目前支持 Postgres, MySQL, SQLite 和 Microsoft SQL Server. 它具有强大的事务支持, 关联关系, 读取和复制等功能<sup>[2]</sup>. 下面主要介绍如何使用sequelize-cli工具快速构建nodejs的数据访问层。</p>
+<h1 id="基于express创建nodejs-web应用"><a href="#基于express创建nodejs-web应用" class="headerlink" title="基于express创建nodejs web应用"></a>基于express创建nodejs web应用</h1><p>基于express建立nodejs的web应用，在此基础上再使用sequlize建立数据访问层和数据库。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir myapp</span><br><span class="line">cd myapp</span><br><span class="line">express</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+
+<h1 id="基于sequelize创建数据访问层和数据库"><a href="#基于sequelize创建数据访问层和数据库" class="headerlink" title="基于sequelize创建数据访问层和数据库"></a>基于sequelize创建数据访问层和数据库</h1><h2 id="安装sequlize"><a href="#安装sequlize" class="headerlink" title="安装sequlize"></a>安装sequlize</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save sequelize</span><br><span class="line">npm install --save mysql2</span><br></pre></td></tr></table></figure>
+<h2 id="安装sequelize-cli"><a href="#安装sequelize-cli" class="headerlink" title="安装sequelize-cli"></a>安装sequelize-cli</h2><p>首先应安装sequelize-cli工具，可以选择全局安装，也可以选择本地安装。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev sequelize-cli</span><br><span class="line">npm install -g sequelize-cli</span><br></pre></td></tr></table></figure>
+<h2 id="建立初始的ORM引导框架"><a href="#建立初始的ORM引导框架" class="headerlink" title="建立初始的ORM引导框架"></a>建立初始的ORM引导框架</h2><p>使用如下命令在Nodejs Web应用中建立初始的数据访问层。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir db</span><br><span class="line">cd db</span><br><span class="line">../node_modules/.bin/sequelize init</span><br></pre></td></tr></table></figure>
+<p>这将创建以下文件夹:</p>
+<ul>
+<li>config, 包含配置文件，它告诉CLI如何连接数据库</li>
+<li>models,包含您的项目的所有模型</li>
+<li>migrations, 包含所有迁移文件</li>
+<li>seeders, 包含所有种子文件</li>
+</ul>
+<h2 id="修改配置文件以连接到数据库管理系统，并创建数据库"><a href="#修改配置文件以连接到数据库管理系统，并创建数据库" class="headerlink" title="修改配置文件以连接到数据库管理系统，并创建数据库"></a>修改配置文件以连接到数据库管理系统，并创建数据库</h2><p>在建立模型之前，应先修改config&#x2F;config.json，以告诉 CLI 如何连接到数据库。config&#x2F;config.json内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;development&quot;: &#123;</span><br><span class="line">    &quot;username&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;password&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;database&quot;: &quot;database_development&quot;,</span><br><span class="line">    &quot;host&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;dialect&quot;: &quot;mysql&quot;,</span><br><span class="line">    &quot;pool&quot;:&#123;</span><br><span class="line">        &quot;max&quot;: 5,</span><br><span class="line">        &quot;min&quot;: 0,</span><br><span class="line">        &quot;idle&quot;: 10000</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;timezone&quot;: &quot;+08:00&quot;,</span><br><span class="line">    &quot;define&quot;:&#123;</span><br><span class="line">      &quot;charset&quot;: &quot;utf8&quot;,</span><br><span class="line">      &quot;dialectOptions&quot;:&#123;</span><br><span class="line">          &quot;collate&quot;: &quot;utf8_general_ci&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;test&quot;: &#123;</span><br><span class="line">    &quot;username&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;password&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;database&quot;: &quot;database_test&quot;,</span><br><span class="line">    &quot;host&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;dialect&quot;: &quot;mysql&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;production&quot;: &#123;</span><br><span class="line">    &quot;username&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;password&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;database&quot;: &quot;database_test&quot;,</span><br><span class="line">    &quot;host&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;dialect&quot;: &quot;mysql&quot;,</span><br><span class="line">    &quot;pool&quot;:&#123;</span><br><span class="line">        &quot;max&quot;: 5,</span><br><span class="line">        &quot;min&quot;: 0,</span><br><span class="line">        &quot;idle&quot;: 10000</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;timezone&quot;: &quot;+08:00&quot;,</span><br><span class="line">    &quot;define&quot;:&#123;</span><br><span class="line">      &quot;charset&quot;: &quot;utf8&quot;,</span><br><span class="line">      &quot;dialectOptions&quot;:&#123;</span><br><span class="line">          &quot;collate&quot;: &quot;utf8_general_ci&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述配置修改了数据库的字符集，使之能支持中文。当然在创建数据库之前，应配置mysql数据库管理系，使其支持utf8字符集。可执行如下命令查看其支持的字符集，如果其不支持uft字符集，请按照参考链接[3]进行修改。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables like &#x27;%char%&#x27;;</span><br><span class="line">+--------------------------+---------------------------------------------------------+</span><br><span class="line">| Variable_name            | Value                                                   |</span><br><span class="line">+--------------------------+---------------------------------------------------------+</span><br><span class="line">| character_set_client     | utf8                                                    |</span><br><span class="line">| character_set_connection | utf8                                                    |</span><br><span class="line">| character_set_database   | utf8                                                    |</span><br><span class="line">| character_set_filesystem | binary                                                  |</span><br><span class="line">| character_set_results    | utf8                                                    |</span><br><span class="line">| character_set_server     | utf8                                                    |</span><br><span class="line">| character_set_system     | utf8                                                    |</span><br><span class="line">| character_sets_dir       | C:\Program Files\MySQL\MySQL Server 5.5\share\charsets\ |</span><br><span class="line">+--------------------------+---------------------------------------------------------+</span><br><span class="line">8 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>使用如下命令创建数据库：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize db:create</span><br></pre></td></tr></table></figure>
+
+<p>使用如下命令删除数据库：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize db:drop</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建模型"><a href="#创建模型" class="headerlink" title="创建模型"></a>创建模型</h2><p>我们将使用 model:generate 命令。 此命令需要两个选项：</p>
+<ul>
+<li>name, 模型的名称</li>
+<li>attributes, 模型的属性列表</li>
+</ul>
+<p>创建一个名叫 User 的模型：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize model:generate --name User --attributes firstName:string,lastName:string,email:string</span><br></pre></td></tr></table></figure>
+<p>这将发生以下事情:</p>
+<ul>
+<li>在 models 文件夹中创建了一个 user 模型文件</li>
+<li>在 migrations 文件夹中创建了一个名字像 XXXXXXXXXXXXXX-create-user.js 的迁移文件</li>
+</ul>
+<p><b>注意:</b> _Sequelize 将只使用模型文件，它是表描述。另一边，迁移文件是该模型的更改，或更具体的是说 CLI 所使用的表。 处理迁移，如提交或日志，以进行数据库的某些更改。</p>
+<p>再创建一个名为Role的模型，它跟User是一对多的关系：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize model:generate --name Role --attributes roleName:string</span><br></pre></td></tr></table></figure>
+
+<h2 id="定义关系"><a href="#定义关系" class="headerlink" title="定义关系"></a>定义关系</h2><p>Role和User是一对多的关系，因此需要修改它们的模型定义。<br>修改models&#x2F;role.js如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x27;use strict&#x27;;</span><br><span class="line">module.exports = (sequelize, DataTypes) =&gt; &#123;</span><br><span class="line">  var Role = sequelize.define(&#x27;Role&#x27;, &#123;</span><br><span class="line">    roleName: DataTypes.STRING</span><br><span class="line">  &#125;, &#123;&#125;);</span><br><span class="line">  Role.associate = function(models) &#123;</span><br><span class="line">    // associations can be defined here</span><br><span class="line">    Role.hasMany(models.User)</span><br><span class="line">  &#125;;</span><br><span class="line">  return Role;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>修改models&#x2F;user.js如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#x27;use strict&#x27;;</span><br><span class="line">module.exports = (sequelize, DataTypes) =&gt; &#123;</span><br><span class="line">  var User = sequelize.define(&#x27;User&#x27;, &#123;</span><br><span class="line">    firstName: DataTypes.STRING,</span><br><span class="line">    lastName: DataTypes.STRING,</span><br><span class="line">    email: DataTypes.STRING</span><br><span class="line">  &#125;, &#123;&#125;);</span><br><span class="line">  User.associate = function(models) &#123;</span><br><span class="line">    // associations can be defined here</span><br><span class="line">    User.belongsTo(models.Role, &#123;</span><br><span class="line">            onDelete: &quot;NULL&quot;,</span><br><span class="line">            foreignKey: &#123;</span><br><span class="line">                allowNull: false</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">  &#125;;</span><br><span class="line">  return User;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="修改和运行迁移"><a href="#修改和运行迁移" class="headerlink" title="修改和运行迁移"></a>修改和运行迁移</h2><p>Role和User是一对多的关系，因此需要修改User迁移文件的定义。<br>修改migrates&#x2F;20180622153152-create-user.js如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">&#x27;use strict&#x27;;</span><br><span class="line">module.exports = &#123;</span><br><span class="line">  up: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">    return queryInterface.createTable(&#x27;Users&#x27;, &#123;</span><br><span class="line">      id: &#123;</span><br><span class="line">        allowNull: false,</span><br><span class="line">        autoIncrement: true,</span><br><span class="line">        primaryKey: true,</span><br><span class="line">        type: Sequelize.INTEGER</span><br><span class="line">      &#125;,</span><br><span class="line">      roleId: &#123; // name of the key we&#x27;re adding </span><br><span class="line">          type: Sequelize.INTEGER,</span><br><span class="line">          allowNull: false,</span><br><span class="line">          references: &#123;</span><br><span class="line">              model: &#x27;Roles&#x27;, // name of Target model</span><br><span class="line">              key: &#x27;id&#x27;, // key in Target model that we&#x27;re referencing</span><br><span class="line">          &#125;,</span><br><span class="line">          onUpdate: &#x27;CASCADE&#x27;,</span><br><span class="line">          onDelete: &#x27;CASCADE&#x27;,</span><br><span class="line">      &#125;,</span><br><span class="line">      firstName: &#123;</span><br><span class="line">        type: Sequelize.STRING</span><br><span class="line">      &#125;,</span><br><span class="line">      lastName: &#123;</span><br><span class="line">        type: Sequelize.STRING</span><br><span class="line">      &#125;,</span><br><span class="line">      email: &#123;</span><br><span class="line">        type: Sequelize.STRING</span><br><span class="line">      &#125;,</span><br><span class="line">      createdAt: &#123;</span><br><span class="line">        allowNull: false,</span><br><span class="line">        type: Sequelize.DATE</span><br><span class="line">      &#125;,</span><br><span class="line">      updatedAt: &#123;</span><br><span class="line">        allowNull: false,</span><br><span class="line">        type: Sequelize.DATE</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">  down: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">    return queryInterface.dropTable(&#x27;Users&#x27;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>注意：这里主要给User添加了外键字段，外键字段命名有规则：通常为小写的模型名加Id，即驼峰风格。例如这里加了roleId的外键字段。</strong></p>
+<p>直到目前为止，CLI没有将任何东西插入数据库。 刚刚为模型 User和Role创建了必需的模型和迁移文件。 现在要在数据库中实际创建该表，需要运行 db:migrate 命令。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize db:migrate</span><br></pre></td></tr></table></figure>
+
+<p>此命令将执行这些步骤：</p>
+<ul>
+<li>将在数据库中创建一个名为 SequelizeMeta 的表。 此表用于记录在当前数据库上运行的迁移</li>
+<li>开始寻找尚未运行的任何迁移文件。 这可以通过检查 SequelizeMeta 表。 在这个例子中，它将运行创建的 XXXXXXXXXXXXXX-create-role.js和XXXXXXXXXXXXXX-create-user.js 迁移。</li>
+<li>创建一个名为 Roles 的表，其中包含其迁移文件中指定的所有列。</li>
+<li>创建一个名为 Users 的表，其中包含其迁移文件中指定的所有列。</li>
+</ul>
+<p>除了使用sequelize db:migrate命令创建数据库表之外，可以使用models同步创建或删除数据库表，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">if (appConfig.dbCreated === false) &#123;</span><br><span class="line">    models.sequelize.sync().then(function() &#123;</span><br><span class="line">        //保存应用配置</span><br><span class="line">        appConfig.dbCreated = true;</span><br><span class="line">        fs.writeFile(__dirname + &#x27;/../config/appConfig.json&#x27;, JSON.stringify(appConfig), function(err) &#123;</span><br><span class="line">            if (err) return console.error(err);</span><br><span class="line">            console.log(&#x27;app config save is done&#x27;);</span><br><span class="line">        &#125;);</span><br><span class="line">        Promise.all([</span><br><span class="line">          models.T_Role.create(&#123;ID:pwdHash.createMd5(Math.random().toString()),Role_Name:&#x27;管理员&#x27;&#125;),</span><br><span class="line">          models.T_User.create(&#123;ID:pwdHash.createMd5(Math.random().toString()),Account:appConfig.adminAccount,Password:pwdHash.createHash(appConfig.adminPassword),Audit:true,Avatar:&#x27;/avatar/default.jpg&#x27;&#125;),</span><br><span class="line">          models.T_Role.create(&#123;ID:pwdHash.createMd5(Math.random().toString()),Role_Name:&#x27;普通用户&#x27;&#125;)</span><br><span class="line">          </span><br><span class="line">        ]).then(function (result)&#123;</span><br><span class="line">          //console.log(result);</span><br><span class="line">          var role1=result[0];</span><br><span class="line">          var user1=result[1];</span><br><span class="line">          role1.setT_Users(user1).catch(err=&gt;console.log(err));</span><br><span class="line">        &#125;).catch(err=&gt;console.log(err));</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        server.listen(port);</span><br><span class="line">        server.on(&#x27;error&#x27;, onError);</span><br><span class="line">        server.on(&#x27;listening&#x27;, onListening);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    server.listen(port);</span><br><span class="line">    server.on(&#x27;error&#x27;, onError);</span><br><span class="line">    server.on(&#x27;listening&#x27;, onListening);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建种子，生成测试数据"><a href="#创建种子，生成测试数据" class="headerlink" title="创建种子，生成测试数据"></a>创建种子，生成测试数据</h2><p>假设我们希望在默认情况下将一些数据插入到几个表中。 例如创建几个用户和角色：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize seed:generate --name demo-role</span><br><span class="line">../node_modules/.bin/sequelize seed:generate --name demo-user</span><br></pre></td></tr></table></figure>
+<p>这个命令将会在 seeders 文件夹中创建两个种子文件。文件名看起来像是 XXXXXXXXXXXXXX-demo-role.js和XXXXXXXXXXXXXX-demo-user.js，它遵循相同的 up&#x2F;down 语义，如迁移文件。</p>
+<p>现在我们应该编辑这两个文件，将演示角色插入Role表,将演示用户插入User表。修改XXXXXXXXXXXXXX-demo-role.js如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#x27;use strict&#x27;;</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  up: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">      return queryInterface.bulkInsert(&#x27;Roles&#x27;, [&#123;</span><br><span class="line">        roleName: &#x27;管理员&#x27;,</span><br><span class="line">        createdAt:new Date(),</span><br><span class="line">        updatedAt:new Date()</span><br><span class="line">      &#125;,&#123;</span><br><span class="line">        roleName: &#x27;普通用户&#x27;,</span><br><span class="line">        createdAt:new Date(),</span><br><span class="line">        updatedAt:new Date()</span><br><span class="line">      &#125;], &#123;&#125;);</span><br><span class="line"></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  down: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">      return queryInterface.bulkDelete(&#x27;Roles&#x27;, null, &#123;&#125;);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>修改XXXXXXXXXXXXXX-demo-user.js如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x27;use strict&#x27;;</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  up: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">      return queryInterface.bulkInsert(&#x27;Users&#x27;, [&#123;</span><br><span class="line">        roleId:1,</span><br><span class="line">        firstName: &#x27;John&#x27;,</span><br><span class="line">        lastName: &#x27;Doe&#x27;,</span><br><span class="line">        email: &#x27;demo@demo.com&#x27;,</span><br><span class="line">        createdAt:new Date(),</span><br><span class="line">        updatedAt:new Date()</span><br><span class="line">      &#125;,&#123;</span><br><span class="line">        roleId:1,</span><br><span class="line">        firstName: &#x27;Jack&#x27;,</span><br><span class="line">        lastName: &#x27;Smith&#x27;,</span><br><span class="line">        email: &#x27;jack@demo.com&#x27;,</span><br><span class="line">        createdAt:new Date(),</span><br><span class="line">        updatedAt:new Date()</span><br><span class="line">      &#125;], &#123;&#125;);</span><br><span class="line"></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  down: (queryInterface, Sequelize) =&gt; &#123;</span><br><span class="line">      return queryInterface.bulkDelete(&#x27;Users&#x27;, null, &#123;&#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>种子文件修改后，即可使用如下命令将演示数据插入数据库中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../node_modules/.bin/sequelize db:seed:all</span><br></pre></td></tr></table></figure>
+
+<h1 id="工程实践经验总结"><a href="#工程实践经验总结" class="headerlink" title="工程实践经验总结"></a>工程实践经验总结</h1><p>在工程实践中，只需使用sequelize-cli创建数据库，生成models即可，然后使用代码直接根据models创建数据库表，并生成测试数据。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="http://docs.sequelizejs.com/">Sequelize Reference</a>，by sequelizejs.</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/demopark/sequelize-docs-Zh-CN">Sequelize 中文文档</a>，by demopark.</li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b85cc8a05e53">解决Mysql中文乱码问题</a>, by 最怕认真.</li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/40734263/how-to-set-primary-key-type-to-uuid-via-sequelize-cli">How to set primary key type to UUID via Sequelize CLI</a>,by stackoverflow.</li>
+<li><a href="https://huangwang.github.io/2019/09/20/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E4%B8%BB%E9%94%AE%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95/">数据库表主键设计方法</a>,by jackhuang.</li>
+<li><a target="_blank" rel="noopener" href="https://sequelize.org/master/variable/index.html#static-variable-DataTypes">Variable</a>,by sequelize.</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/sequelize/sequelize/issues/8444">cascade delete does not work</a>,by sequelize.</li>
+<li><a target="_blank" rel="noopener" href="https://sebhastian.com/sequelize-foreign-key/">Adding foreign key to a table using Sequelize</a>,by Nathan Sebhastian.</li>
+<li><a target="_blank" rel="noopener" href="https://demopark.github.io/sequelize-docs-Zh-CN/advanced-association-concepts/eager-loading.html">Eager Loading - 预先加载</a>,by demopark.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/nodejs/" rel="tag"># nodejs</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/06/21/Visual-Studio-Community-2017%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85/" rel="prev" title="Visual_Studio_Community_2017离线安装">
+                  <i class="fa fa-angle-left"></i> Visual_Studio_Community_2017离线安装
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/07/02/%E5%85%BC%E5%AE%B9%E5%89%8D%E5%90%8E%E7%AB%AF%E5%A4%9A%E7%A7%8DJS%E6%A8%A1%E5%9D%97%E8%A7%84%E8%8C%83%E7%9A%84%E4%BB%A3%E7%A0%81/" rel="next" title="兼容前后端多种JS模块规范的代码">
+                  兼容前后端多种JS模块规范的代码 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

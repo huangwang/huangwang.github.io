@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="OpenGL（英语：Open Graphics Library，译名：开放图形库或者“开放式图形库”）是用于渲染2D、3D矢量图形的跨语言、跨平台的应用程序编程接口（API）。这个接口由近350个不同的函数调用组成，用来从简单的图形比特绘制复杂的三维景象。而另一种程序接口系统是仅用于Microsoft Windows上的Direct3D。OpenGL常用于CAD、虚拟现实、科学可视化程序和电子游戏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenGL学习笔记">
+<meta property="og:url" content="https://huangwang.github.io/2021/03/13/OpenGL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="OpenGL（英语：Open Graphics Library，译名：开放图形库或者“开放式图形库”）是用于渲染2D、3D矢量图形的跨语言、跨平台的应用程序编程接口（API）。这个接口由近350个不同的函数调用组成，用来从简单的图形比特绘制复杂的三维景象。而另一种程序接口系统是仅用于Microsoft Windows上的Direct3D。OpenGL常用于CAD、虚拟现实、科学可视化程序和电子游戏">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://huangwang.github.io/2021/03/13/OpenGL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/images/RenderingPipeline.png">
+<meta property="og:image" content="https://huangwang.github.io/2021/03/13/OpenGL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/images/axis.jpg">
+<meta property="article:published_time" content="2021-03-13T13:57:46.000Z">
+<meta property="article:modified_time" content="2022-11-27T12:07:06.329Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="3D">
+<meta property="article:tag" content="笔记本">
+<meta property="article:tag" content="飞行仿真">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://huangwang.github.io/2021/03/13/OpenGL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/images/RenderingPipeline.png">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2021/03/13/OpenGL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2021/03/13/OpenGL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/","path":"2021/03/13/OpenGL学习笔记/","title":"OpenGL学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>OpenGL学习笔记 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%BC%8F%E4%B8%8E%E7%AB%8B%E5%8D%B3%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">核心模式与立即渲染模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9D%80%E8%89%B2%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">着色器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9D%80%E8%89%B2%E5%99%A8%E5%88%86%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">着色器分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B6%E7%82%B9%E7%9D%80%E8%89%B2%E5%99%A8"><span class="nav-number">2.1.1.</span> <span class="nav-text">顶点着色器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%86%E5%88%86%E7%9D%80%E8%89%B2%E5%99%A8"><span class="nav-number">2.1.2.</span> <span class="nav-text">细分着色器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%A0%E4%BD%95%E7%9D%80%E8%89%B2%E5%99%A8"><span class="nav-number">2.1.3.</span> <span class="nav-text">几何着色器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%87%E5%85%83%E7%9D%80%E8%89%B2%E5%99%A8"><span class="nav-number">2.1.4.</span> <span class="nav-text">片元着色器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%98%E9%87%8F"><span class="nav-number">3.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#attribute%E5%8F%98%E9%87%8F"><span class="nav-number">3.1.</span> <span class="nav-text">attribute变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#uniform%E5%8F%98%E9%87%8F"><span class="nav-number">3.2.</span> <span class="nav-text">uniform变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#varying%E5%8F%98%E9%87%8F"><span class="nav-number">3.3.</span> <span class="nav-text">varying变量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9D%90%E6%A0%87%E7%B3%BB"><span class="nav-number">4.</span> <span class="nav-text">坐标系</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2021/03/13/OpenGL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="OpenGL学习笔记 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OpenGL学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-03-13 21:57:46" itemprop="dateCreated datePublished" datetime="2021-03-13T21:57:46+08:00">2021-03-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-11-27 20:07:06" itemprop="dateModified" datetime="2022-11-27T20:07:06+08:00">2022-11-27</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>OpenGL（英语：Open Graphics Library，译名：开放图形库或者“开放式图形库”）是用于渲染2D、3D矢量图形的跨语言、跨平台的应用程序编程接口（API）。这个接口由近350个不同的函数调用组成，用来从简单的图形比特绘制复杂的三维景象。而另一种程序接口系统是仅用于Microsoft Windows上的Direct3D。OpenGL常用于CAD、虚拟现实、科学可视化程序和电子游戏开发。</p>
+<h1 id="核心模式与立即渲染模式"><a href="#核心模式与立即渲染模式" class="headerlink" title="核心模式与立即渲染模式"></a>核心模式与立即渲染模式</h1><p>早期的OpenGL使用立即渲染模式（Immediate mode，也就是固定渲染管线），这个模式下绘制图形很方便。OpenGL的大多数功能都被库隐藏起来，开发者很少有控制OpenGL如何进行计算的自由。而开发者迫切希望能有更多的灵活性。随着时间推移，规范越来越灵活，开发者对绘图细节有了更多的掌控。立即渲染模式确实容易使用和理解，但是效率太低。因此从OpenGL3.2开始，规范文档开始废弃立即渲染模式，并鼓励开发者在OpenGL的核心模式(Core-profile)下进行开发，这个分支的规范完全移除了旧的特性。</p>
+<p>当使用OpenGL的核心模式时，OpenGL迫使我们使用现代的函数。当我们试图使用一个已废弃的函数时，OpenGL会抛出一个错误并终止绘图。现代函数的优势是更高的灵活性和效率，然而也更难于学习。立即渲染模式从OpenGL实际运作中抽象掉了很多细节，因此它在易于学习的同时，也很难让人去把握OpenGL具体是如何运作的。现代函数要求使用者真正理解OpenGL和图形编程，它有一些难度，然而提供了更多的灵活性，更高的效率，更重要的是可以更深入的理解图形编程。</p>
+<h1 id="着色器"><a href="#着色器" class="headerlink" title="着色器"></a>着色器</h1><blockquote>
+<p>着色器(Shader)是运行在GPU上的小程序。这些小程序为图形渲染管线的某个特定部分而运行。从基本意义上来说，着色器只是一种把输入转化为输出的程序。着色器也是一种非常独立的程序，因为它们之间不能相互通信；它们之间唯一的沟通只有通过输入和输出。</p>
+</blockquote>
+<p align="center">
+    <img src="images/RenderingPipeline.png" width="50%" alt="GPU渲染管线"/>
+</p>
+<center>图1 GPU渲染管线</center>
+
+<h2 id="着色器分类"><a href="#着色器分类" class="headerlink" title="着色器分类"></a>着色器分类</h2><p>每个着色器使用这两个关键字设定输入和输出，只要一个输出变量与下一个着色器阶段的输入匹配，它就会传递下去。但在顶点和片段着色器中会有点不同。</p>
+<h3 id="顶点着色器"><a href="#顶点着色器" class="headerlink" title="顶点着色器"></a>顶点着色器</h3><p>用来描述顶点属性（如位置、颜色等）的程序。顶点是二维或者三维空间中的一个点，比如二维或者三维图形的端点或交点。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//顶点着色器程序</span><br><span class="line">var VSHADER_SCOURCE = </span><br><span class="line">&#x27;void main() &#123;\n&#x27; +</span><br><span class="line">  &#x27; gl_Position = vec4(0.0, 0.0, 0.0, 1.0);\n&#x27; +</span><br><span class="line">  &#x27; gl_PointSize = 5.0;\n&#x27;+</span><br><span class="line">&#x27;&#125;\n&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="细分着色器"><a href="#细分着色器" class="headerlink" title="细分着色器"></a>细分着色器</h3><p>曲面细分着色器包含细分控制着色器 (Tessellation Control Shader &#x2F; Hull Shader) 和细分计算着色器 (Tessellation Evaluation Shader &#x2F; Domain Shader) 。在这个阶段可以操作三角形 (tri patch) 、四边形 (quad patch) 或者线段 (isoline) 等 patch 。</p>
+<p>低精度网格、置换贴图和法线贴图等，在曲面细分着色器 (Tessellation Shader) 中，使用合适的细分算法，可以生成高精度网格，从而提高游戏画面的细节。</p>
+<h3 id="几何着色器"><a href="#几何着色器" class="headerlink" title="几何着色器"></a>几何着色器</h3><p>几何着色器(Geometry Shader)是由第四代显卡着色器架构 Shader Model 4 正式引入的第三个着色器，属于渲染管线的一个可选阶段，位于曲面细分(Tessellation)和光栅化(Rasterization)之间。顶点着色器以顶点数据作为输入数据，而几何着色器则以完整的图元(Primitive)作为输入数据。例如，以三角形的三个顶点作为输入，然后输出对应的图元。与顶点着色器不能销毁或创建顶点不同，几何着色器的主要亮点就是可以创建或销毁几何图元，此功能让GPU可以实现一些有趣的效果。例如，根据输入图元类型扩展为一个或更多其他类型的图元，或者不输出任何图元。需要注意的是，几何着色器的输出图元不一定和输入图元相同。几何着色器的一个拿手好戏就是将一个点扩展为一个四边形(即两个三角形)。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#version 330 core</span><br><span class="line">layout (points) in;</span><br><span class="line">layout (line_strip, max_vertices = 2) out;</span><br><span class="line"></span><br><span class="line">void main() &#123;</span><br><span class="line">    gl_Position = gl_in[0].gl_Position + vec4(-0.1, 0.0, 0.0, 0.0);</span><br><span class="line">    EmitVertex();</span><br><span class="line"></span><br><span class="line">    gl_Position = gl_in[0].gl_Position + vec4(0.1, 0.0, 0.0, 0.0);</span><br><span class="line">    EmitVertex();</span><br><span class="line"></span><br><span class="line">    EndPrimitive();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="片元着色器"><a href="#片元着色器" class="headerlink" title="片元着色器"></a>片元着色器</h3><p>进行逐片元处理过程如光照的程序。片元可理解为像素。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//片元着色器程序</span><br><span class="line">var FSHADER_SCOURCE = </span><br><span class="line">&#x27;void main() &#123;\n&#x27; +</span><br><span class="line">      &#x27; gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n&#x27; +</span><br><span class="line">   &#x27;&#125;\n&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><h2 id="attribute变量"><a href="#attribute变量" class="headerlink" title="attribute变量"></a>attribute变量</h2><p>attribute变量是只能在vertex shader中使用的变量。（它不能在fragment shader中声明attribute变量，也不能被fragment shader中使用）</p>
+<p>一般用attribute变量来表示一些顶点的数据，如：顶点坐标，法线，纹理坐标，顶点颜色等。</p>
+<h2 id="uniform变量"><a href="#uniform变量" class="headerlink" title="uniform变量"></a>uniform变量</h2><p>Uniform变量简单理解就是一个GLSL shader中的全局常量，可以随意在任意shader(vertex shader, geometry shader, or fragment shader)访问，不同的shader中uniform是一起链接的，初始化之后，不能修改其值，否则会引起编译错误。</p>
+<h2 id="varying变量"><a href="#varying变量" class="headerlink" title="varying变量"></a>varying变量</h2><p>varying变量是vertex和fragment shader之间做数据传递用的。一般vertex shader修改varying变量的值，然后fragment shader使用该varying变量的值。因此varying变量在vertex和fragment shader二者之间的声明必须是一致的。application不能使用此变量。</p>
+<h1 id="坐标系"><a href="#坐标系" class="headerlink" title="坐标系"></a>坐标系</h1><p>OSG中采用的X轴正方向向右，Y轴正方向朝里，Z轴正方向向上。</p>
+<p>OpenGL中采用的X轴正方向向右，Y轴正方向朝上，Z轴正方向朝外。</p>
+<p align="center">
+    <img src="images/axis.jpg" width="80%" alt="OSG与OpenGL坐标系"/>
+</p>
+<center>图2 OSG与OpenGL坐标系</center>
+
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/OpenGL">OpenGL</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://learnopengl-cn.github.io/">LearnOpenGL</a>,by Joey de Vries.</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%9D%80%E8%89%B2%E5%99%A8">着色器</a>,by wikipedia.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/76775024">几何着色器</a>,by 学无止境.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/51714057">曲面细分着色器 1 简介</a>,by MultivacX.</li>
+<li><a target="_blank" rel="noopener" href="https://www.khronos.org/opengl/wiki/Rendering_Pipeline_Overview">Rendering Pipeline Overview</a>,by opengl homepage.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zenny-chen/p/4280100.html">OpenGL 4.0的Tessellation Shader（细分曲面着色器）</a>,by  zenny_chen.</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/33093968">OpenGL基础 - 统一变量Uniform</a>,by 靖空间.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/graphics/archive/2010/07/10/1774809.html">点到平面的距离公式</a>,by 翰墨小生.</li>
+<li><a target="_blank" rel="noopener" href="http://www.cppblog.com/acmiyou/archive/2009/08/02/91942.html">OSG 碰撞检测之多面体求交器代码解读(PloytopeIntersector)</a>,by 风一样消逝的青春.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/dcrmg/article/details/53133112">OpenGL（八） 显示列表</a>,by -牧野-.</li>
+<li><a target="_blank" rel="noopener" href="https://xiaobazhang.github.io/2016/07/31/OSG-coordinate/">OSG三维渲染引擎–OSG渲染引擎中坐标系</a>,by 苏黎.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/clingingboy/archive/2010/10/26/1861928.html">OpenGL学习笔记(12)基本光照</a>,by Clingingboy.</li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/eed3ebdad4fb">GLSL 三种变量类型（uniform，attribute和varying）理解</a>,by wo不懂.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15753490/5581681">OpenGL之glPolygonMode函数的用法</a>,by 草上爬_.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/3D/" rel="tag"># 3D</a>
+              <a href="/tags/%E9%A3%9E%E8%A1%8C%E4%BB%BF%E7%9C%9F/" rel="tag"># 飞行仿真</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/09/doxygen%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85%E4%B8%8E%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90/" rel="prev" title="doxygen编译安装与文档生成">
+                  <i class="fa fa-angle-left"></i> doxygen编译安装与文档生成
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/03/17/OSG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="OSG学习笔记">
+                  OSG学习笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

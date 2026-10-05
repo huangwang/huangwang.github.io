@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="最近需要在 X86_64 的 Windows 10 的机器上安装 arm64 指令集的银河麒麟 v10 操作系统，因此研究一下 QEMU 的使用方法。 简介QEMU 是一款开源、跨平台的机器模拟器与虚拟机工具，核心两大能力：硬件模拟（全系统仿真） 和 用户态程序翻译，不需要依赖硬件虚拟化也能运行。 安装Windows 安装 下载二进制安装包：https:&#x2F;&#x2F;qemu.weilnetz.de&#x2F;w64">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QEMU使用教程">
+<meta property="og:url" content="https://huangwang.github.io/2026/09/04/QEMU%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="最近需要在 X86_64 的 Windows 10 的机器上安装 arm64 指令集的银河麒麟 v10 操作系统，因此研究一下 QEMU 的使用方法。 简介QEMU 是一款开源、跨平台的机器模拟器与虚拟机工具，核心两大能力：硬件模拟（全系统仿真） 和 用户态程序翻译，不需要依赖硬件虚拟化也能运行。 安装Windows 安装 下载二进制安装包：https:&#x2F;&#x2F;qemu.weilnetz.de&#x2F;w64">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-09-04T13:18:55.000Z">
+<meta property="article:modified_time" content="2026-10-05T02:52:15.764Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="常用工具">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2026/09/04/QEMU%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2026/09/04/QEMU%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/","path":"2026/09/04/QEMU使用教程/","title":"QEMU使用教程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>QEMU使用教程 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows-%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">Windows 安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E6%96%87%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">准备文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E7%B3%BB%E7%BB%9F"><span class="nav-number">3.2.</span> <span class="nav-text">安装系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-%E9%93%B6%E6%B2%B3%E9%BA%92%E9%BA%9FV10%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%89%88"><span class="nav-number">3.2.1.</span> <span class="nav-text">安装 银河麒麟V10服务器版</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-%E9%93%B6%E6%B2%B3%E9%BA%92%E9%BA%9FV10%E6%A1%8C%E9%9D%A2%E7%89%88"><span class="nav-number">3.2.2.</span> <span class="nav-text">安装 银河麒麟V10桌面版</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%B3%BB%E7%BB%9F"><span class="nav-number">3.3.</span> <span class="nav-text">启动系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E9%93%B6%E6%B2%B3%E9%BA%92%E9%BA%9FV10%E6%A1%8C%E9%9D%A2%E7%89%88"><span class="nav-number">3.3.1.</span> <span class="nav-text">启动银河麒麟V10桌面版</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E9%93%B6%E6%B2%B3%E9%BA%92%E9%BA%9FV10%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%89%88"><span class="nav-number">3.3.2.</span> <span class="nav-text">启动银河麒麟V10服务器版</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH%E8%AE%BF%E9%97%AE"><span class="nav-number">3.4.</span> <span class="nav-text">SSH访问</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%B6%E6%B2%B3%E9%BA%92%E9%BA%9FV10%E6%A1%8C%E9%9D%A2%E7%89%88%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.4.1.</span> <span class="nav-text">银河麒麟V10桌面版设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%B6%E6%B2%B3%E9%BA%92%E9%BA%9FV10%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%89%88%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.4.2.</span> <span class="nav-text">银河麒麟V10服务器版设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nodejs%E5%AE%89%E8%A3%85"><span class="nav-number">3.5.</span> <span class="nav-text">Nodejs安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95"><span class="nav-number">4.</span> <span class="nav-text">问题记录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%88%86%E8%BE%A8%E7%8E%87%E8%B0%83%E6%95%B4"><span class="nav-number">4.1.</span> <span class="nav-text">虚拟机分辨率调整</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%90%AF%E5%8A%A8%E5%A4%AA%E6%85%A2"><span class="nav-number">4.2.</span> <span class="nav-text">虚拟机启动太慢</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2026/09/04/QEMU%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="QEMU使用教程 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          QEMU使用教程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-09-04 21:18:55" itemprop="dateCreated datePublished" datetime="2026-09-04T21:18:55+08:00">2026-09-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-10-05 10:52:15" itemprop="dateModified" datetime="2026-10-05T10:52:15+08:00">2026-10-05</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近需要在 X86_64 的 Windows 10 的机器上安装 arm64 指令集的银河麒麟 v10 操作系统，因此研究一下 QEMU 的使用方法。</p>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>QEMU 是一款<strong>开源、跨平台的机器模拟器与虚拟机工具</strong>，核心两大能力：<strong>硬件模拟（全系统仿真）</strong> 和 <strong>用户态程序翻译</strong>，不需要依赖硬件虚拟化也能运行。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="Windows-安装"><a href="#Windows-安装" class="headerlink" title="Windows 安装"></a>Windows 安装</h2><ol>
+<li>下载二进制安装包：<a target="_blank" rel="noopener" href="https://qemu.weilnetz.de/w64/">https://qemu.weilnetz.de/w64/</a> ，下载<code>qemu‑w64‑setup‑xxxx.exe</code>安装程序</li>
+<li>安装，记住安装路径，默认：<code>C:\Program Files\qemu</code></li>
+<li><strong>把这个目录加到系统 PATH 环境变量</strong>（必须，否则 cmd 找不到 qemu‑xxx.exe）</li>
+<li>关闭旧 cmd&#x2F;PowerShell，新开终端验证</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-aarch64.exe --version</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Windows 模拟 arm64：需要额外下载<code>QEMU_EFI.fd</code> UEFI 固件文件。</p>
+</blockquote>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h2 id="准备文件"><a href="#准备文件" class="headerlink" title="准备文件"></a>准备文件</h2><ol>
+<li>下载** ARM64 UEFI 固件 QEMU_EFI.fd（edk2‑aarch64‑code.fd）**，ARM 虚拟机没有 BIOS，靠 EFI 固件引导。</li>
+<li>下载 ARM64 系统 ISO 镜像（Ubuntu‑ARM64 &#x2F; 银河麒麟 ARM64 等）</li>
+<li>创建虚拟磁盘（cmd 执行）</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu-img create -f qcow2 kylin_arm64_disk.qcow2 60G</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h2><h3 id="安装-银河麒麟V10服务器版"><a href="#安装-银河麒麟V10服务器版" class="headerlink" title="安装 银河麒麟V10服务器版"></a>安装 银河麒麟V10服务器版</h3><p>把下面保存为 <code>install.bat</code>，修改路径为你本机真实路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">qemu-system-aarch64 ^</span><br><span class="line">-machine virt,gic-version=3 ^</span><br><span class="line">-cpu cortex-a72 ^</span><br><span class="line">-m 8192 ^</span><br><span class="line">-smp 4 ^</span><br><span class="line">-bios edk2-aarch64-code.fd ^</span><br><span class="line">-device qemu-xhci,id=usbbus ^</span><br><span class="line">-drive file=kylin_arm64_disk.qcow2,if=virtio,format=qcow2 ^</span><br><span class="line">-cdrom Kylin-Server-V10-SP3-2403-Release-20240426-ARM64.iso ^</span><br><span class="line">-device virtio-net-pci,netdev=net0 ^</span><br><span class="line">-netdev user,id=net0 ^</span><br><span class="line">-device usb-kbd,bus=usbbus.0 ^</span><br><span class="line">-device usb-tablet,bus=usbbus.0 ^</span><br><span class="line">-device virtio-gpu ^</span><br><span class="line">-accel tcg,thread=multi ^</span><br><span class="line">-serial stdio</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<ul>
+<li><code>-M virt</code>：QEMU 标准 ARM 虚拟机板卡</li>
+<li><code>-cpu cortex‑a72</code>：模拟 ARMv8‑A CPU；也可以写<code>max</code></li>
+<li><code>-accel tcg,thread=multi</code>：软件多线程翻译，<strong>x86 Windows 唯一可用加速选项</strong>virtio-win</li>
+<li><code>-nic user</code>：NAT 网络，虚拟机可访问外网</li>
+<li><code>-bios</code>：指定 aarch64 EFI 固件，**缺少直接黑屏无法启动</li>
+</ul>
+<blockquote>
+<p>安装完成后，把命令里的 cdrom 那一行删掉，就是正常启动虚拟机脚本。</p>
+</blockquote>
+<h3 id="安装-银河麒麟V10桌面版"><a href="#安装-银河麒麟V10桌面版" class="headerlink" title="安装 银河麒麟V10桌面版"></a>安装 银河麒麟V10桌面版</h3><p>把下面保存为 <code>install.bat</code>，修改路径为你本机真实路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">qemu-system-aarch64 ^</span><br><span class="line">-machine virt,gic-version=3 ^</span><br><span class="line">-cpu cortex-a72 ^</span><br><span class="line">-m 8192 ^</span><br><span class="line">-smp 4 ^</span><br><span class="line">-bios edk2-aarch64-code.fd ^</span><br><span class="line">-device qemu-xhci,id=usbbus ^</span><br><span class="line">-drive file=kylin_arm64_disk.qcow2,if=virtio,format=qcow2 ^</span><br><span class="line">-cdrom Kylin-Desktop-V10-SP1-2503-Release-20250430-ARM64.iso ^</span><br><span class="line">-device virtio-net-pci,netdev=net0 ^</span><br><span class="line">-netdev user,id=net0 ^</span><br><span class="line">-device usb-kbd,bus=usbbus.0 ^</span><br><span class="line">-device usb-tablet,bus=usbbus.0 ^</span><br><span class="line">-device virtio-gpu-pci,max_outputs=1 ^</span><br><span class="line">-display sdl ^</span><br><span class="line">-accel tcg,thread=multi,tb-size=512 ^</span><br><span class="line">-serial stdio</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<ul>
+<li><code>-M virt</code>：QEMU 标准 ARM 虚拟机板卡</li>
+<li><code>-cpu cortex‑a72</code>：模拟 ARMv8‑A CPU；也可以写<code>max</code></li>
+<li><code>-accel tcg,thread=multi</code>：软件多线程翻译，<strong>x86 Windows 唯一可用加速选项</strong>virtio-win</li>
+<li><code>-nic user</code>：NAT 网络，虚拟机可访问外网</li>
+<li><code>-bios</code>：指定 aarch64 EFI 固件，**缺少直接黑屏无法启动</li>
+</ul>
+<blockquote>
+<p>安装完成后，把命令里的 cdrom 那一行删掉，就是正常启动虚拟机脚本。</p>
+</blockquote>
+<h2 id="启动系统"><a href="#启动系统" class="headerlink" title="启动系统"></a>启动系统</h2><h3 id="启动银河麒麟V10桌面版"><a href="#启动银河麒麟V10桌面版" class="headerlink" title="启动银河麒麟V10桌面版"></a>启动银河麒麟V10桌面版</h3><p>把下面保存为 <code>start_gui.bat</code>，修改路径为你本机真实路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">chcp 65001 &gt;nul</span><br><span class="line">qemu-system-aarch64 ^</span><br><span class="line">-machine virt,gic-version=3 ^</span><br><span class="line">-cpu cortex-a72 ^</span><br><span class="line">-m 8192 ^</span><br><span class="line">-smp 4 ^</span><br><span class="line">-bios edk2-aarch64-code.fd ^</span><br><span class="line">-device qemu-xhci,id=usbbus ^</span><br><span class="line">-drive file=kylin_arm64_disk.qcow2,if=virtio,format=qcow2 ^</span><br><span class="line">-device virtio-net-pci,netdev=net0 ^</span><br><span class="line">-netdev user,id=net0,hostfwd=tcp::2222-:22 ^</span><br><span class="line">-device usb-kbd,bus=usbbus.0 ^</span><br><span class="line">-device usb-tablet,bus=usbbus.0 ^</span><br><span class="line">-device virtio-gpu-pci,max_outputs=1 ^</span><br><span class="line">-display sdl ^</span><br><span class="line">-accel tcg,thread=multi,tb-size=512 ^</span><br><span class="line">-serial stdio</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<ul>
+<li>与安装脚本相比，主要删除了 cdrom 那一行</li>
+<li>-device virtio-gpu-pci，安装时使用的是 virtio-gpu，两者区别是： 底层 GPU 逻辑完全一样，只是总线类型不同。由于场景为<code>-machine virt</code>（aarch64 virt 板子），<strong>推荐用 virtio-gpu-pci</strong>，麒麟 V10 ARM64 对 PCI 设备驱动识别更稳。</li>
+<li>-netdev user,id&#x3D;net0,hostfwd&#x3D;tcp::2222-:22，宿主机的 2222 端口映射虚拟机ssh 22 端口。</li>
+<li>-device e1000,netdev&#x3D;net0, e1000 是模拟传统网卡，稳定性更好，避开部分 QEMU 版本 virtio-net + user netdev 的端口转发异常。</li>
+</ul>
+<p>进入桌面后，设置默认启动目标：多用户字符模式，然后把下面保存为 <code>start_nogui.bat</code>，以便下次直接进入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">chcp 65001 &gt;nul</span><br><span class="line">qemu-system-aarch64 ^</span><br><span class="line">-machine virt,gic-version=3 ^</span><br><span class="line">-cpu cortex-a72 ^</span><br><span class="line">-m 6144 ^</span><br><span class="line">-smp 2,cores=2,threads=1 ^</span><br><span class="line">-bios edk2-aarch64-code.fd ^</span><br><span class="line">-drive file=kylin_arm64_disk.qcow2,if=virtio,format=qcow2 ^</span><br><span class="line">-device virtio-net-pci,netdev=net0 ^</span><br><span class="line">-netdev user,id=net0,hostfwd=tcp::2222-:22 ^</span><br><span class="line">-accel tcg,thread=multi,tb-size=1024,one-insn-per-tb=off ^</span><br><span class="line">-serial stdio ^</span><br><span class="line">-no-reboot</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动银河麒麟V10服务器版"><a href="#启动银河麒麟V10服务器版" class="headerlink" title="启动银河麒麟V10服务器版"></a>启动银河麒麟V10服务器版</h3><p>把下面保存为 <code>start.bat</code>，修改路径为你本机真实路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">qemu-system-aarch64 ^</span><br><span class="line">-machine virt,gic-version=3 ^</span><br><span class="line">-cpu cortex-a72 ^</span><br><span class="line">-m 8192 ^</span><br><span class="line">-smp 4 ^</span><br><span class="line">-bios edk2-aarch64-code.fd ^</span><br><span class="line">-device qemu-xhci,id=usbbus ^</span><br><span class="line">-drive file=kylin_arm64_disk.qcow2,if=virtio,format=qcow2 ^</span><br><span class="line">-netdev user,id=net0,hostfwd=tcp::2222-:22 ^</span><br><span class="line">-device e1000,netdev=net0 ^</span><br><span class="line">-device usb-kbd,bus=usbbus.0 ^</span><br><span class="line">-device usb-tablet,bus=usbbus.0 ^</span><br><span class="line">-device virtio-gpu-pci ^</span><br><span class="line">-accel tcg,thread=multi ^</span><br><span class="line">-serial stdio</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<ul>
+<li>与安装脚本相比，主要删除了 cdrom 那一行</li>
+<li>-device virtio-gpu-pci，安装时使用的是 virtio-gpu，两者区别是： 底层 GPU 逻辑完全一样，只是总线类型不同。由于场景为<code>-machine virt</code>（aarch64 virt 板子），<strong>推荐用 virtio-gpu-pci</strong>，麒麟 V10 ARM64 对 PCI 设备驱动识别更稳。</li>
+<li>-netdev user,id&#x3D;net0,hostfwd&#x3D;tcp::2222-:22，宿主机的 2222 端口映射虚拟机ssh 22 端口。</li>
+<li>-device e1000,netdev&#x3D;net0, e1000 是模拟传统网卡，稳定性更好，避开部分 QEMU 版本 virtio-net + user netdev 的端口转发异常。</li>
+</ul>
+<h2 id="SSH访问"><a href="#SSH访问" class="headerlink" title="SSH访问"></a>SSH访问</h2><h3 id="银河麒麟V10桌面版设置"><a href="#银河麒麟V10桌面版设置" class="headerlink" title="银河麒麟V10桌面版设置"></a>银河麒麟V10桌面版设置</h3><ul>
+<li>确认 ssh 服务是否就绪</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 1. 查看sshd状态</span><br><span class="line">systemctl status sshd</span><br><span class="line"></span><br><span class="line"># 如果没装，安装并启动</span><br><span class="line">sudo apt-get install openssh-server -y</span><br><span class="line">sudo systemctl start sshd</span><br><span class="line">sudo systemctl enable --now ssh.service</span><br><span class="line"></span><br><span class="line"># 2. 查看监听端口，确认sshd监听 22</span><br><span class="line">ss -tlnp | grep sshd</span><br><span class="line"></span><br><span class="line"># 3. 防火墙放行22端口（麒麟默认防火墙会拦截！这个是高频坑）</span><br><span class="line">sudo firewall-cmd --add-service=ssh --permanent</span><br><span class="line">sudo firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ssh 访问无法执行可执行程序的问题</li>
+</ul>
+<p>原因是内核启动参数：<code>security=kysec</code>。</p>
+<p>KYSEC 是银河麒麟 V10 内置安全模块，<strong>执行控制（exec control）开启强制模式时，只允许系统自带、带有 kysec 安全标记的 ELF 程序运行</strong>。</p>
+<p>自编译的<code>hello</code>、上传的<code>pi</code>属于外来二进制，<strong>没有 kysec 安全标记，execve 直接返回 EACCES，bash 提示权限不够</strong>，和你现象完全吻合</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"># 查看**当前正在生效**的内核启动参数</span><br><span class="line"></span><br><span class="line">cat /proc/cmdline</span><br><span class="line"></span><br><span class="line"># 修改/etc/default/grub，注释下行</span><br><span class="line"></span><br><span class="line">GRUB_CMDLINE_LINUX_SECURITY=&quot;security=kysec&quot;</span><br><span class="line"></span><br><span class="line"># 更新grub，并重启</span><br><span class="line">sudo update-grub</span><br><span class="line">reboot</span><br><span class="line"></span><br><span class="line"># 持久软模式（重启虚拟机仍然保持 softmode）</span><br><span class="line">sudo setstatus softmode -p</span><br><span class="line"></span><br><span class="line"># 编辑.bashrc文件</span><br><span class="line">vim .bashrc</span><br><span class="line"></span><br><span class="line"># 末尾增加</span><br><span class="line"># 代理开关别名</span><br><span class="line">alias proxy-on=&#x27;export ALL_PROXY=socks5://127.0.0.1:7890;export HTTP_PROXY=http://127.0.0.1:7890;export HTTPS_PROXY=http://127.0.0.1:7890;export NO_PROXY=localhost,127.0.0.1,10.0.2.0/24;echo &quot;✅ 代理已开启&quot;&#x27;</span><br><span class="line">alias proxy-off=&#x27;unset ALL_PROXY HTTP_PROXY HTTPS_PROXY;echo &quot;❌ 代理已关闭&quot;&#x27;</span><br><span class="line"></span><br><span class="line">source .bashrc</span><br><span class="line"></span><br><span class="line"># 查看公网 IP 的地理位置</span><br><span class="line">curl ipinfo.io</span><br><span class="line">curl -s myip.ipip.net</span><br></pre></td></tr></table></figure>
+
+<h3 id="银河麒麟V10服务器版设置"><a href="#银河麒麟V10服务器版设置" class="headerlink" title="银河麒麟V10服务器版设置"></a>银河麒麟V10服务器版设置</h3><ul>
+<li>确认 ssh 服务是否就绪</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 1. 查看sshd状态</span><br><span class="line">systemctl status sshd</span><br><span class="line"></span><br><span class="line"># 如果没装，安装并启动</span><br><span class="line">sudo dnf install openssh-server -y</span><br><span class="line">sudo systemctl start sshd</span><br><span class="line">sudo systemctl enable sshd</span><br><span class="line"></span><br><span class="line"># 2. 查看监听端口，确认sshd监听 22</span><br><span class="line">ss -tlnp | grep sshd</span><br><span class="line"></span><br><span class="line"># 3. 防火墙放行22端口（麒麟默认防火墙会拦截！这个是高频坑）</span><br><span class="line">sudo firewall-cmd --add-service=ssh --permanent</span><br><span class="line">sudo firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>解禁 root 直接 ssh 登录</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 虚拟机内修改ssh配置允许root登录（测试用）</span><br><span class="line">sudo vi /etc/ssh/sshd_config</span><br><span class="line"># 修改：</span><br><span class="line">PermitRootLogin yes</span><br><span class="line"># 重启sshd</span><br><span class="line">sudo systemctl restart sshd</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>生产环境不建议 root 直接 ssh；你可以新建普通用户登录。</p>
+</blockquote>
+<h2 id="Nodejs安装"><a href="#Nodejs安装" class="headerlink" title="Nodejs安装"></a>Nodejs安装</h2><ul>
+<li>下载最新的Linux Arm64 Nodejs LTS版</li>
+<li>解压 node-v24.21.0-linux-arm64.tar.xz 到 &#x2F;opt&#x2F;node</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /opt/node</span><br><span class="line">sudo tar -Jxf node-v24.21.0-linux-arm64.tar.xz -C /opt/node --strip-components=1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将 node 路径永久加入系统 PATH</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/profile</span><br><span class="line"># 文件末尾加入下列行，并保存</span><br><span class="line">export PATH=&quot;/opt/node/bin:$PATH&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>验证</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
+
+<h1 id="问题记录"><a href="#问题记录" class="headerlink" title="问题记录"></a>问题记录</h1><h2 id="虚拟机分辨率调整"><a href="#虚拟机分辨率调整" class="headerlink" title="虚拟机分辨率调整"></a>虚拟机分辨率调整</h2><p>启动麒麟v10桌面版系统，分辨率太低，只有640*480的解决方法：</p>
+<ul>
+<li>打开终端，输入命令</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 打开终端，查看显示器名称</span><br><span class="line">xrandr</span><br><span class="line"></span><br><span class="line"># 直接设置 1080P</span><br><span class="line"></span><br><span class="line">xrandr --output Virtual-1 --mode 1920x1080</span><br></pre></td></tr></table></figure>
+
+<h2 id="虚拟机启动太慢"><a href="#虚拟机启动太慢" class="headerlink" title="虚拟机启动太慢"></a>虚拟机启动太慢</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 设置默认启动目标：多用户字符模式</span><br><span class="line">sudo systemctl set-default multi-user.target</span><br><span class="line"></span><br><span class="line"># 验证</span><br><span class="line">systemctl get-default</span><br><span class="line"># 输出 multi-user.target 就是成功</span><br><span class="line"></span><br><span class="line">reboot</span><br><span class="line"></span><br><span class="line"># 恢复开机图形（以后需要桌面时）</span><br><span class="line">sudo systemctl set-default graphical.target</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.qemu.org/">qemu</a>,by qemu.</li>
+<li><a target="_blank" rel="noopener" href="https://dev.to/krjakbrjak/running-qemu-vms-on-arm64-uefi-requirements-5c9e">Running QEMU VMs on ARM64: UEFI Requirements</a>,by Nikita Vakula.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/zengliguang/article/details/153678484">windows qemu 安装 arm 虚拟机</a>,by 三希.</li>
+<li><a target="_blank" rel="noopener" href="https://support.huawei.com/enterprise/zh/doc/EDOC1100296984/7143188e">安装与配置麒麟V10操作系统</a>,by huawei.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/" rel="tag"># 常用工具</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/09/02/MitmProxy%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" rel="prev" title="MitmProxy抓包工具使用教程">
+                  <i class="fa fa-angle-left"></i> MitmProxy抓包工具使用教程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/09/18/TypeScript%E6%95%99%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="TypeScript教程学习笔记">
+                  TypeScript教程学习笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

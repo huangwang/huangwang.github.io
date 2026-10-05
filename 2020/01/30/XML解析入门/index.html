@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="最近在研究编写飞行动力学模型，发现需要使用很多用于插值的数据，这些数据可以是一维向量、二维表格或三维数据。在代码中直接硬编码存储是不合适的，降低程序的灵活性。直接使用文本文档存储也不合适，这些插值数据明显具有结构化的特征。于是想到用XML来存储表示这些数据。下面总结介绍XML解析相关知识。 XML简介可扩展标记语言（英语：Extensible Markup Language，简称：XML）是一种标">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XML解析入门">
+<meta property="og:url" content="https://huangwang.github.io/2020/01/30/XML%E8%A7%A3%E6%9E%90%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="最近在研究编写飞行动力学模型，发现需要使用很多用于插值的数据，这些数据可以是一维向量、二维表格或三维数据。在代码中直接硬编码存储是不合适的，降低程序的灵活性。直接使用文本文档存储也不合适，这些插值数据明显具有结构化的特征。于是想到用XML来存储表示这些数据。下面总结介绍XML解析相关知识。 XML简介可扩展标记语言（英语：Extensible Markup Language，简称：XML）是一种标">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-30T04:14:19.000Z">
+<meta property="article:modified_time" content="2020-01-30T08:59:02.519Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2020/01/30/XML%E8%A7%A3%E6%9E%90%E5%85%A5%E9%97%A8/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2020/01/30/XML%E8%A7%A3%E6%9E%90%E5%85%A5%E9%97%A8/","path":"2020/01/30/XML解析入门/","title":"XML解析入门"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>XML解析入门 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#XML%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">XML简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#XML%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">XML结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#XML%E8%A7%A3%E6%9E%90%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">XML解析器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2020/01/30/XML%E8%A7%A3%E6%9E%90%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="XML解析入门 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          XML解析入门
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-01-30 12:14:19 / 修改时间：16:59:02" itemprop="dateCreated datePublished" datetime="2020-01-30T12:14:19+08:00">2020-01-30</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近在研究编写飞行动力学模型，发现需要使用很多用于插值的数据，这些数据可以是一维向量、二维表格或三维数据。在代码中直接硬编码存储是不合适的，降低程序的灵活性。直接使用文本文档存储也不合适，这些插值数据明显具有结构化的特征。于是想到用XML来存储表示这些数据。下面总结介绍XML解析相关知识。</p>
+<h1 id="XML简介"><a href="#XML简介" class="headerlink" title="XML简介"></a>XML简介</h1><p>可扩展标记语言（英语：Extensible Markup Language，简称：XML）是一种标记语言。标记指计算机所能理解的信息符号，通过此种标记，计算机之间可以处理包含各种信息的文章等。如何定义这些标记，既可以选择国际通用的标记语言，比如HTML，也可以使用像XML这样由相关人士自由决定的标记语言，这就是语言的可扩展性。XML是从标准通用标记语言（SGML）中简化修改出来的。它主要用到的有可扩展标记语言、可扩展样式语言（XSL）、XBRL和XPath等。</p>
+<h1 id="XML结构"><a href="#XML结构" class="headerlink" title="XML结构"></a>XML结构</h1><p>XML定义结构、存储信息、传送信息。下例为小张发送给大元的便条，存储为XML。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot;?&gt;</span><br><span class="line">  &lt;小纸条&gt;</span><br><span class="line">    &lt;收件人&gt;大元&lt;/收件人&gt;</span><br><span class="line">    &lt;發件人&gt;小張&lt;/發件人&gt;</span><br><span class="line">    &lt;主題&gt;問候&lt;/主題&gt;</span><br><span class="line">    &lt;具體內容&gt;早啊，飯吃了沒？ &lt;/具體內容&gt;</span><br><span class="line">  &lt;/小纸条&gt;</span><br></pre></td></tr></table></figure>
+
+<p>每个XML文档都由XML序言开始，在前面的代码中的第一行就是XML序言，<?xml version="1.0"?>。这一行代码会告诉解析器或浏览器这个文件应该按照XML规则进行解析。</p>
+<p>但是，根元素到底叫&lt;小纸条&gt;还是&lt;小便条&gt;，则是由文档类型定义（DTD）或XML纲要（XML Schema）定义的。如果DTD规定根元素必须叫&lt;小便条&gt;，那么若写作&lt;小纸条&gt;就不符合要求。这种不符合DTD或XML纲要的要求的XML文档，被称作不合法的XML，反之则是合法的XML。</p>
+<p>XML文件的第二行并不一定要包含文档元素；如果有注释或者其他内容，文档元素可以迟些出现。</p>
+<h1 id="XML解析器"><a href="#XML解析器" class="headerlink" title="XML解析器"></a>XML解析器</h1><p>C++类型XML解析器有：</p>
+<ul>
+<li>Boost.PropertyTree - A property tree parser&#x2F;generator that can be used to parse XML&#x2F;JSON&#x2F;INI&#x2F;Info files. [Boost]</li>
+<li>Expat - An XML parser library written in C. [MIT]</li>
+<li>Libxml2 - The XML C parser and toolkit of Gnome. [MIT]</li>
+<li>libxml++ - An XML Parser for C++. [LGPL2]</li>
+<li>Mini-XML - A small XML parsing library written in ANSI C. [LGPL2 with exceptions]</li>
+<li>PugiXML - A light-weight, simple and fast XML parser for C++ with XPath support. [MIT]</li>
+<li>RapidXml - An attempt to create the fastest XML parser possible, while retaining useability, portability and reasonable W3C compatibility. [Boost]</li>
+<li>TinyXML - A simple, small, minimal, C++ XML parser that can be easily integrating into other programs. [zlib]</li>
+<li>TinyXML2 - A simple, small, efficient, C++ XML parser that can be easily integrating into other programs. [zlib]</li>
+<li>TinyXML++ - A completely new interface to TinyXML that uses MANY of the C++ strengths. Templates, exceptions, and much better error * handling. [MIT]</li>
+<li>Xerces-C++ - A validating XML parser written in a portable subset of C++. [Apache2]</li>
+</ul>
+<p>推荐使用TinyXML2。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/32046606">C++解析xml有什么好用的轮子?</a>,by 知乎.</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/fffaraz/awesome-cpp#xml">awesome-cpp xml</a>,by fffaraz.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/liangzhao_jay/article/details/8797224">XML与C++对象的相互转化</a>,by Mr_John_Liang.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/sanmaospace/p/3139186.html">JSON与XML的区别比较</a>,by SanMaoSpace.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/C-C/" rel="tag"># C/C++</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/01/22/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E6%96%87%E6%A1%A3%E7%9A%84%E7%BC%96%E5%86%99%E6%96%B9%E6%B3%95/" rel="prev" title="软件开发文档的编写方法">
+                  <i class="fa fa-angle-left"></i> 软件开发文档的编写方法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/02/09/%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E7%9A%84%E6%A0%87%E5%87%86%E6%B5%81%E7%A8%8B/" rel="next" title="科学研究的标准流程">
+                  科学研究的标准流程 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

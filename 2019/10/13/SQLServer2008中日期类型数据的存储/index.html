@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha256-4Lad8m4ZWW1Lgb9+sMVLYEfnIh7BjV1NQMEe79Pviks=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"huangwang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="日期类型比较SQL Server 2008中有datetime、datetime2、datetimeoffset三种数据类型用于存储时间类型数据。它们之间的差别主要有：  datetime、datetime2不存储时区信息，datetimeoffset存储时区信息。 datetime与datetime2区别是两者存储字节大小和精度不同，后者优于前者。  因此，在存储时间信息时，优先使用dateti">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQLServer2008中日期类型数据的存储">
+<meta property="og:url" content="https://huangwang.github.io/2019/10/13/SQLServer2008%E4%B8%AD%E6%97%A5%E6%9C%9F%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E7%9A%84%E5%AD%98%E5%82%A8/index.html">
+<meta property="og:site_name" content="Jack Huang&#39;s Blog">
+<meta property="og:description" content="日期类型比较SQL Server 2008中有datetime、datetime2、datetimeoffset三种数据类型用于存储时间类型数据。它们之间的差别主要有：  datetime、datetime2不存储时区信息，datetimeoffset存储时区信息。 datetime与datetime2区别是两者存储字节大小和精度不同，后者优于前者。  因此，在存储时间信息时，优先使用dateti">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-10-13T10:15:02.000Z">
+<meta property="article:modified_time" content="2019-12-30T11:00:31.338Z">
+<meta property="article:author" content="Jack Huang">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="笔记本">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://huangwang.github.io/2019/10/13/SQLServer2008%E4%B8%AD%E6%97%A5%E6%9C%9F%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E7%9A%84%E5%AD%98%E5%82%A8/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://huangwang.github.io/2019/10/13/SQLServer2008%E4%B8%AD%E6%97%A5%E6%9C%9F%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E7%9A%84%E5%AD%98%E5%82%A8/","path":"2019/10/13/SQLServer2008中日期类型数据的存储/","title":"SQLServer2008中日期类型数据的存储"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SQLServer2008中日期类型数据的存储 | Jack Huang's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-search popup-trigger" aria-label="搜索" role="button">
+      <i class="fa fa-search fa-fw fa-lg"></i>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jack Huang's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-toggle" aria-label="切换导航栏" role="button">
+      <i class="fa fa-ellipsis fa-fw fa-lg"></i>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  
+  <template id="search-popup-template"><div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div></template>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83"><span class="nav-number">1.</span> <span class="nav-text">日期类型比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E8%BD%AC%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">日期转换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E6%AF%94%E8%BE%83"><span class="nav-number">3.</span> <span class="nav-text">日期比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jack Huang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">552</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwang.github.io/2019/10/13/SQLServer2008%E4%B8%AD%E6%97%A5%E6%9C%9F%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E7%9A%84%E5%AD%98%E5%82%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jack Huang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="SQLServer2008中日期类型数据的存储 | Jack Huang's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SQLServer2008中日期类型数据的存储
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-10-13 18:15:02" itemprop="dateCreated datePublished" datetime="2019-10-13T18:15:02+08:00">2019-10-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-12-30 19:00:31" itemprop="dateModified" datetime="2019-12-30T19:00:31+08:00">2019-12-30</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="日期类型比较"><a href="#日期类型比较" class="headerlink" title="日期类型比较"></a>日期类型比较</h1><p>SQL Server 2008中有datetime、datetime2、datetimeoffset三种数据类型用于存储时间类型数据。它们之间的差别主要有：</p>
+<ul>
+<li>datetime、datetime2不存储时区信息，datetimeoffset存储时区信息。</li>
+<li>datetime与datetime2区别是两者存储字节大小和精度不同，后者优于前者。</li>
+</ul>
+<p>因此，在存储时间信息时，优先使用datetimeoffset数据类型。当使用datetime和datetime2数据类型时，因没有时区信息，很多客户端链接库会将存储的时间默认为UTC时间。例如：</p>
+<p>SQL Server2008中存储某人的出生日期为“1970-01-01 00:00:00”，通过sequelizejs框架读取得到出生日期将是“1970-01-01T00:00:00Z”，<strong>这里 T 仅仅是分隔日期和时间的符号，没有其他含义，而 Z 表示 UTC 时间。</strong></p>
+<p>这时需要根据自己所在时区对时间进行修正。最简单的方法是在SQL语句中进行修正，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select birthday1, dateadd(hour,-8,birthday) from students </span><br></pre></td></tr></table></figure>
+<h1 id="日期转换"><a href="#日期转换" class="headerlink" title="日期转换"></a>日期转换</h1><p>有时时间会以字符串类型存储在数据库中，当需要对时间进行比较时，需要先将字符串类型时间转换成日期类型，可使用convert函数进行转换，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 字符串转日期</span><br><span class="line">select convert(date, &#x27;2005-12-31 23:59:59.9999999&#x27;)</span><br><span class="line"># 日期转字符串</span><br><span class="line">select convert(varchar, getdate(), 1)</span><br></pre></td></tr></table></figure>
+
+<p>其中date是要转换的数据的类型，’2005-12-31 23:59:59.9999999’是被转换的数据。</p>
+<h1 id="日期比较"><a href="#日期比较" class="headerlink" title="日期比较"></a>日期比较</h1><p>在mssql中比较两个日期的大小，可采用DATEDIFF函数，其语法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DATEDIFF ( datepart , startdate , enddate )  </span><br></pre></td></tr></table></figure>
+
+<p>其中，datepart是时间单位，startdate和enddate是合法的日期表达式。datediff用法示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SELECT DATEDIFF(year,        &#x27;2005-12-31 23:59:59.9999999&#x27;, &#x27;2006-01-01 00:00:00.0000000&#x27;);</span><br><span class="line">SELECT DATEDIFF(quarter,     &#x27;2005-12-31 23:59:59.9999999&#x27;, &#x27;2006-01-01 00:00:00.0000000&#x27;);</span><br><span class="line">SELECT DATEDIFF(month,       &#x27;2005-12-31 23:59:59.9999999&#x27;, &#x27;2006-01-01 00:00:00.0000000&#x27;);</span><br><span class="line">SELECT DATEDIFF(dayofyear,   &#x27;2005-12-31 23:59:59.9999999&#x27;, &#x27;2006-01-01 00:00:00.0000000&#x27;);</span><br><span class="line">SELECT DATEDIFF(day,         &#x27;2005-12-31 23:59:59.9999999&#x27;, &#x27;2006-01-01 00:00:00.0000000&#x27;);</span><br><span class="line">SELECT DATEDIFF(week,        &#x27;2005-12-31 23:59:59.9999999&#x27;, &#x27;2006-01-01 00:00:00.0000000&#x27;);</span><br><span class="line">SELECT DATEDIFF(hour,        &#x27;2005-12-31 23:59:59.9999999&#x27;, &#x27;2006-01-01 00:00:00.0000000&#x27;);</span><br><span class="line">SELECT DATEDIFF(minute,      &#x27;2005-12-31 23:59:59.9999999&#x27;, &#x27;2006-01-01 00:00:00.0000000&#x27;);</span><br><span class="line">SELECT DATEDIFF(second,      &#x27;2005-12-31 23:59:59.9999999&#x27;, &#x27;2006-01-01 00:00:00.0000000&#x27;);</span><br><span class="line">SELECT DATEDIFF(millisecond, &#x27;2005-12-31 23:59:59.9999999&#x27;, &#x27;2006-01-01 00:00:00.0000000&#x27;);</span><br><span class="line">SELECT DATEDIFF(microsecond, &#x27;2005-12-31 23:59:59.9999999&#x27;, &#x27;2006-01-01 00:00:00.0000000&#x27;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/18518290/how-to-add-hours-to-current-date-in-sql-server/18518412">How to add hours to current date in SQL Server?</a>,by stackoverflow.</li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/standard/datetime/choosing-between-datetime">Choosing between DateTime, DateTimeOffset, TimeSpan, and TimeZoneInfo</a>,by microsoft.</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/happymagic/article/details/45065321">datetime、datetime2的区别</a>,by happymagic.</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/Gin-23333/p/5066823.html">DateTime , DateTime2 ,DateTimeOffset 之间的小区别</a>,by 神崎橙.</li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000004292140">关于“时间”的一次探索</a>,by KohPoll.</li>
+<li><a target="_blank" rel="noopener" href="https://www.mssqltips.com/sqlservertip/1145/date-and-time-conversions-using-sql-server/">Date and Time Conversions Using SQL Server</a>,by Edgewood Solutions.</li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/sql/t-sql/functions/datediff-transact-sql?view=sql-server-ver15">DATEDIFF (Transact-SQL)</a>,by microsoft.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0%E6%9C%AC/" rel="tag"># 笔记本</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/10/10/JavaScript%E5%AF%B9%E8%B1%A1%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86/" rel="prev" title="JavaScript对象深度克隆">
+                  <i class="fa fa-angle-left"></i> JavaScript对象深度克隆
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/10/13/Qt%E9%9B%86%E6%88%90OSG%E5%BC%80%E5%8F%91/" rel="next" title="QT集成OSG开发">
+                  QT集成OSG开发 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jack Huang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

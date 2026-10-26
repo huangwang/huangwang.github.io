@@ -1015,7 +1015,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-10-25 22:41:30" itemprop="dateModified" datetime="2026-10-25T22:41:30+08:00">2026-10-25</time>
+      <time title="修改时间：2026-10-26 22:06:39" itemprop="dateModified" datetime="2026-10-26T22:06:39+08:00">2026-10-26</time>
     </span>
 
   
@@ -1052,7 +1052,7 @@
 <li>方法二，使用专用工具打包传输，例如 ollamazip 、 ollama-export &#x2F; ollama-toolkit 等，可以简化打包和迁移过程，它们会自动处理 Manifest 和 Blob 之间的关联。</li>
 <li>方法三，使用 GGUF 文件 + Modelfile（推荐）</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 在有网电脑上获取 GGUF 文件</span><br><span class="line"># 传输文件</span><br><span class="line"># 在离线电脑上创建 Modelfile</span><br><span class="line"># 创建并运行模型</span><br><span class="line">ollama create 你的模型名 -f Modelfile</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 在有网电脑上获取 GGUF 文件</span><br><span class="line"># 传输文件</span><br><span class="line"># 在离线电脑上创建 Modelfile</span><br><span class="line"># 创建并运行模型</span><br><span class="line">ollama create qwen3.8:27b-ud-k_8_xl -f Modelfile</span><br></pre></td></tr></table></figure>
 
 <h1 id="问题记录"><a href="#问题记录" class="headerlink" title="问题记录"></a>问题记录</h1><h2 id="内存访问违规问题"><a href="#内存访问违规问题" class="headerlink" title="内存访问违规问题"></a>内存访问违规问题</h2><ul>
 <li>问题描述</li>
@@ -1067,18 +1067,41 @@
 </li>
 </ul>
 <p>直接去 NVIDIA 官网，下载并安装最新稳定版驱动。安装后重启电脑。</p>
-<h2 id="大语言模型没有在GPU上运行的问题"><a href="#大语言模型没有在GPU上运行的问题" class="headerlink" title="大语言模型没有在GPU上运行的问题"></a>大语言模型没有在GPU上运行的问题</h2><ul>
+<h2 id="大语言模型没有在GPU上运行的问题"><a href="#大语言模型没有在GPU上运行的问题" class="headerlink" title="大语言模型没有在GPU上运行的问题"></a>大语言模型没有在GPU上运行的问题</h2><h3 id="部署-qwen3-6-9b"><a href="#部署-qwen3-6-9b" class="headerlink" title="部署 qwen3.6:9b"></a>部署 qwen3.6:9b</h3><ul>
 <li>问题描述</li>
 </ul>
 <p>ollama run qwen3.6:9b 时，大模型没有运行在GPU上，这一点可以通过执行 ollama ps 查看。</p>
 <ul>
 <li>原因分析</li>
 </ul>
-<p>没有安装最新的显卡驱动</p>
+<p>原因一，没有安装最新的显卡驱动。</p>
 <ul>
 <li>解决方案</li>
 </ul>
-<p>安装好最新的显卡驱动之后，将 ollama.exe 添加到使用显卡执行的列表中去。</p>
+<p>针对原因一，安装好最新的显卡驱动之后，将 ollama.exe 添加到使用显卡执行的列表中去。</p>
+<h3 id="部署-qwen3-8-27b"><a href="#部署-qwen3-8-27b" class="headerlink" title="部署 qwen3.8:27b"></a>部署 qwen3.8:27b</h3><ul>
+<li>问题描述</li>
+</ul>
+<p>ollama run qwen3.8:27b 时，大模型没有运行在GPU上，这一点可以通过执行 ollama ps 查看。</p>
+<ul>
+<li>原因分析</li>
+</ul>
+<p>缺少Microsoft Visual C++2015-2022</p>
+<ul>
+<li>解决方案</li>
+</ul>
+<p>安装 Microsoft Visual C++2015-2022。</p>
+<h2 id="远程访问-ollama-部署的大模型"><a href="#远程访问-ollama-部署的大模型" class="headerlink" title="远程访问 ollama 部署的大模型"></a>远程访问 ollama 部署的大模型</h2><ul>
+<li>在“用户变量”中新建，变量名 OLLAMA_HOST，变量值 0.0.0.0（若需解决跨域问题，可同时新建 OLLAMA_ORIGINS，值为 *）</li>
+<li>验证远程访问是否成功，可以访问 http:&#x2F;&#x2F;&lt;服务器IP&gt;:11434，若返回 “Ollama is running”，即表示远程访问配置成功。</li>
+</ul>
+<h2 id="因模型名称问题导致无法访问"><a href="#因模型名称问题导致无法访问" class="headerlink" title="因模型名称问题导致无法访问"></a>因模型名称问题导致无法访问</h2><ul>
+<li>ollama 创建并运行模型时，要注意模型名称的定义，要类似 qwen3.8:27b-ud-k_8_xl 。</li>
+<li>打开浏览器访问 http:&#x2F;&#x2F;&lt;你的IP&gt;:11434&#x2F;v1&#x2F;models ， 查看模型的精确名称。</li>
+</ul>
+<h2 id="调整大模型-KV-缓存的量化精度"><a href="#调整大模型-KV-缓存的量化精度" class="headerlink" title="调整大模型 KV 缓存的量化精度"></a>调整大模型 KV 缓存的量化精度</h2><ul>
+<li>设置环境变量 OLLAMA_FLASH_ATTENTION&#x3D;”1”; $env:OLLAMA_KV_CACHE_TYPE&#x3D;”q4_0” 。</li>
+</ul>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ol>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/1887585692919522766">手把手教你离线安装Ollama</a>,by 张云飞.</li>
 <li><a target="_blank" rel="noopener" href="https://eastondev.com/blog/zh/posts/ai/20260425-ollama-gpu-acceleration/">Ollama GPU 加速配置：CUDA、ROCm 与 Metal 全平台实战指南</a>,by easton.</li>
@@ -1088,6 +1111,7 @@
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/692336625">OpenAI API格式详解-Chat Completions</a>,by 啤酒泡泡.</li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/712003796">工具调用:OpenAI 工具调用从一到多函数调用</a>,by JPPeng.</li>
 <li><a target="_blank" rel="noopener" href="https://guangzhengli.com/notes/llm-cache">大模型 LLM 缓存机制：从原理到工程实践</a>,by guangzhengli.</li>
+<li><a target="_blank" rel="noopener" href="https://www.modelscope.cn/">魔塔社区</a>,by modelscope</li>
 </ol>
 
       
